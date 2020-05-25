@@ -7,7 +7,7 @@ capabilities of Cryptol and the Software Analysis Workbench (SAW).
 
 1. Description of Cryptol and SAW
 2. Demonstrate example of a cryptographic primitive with Cryptol (and SAW?)
-   - Possibly the packaged SALSA20 example
+   - Possibly the packaged Salsa20 example
 3. Show the ability of Cryptol / SAW to do equivalence checking
    - Demonstrate that it can do unit tests as well
    - Explain about how checking properties is strictly stronger
