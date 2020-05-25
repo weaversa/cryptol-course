@@ -1,4 +1,4 @@
-# Lab 1: Using the Cryptol interpreter
+# Using the Cryptol interpreter
 
 ## Running the interpreter
 
