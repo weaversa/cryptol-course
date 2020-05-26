@@ -19,7 +19,8 @@ Cryptol>
 
 ## Interpreter State
 
-The interpreter has a number of different configuration settings. To view them type `:set`.
+The interpreter has a number of different configuration settings. To
+view them type `:set`.
 
 ```
 Cryptol> :set
@@ -140,5 +141,111 @@ Cryptol> :h
 ```
 
 The most used commands have to do with files (loading `:l`, editing
-`:e`, and reloading `:r` a file), quitting the interpreter `:q`, and asking for the type of an expression `:t`.
+`:e`, and reloading `:r` a file), quitting the interpreter `:q`, and
+asking for the type of an expression `:t`. Many of the commands have
+single character shortcuts for ease of use.
 
+The `:browse` command will list all of the type synonyms, constraint
+synonyms, primitive types, and symbols currently loaded into the
+interpreter. Upon startup, the interpreter preloads a prelude
+containing the Cryptol language. This prelude can be modified, but
+this will likely make any Cryptol specifications you write
+incompatible with the rest of the world, and hence modifying the
+prelude is discouraged.
+
+About `:browse` --- If you enter `:b` into the interpreter you will
+first see:
+
+```
+Cryptol> :b
+Type Synonyms
+=============
+
+  Public
+  ------
+
+    type Bool = Bit
+    type Char = [8]
+    type lg2 n = width (max 1 n - 1)
+    type String n = [n][8]
+    type Word n = [n]
+    ...
+```
+
+Type synonyms are helper functions used to express the type of some
+data. For example, The integer `10` can be expressed as a 32-bit word
+via,
+
+```
+Cryptol> 10 : Word 32
+0x0000000a
+```
+
+The next things you'll see with `:b` are some constraint synonyms:
+
+```
+...
+Constraint Synonyms
+===================
+
+  Public
+  ------
+
+    type constraint i < j = j >= 1 + i
+    type constraint i <= j = j >= i
+    type constraint i > j = i >= 1 + j
+    ...
+```
+
+Constraint synonyms are helper functions used to express type
+constraints. The ones preloaded into the interpreter unify different
+types of comparison operators to `>=`. This just saves users from
+having to express type constraints using only `>=`.
+
+The next things you'll see with `:b` are some primitive types:
+
+```
+Primitive Types
+===============
+
+  Public
+  ------
+
+    (!=) : # -> # -> Prop
+    (==) : # -> # -> Prop
+    (>=) : # -> # -> Prop
+    (+) : # -> # -> #
+    (-) : # -> # -> #
+    (%) : # -> # -> #
+    (%^) : # -> # -> #
+    (*) : # -> # -> #
+    (/) : # -> # -> #
+    (/^) : # -> # -> #
+    (^^) : # -> # -> #
+    Arith : * -> Prop
+    Bit : *
+    Cmp : * -> Prop
+    fin : # -> Prop
+    Integer : *
+    inf : #
+    Literal : # -> * -> Prop
+    Logic : * -> Prop
+    lengthFromThenTo : # -> # -> # -> #
+    max : # -> # -> #
+    min : # -> # -> #
+    SignedCmp : * -> Prop
+    width : # -> #
+    Z : # -> *
+    Zero : * -> Prop
+```
+
+The first eleven are comparison and arithmetic operators. `Arith`,
+`Cmp`, `Logic`, `SignedCmp`, and `Zero` are type classes (Cryptol will
+apply these naturally (or suggest you do so) as you program new
+functions in Cryptol. They are generally hidden from view and so we
+won't go over them here. `Bit`, `Integer`, and `Z` are Cryptol's
+current basic data types. These are covered heavily elsewhere. The
+rest are some basic type constraints that help with expressing some
+cryptographic type constraints elegantly.
+
+The last section you'll see with `:b` are Cryptol's symbols.
