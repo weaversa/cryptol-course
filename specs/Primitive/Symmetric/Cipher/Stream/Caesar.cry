@@ -5,23 +5,22 @@ module Primitive::Symmetric::Cipher::Stream::Caesar where
 encrypt: {n} Key -> String n -> String n
 encrypt k msg = [ mapped x | x <- msg ]
   where
-    k' = k % `charsetSize
-    mapping = charset <<< k'
+    mapping = charset <<< k
     mapped c =
       if ('A' <= c) && (c <= 'Z')
       then mapping @ (c - 'A')
       else c
-  
+
 /** decrypts `msg` of length `n`, right-rotating each character by `k` */
 decrypt: {n} Key -> String n -> String n
 decrypt k msg = [ mapped x | x <- msg ]
   where
-    k' = k % `charsetSize
-    mapping = charset >>> k'
+    mapping = charset >>> k
     mapped c =
       if ('A' <= c) && (c <= 'Z')
       then mapping @ (c - 'A')
       else c
+
 
 private
 
@@ -49,7 +48,10 @@ private
   /** Example message is recovered. */
   property example_recovery = ex_msg'' == ex_msg
 
-  /** Decrypting encrypted `msg` of length `n` (with symmetric key `k`) returns original `msg`. */
+  /**
+   * Decrypting encrypted `msg` of length `n` (with symmetric key `k`)
+   * returns original `msg`.
+   */
   recovery: {n} (fin n) => Key -> String n -> Bit
   recovery key msg =
     decrypt key (encrypt key msg) == msg
