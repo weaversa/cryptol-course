@@ -181,71 +181,38 @@ Cryptol> 10 : Word 32
 0x0000000a
 ```
 
-The next things you'll see with `:b` are some constraint synonyms:
-
-```
-...
-Constraint Synonyms
-===================
-
-  Public
-  ------
-
-    type constraint i < j = j >= 1 + i
-    type constraint i <= j = j >= i
-    type constraint i > j = i >= 1 + j
-    ...
-```
-
-Constraint synonyms are helper functions used to express type
+The next things you'll see with `:b` are some constraint
+synonyms. These are helper functions used to express type
 constraints. The ones preloaded into the interpreter unify different
 types of comparison operators to `>=`. This just saves users from
 having to express type constraints using only `>=`.
 
-The next things you'll see with `:b` are some primitive types:
+The next things you'll see with `:b` are some primitive types. These
+include comparison and arithmetic operators, type classes, basic
+types, and some type constraints that help with expressing some
+cryptographic type constraints elegantly. These are used when defining
+the type of a function or variable. For example, the size of a
+bitvector can be represented in terms of the width of an integer:
 
 ```
-Primitive Types
-===============
-
-  Public
-  ------
-
-    (!=) : # -> # -> Prop
-    (==) : # -> # -> Prop
-    (>=) : # -> # -> Prop
-    (+) : # -> # -> #
-    (-) : # -> # -> #
-    (%) : # -> # -> #
-    (%^) : # -> # -> #
-    (*) : # -> # -> #
-    (/) : # -> # -> #
-    (/^) : # -> # -> #
-    (^^) : # -> # -> #
-    Arith : * -> Prop
-    Bit : *
-    Cmp : * -> Prop
-    fin : # -> Prop
-    Integer : *
-    inf : #
-    Literal : # -> * -> Prop
-    Logic : * -> Prop
-    lengthFromThenTo : # -> # -> # -> #
-    max : # -> # -> #
-    min : # -> # -> #
-    SignedCmp : * -> Prop
-    width : # -> #
-    Z : # -> *
-    Zero : * -> Prop
+Cryptol> :t 10 : [width 32]
+(10 : [width 32]) : [6]
 ```
 
-The first eleven are comparison and arithmetic operators. `Arith`,
-`Cmp`, `Logic`, `SignedCmp`, and `Zero` are type classes (Cryptol will
-apply these naturally (or suggest you do so) as you program new
-functions in Cryptol. They are generally hidden from view and so we
-won't go over them here. `Bit`, `Integer`, and `Z` are Cryptol's
-current basic data types. These are covered heavily elsewhere. The
-rest are some basic type constraints that help with expressing some
-cryptographic type constraints elegantly.
+In the last section you'll see with `:b` are Cryptol's symbols. This
+is where you'll find all of the value operators (as opposed to type
+operators). These are used when defining the value of a function or
+variable. For example, `reverse` can be used to reverse the order of a
+sequence of integers:
 
-The last section you'll see with `:b` are Cryptol's symbols.
+```
+Cryptol> reverse [1, 2, 3] : [3][2]
+[0x3, 0x2, 0x1]
+```
+
+Each of the items in the environment can be queried using `:h`. The
+interpreter also supports [TAB
+completion](https://en.wikipedia.org/wiki/Command-line_completion),
+that is, pressing TAB will display all of available symbols. And, if
+you start typing a symbol and then press TAB, the interpreter will
+attempt to complete the symbol you've started typing.
