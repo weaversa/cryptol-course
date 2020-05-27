@@ -2,6 +2,9 @@
 module Primitive::Symmetric::Cipher::Stream::Caesar where
   /** character set size */
   type charsetSize = 26
+  /** character set */
+  charset = ['A'..'Z']:[charsetSize]
+
 
   /** key for Caesar cipher; i.e. character rotation amount */
   type Key = [width charsetSize]
@@ -12,7 +15,7 @@ module Primitive::Symmetric::Cipher::Stream::Caesar where
     where
       k' = k % `charsetSize
 
-      mapping = ['A'..'Z'] <<< k'
+      mapping = charset <<< k'
       mapped c =
         if (('A' <= c) && (c <= 'Z'))
         then (mapping @ (c - 'A'))
@@ -24,11 +27,12 @@ module Primitive::Symmetric::Cipher::Stream::Caesar where
     where
       k' = k % `charsetSize
 
-      mapping = ['A' .. 'Z'] >>> k'
+      mapping = charset >>> k'
       mapped c =
         if (('A' <= c) && (c <= 'Z'))
         then (mapping @ (c - 'A'))
         else c
+
 
   /** test vector */
   ((ex_key, ex_msg), ex_ct) = ((13, "ATTACK AT DAWN"), "NGGNPX NG QNJA")
