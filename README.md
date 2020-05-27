@@ -1,7 +1,7 @@
 # Programming with Cryptol and SAW
 
 Purpose: The purpose of the course is to provide an overview of the
-capabilities of [Cryptol](https://github.com/GaloisInc/cryptol) and the [Software Analysis Workbench](https://github.com/GaloisInc/cryptol) (SAW).
+capabilities of [Cryptol](https://github.com/GaloisInc/cryptol) and the [Software Analysis Workbench](https://github.com/GaloisInc/saw-script) (SAW).
 
 ## Potential Flow
 
