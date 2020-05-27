@@ -3,7 +3,7 @@ module Primitive::Symmetric::Cipher::Stream::Caesar where
   /** character set size */
   type charsetSize = 26
   /** character set */
-  charset = ['A'..'Z']:[charsetSize]
+  charset = ['A'..'Z']:[charsetSize][8]
 
 
   /** key for Caesar cipher; i.e. character rotation amount */
