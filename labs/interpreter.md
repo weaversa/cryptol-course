@@ -1,5 +1,6 @@
 # Using the Cryptol interpreter
 
+
 ## Running the interpreter
 
 To use Cryptol, from the linux command line type `cryptol` to get
@@ -16,6 +17,7 @@ https://cryptol.net  :? for help
 Loading module Cryptol
 Cryptol>
 ```
+
 
 ## Interpreter State
 
@@ -71,6 +73,7 @@ You'll notice there are many different things to configure. Most of
 these are set to an appropriate default, but there are a few we will
 touch on later.
 
+
 ## Interpreter Help
 
 Cryptol's interpreter has a built-in help command. To invoke it, type
@@ -98,6 +101,7 @@ Cryptol> :h reverse
 
 Reverses the elements in a sequence.
 ```
+
 
 ## Colon commands
 
@@ -144,6 +148,9 @@ The most used commands have to do with files (loading `:l`, editing
 `:e`, and reloading `:r` a file), quitting the interpreter `:q`, and
 asking for the type of an expression `:t`. Many of the commands have
 single character shortcuts for ease of use.
+
+
+## Browsing the Environment
 
 The `:browse` command will list all of the type synonyms, constraint
 synonyms, primitive types, and symbols currently loaded into the
@@ -210,9 +217,78 @@ Cryptol> reverse [1, 2, 3] : [3][2]
 [0x3, 0x2, 0x1]
 ```
 
-Each of the items in the environment can be queried using `:h`. The
-interpreter also supports [TAB
+Each of the items in the environment can be queried using `:h`.
+
+
+## Tab Completion and Scrolling
+
+The interpreter supports [TAB
 completion](https://en.wikipedia.org/wiki/Command-line_completion),
 that is, pressing TAB will display all of available symbols. And, if
 you start typing a symbol and then press TAB, the interpreter will
 attempt to complete the symbol you've started typing.
+
+The interpreter also records a history of commands issued. All
+commands are saved in a file named `.cryptol_commandHistory` which (by
+default) resides in the top-level of your user directory. Pressing the
+up and down arrows will scroll through this history, enabling fast
+recall of previous commands.
+
+
+## Chaining Commands --- `it` and `let`
+
+The Cryptol interpreter supports a couple of ways to chain commands
+together. The first way happens automatically. The `it` symbol is a
+name automatically bound to the result of the last command the
+interpreter evaluated. For example, if we can `reverse` a list, the
+result `[3, 2, 1]` is automatically bound to the `it` symbol. We can
+then `reverse it` and see that we get `[1, 2, 3]` back.
+
+```
+Cryptol> :s base=10
+Cryptol> reverse [1, 2, 3] : [3][2]
+[3, 2, 1]
+Cryptol> reverse it
+[1, 2, 3]
+```
+
+Though, now the value of `it` has also become `[1, 2, 3]`. To bind a
+value to a name (save it for later) we can use the `let` command. For
+example, here we bind the result of `reverse [1, 2, 3] : [3][2]` to
+`r`, then `reverse r` and show that the result is as expected and that
+`r` still retains `[3, 2, 1]`.
+
+```
+Cryptol> let r = reverse [1, 2, 3] : [3][2]
+Cryptol> r
+[3, 2, 1]
+Cryptol> reverse r
+[1, 2, 3]
+Cryptol> r
+[3, 2, 1]
+```
+
+`let` is very helpful for debugging and program understanding,
+however, it can lead to confusion (as demonstrated in the simple
+example below). Thus, industrial use of `let` is discouraged. After
+running the example below, what is the value of `y`? Since, in the
+interpreter, definitions can be overwritten, it's better to write
+these kinds of definitions in files, and use the `:reload` (or `:r`)
+command to maintain a consistent state.
+
+```
+Cryptol> let x = 0
+Cryptol> let y = x + 1
+Cryptol> let x = 1
+```
+
+## Batch Commands
+
+  Mention `cryptol --help`
+
+## CRYPTOLPATH
+
+## Loading and Reloading Files
+
+## Loading Modules
+
