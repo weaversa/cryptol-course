@@ -1,0 +1,58 @@
+/* Simple Caesar cipher */
+module Primitive::Symmetric::Cipher::Stream::Caesar where
+  /** character set size */
+  type charsetSize = 26
+
+  /** key for Caesar cipher; i.e. character rotation amount */
+  type Key = [width charsetSize]
+
+  /** encrypts `msg` of length `n`, left-rotating each character by `k` */
+  encrypt: {n} Key -> String n -> String n
+  encrypt k msg = [ mapped x | x <- msg ]
+    where
+      k' = k % `charsetSize
+
+      mapping = ['A'..'Z'] <<< k'
+      mapped c =
+        if (('A' <= c) && (c <= 'Z'))
+        then (mapping @ (c - 'A'))
+        else c
+  
+  /** decrypts `msg` of length `n`, right-rotating each character by `k` */
+  decrypt: {n} Key -> String n -> String n
+  decrypt k msg = [ mapped x | x <- msg ]
+    where
+      k' = k % `charsetSize
+
+      mapping = ['A' .. 'Z'] >>> k'
+      mapped c =
+        if (('A' <= c) && (c <= 'Z'))
+        then (mapping @ (c - 'A'))
+        else c
+
+  /** test vector */
+  ((ex_key, ex_msg), ex_ct) = ((13, "ATTACK AT DAWN"), "NGGNPX NG QNJA")
+
+  /** example encryption */
+  ex_msg' = encrypt ex_key ex_msg
+  /** example decryption */
+  ex_msg'' = decrypt ex_key ex_msg'
+
+  /** Example test vector passes */
+  property tv_pass = ex_msg' == ex_ct
+  /** Example message is recovered. */
+  property example_recovery = ex_msg'' == ex_msg
+
+  /** Decrypting encrypted `msg` of length `n` (with symmetric key `k`) returns original `msg`. */
+  recovery: {n} (fin n) => Key -> String n -> Bit
+  recovery key msg =
+    decrypt key (encrypt key msg) == msg
+  
+  /** Decrypting encrypted `msg` of length `1` returns original `msg`. */
+  property recovery_1 = recovery`{1}
+  /** Decrypting encrypted `msg` of length `2` returns original `msg`. */
+  property recovery_2 = recovery`{2}
+  /** Decrypting encrypted `msg` of length `3` returns original `msg`. */
+  property recovery_3 = recovery`{3}
+  /** Decrypting encrypted `msg` of length `4` returns original `msg`. */
+  property recovery_4 = recovery`{4}
