@@ -1,6 +1,13 @@
 # How to Install Cryptol and SAW
 
-## Downloading pre-built Cryptol and SAW binaries
+## Option 1: Docker
+
+Both Cryptol and SAW are available for the
+[Docker](https://www.docker.com) savvy user. The Docker containers are
+available here: https://hub.docker.com/u/galoisinc
+
+
+## Option 2: Downloading pre-built Cryptol and SAW binaries
 
 Galois (the maintainers of Cryptol and SAW) provide a server with
 nightly builds of SAW for CentOS, Ubuntu, and OSX. Notice that there
@@ -35,7 +42,7 @@ by adding an `export PATH=...` line to your `.bashrc`, `.profile`,
 etc. file.
 
 
-## Downloading Z3
+### Downloading Z3
 
 Both Cryptol and SAW require a tool called Z3. Unfortunately, this
 tool is not bundled with Cryptol or SAW, so it must be install
