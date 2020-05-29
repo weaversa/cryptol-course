@@ -1,0 +1,3 @@
+:m labs::interpreter::test
+:s base=10
+x + 2
