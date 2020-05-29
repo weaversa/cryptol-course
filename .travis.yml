@@ -46,3 +46,5 @@ script:
   - cd specs
   - cryptol -e -c ":load Misc/Sudoku.cry"
   - cryptol -e -c ":load Primitive/Symmetric/Cipher/Stream/Caesar.cry"
+  - cryptol -c ":m labs::interpreter::test" -c ":s base=10" -c "x + 2"
+  - cryptol -b labs/interpreter/test.sry
