@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/weaversa/cryptol-course.svg?branch=master)](https://travis-ci.com/weaversa/cryptol-course)
+
 # Programming with Cryptol and SAW
 
 Purpose: The purpose of the course is to provide an overview of the
