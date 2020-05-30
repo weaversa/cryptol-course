@@ -4,8 +4,9 @@
 
 [Docker](https://www.docker.com) images are available for both [Cryptol]
 (https://hub.docker.com/r/galoisinc/cryptol) and [SAW]
-(https://hub.docker.com/r/galoisinc/saw).  If Docker has been installed, SAW 
-can be pulled and run easily:
+(https://hub.docker.com/r/galoisinc/saw).  If Docker has been [installed]
+(https://docs.docker.com/get-docker), it is easy to `pull` and `run` these
+images:
 
 ```sh
 > docker pull galoisinc/saw:0.5
@@ -45,11 +46,6 @@ Cryptol> ^d
 (`-it` indicates that the commands are to be run in an interactive TTY. Tags 
 `0.5` and `2.8.0` are needed because a `latest` alias has not been set for 
 these images.)
-
-The above sessions were run using [Docker Desktop for Windows]
-(https://hub.docker.com/editions/community/docker-ce-desktop-windows) on the
-most recent version of Windows 10 Home with [WSL2]
-(https://docs.microsoft.com/en-us/windows/wsl/wsl2-index).
 
 ## Option 2: Downloading pre-built Cryptol and SAW binaries
 
