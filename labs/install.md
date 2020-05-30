@@ -2,10 +2,54 @@
 
 ## Option 1: Docker
 
-Both Cryptol and SAW are available for the
-[Docker](https://www.docker.com) savvy user. The Docker containers are
-available here: https://hub.docker.com/u/galoisinc
+[Docker](https://www.docker.com) images are available for both [Cryptol]
+(https://hub.docker.com/r/galoisinc/cryptol) and [SAW]
+(https://hub.docker.com/r/galoisinc/saw).  If Docker has been installed, SAW 
+can be pulled and run easily:
 
+```sh
+> docker pull galoisinc/saw:0.5
+...
+> docker run -it galoisinc/saw:0.5
+ ┏━━━┓━━━┓━┓━┓━┓
+ ┃ ━━┓ ╻ ┃ ┃ ┃ ┃
+ ┣━━ ┃ ╻ ┃┓ ╻ ┏┛
+ ┗━━━┛━┛━┛┗━┛━┛ version 0.5 (<non-dev-build>)
+sawscript> :h sat
+Description
+-----------
+
+    sat : ProofScript SatResult -> Term -> TopLevel SatResult
+
+Use the given proof script to attempt to prove that a term is
+satisfiable (true for any input). Returns a proof result that can
+be analyzed with 'caseSatResult' to determine whether it represents
+a satisfiying assignment or an indication of unsatisfiability.
+sawscript> ^d
+
+> docker pull galoisinc/cryptol:2.8.0
+...
+> docker run -it galoisinc/cryptol:2.8.0
+┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
+┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
+┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
+version 2.8.0
+
+Loading module Cryptol
+Cryptol> :sat \(x:[4]) -> (x + 1 < x)
+(\(x : [4]) -> (x + 1 < x)) 0xf = True
+(Total Elapsed Time: 0.006s, using Z3)
+Cryptol> ^d
+```
+
+(`-it` indicates that the commands are to be run in an interactive TTY. Tags 
+`0.5` and `2.8.0` are needed because a `latest` alias has not been set for 
+these images.)
+
+The above sessions were run using [Docker Desktop for Windows]
+(https://hub.docker.com/editions/community/docker-ce-desktop-windows) on the
+most recent version of Windows 10 Home with [WSL2]
+(https://docs.microsoft.com/en-us/windows/wsl/wsl2-index).
 
 ## Option 2: Downloading pre-built Cryptol and SAW binaries
 
