@@ -43,6 +43,8 @@ jobs:
       os: linux
 language: c
 script: 
-  - cd specs
-  - cryptol -e -c ":load Misc/Sudoku.cry"
-  - cryptol -e -c ":load Primitive/Symmetric/Cipher/Stream/Caesar.cry"
+  - export CRYPTOLPATH=$(pwd)
+  - cryptol -e -c ":m specs::Misc::Sudoku"
+  - cryptol -e -c ":m specs::Primitive::Symmetric::Cipher::Stream::Caesar"
+  - cryptol -e -c ":m labs::interpreter::test" -c ":s base=10" -c "x + 2"
+  - cryptol -e -b labs/interpreter/test.sry

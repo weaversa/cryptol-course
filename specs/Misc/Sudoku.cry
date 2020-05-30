@@ -3,7 +3,7 @@
  *   https://galois.com/blog/2009/03/solving-sudoku-using-cryptol/
  * ) and updated to Cryptol 2.8.1
  */
-module Misc::Sudoku where
+module specs::Misc::Sudoku where
 
 /** number in [1..9] */
 type Num = [width 9]
