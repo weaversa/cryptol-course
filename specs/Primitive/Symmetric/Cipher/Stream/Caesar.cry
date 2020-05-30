@@ -1,5 +1,5 @@
 /* Simple Caesar cipher */
-module Primitive::Symmetric::Cipher::Stream::Caesar where
+module specs::Primitive::Symmetric::Cipher::Stream::Caesar where
 
 /** encrypts `msg` of length `n`, left-rotating each character by `k` */
 encrypt: {n} Key -> String n -> String n
