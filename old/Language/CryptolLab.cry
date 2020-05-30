@@ -1,0 +1,148 @@
+module CryptolLab where
+
+/*
+ * These labs require an editor to create and modify a .cry file. To
+ * load the this file, either run the following from the command line:
+ * 
+ * $ cryptol CryptolLab.cry
+ *
+ * or load the file from within the interpreter by:
+ * 
+ * Cryptol> :l CryptolLab.cry
+ *
+ * To make changes, you can use an external editor and then reload with:
+ *
+ * Cryptol> :r
+ * 
+ * Or you can edit from within the interpreter by typing:
+ *
+ * Cryptol> :e
+ *
+ * This will open the editor set in your EDITOR environment variable
+ * (default: vi). When you save and quit, Cryptol will reload
+ * automatically.
+ */
+
+
+/**
+ * List comprehensions can be self-referential. That is, succeeding
+ * elements are computed by referencing preceding elements. For
+ * example, here is yet another way of generating the infinite list of
+ * 32-bit integers. The [0] is the initial first chunk of the list
+ * (in this case, with only one element, but there could be more.)  #
+ * is the concatenate operator. The rest of the list follows, building
+ * off the earlier part of the list.
+ */
+evens : [inf][32]
+evens = [0] # [ prev + 2 | prev <- evens ]
+
+/**
+ * 1. Write a self-referential list comprehension that computes (once again) the
+ * 32-bit odd integers. (The "zero" term is a placeholder for you to replace, as are the "_" in the type.)
+ */
+odds : [_][_]
+odds = zero
+
+/**
+ * 2. Write a self-referential list comprehension that computes the
+ * following sequence (the tetrations of 3, 128-bit):
+ * 
+ * [3, 3^^3, 3^^3^^3, 3^^3^^3^^3, ...]
+ * 
+ * The result will print as:
+ * 
+ * [3, 27, 19683, 7625597484987, 103144121322099306484875023187381681347, ...]
+ */
+tetrations3 : [_][_]
+tetrations3 = zero
+
+/**
+ * 3. Write a self-referential list comprehension that computes the
+ * Fibonacci sequence. (The sequence of numbers beginning with [0, 1]
+ * where each succeeding element is the sum of the two preceding.)
+ * (32-bit.) The output should be as follows:
+ *
+ *[0, 1, 1, 2, 3, ...]
+ */
+fibs : [_][_]
+fibs = zero
+
+/**
+ * 4. Write a function add5 that takes a list of 5 32-bit numbers and
+ * adds them together.
+ */
+add5 : [5][32] -> [32]
+add5 [x0, x1, x2, x3, x4] = zero
+
+/**
+ * 5. Write a function addn that takes an arbitrarily long infinite
+ * list of 32-bit numbers and adds them. In the skeleton code below,
+ * we've included a "where" statement that allows for one or more
+ * local definitions to be defined that are used in computing a
+ * result.
+ */
+addn : {a} (fin a) => [a][32] -> [32]
+addn xs = result
+  where
+    result = zero
+
+/**
+ *6. Write a new function add5' that adds together a list of 5
+ * numbers. However, in this case, define add5' in terms of addn
+ */
+add5' : [5][32] -> [32]
+add5' xs = zero
+
+/**
+ * Lists can be indexed in a number of ways:
+ * - Indexing (@) or reverse indexing (!)
+ * - Multiple indexing (@@) or reverse multiple indexing (!!), which use a list of indices
+ * - Pattern matching, for example:
+ * [a,b,c] = [1,2,3]
+ *
+ * Use indexing and pattern matching to implement the function
+ * "extractor", which when run on "multilist" creates a new list with
+ * the second elements of the second and third lists. (That is, 16 and
+ * 42.)
+ */
+multilist = [[4, 8], [15, 16], [23, 42]]:[3][2][32]
+
+extractor : [_][_][_] -> [_][_]
+extractor xs = result
+  where
+    result = zero
+
+/*
+ * For algorithms of cryptographic interest, endianness and word
+ * ordering are sometimes of large concern. Getting Cryptol to
+ * rearrange words and bytes to the correction position is usually
+ * done with the built-in functions:
+ * 
+ * "split" breaks a list apart according to the expected type
+ * 
+ * "join" concatenates multiple lists
+ * 
+ * "reverse" reverses a list
+ * 
+ * "groupBy`{n}" is like split but allows you to easily specify how
+ * big (n) you want each chunk
+ * 
+ * "splitBy`{n}" is like split but allows you to easily specify how
+ *  many pieces (n) you want to split into
+ */
+
+/**
+ * 7. Using these built-ins, write a function "reverseByteOrder" that
+ * takes a 128-bit value and reverses the byte order.
+ * 
+ * Cryptol> reverseByteOrder 0x00112233445566778899aabbccddeeff
+ * 0xffeeddccbbaa99887766554433221100
+ */
+reverseByteOrder : [_] -> [_]
+reverseByteOrder x = zero
+
+/*
+ * Now that you've learned the basics of Cryptol, you're ready to
+ * implement an actual Cryptographic algorithm! Open up
+ * Salsa20Skeleton.cry.
+ */

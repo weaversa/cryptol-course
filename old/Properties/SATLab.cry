@@ -1,0 +1,66 @@
+module SATLab where
+
+import BIGTABLE
+
+/**
+ * 1. Write a property 'sqDiffThm' stating that 'sqDiff1' and
+ * 'sqDiff2' are equivalent for all inputs (for 8-bit numbers)
+ */
+sqDiff1 x y = x^^2 - y^^2
+sqDiff2 x y = (x-y) * (x+y)
+
+sqDiffThm : [_] -> [_] -> Bit
+property sqDiffThm x y = False
+
+/**
+ * 2. Write a property 'revRev' stating that 'reverse' of a 'reverse'
+ * returns a sequence unchanged
+ */
+revRev : [_] -> Bit
+property revRev sequence = False
+
+/**
+ * 3. Write a property 'appAssoc' stating that append (#) is an
+ * associative operator. (for lists of 64 bits.)  (That is, a#(b#c) is
+ * the same as (a#b)#c.)
+ */
+appAssoc : [_] -> [_] -> [_] -> Bit
+property appAssoc a b c = False
+
+/**
+ * 4. Write a property 'revApp' stating that appending two (64-bit)
+ * sequences and reversing the result is the same as reversing the
+ * sequences and appending them in reverse order.
+ */
+revApp : [_] -> [_] -> Bit
+property revApp a b = False
+
+/**
+ * 5. Write a property 'lshMul' stating that shifting left by 'k' is
+ * the same as multiplying by 2^^k (for 64-bit numbers.)
+ */
+lshMul : [_] -> [_] -> Bit
+property lshMul a b = False
+
+/**
+ * 6. Included is a table with 1024 elements in it. Use :sat to find
+ * the index of 42 in 'BIGTABLE'.
+ */
+
+index_of_42 = zero
+
+/**
+ * 7. 'BIGTABLE' may or may not be a permutation on the elements
+ * [0..1023].  Use :prove to test whether or not 'BIGTABLE' is a
+ * permutation. If 'BIGTABLE' is not a permutation, modify it so that
+ * it is.
+ * 
+ * This requires two properties. The skeleton code below should get
+ * you started:
+ */
+
+BIGTABLE_contains_no_duplicates : [_] -> [_] -> Bit
+property BIGTABLE_contains_no_duplicates i j = False
+
+BIGTABLE_contains_all_elements : [_] -> Bit
+property BIGTABLE_contains_all_elements x = False

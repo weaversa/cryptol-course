@@ -1,0 +1,36 @@
+module Salsa20SAT where
+
+import Salsa20Skeleton
+
+/* 1. rowround_opt is an alternate implementation of rowround. Prove
+that they are equivalent! */
+rowround_opt : [16][32] -> [16][32]
+rowround_opt ys = join [ (quarterround (yi<<<i))>>>i
+                       | yi <- split ys
+                       | i <- [0 .. 3] : [_][8] ]
+
+property rowround_opt_is_rowround ys = False
+
+/* 2. columnround_opt is an alternate implementation of
+columnround. Prove that they are equivalent! */
+columnround_opt : [16][32] -> [16][32]
+columnround_opt xs = 
+  join (transpose [ (quarterround (xi <<< i)) >>> i
+                  | xi <- transpose(split xs)
+                  | i <- [0 .. 3] : [_][8] ])
+
+property columnround_opt_is_columnround xs = False
+
+/* 3. Prove that columnround is the transpose of rowround. (Lucky for
+you, Cryptol ships with a "transpose" function. */
+property columnround_is_transpose_of_rowround ys = False
+
+/* 4. Prove that littleendian and littleendian_inverse are inverses */
+property littleendian_and_littleendian_inverse_are_inverses bs = False
+
+/* 5. Prove that doubleround has no collisions */
+property doubleround_has_no_collisions x1 x2 = False
+
+/* 6. Prove that Salsa20_hash has no collisions. (May take a long time
+to prove) */
+property Salsa20_hash_has_no_collisions a b = False

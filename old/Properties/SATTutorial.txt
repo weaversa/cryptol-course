@@ -1,0 +1,63 @@
+Cryptol> :prove True
+
+Cryptol> :prove False
+
+Cryptol> :prove 2+3<7
+
+Cryptol> :s warnDefaulting=off
+
+Cryptol> :prove 2+3<7
+
+Cryptol> :prove 2+3<5
+
+Cryptol> :prove if (4 < 3) then 8 > 9 else [0,1,2]@1 < 2
+
+Cryptol> :prove (\x -> x+1 >= x)
+
+Cryptol> :prove (\x -> x+1 >= x) : [32] -> Bit
+
+Cryptol> :prove (\x -> if (x != 0xffffffff) then x+1 >= x else True) : [32] -> Bit
+
+Cryptol> :prove (\(x,y) -> x+y == y+x) : ([32], [32]) -> Bit
+
+Cryptol> :prove (\(x,y) -> x*y == y*x) : ([4], [4]) -> Bit
+
+Cryptol> :prove (\(x,y) -> x*y == y*x) : ([100], [100]) -> Bit
+
+Cryptol> :sat (\x -> x+1 == 7) : [32] -> Bit
+
+Cryptol> :sat (\(x, y) -> ((x+(y>>>3)/10) + 87*x) == 0x73732) : ([32], [32]) -> Bit
+
+Cryptol> :sat (\(x, y) -> ((x+(y>>>3)/10) + 87*x) == 0#0x73732) : ([32], [32]) -> Bit
+
+Cryptol> :sat (\(x, y) -> (((x+(y>>>3)/10) + 87*x) == 0#0x73732) && (y < 0#0x64)) : ([32], [32]) -> Bit
+
+DES> DES.encrypt `0x1234 `0x5678
+
+DES> :sat (\plain -> DES.encrypt `0x1234 plain == 0xdd1a032cfad4f2f0)
+
+DES> :s prover=abc
+
+DES> :prove (\(key, plain) -> DES.decrypt key (DES.encrypt key plain) == plain)
+
+DES> :sat (\key -> (DES.encrypt key `0x5678 == 0xdd1a032cfad4f2f0) && (key <= `0x1fff))
+
+DES> :sat (\plain -> DES.encrypt `0x1234 plain != DES.encrypt `0x1335 plain)
+
+DES> :sat (\(key1, key2, plain) -> if key1 != key2 then DES.encrypt key1 plain == DES.encrypt key2 plain else False)
+
+DES> :sat (\plain -> DES.encrypt 1 plain != DES.encrypt 0 plain)
+
+DES> :sat (\plain -> DES.encrypt 2 plain != DES.encrypt 0 plain)
+
+DES> :s prover=abc
+
+DES> :sat (\(key, plain) -> if key != 0x98f98129839ad232 then DES.encrypt key plain == DES.encrypt 0x98f98129839ad232 plain else False)
+
+DES> :prove (\plain -> DES.encrypt 0x98f98129839ad233 plain == DES.encrypt 0x98f98129839ad232 plain)
+
+DES> :prove (\(key, plain) -> DES.encrypt ((0:[1])#key) plain == DES.encrypt ((1:[1])#key) plain)
+
+DES> :prove (\(key, plain) -> DES.encrypt (key#(0:[1])) plain == DES.encrypt (key#(1:[1])) plain)
+
+DES> :prove (\(key, plain) -> DES.encrypt (rejigger 0 key) plain == DES.encrypt (rejigger 1 key) plain where rejigger b key' = join [ k#(b:[1]) | k <- splitBy`{8} key' ])

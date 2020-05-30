@@ -1,0 +1,85 @@
+These exercises can be done entirely in the interpreter. Start the
+interpreter by typing "cryptol" at the command prompt. Then input the
+following interpreter settings to set the output integer base to 10:
+
+Cryptol> :s base=10
+
+1. In the Cryptol interpreter, compute 1+1. What does it return? Why?
+Hint: it's because of the default type of the numbers. (To check the
+type, execute ":t 1".) Explicitly set the type by putting :[n] after
+the thing, where n is the number of bits. Try changing the type
+(either of one of the numbers or of the whole sum) to 32 bits and
+computing 1+1 again.
+
+
+2. What is the type of 0x1? (Hexadecimal 1.) What about 0x0001? How
+are hex numbers treated differently than decimal numbers in Cryptol?
+
+
+3. There is only one basic data type in Cryptol. Find out what it is
+by typing :t True. (You can probably guess the only other constant
+with this type!)
+
+What do you get when you make a list of them? Try:
+
+Cryptol> [True, False, True, False]
+
+
+4. What should the default type of [5, 10, 15] be? What about [20, 25, 30]?
+Many operations work element-wise over lists. Try:
+
+Cryptol> [5, 10, 15] + [20, 25, 30]
+
+
+5. Cryptol supports basic strings between double-quotes. Of course,
+everything in Cryptol is just lists of bits. What is the type of the
+string "Hello, world!"?
+
+
+6. Lists can be manipulated in a number of ways, such as:
+"take`{n}" returns the first n elements of a list
+"drop`{n}" removes the first n elements of a list
+
+Retrieve the first 2 elements of [4, 8, 15, 16, 23, 42]
+
+Retrieve the last 2 elements of [4, 8, 15, 16, 23, 42]
+
+7. Play around with infinite lists. Try: (Note: the "_" asks Cryptol
+to "figure out" what part of the type is for you.)
+
+Cryptol> [1 ..]
+Cryptol> [1 ...]
+Cryptol> [1 ..]:[_][4]
+Cryptol> [1 ...]:[_][4]
+Cryptol> take`{5} [1 ...]:[_][4]
+Cryptol> [0, 8 ...]:[_][32]
+Cryptol> [0, 8 .. 32]:[_][32]
+
+What is the difference between two dots (..) and three (...)?
+
+Write an expression for the infinite list of 32-bit odd
+numbers. (Note: since this list is infinite but the numbers are only
+32-bit, it will eventually overflow).
+
+
+8. A  list  comprehension   is  a  construct  that  allows  iterative
+computation over lists. For example,  one way to generate the infinite
+list of 32-bit even numbers is:
+
+Cryptol> [ 2*n | n <- [0 ...]:[inf][32] ]
+
+This could be read as "The list of the quantities two times n, where n
+draws from the sequence of 32-bit numbers from 0 to infinity."
+
+Use a list comprehension to construct the following lists:
+
+- All 32-bit, odd numbers (same list as exercise 5, but written using
+  a list comprehension.) The output should be:
+[1, 3, 5, 7, 9, ...]
+
+- The sequence of powers of 3 (32-bit is fine.) The output should be:
+[1, 3, 9, 27, 81, ...]
+
+- The list consisting of the 4-bit number 1, then 1 left
+  circular shifted (<<<) once, then twice, and up to 10 times:
+[1, 2, 4, 8, 1, 2, 4, 8, 1, 2, 4]
