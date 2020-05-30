@@ -40,6 +40,40 @@ operators but always be consistent about whitespace on either side of
 a binary operator. Don't insert a space after a lambda (the `\`
 symbol).
 
+### Type Definitions
+
+It is acceptable to keep type variables, type constraints, and
+argument types on one line iff they fit on one line. It is always
+acceptable to place type variables, type constraints, and argument
+types on separate lines.
+
+```haskell
+sayHello :
+     {a}
+     (fin a) =>
+     [a][8] -> [a+7][8]
+```
+
+### Type Constraints
+
+Type constraints should always be tupleized. The following is incorrect:
+
+```haskell
+fun :
+   {a, b}
+   fin a => fin b =>
+   [a][b] -> [a+b]
+```
+
+`fun` should be:
+
+```haskell
+fun :
+   {a, b}
+   (fin a, fin b)
+   [a][b] -> [a+b]
+
+
 !!! Stopped !!!
 
 ### Data Declarations
