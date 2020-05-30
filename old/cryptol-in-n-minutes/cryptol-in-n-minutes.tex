@@ -1,0 +1,252 @@
+\documentclass{beamer}
+\usepackage{fancyvrb}
+\usepackage{textcomp}
+\usepackage{upquote}
+\usepackage{xcolor}
+
+\newcommand{\x}[1]{\framebox{\frenchspacing\strut\texttt{#1}}}
+
+\newcommand{\type}[1]{\frenchspacing\textcolor{brown}{\texttt{#1}}}
+
+%\DefineShortVerb{\|}
+
+\beamertemplatenavigationsymbolsempty
+
+\title{\texorpdfstring{Cryptol in $n$ Minutes}{Cryptol in n Minutes}}
+\author{Frank Seaton Taylor}
+\date{July 24, 2013}
+
+\begin{document}
+
+
+
+\frame{\titlepage}
+
+
+
+\frame{
+
+  \frametitle{Cryptol}
+  
+  \begin{itemize}
+    \item<+-> is a domain specific language and tool suite.
+    \item<+-> was created by Galois, Inc with support from NSA cryptographers.
+    \item<+-> has lots of cool programming language features: 
+      \begin{itemize}
+        \item<+-> strong, static typing
+        \item<+-> type inference
+        \item<+-> parametric size-polymorphism
+        \item<+-> higher-order functions
+      \end{itemize}
+    \item<+-> is used for gold standard algorithm specs, evaluations against those and exploration.
+    \item<+-> is available via: \url{http://www.cryptol.net}
+  \end{itemize}
+
+}
+
+
+
+\frame{
+
+  \frametitle{Data and Programs}
+  
+  \begin{itemize}
+    \item<1-> Everything is a $n$-dimensional structure of bits\only<2->{\footnote{Most everything, anyway.}}.
+      \begin{itemize}
+        \item<3-> 0-d \x{False : Bit} \x{True : Bit}
+        \item<4-> 1-d\only<2->{\footnote<5->{1-d sequences of bits are nonnegative integers (``words'') in arithmetic contexts.}} \x{0xaa : [8]} \x{0b1011 : [4]}
+        \item<6-> 2-d \x{[42 0b01010101 0xaa 0o377] : [4][8]}
+        \item<7-> 3-d \x{[[0 1] [1 2] [3 5] [8 13]] : [4][2][4]}
+        \item<8-> ...
+      \end{itemize}
+    \item<9-> Programs are a sequence of mathematical definitions.
+      \begin{itemize}
+        \item<10-> Definitions may be accompanied by a type signature (if not, one is \emph{usually} inferred).
+        \item<11-> Everything must have a size that is known or inferred at ``compile time''.
+        \item<12-> Definitions are computationally neutral. Cryptol tools provide the computational context (interpreters, compilers, code generators, SAT solvers, theorem provers, etc.).
+      \end{itemize}
+
+  \end{itemize}
+
+}
+
+
+\begin{frame}[fragile]
+
+  \frametitle{Operators\only<1-19>{\footnote<1-19>{Types on this slide are simplified for illustrative purposes.}}}
+
+  \begin{itemize}
+    \only<1-14>{\item of type \type{a -> a}}\only<15->{\item[ ]}
+        \begin{itemize}
+          \item<2-> \x{\~{}} (bitwise inversion)
+        \end{itemize}
+    \only<3-14>{\item of type \type{(a,a) -> a}}\only<15->{\item[ ]}
+      \begin{itemize}
+        \item<4-> \x{\&} \x{\textbar} \x{\^{}} (bitwise logical operations)
+      \end{itemize}
+    \only<5-14>{\item of type \type{(a,a) -> Bit}}\only<15->{\item[ ]}
+      \begin{itemize}
+        \item<6-> \x{==} \x{!=} (structural comparison)
+      \end{itemize}
+    \only<7-14>{\item of type \type{([a],[a]) -> Bit}}\only<15->{\item[ ]}
+      \begin{itemize}
+        \item<8-> \x{>=} \x{>} \x{<=} \x{<} (nonnegative word comparisons)
+      \end{itemize}
+    \only<9-14>{\item of type \type{([a]b,[a]b) -> [a]b}}\only<15->{\item[ ]}
+      \begin{itemize}
+        \item<10-> \x{+} \x{-} \x{*} \x{/} \x{\%} \x{**} (wordwise modular arithmetic)
+      \end{itemize}
+    \only<11-14>{\item of type \type{([a]b,[c]) -> [a]b}}\only<15->{\item[ ]}
+      \begin{itemize}
+        \item<12-> \x{>>} \x{>>>} \x{<<<} \x{<<} (shifts and rotates)
+      \end{itemize}
+    \only<13-14>{\item of type \type{([a]b,[c]b) -> [a+c]b}}\only<15->{\item[ ]}
+      \begin{itemize}
+        \item<14-> \x{\#} (concatenation)
+      \end{itemize}
+    \only<16-17>{\item of type \type{([a]b,[c]) -> b}}\only<18->{\item[ ]}
+      \begin{itemize}
+        \item<17-> \x{@} \x{!} (0-based indexing from front or rear)
+      \end{itemize}
+    \only<18-19>{\item of type \type{([a]b,[c][d]) -> [c]b}}\only<20->{\item[ ]}
+      \begin{itemize}
+        \item<19-> \x{@@} \x{!!} (0-based slicing from front or rear)
+      \end{itemize}
+  \end{itemize}
+
+\end{frame}
+
+
+
+
+
+\begin{frame}[fragile]
+
+  \frametitle{Primitives}
+  
+  \begin{itemize}
+    \item<+-> \x{take} \x{drop} (get the front or back of a list)
+    \item<+-> \x{tail} (drops the first item of a list)
+    \item<+-> \x{split} \x{join} (e.g. word to octets or vice-versa)
+    \item<+-> \x{splitBy} \x{groupBy} (variations of \x{split})
+    \item<+-> \x{reverse} (sequence operation)
+    \item<+-> \x{transpose} (array operation)
+    \item<+-> \x{negate} (two's complement)
+    \item<+-> \x{zero} (structure of \texttt{False} bits of any type)
+    \item<+-> \x{min} \x{max} \x{parity} (obvious)
+    \item<+-> \x{lg2} \x{width} (esoteric)
+  \end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+
+  \frametitle{Functions\uncover<5->{ and Laziness}}
+  
+  \begin{Verbatim}[frame=single]
+min1 : ([16],[16]) -> [16]; // type signature
+min1 (x, y) = if 1 >= x     // definition
+  then x
+  else min (x, y);
+  \end{Verbatim}
+
+  \pause
+  
+  Using Cryptol's interpreter, we see:
+  
+  \begin{center}
+    \x{min1(2, 1/0)} $\leadsto$ \textsc{error} 
+  \end{center}
+  \pause
+
+  and 
+
+  \begin{center}
+  \x{min1(0, 1/0)} $\leadsto$ \pause 0
+  \end{center}
+  \pause
+  
+  \begin{itemize}
+    \item<+-> Cryptol is lazy. (Values are computed on demand.)
+    \item<+-> Cryptol supports conceptually infinite lists. (So long as only a finite prefix is demanded everything is fine.)
+  \end{itemize}
+
+
+\end{frame}
+
+
+\begin{frame}[fragile]
+
+  \frametitle{Enumerations}
+   
+  \begin{itemize}
+    \item<+-> \x{[0 .. 5]} $\leadsto$ \x{[0 1 2 3 4 5]}
+    \item<+-> \x{[0 2 .. 5]} $\leadsto$ \x{[0 2 4]}
+    \item<+-> \x{[5 -- 0]} $\leadsto$ \x{[5 4 3 2 1 0]}
+    \item<+-> \x{[0 .. ]} $\leadsto$ an ``infinite'' list
+  \end{itemize}
+
+  \only<+->{Values in infinite lists depend on word widths:}
+
+  \begin{itemize}
+    \item<+-> \x{[0 .. ] : [inf][1]} $\leadsto$ \x{[0 1 0 1 0 1 0} ...
+    \item<+-> \x{[0 .. ] : [inf][2]} $\leadsto$ \x{[0 1 2 3 0 1 2} ...
+    \item<+-> \x{[0 3 .. ] : [inf][3]} $\leadsto$ \x{[0 3 6 1 4 7 2} ...
+  \end{itemize}
+
+\end{frame}
+
+
+
+\begin{frame}[fragile]
+
+  \frametitle{Sequence Comprehensions}
+   
+  \begin{itemize}
+    \item<+-> Cartesian: \begin{center}\x{[| x \^{} y || x <- [0 .. 1],   y <- [1 .. 3] |]} $\leadsto$ \x{[1 2 3 0 3 2]}\end{center}
+    \item<+-> Parallel:  \begin{center}\x{[| x \^{} y || x <- [0 .. 1] || y <- [1 .. 3] |]} $\leadsto$ \x{[1 3]}\end{center}
+    \item<+-> Self referential\only<6->{\footnote{Mathematicians might prefer ``recurrence relations''.}}:  \begin{Verbatim}[frame=single]
+fibs: [inf][32];
+fibs = [0 1] # [| x + y || x <- fibs 
+                       || y <- tail (fibs) |];
+      \end{Verbatim}
+      \begin{center}
+        \x{fibs} $\leadsto$ \pause \x{[0 1 1 2 3 5 8} ...
+      \end{center}
+  \end{itemize}
+
+
+\end{frame}
+
+
+
+
+\begin{frame}[fragile]
+
+  \frametitle{Control Structures}
+   
+  \begin{itemize}
+    \item Cryptol's if-then-else is like C's ternary operator \textcolor{orange}{?\ :}. \pause
+    \item Sequence comprehensions may be thought of as for loops. For example, in C, $n!$ is the value of \texttt{f} after executing:
+      \begin{Verbatim}[frame=single]
+f = 1;
+for (i = 1; n >= i; i++)
+  f *= i;
+      \end{Verbatim}
+      \pause In Cryptol, $n!$ is the value of \x{fs @ n} given:
+      \begin{Verbatim}[frame=single]
+fs : [inf][32];
+fs = [1] # [| f * i || f <- fs || i <- [1 ..] |];
+      \end{Verbatim}
+    \item \pause Recursion in Cryptol gives an equivalent formulation of while loops, but that is rarely needed in cryptographic algorithms.
+  \end{itemize}
+
+
+\end{frame}
+
+
+
+
+\end{document}
