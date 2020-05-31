@@ -118,6 +118,9 @@ property LeftRotationProp =
 
 ## 3 The quarterround Function
 
+
+### Inputs and outputs
+
 This section begins by giving the type of the quarterround function as:
 
 > If y is a 4-word sequence then quarterround(y) is a 4-word sequence.
@@ -127,6 +130,9 @@ In Cryptol, we would write this type as:
 ```
 quarterround : Words 4 -> Words 4
 ```
+
+
+### Definition
 
 This section then goes on to define quarterround. Two syntactic change
 is required, namely, sequences in Cryptol are bookended by `[]` rather
@@ -140,6 +146,8 @@ quarterround [y0, y1, y2, y3] = [z0, z1, z2, z3] where
     z3 = y3 ^ ((z2 + z1) <<< 13)
     z0 = y0 ^ ((z3 + z2) <<< 18)
 ```
+
+### Examples
 
 Example input-ouput pairs are provided. Cryptol can make use of these
 to provide evidence that quarterround was implemented correctly. Here
@@ -174,6 +182,8 @@ Q.E.D.
 (Total Elapsed Time: 0.005s, using "Z3")
 ```
 
+### Comments
+
 There is one last paragraph in this section that may not seem
 significant at first glance. This paragraph ends with
 
@@ -205,11 +215,16 @@ and range of quarterround are the same (`Word 4 -> Word 4`), we know
 that, if the function is injective, it must also be surjective. Hence,
 we only need to prove that quarterround is injective.
 
-[Wikipedia describes](https://en.wikipedia.org/wiki/Bijection,_injection_and_surjection) defines an injective function as:
+[Wikipedia
+describes](https://en.wikipedia.org/wiki/Bijection,_injection_and_surjection)
+defines an injective function as:
 
 ![](https://render.githubusercontent.com/render/math?math=\forall%20x,x'%20\in%20X,%20x%20\neq%20x'%20\Rightarrow%20f(x)%20\neq%20f(x'))
 
-We can now encode this (almost verbatim) into a Cryptol property.
+For the non-mathematician, this says that a function is injective if
+every pair of different inputs causes the function to produce
+different outputs. We can now encode this (almost verbatim) into a
+Cryptol property.
 
 ```
 property quarterroundIsInvertibleProp x x' =
@@ -261,7 +276,6 @@ next...oh just hit Ctrl-C already.
 
 ## 4 The rowround function
 
-
 From here on out, this lab requires you to write the rest of Salsa20
 by following the specification document. This may seem to you that
 we've become lazy, but we see it as important that you have the
@@ -270,10 +284,22 @@ commentary, type definitions, function stubs, and the example
 input-output pairs as property statements so you can check your work.
 
 
-### Definition
+### Inputs and outputs
 
 ```
 rowround : Words 16 -> Words 16
+```
+
+
+### Definition
+
+Exercise: Here we provide a skeleton for `rowround`. Please replacing
+the `zero` symbols with the appropriate logic as given in the Salsa20
+specification. You'll know you've gotten it right when it looks like
+the specification and when `:prove rowroundExamplesProp` gives
+`Q.E.D`.
+
+```
 rowround [y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14, y15] =
     [z0, z1, z2, z3, z4, z5, z6, z7, z8, z9, z10, z11, z12, z13, z14, z15]
   where
@@ -309,18 +335,44 @@ property rowroundExamplesProp =
 
 ### Comments
 
-```
-rowround_opt : Words 16 -> Words 16
-rowround_opt ys =
-    join [ quarterround (yi<<<i) >>>i | yi <- split ys | (i : [2])  <- [0 .. 3] ]
-```
+The comments in this section hint at an optimized way to perform
+rowround. Here is one such optimized function:
 
 ```
-property rowround_opt_is_rowround ys = rowround ys == rowround_opt ys
+rowroundOpt : Words 16 -> Words 16
+rowroundOpt ys =
+    join [ quarterround (yi <<< i) >>> i
+         | yi <- split ys
+	 | (i : [2])  <- [0 .. 3] ]
 ```
+
+Exercise: Here we want to prove that for all inputs, rowroundOpt is
+equal to rowround. Please replace the `zero` symbol below with such a
+statement and then prove the property in the interpreter.
+
+```
+property rowroundOpProp ys = rowroundOpt ys == rowround ys
+```
+
+## 4 The columnround function
+
+
+### Inputs and outputs
 
 ```
 columnround : Words 16 -> Words 16
+```
+
+### Definition
+
+Exercise: Here we provide a skeleton for `columnround`. Please replacing
+the `zero` symbols with the appropriate logic as given in the Salsa20
+specification. You'll know you've gotten it right when it looks like
+the specification and when `:prove columnroundExamplesProp` gives
+`Q.E.D`.
+
+
+```
 columnround [x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15] =
     [y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14, y15]
   where
@@ -330,8 +382,11 @@ columnround [x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x1
     [y15,  y3,  y7, y11] = quarterround [x15,  x3,  x7, x11]
 ```
 
+
+### Examples
+
 ```
-property columnround_passes_tests =
+property columnroundExamplesProp =
   (columnround [0x00000001, 0x00000000, 0x00000000, 0x00000000,
                 0x00000001, 0x00000000, 0x00000000, 0x00000000,
                 0x00000001, 0x00000000, 0x00000000, 0x00000000,
@@ -350,14 +405,14 @@ property columnround_passes_tests =
                 0x481c2027, 0x53a8e4b5, 0x4c1f89c5, 0x3f78c9c8])
 ```
 
-```
-columnround_opt : Words 16 -> Words 16
-columnround_opt xs = join (transpose [ quarterround (xi<<<i) >>>i | xi <- transpose (split xs) | (i : [3]) <- [0 .. 3] ])
-```
 
-```
-columnround_opt_is_columnround xs = columnround xs == columnround_opt xs
-```
+### Comments
+
+The comments in this section say that columnround is:
+
+> ... simply the transpose of the rowround function
+
+
 
 ```
 property columnround_is_transpose_of_rowround ys =
