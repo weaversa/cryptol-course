@@ -4,14 +4,20 @@ Cryptol Style Guide
 This document was crafted from [tibbe's Haskell style
 guide](https://github.com/tibbe/haskell-style-guide/blob/master/haskell-style.md). This
 guide covers the major areas of formatting and naming of Cryptol
-specifications.
+specifications. That said, the overarching goal of writing a Cryptol
+specification is to make it look as much like the corresponding paper
+document as possible. So, if there is some clear style in the paper
+document, follow that as closely as possible and use this guide to
+fill in any gaps.
+
 
 Formatting
 ----------
 
 ### Line Length
 
-Maximum line length is *80 characters*.
+Maximum line length is *70 characters* (which just happens to be the
+default `set-fill-column` width in Emacs).
 
 ### Indentation
 
@@ -54,6 +60,17 @@ sayHello :
      [a][8] -> [a+7][8]
 ```
 
+The `:` should always be surrounded by a single space on either
+side. This aligns type defitions with value definitions (where the `=`
+is also surrounded by a single space on either side). For example,
+
+```haskell
+x : [32]
+x = 10
+y : [4][32]
+y = [1, 2, 3, 4]
+```
+
 ### Type Constraints
 
 Type constraints should always be tupleized. The following is incorrect:
@@ -72,40 +89,32 @@ fun :
    {a, b}
    (fin a, fin b)
    [a][b] -> [a+b]
-
-
-!!! Stopped !!!
+```
 
 ### Data Declarations
 
-Align the constructors in a data type definition. Example:
+The `=` should always be surrounded by a single space on either
+side. This aligns value defitions with type definitions (where the `:`
+is also surrounded by a single space on either side). For example,
 
 ```haskell
-Tree a = Branch !a !(Tree a) !(Tree a)
-         | Leaf
-```
-
-For long type names the following formatting is also acceptable:
-
-```haskell
-data HttpException
-    = InvalidStatusCode Int
-    | MissingContentHeader
+x : [32]
+x = 10
+y : [4][32]
+y = [1, 2, 3, 4]
 ```
 
 Format records as follows:
 
 ```haskell
-data Person = Person
-    { firstName :: !String  -- ^ First name
-    , lastName  :: !String  -- ^ Last name
-    , age       :: !Int     -- ^ Age
-    } deriving (Eq, Show)
+Person =
+    { firstName : String 10
+    , lastName  : String 10
+    , age       : Integer
+    }
 ```
 
-### List Declarations
-
-Align the elements in the list. Example:
+Align the elements in a list. For example,
 
 ```haskell
 exceptions =
@@ -115,7 +124,8 @@ exceptions =
     ]
 ```
 
-Optionally, you can skip the first newline. Use your judgement.
+Optionally, you can skip the first newline. Use your judgement or try
+to match the paper document of the specification you're working from.
 
 ```haskell
 directions = [ North
@@ -125,69 +135,10 @@ directions = [ North
              ]
 ```
 
-### Pragmas
-
-Put pragmas immediately following the function they apply to.
-Example:
-
-```haskell
-id :: a -> a
-id x = x
-{-# INLINE id #-}
-```
-
-In the case of data type definitions you must put the pragma before
-the type it applies to. Example:
-
-```haskell
-data Array e = Array
-    {-# UNPACK #-} !Int
-    !ByteArray
-```
-
-### Hanging Lambdas
-
-You may or may not indent the code following a "hanging" lambda. Use
-your judgement. Some examples:
-
-```haskell
-bar :: IO ()
-bar = forM_ [1, 2, 3] $ \n -> do
-          putStrLn "Here comes a number!"
-          print n
-
-foo :: IO ()
-foo = alloca 10 $ \a ->
-      alloca 20 $ \b ->
-      cFunction a b
-```
-
-### Export Lists
-
-Format export lists as follows:
-
-```haskell
-module Data.Set
-    (
-      -- * The @Set@ type
-      Set
-    , empty
-    , singleton
-
-      -- * Querying
-    , member
-    ) where
-```
 
 ### If-then-else clauses
 
-Generally, guards and pattern matches should be preferred over if-then-else
-clauses, where possible. Short cases should usually be put on a single line
-(when line length allows it).
-
-When writing non-monadic code (i.e. when not using `do`) and guards
-and pattern matches can't be used, you can align if-then-else clauses
-like you would normal expressions:
+Align if-then-else clauses like you would normal expressions:
 
 ```haskell
 foo = if ...
@@ -195,74 +146,34 @@ foo = if ...
       else ...
 ```
 
-Otherwise, you should be consistent with the 4-spaces indent rule, and the
-`then` and the `else` keyword should be aligned. Examples:
+The same rule applies in nested where clauses:
 
 ```haskell
-foo = do
-    someCode
-    if condition
-        then someMoreCode
-        else someAlternativeCode
+foo a b = c
+  where
+    c = if a == 0x0000
+        then d
+          where
+            d = if b == 0x0000
+                then 0x1000
+                else 0x0010
+        else 0x0100
 ```
+
+### Where clauses
+
+Align the `=` symbols in a where clause when it helps readability.
 
 ```haskell
-foo = bar $ \qux -> if predicate qux
-    then doSomethingSilly
-    else someOtherCode
+foo = ...
+  where
+    cat   = ...
+    fish  = ...
+    dog   = ...
+    horse = ...
 ```
 
-The same rule applies to nested do blocks:
-
-```haskell
-foo = do
-    instruction <- decodeInstruction
-    skip <- load Memory.skip
-    if skip == 0x0000
-        then do
-            execute instruction
-            addCycles $ instructionCycles instruction
-        else do
-            store Memory.skip 0x0000
-            addCycles 1
-```
-
-### Case expressions
-
-The alternatives in a case expression can be indented using either of
-the two following styles:
-
-```haskell
-foobar = case something of
-    Just j  -> foo
-    Nothing -> bar
-```
-
-or as
-
-```haskell
-foobar = case something of
-             Just j  -> foo
-             Nothing -> bar
-```
-
-Align the `->` arrows when it helps readability.
-
-Imports
--------
-
-Imports should be grouped in the following order:
-
-1. standard library imports
-2. related third party imports
-3. local application/library specific imports
-
-Put a blank line between each group of imports. The imports in each
-group should be sorted alphabetically, by module name.
-
-Always use explicit import lists or `qualified` imports for standard
-and third party libraries. This makes the code more robust against
-changes in these libraries. Exception: The Prelude.
+# STOPPED !!!
 
 Comments
 --------
