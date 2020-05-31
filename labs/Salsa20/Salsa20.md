@@ -189,7 +189,7 @@ invertible? Well, it means that a function (say, quarterround) has an
 inverse function (call it quarterround') such that for all possible
 values of y, quarterround' (quarterround y) == y. Unfortunately the
 author didn't provide us with such an inverse function. Now, we could
-attempt to create it, but these is a much simpler solution here!
+attempt to create it, but there is a much simpler solution here!
 
 A function is invertible if
  * each input maps to a unique output (collision free) and
