@@ -207,9 +207,7 @@ we only need to prove that quarterround is injective.
 
 [Wikipedia describes](https://en.wikipedia.org/wiki/Bijection,_injection_and_surjection) defines an injective function as:
 
-```math
-\forall x,x' \in X, x \neq x' \Rightarrow f(x) \neq f(x')
-```
+![](https://render.githubusercontent.com/render/math?math=\forall%20x,x'%20\in%20X,%20x%20\neq%20x'%20\Rightarrow%20f(x)%20\neq%20f(x'))
 
 We can now encode this (almost verbatim) into a Cryptol property.
 
