@@ -25,22 +25,22 @@ Now we can begin to dig into the specification document!
 The last paragraph of the introduction defines a **byte** to mean an
 element of {0,1,...,255} and says that "there are many common ways to
 represent a byte". This is an opportunity for us to specify a
-representation in our specification. Here, we define `Byte` as a new
-type synonym for `[8]`, that is, a sequence of eight bits.
+representation in our specification. Here, we define `Bytes` as a new
+type synonym for a sequence of `n` 8-bit words.
 
 ```
-type Byte = [8]
+type Bytes n = [n][8]
 ```
 
 
 ## Words
 
 This section defines **word** to be an element of {0,1,...,2^32 -
-1}. Similarly to `Byte` above, we define `Word` as a new type synonym
-for `[32]`.
+1}. Similarly to `Bytes` above, we define `Words` as a new type
+synonym for a sequence of `n` 32-bit words.
 
 ```
-type Word = [32]
+type Words n = [n][32]
 ```
 
 The specification then goes on to give an example of how words are
@@ -49,7 +49,7 @@ show that Cryptol natively agrees with this expression by encoding the
 example as a property.
 
 ```
-property hexadecimal =
+property hexadecimalProp =
     (0xc0a8787e == 12 * (2^^28)
                  +  0 * (2^^24)
                  + 10 * (2^^20)
@@ -66,7 +66,7 @@ example. Here, we show that Cryptol's `+` operator agrees with this
 definition of sum by encoding the example as a property.
 
 ```
-property sum =
+property sumProp =
     0xc0a8787e + 0x9fd1161d == 0x60798e9b
 ```
 
@@ -74,10 +74,10 @@ Next, **exclusive-or** and **c-bit left rotation** are defined and
 examples provided. In Cryptol, these are:
 
 ```
-property exclusiveOr =
+property exclusiveOrProp =
     0xc0a8787e ^ 0x9fd1161d == 0x5f796e63
 
-property LeftRotation =
+property LeftRotationProp =
     0xc0a8787e <<< 5 == 0x150f0fd8
 ```
 
@@ -86,7 +86,7 @@ property LeftRotation =
 
 
 ```
-quarterround : [4]Word -> [4]Word
+quarterround : Words 4 -> Words 4
 quarterround [y0, y1, y2, y3] = [z0, z1, z2, z3]
   where
     z1 = y1 ^ ((y0 + y3) <<< 7)
@@ -96,24 +96,31 @@ quarterround [y0, y1, y2, y3] = [z0, z1, z2, z3]
 ```
 
 ```
-property quarterround_passes_tests =
-  (quarterround [0x00000000, 0x00000000, 0x00000000, 0x00000000] == [0x00000000, 0x00000000, 0x00000000, 0x00000000]) /\
-  (quarterround [0x00000001, 0x00000000, 0x00000000, 0x00000000] == [0x08008145, 0x00000080, 0x00010200, 0x20500000]) /\
-  (quarterround [0x00000000, 0x00000001, 0x00000000, 0x00000000] == [0x88000100, 0x00000001, 0x00000200, 0x00402000]) /\
-  (quarterround [0x00000000, 0x00000000, 0x00000001, 0x00000000] == [0x80040000, 0x00000000, 0x00000001, 0x00002000]) /\
-  (quarterround [0x00000000, 0x00000000, 0x00000000, 0x00000001] == [0x00048044, 0x00000080, 0x00010000, 0x20100001]) /\
-  (quarterround [0xe7e8c006, 0xc4f9417d, 0x6479b4b2, 0x68c67137] == [0xe876d72b, 0x9361dfd5, 0xf1460244, 0x948541a3]) /\
-  (quarterround [0xd3917c5b, 0x55f1c407, 0x52a58a7a, 0x8f887a3b] == [0x3e2f308c, 0xd90a8f36, 0x6ab2a923, 0x2883524c])
+property quarterroundPassesTestsProp =
+    (quarterround [0x00000000, 0x00000000, 0x00000000, 0x00000000]
+               == [0x00000000, 0x00000000, 0x00000000, 0x00000000]) /\
+    (quarterround [0x00000001, 0x00000000, 0x00000000, 0x00000000]
+               == [0x08008145, 0x00000080, 0x00010200, 0x20500000]) /\
+    (quarterround [0x00000000, 0x00000001, 0x00000000, 0x00000000]
+               == [0x88000100, 0x00000001, 0x00000200, 0x00402000]) /\
+    (quarterround [0x00000000, 0x00000000, 0x00000001, 0x00000000]
+               == [0x80040000, 0x00000000, 0x00000001, 0x00002000]) /\
+    (quarterround [0x00000000, 0x00000000, 0x00000000, 0x00000001]
+               == [0x00048044, 0x00000080, 0x00010000, 0x20100001]) /\
+    (quarterround [0xe7e8c006, 0xc4f9417d, 0x6479b4b2, 0x68c67137]
+               == [0xe876d72b, 0x9361dfd5, 0xf1460244, 0x948541a3]) /\
+    (quarterround [0xd3917c5b, 0x55f1c407, 0x52a58a7a, 0x8f887a3b]
+               == [0x3e2f308c, 0xd90a8f36, 0x6ab2a923, 0x2883524c])
 ```
 
 ```
-property quarterround_is_invertible a b =
+property quarterroundIsInvertibleProp a b =
     a != b ==> quarterround a != quarterround b
 ```
 
 
 ```
-rowround : [16]Word -> [16]Word
+rowround : Words 16 -> Words 16
 rowround [y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14, y15] =
     [z0, z1, z2, z3, z4, z5, z6, z7, z8, z9, z10, z11, z12, z13, z14, z15]
   where
@@ -145,7 +152,7 @@ property rowround_passes_tests =
 ```
 
 ```
-rowround_opt : [16]Word -> [16]Word
+rowround_opt : Words 16 -> Words 16
 rowround_opt ys =
     join [ quarterround (yi<<<i) >>>i | yi <- split ys | (i : [2])  <- [0 .. 3] ]
 ```
@@ -155,7 +162,7 @@ property rowround_opt_is_rowround ys = rowround ys == rowround_opt ys
 ```
 
 ```
-columnround : [16]Word -> [16]Word
+columnround : Words 16 -> Words 16
 columnround [x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15] =
     [y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14, y15]
   where
@@ -186,7 +193,7 @@ property columnround_passes_tests =
 ```
 
 ```
-columnround_opt : [16]Word -> [16]Word
+columnround_opt : Words 16 -> Words 16
 columnround_opt xs = join (transpose [ quarterround (xi<<<i) >>>i | xi <- transpose (split xs) | (i : [3]) <- [0 .. 3] ])
 ```
 
@@ -202,7 +209,7 @@ property columnround_is_transpose_of_rowround ys =
 ```
 
 ```
-doubleround : [16]Word -> [16]Word
+doubleround : Words 16 -> Words 16
 doubleround xs = rowround (columnround xs)
 ```
 
@@ -227,7 +234,7 @@ property doubleround_passes_tests =
 ```
 
 ```
-littleendian : [4]Byte -> Word
+littleendian : {a} (fin a) => Bytes a -> [a*8]
 littleendian b = join (reverse b)
 ```
 
@@ -239,16 +246,17 @@ property littleendian_passes_tests =
 ```
 
 ```
-littleendian' : {a} (fin a) => [a*8] -> [a]Byte
+littleendian' : {a} (fin a) => [a*8] -> Bytes a
 littleendian' b = reverse (split b)
 ```
 
 ```
-property littleendian_is_invertable b = littleendian' (littleendian b) == b
+property littleendian_is_invertable_4 b = littleendian' (littleendian`{4} b) == b
+property littleendian_is_invertable_8 b = littleendian' (littleendian`{8} b) == b
 ```
 
 ```
-Salsa20 : [64]Byte -> [64]Byte
+Salsa20 : Bytes 64 -> Bytes 64
 Salsa20 xs = join ar
   where
     ar = [ littleendian' words | words <- xw + zs@10 ]
@@ -284,16 +292,9 @@ property Salsa20_passes_tests =
              27, 111, 114, 114, 118,  40, 152, 157, 180,  57,  27,  94, 107,  42, 236,  35])
 ```
 
-```
-property Salsa20_has_no_collisions x1 x2 =
-  x1 != x2 ==> doubleround x1 != doubleround x2
-```
-
-// Salsa 20 supports two key sizes, [16][8] and [32][8]
-
 
 ```
-Salsa20_expansion : {a} (a >= 1, 2 >= a) => [16*a]Byte -> [16]Byte -> [64]Byte
+Salsa20_expansion : {a} (a >= 1, 2 >= a) => Bytes (16*a) -> Bytes 16 -> Bytes 64
 Salsa20_expansion k n = z
   where
     [s0, s1, s2, s3] = split "expand 32-byte k"
@@ -326,7 +327,7 @@ property Salsa20_expansion_passes_tests =
 
 
 ```
-Salsa20_encrypt : {a, l} (a >= 1, 2 >= a, l <= 2^^70) => [16*a]Byte -> [8]Byte -> [l]Byte -> [l]Byte
+Salsa20_encrypt : {a, l} (a >= 1, 2 >= a, l <= 2^^70) => Bytes (16*a) -> Bytes 8 -> Bytes l -> Bytes l
 Salsa20_encrypt k v m = c
   where
     salsa = take (join [ Salsa20_expansion k (v # littleendian' i) | i <- [0, 1 ... ] ])
