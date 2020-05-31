@@ -86,7 +86,7 @@ property LeftRotation =
 
 
 ```
-quarterround : [4][32] -> [4][32]
+quarterround : [4]Word -> [4]Word
 quarterround [y0, y1, y2, y3] = [z0, z1, z2, z3]
   where
     z1 = y1 ^ ((y0 + y3) <<< 7)
@@ -113,7 +113,7 @@ property quarterround_is_invertible a b =
 
 
 ```
-rowround : [16][32] -> [16][32]
+rowround : [16]Word -> [16]Word
 rowround [y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14, y15] =
     [z0, z1, z2, z3, z4, z5, z6, z7, z8, z9, z10, z11, z12, z13, z14, z15]
   where
@@ -145,8 +145,9 @@ property rowround_passes_tests =
 ```
 
 ```
-rowround_opt : [16][32] -> [16][32]
-rowround_opt ys = join [ quarterround (yi<<<i) >>>i | yi <- split ys | (i : [2])  <- [0 .. 3] ]
+rowround_opt : [16]Word -> [16]Word
+rowround_opt ys =
+    join [ quarterround (yi<<<i) >>>i | yi <- split ys | (i : [2])  <- [0 .. 3] ]
 ```
 
 ```
@@ -154,7 +155,7 @@ property rowround_opt_is_rowround ys = rowround ys == rowround_opt ys
 ```
 
 ```
-columnround : [16][32] -> [16][32]
+columnround : [16]Word -> [16]Word
 columnround [x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15] =
     [y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14, y15]
   where
@@ -185,7 +186,7 @@ property columnround_passes_tests =
 ```
 
 ```
-columnround_opt : [16][32] -> [16][32]
+columnround_opt : [16]Word -> [16]Word
 columnround_opt xs = join (transpose [ quarterround (xi<<<i) >>>i | xi <- transpose (split xs) | (i : [3]) <- [0 .. 3] ])
 ```
 
@@ -201,7 +202,7 @@ property columnround_is_transpose_of_rowround ys =
 ```
 
 ```
-doubleround : [16][32] -> [16][32]
+doubleround : [16]Word -> [16]Word
 doubleround xs = rowround (columnround xs)
 ```
 
@@ -226,7 +227,7 @@ property doubleround_passes_tests =
 ```
 
 ```
-littleendian : [4][8] -> [32]
+littleendian : [4]Byte -> Word
 littleendian b = join (reverse b)
 ```
 
@@ -238,19 +239,19 @@ property littleendian_passes_tests =
 ```
 
 ```
-littleendian_inverse : [32] -> [4][8]
-littleendian_inverse b = reverse (split b)
+littleendian' : {a} (fin a) => [a*8] -> [a]Byte
+littleendian' b = reverse (split b)
 ```
 
 ```
-property littleendian_is_invertable b = littleendian_inverse(littleendian b) == b
+property littleendian_is_invertable b = littleendian' (littleendian b) == b
 ```
 
 ```
-Salsa20 : [64][8] -> [64][8]
+Salsa20 : [64]Byte -> [64]Byte
 Salsa20 xs = join ar
   where
-    ar = [ littleendian_inverse words | words <- xw + zs@10 ]
+    ar = [ littleendian' words | words <- xw + zs@10 ]
     xw = [ littleendian xi | xi <- split xs ]
     zs = [ xw ] # [ doubleround zi | zi <- zs ]
 ```
@@ -292,7 +293,7 @@ property Salsa20_has_no_collisions x1 x2 =
 
 
 ```
-Salsa20_expansion : {a} (a >= 1, 2 >= a) => [16*a][8] -> [16][8] -> [64][8]
+Salsa20_expansion : {a} (a >= 1, 2 >= a) => [16*a]Byte -> [16]Byte -> [64]Byte
 Salsa20_expansion k n = z
   where
     [s0, s1, s2, s3] = split "expand 32-byte k"
@@ -325,9 +326,9 @@ property Salsa20_expansion_passes_tests =
 
 
 ```
-Salsa20_encrypt : {a, l} (a >= 1, 2 >= a, l <= 2^^70) => [16*a][8] -> [8][8] -> [l][8] -> [l][8]
+Salsa20_encrypt : {a, l} (a >= 1, 2 >= a, l <= 2^^70) => [16*a]Byte -> [8]Byte -> [l]Byte -> [l]Byte
 Salsa20_encrypt k v m = c
   where
-    salsa = take (join [ Salsa20_expansion k (v # (reverse (split i))) | i <- [0, 1 ... ] ])
+    salsa = take (join [ Salsa20_expansion k (v # littleendian' i) | i <- [0, 1 ... ] ])
     c = m ^ salsa
 ```
