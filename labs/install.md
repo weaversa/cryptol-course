@@ -43,9 +43,26 @@ Cryptol> :sat \(x:[4]) -> (x + 1 < x)
 Cryptol> ^d
 ```
 
-(`-it` indicates that the commands are to be run in an interactive TTY. Tags 
-`0.5` and `2.8.0` are needed because a `latest` alias has not been set for 
-these images.)
+`-it` indicates that the commands are to be run in an interactive
+TTY. Tags `0.5` and `2.8.0` are needed because a `latest` alias has
+not been set for these images. If you are currently in the root of
+this repository, you can use `-v` and `--env` to mount the repository
+in the docker image and set the `CRYPTOLPATH` environment variable for
+access to this repository's Cryptol modules. For example,
+
+```sh
+[cryptol-course]$ docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it galoisinc/cryptol:2.8.0
+┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
+┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
+┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
+version 2.8.0
+
+Loading module Cryptol
+Cryptol> :m specs::Misc::Sudoku
+Loading module specs::Misc::Sudoku
+specs::Misc::Sudoku>
+Cryptol> ^d
+```
 
 ## Option 2: Downloading pre-built Cryptol and SAW binaries
 
