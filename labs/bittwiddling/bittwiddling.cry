@@ -1,0 +1,51 @@
+/* This file will contain your Cryptol code that
+   you can compare to the code written in the
+   corresponding C file (bittwiddling.cry).
+   This code should be relatively simple (some 
+   are as simple as calling a function that
+   already exists in Cryptol), but they should
+   all be relatively easy to read.  We also 
+   included some properties to help test your code.
+*/
+
+//Determine the parity of a byte.  True if parity is odd, false if even.
+parity8bit : [8] -> Bit
+parity8bit b = False
+
+testparity8bit : Bit
+property testparity8bit = parity8bit 1 == True /\ parity8bit 0 == False /\
+                          parity8bit 0xff == False /\ parity8bit 0xef == True
+
+//Determine the parity of a 32 bit word.  Return 1 if odd, true if even.
+parity32bit : [32] -> [32]
+parity32bit b = zero
+
+testparity32bit : Bit
+property testparity32bit = parity32bit 1 == 1 /\ parity32bit 0 == 0 /\
+                           parity32bit 0xffffffff == 0 /\
+                           parity32bit 0x7fffffff == 1
+                           
+
+//Determine the parity of a 64 bit word.  Return 1 if odd, true if even.
+parity64bit b = zero
+
+testparity64bit : Bit
+property testparity64bit = parity64bit 1 == 1 /\ parity64bit 0 == 0 /\
+                           parity64bit 0xffffffff == False /\ parity64bit 0xffff7fff == True
+
+//Reverse the bit order of a byte
+
+reverseByte : [8] -> [8]
+reverseByte b = zero
+
+testreverseByte : Bit
+property testreverseByte = reverseByte 1 == 0x80 /\ reverseByte 0xaa == 0x55
+
+//Checks if any of the 4 bytes of a 32 bit word is all zeros.
+//Returns true if there is an all zero byte, false otherwise.
+
+anyZeroByte : [32] -> Bit
+anyZeroByte v = False
+
+testanyZeroByte : Bit
+property testanyZeroByte = anyZeroByte 0x10011001 == False /\ anyZeroByte 0x00112233 == True
