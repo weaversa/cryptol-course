@@ -577,8 +577,9 @@ operation can be simply described in four steps:
 
   1. Transform the 64-byte sequence `x` into a 16-word using
      `littleendian`.
-  2. Compose doubleround on the 16 words from step 1.
-  3. Add the values from step 1 to the 10th composition of step 2.
+  2. Iterate doubleround 10 times, starting with the 16 words from
+     step 1.
+  3. Add the values from step 1 to step 2.
   4. Transform the 16-word sequence from step 3 into a 64-byte
      sequence using `littleendian'`.
 
@@ -592,9 +593,9 @@ Salsa20Hash x = x'
     //Step 1
     xs    = map littleendian (split x)
     //Step 2
-    zss   = [ xs ] # [ doubleround zsi | zsi <- zss ]
+    zs   = (iterate doubleround xs)@10
     //Step 3
-    xspzs = xs + zss@10
+    xspzs = xs + zs
     //Step 4
     x'   = join (map littleendian' xspzs)
 ```
