@@ -35,3 +35,8 @@ script:
 # Interpreter lab tests
   - cryptol -e -c ":m labs::interpreter::test" -c ":s base=10" -c "x + 2"
   - cryptol -e -b labs/interpreter/test.sry
+# Bittwiddling lab tests
+  - cryptol -e -c ":l labs/bittwiddling/bittwiddling.cry"
+  - clang -emit-llvm -c labs/bittwiddling/bittwiddling.c -o labs/bittwiddling/bittwiddling.bc
+  - cryptol -e -c ":l labs/bittwiddling/bittwiddling_answers.cry"
+  - saw labs/bittwiddling/bittwiddling_answers.saw
