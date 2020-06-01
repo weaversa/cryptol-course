@@ -496,17 +496,50 @@ we'll move on.
 ## 7 The littleendian function
 
 
-```
-littleendian : Bytes 4 -> [32]
-littleendian b = join (reverse b)
-```
+### Inputs and outputs
 
 ```
-property littleendian_passes_tests =
+littleendian : Bytes 4 -> [32]
+```
+
+
+### Definition
+
+Exercise: Here we provide a skeleton for `littleendian`. Please
+replacing the `zero` symbols with the appropriate logic as given in
+the Salsa20 specification. You'll know you've gotten it right when
+`:prove littleendianExamplesProp` gives `Q.E.D`.
+
+This one is a little tricky because the elegant solution does not look
+like the solution in the paper document. This is because, for example,
+`b0` (and 8-bit value) added to anything can never produce a 32-bit
+result --- Crytpol enforces that it can only add, multiply, subtract,
+etc. n-bit things to other n-bit things. So, one solution would be to
+create new 32-bit variables that are `b0` through `b3` each padded
+with 24 zeroes, and then do the arithmetic in the
+specification. However, there is a much simpler solution. Good luck!
+
+```
+littleendian [b0, b1, b2, b3] = join [b3, b2, b1, b0]
+```
+
+
+### Examples
+
+```
+property littleendianExamplesProp =
   (littleendian [  0,   0,   0,   0] == 0x00000000) /\
   (littleendian [ 86,  75,  30,   9] == 0x091e4b56) /\
   (littleendian [255, 255, 255, 250] == 0xfaffffff)
 ```
+
+
+### Comments
+
+As before, the author notes that this function is invertible and does
+not provide the inverse. However, this undefined littleendian inverse
+function is used in the next section! So, we will have to define it
+here.
 
 ```
 littleendian' : {a} (fin a) => [a*8] -> Bytes a
