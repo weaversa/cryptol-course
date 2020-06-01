@@ -293,7 +293,7 @@ rowround : Words 16 -> Words 16
 
 ### Definition
 
-Exercise: Here we provide a skeleton for `rowround`. Please replacing
+Exercise: Here we provide a skeleton for `rowround`. Please replace
 the `zero` symbols with the appropriate logic as given in the Salsa20
 specification. You'll know you've gotten it right when it looks like
 the specification and when `:prove rowroundExamplesProp` gives
@@ -347,11 +347,11 @@ rowroundOpt ys =
 ```
 
 Exercise: Here we want to prove that for all inputs, `rowroundOpt` is
-equal to `rowround`. Please replace the `zero` symbol below with such a
-statement and then prove the property in the interpreter. Note ---
-it's not necessary to go through this exercise to create a complete
-Salsa20 specification, but it's a good opportunity here to
-learn more about Cryptol's properties.
+equal to `rowround`. Please replace the `zero` symbol below with such
+a statement and then prove the property in the interpreter. It's not
+necessary to go through this exercise to create a complete Salsa20
+specification, but it's a good opportunity here to learn more about
+Cryptol's properties.
 
 ```
 property rowroundOpProp ys = rowroundOpt ys == rowround ys
@@ -369,7 +369,7 @@ columnround : Words 16 -> Words 16
 
 ### Definition
 
-Exercise: Here we provide a skeleton for `columnround`. Please replacing
+Exercise: Here we provide a skeleton for `columnround`. Please replace
 the `zero` symbols with the appropriate logic as given in the Salsa20
 specification. You'll know you've gotten it right when it looks like
 the specification and when `:prove columnroundExamplesProp` gives
@@ -453,8 +453,8 @@ doubleround : Words 16 -> Words 16
 
 ### Definition
 
-Exercise: Here we provide a skeleton for `doubleround`. Please replacing
-the `zero` symbols with the appropriate logic as given in the Salsa20
+Exercise: Here we provide a skeleton for `doubleround`. Please replace
+the `zero` symbol with the appropriate logic as given in the Salsa20
 specification. You'll know you've gotten it right when it looks like
 the specification and when `:prove doubleroundExamplesProp` gives
 `Q.E.D`.
@@ -506,7 +506,7 @@ littleendian : Bytes 4 -> [32]
 ### Definition
 
 Exercise: Here we provide a skeleton for `littleendian`. Please
-replacing the `zero` symbols with the appropriate logic as given in
+replace the `zero` symbol with the appropriate logic as given in
 the Salsa20 specification. You'll know you've gotten it right when
 `:prove littleendianExamplesProp` gives `Q.E.D`.
 
@@ -539,16 +539,30 @@ property littleendianExamplesProp =
 As before, the author notes that this function is invertible and does
 not provide the inverse. However, this undefined littleendian inverse
 function is used in the next section! So, we will have to define it
-here.
+here. There's one hiccup though, the littleendian function works on
+4-byte sequences, but littleendian inverse has to work on 4-byte and
+8-byte sequences, so we've defined the type of the function to work on
+n-byte sequences.
+
+Exercise: Here we provide a skeleton for `littleendian'`, the inverse
+to `littleendian`. Please replace the `zero` symbol with the
+appropriate logic such that `:prove littleendianInverseProp` gives
+`Q.E.D`.
 
 ```
-littleendian' : {a} (fin a) => [a*8] -> Bytes a
+littleendian' : {n} (fin n) => [n*8] -> Bytes n
 littleendian' b = reverse (split b)
 ```
 
 ```
-property littleendian_is_invertable b = littleendian' (littleendian b) == b
+property littleendianInverseProp b = littleendian' (littleendian b) == b
 ```
+
+
+## The Salsa20 hash function
+
+
+
 
 ```
 Salsa20 : Bytes 64 -> Bytes 64
