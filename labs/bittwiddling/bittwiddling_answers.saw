@@ -4,7 +4,7 @@
 */
 
 print "Importing Cryptol file";
-import "bittwiddlingans.cry";
+import "bittwiddling_answers.cry";
 
 print "Importing C file";
 l <- llvm_load_module "bittwiddling.bc";
