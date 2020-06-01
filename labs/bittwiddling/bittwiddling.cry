@@ -25,8 +25,8 @@ parity32bit b = zero
 testparity32bit : Bit
 property testparity32bit = parity32bit 1 == 1
                            /\ parity32bit 0 == 0
-                           /\ parity32bit 0xffffffff == 0
-                           /\ parity32bit 0x7fffffff == 1
+                           /\ parity32bit 0xffffffffffffffff == 0
+                           /\ parity32bit 0xffffffff7fffffff == 1
                            
 //Determine the parity of a 64 bit word.  Return 1 if odd, true if even.
 parity64bit : [64] -> [64]
