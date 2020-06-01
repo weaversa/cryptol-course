@@ -336,7 +336,7 @@ property rowroundExamplesProp =
 ### Comments
 
 The comments in this section hint at an optimized way to perform
-rowround. Here is one such optimized function:
+`rowround`. Here is one such optimized function:
 
 ```
 rowroundOpt : Words 16 -> Words 16
@@ -346,9 +346,12 @@ rowroundOpt ys =
 	 | (i : [2])  <- [0 .. 3] ]
 ```
 
-Exercise: Here we want to prove that for all inputs, rowroundOpt is
-equal to rowround. Please replace the `zero` symbol below with such a
-statement and then prove the property in the interpreter.
+Exercise: Here we want to prove that for all inputs, `rowroundOpt` is
+equal to `rowround`. Please replace the `zero` symbol below with such a
+statement and then prove the property in the interpreter. Note ---
+it's not necessary to go through this exercise to create a complete
+Salsa20 specification, but it's a good opportunity here to
+learn more about Cryptol's properties.
 
 ```
 property rowroundOpProp ys = rowroundOpt ys == rowround ys
@@ -363,6 +366,7 @@ property rowroundOpProp ys = rowroundOpt ys == rowround ys
 columnround : Words 16 -> Words 16
 ```
 
+
 ### Definition
 
 Exercise: Here we provide a skeleton for `columnround`. Please replacing
@@ -370,7 +374,6 @@ the `zero` symbols with the appropriate logic as given in the Salsa20
 specification. You'll know you've gotten it right when it looks like
 the specification and when `:prove columnroundExamplesProp` gives
 `Q.E.D`.
-
 
 ```
 columnround [x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15] =
@@ -408,26 +411,63 @@ property columnroundExamplesProp =
 
 ### Comments
 
-The comments in this section say that columnround is:
+The comments in this section say that `columnround` is:
 
-> ... simply the transpose of the rowround function
+> One can visualize the input (x0, x1, . . . , x15) as a square
+matrix...The columnround function is, from this perspective, simply
+the transpose of the `rowround` function
 
+Exercise: Here is another property we can prove using Cryptol. The
+author claims that rejiggering the input and outputs of `rowround` (in
+a special way) will cause `rowround` to produce results identical to
+`columnround`. To rejigger we
 
+  * transform the 16 element input sequence into a 4 by 4 element
+sequence,
+  * transpose this matrix, and
+  * ttransform the transposed 4 by 4 matrix back into a 16 element
+sequence.
+
+Luckily Cryptol provides `split`, `transpose`, and `join` to perform
+these three operations. Please replace the `zero` symbol below with an
+appropriate rejigger function and use it to prove that `columnround`
+is the transpose of `rowround`.
 
 ```
-property columnround_is_transpose_of_rowround ys =
-    rejigger (rowround ys) == columnround (rejigger ys)
+property columnroundIsTransposeOfRowround ys =
+    columnround ys == rejigger (rowround (rejigger ys))
   where
     rejigger a = join (transpose (split`{4} a))
 ```
 
+
+## 6 The doubleround function
+
+
+### Inputs and outputs
+
 ```
 doubleround : Words 16 -> Words 16
+```
+
+
+### Definition
+
+Exercise: Here we provide a skeleton for `doubleround`. Please replacing
+the `zero` symbols with the appropriate logic as given in the Salsa20
+specification. You'll know you've gotten it right when it looks like
+the specification and when `:prove doubleroundExamplesProp` gives
+`Q.E.D`.
+
+```
 doubleround xs = rowround (columnround xs)
 ```
 
+
+### Examples
+
 ```
-property doubleround_passes_tests =
+property doubleroundExamplesProp =
   (doubleround [0x00000001, 0x00000000, 0x00000000, 0x00000000,
                 0x00000000, 0x00000000, 0x00000000, 0x00000000,
                 0x00000000, 0x00000000, 0x00000000, 0x00000000,
@@ -446,8 +486,18 @@ property doubleround_passes_tests =
                 0xa74b2ad6, 0xbc331c5c, 0x1dda24c7, 0xee928277])
 ```
 
+
+### Comments
+
+There don't seem to be any interesting properties to prove here, so
+we'll move on.
+
+
+## 7 The littleendian function
+
+
 ```
-littleendian : {a} (fin a) => Bytes a -> [a*8]
+littleendian : Bytes 4 -> [32]
 littleendian b = join (reverse b)
 ```
 
@@ -464,8 +514,7 @@ littleendian' b = reverse (split b)
 ```
 
 ```
-property littleendian_is_invertable_4 b = littleendian' (littleendian`{4} b) == b
-property littleendian_is_invertable_8 b = littleendian' (littleendian`{8} b) == b
+property littleendian_is_invertable b = littleendian' (littleendian b) == b
 ```
 
 ```
