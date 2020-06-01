@@ -577,8 +577,8 @@ operation can be simply described in four steps:
 
   1. Transform the 64-byte sequence `x` into a 16-word using
      `littleendian`.
-  2. Compose doubleround 10 times on the 16 words from step 1.
-  3. Add the values from step 1 to step 2.
+  2. Compose doubleround on the 16 words from step 1.
+  3. Add the values from step 1 to the 10th composition of step 2.
   4. Transform the 16-word sequence from step 3 into a 64-byte
      sequence using `littleendian'`.
 
