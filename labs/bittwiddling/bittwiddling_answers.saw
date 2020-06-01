@@ -4,7 +4,7 @@
 */
 
 print "Importing Cryptol file";
-import "bittwiddlingans.cry";
+import "bittwiddling_answers.cry";
 
 print "Importing C file";
 l <- llvm_load_module "bittwiddling.bc";
@@ -14,7 +14,7 @@ parity8bit_c <- crucible_llvm_extract l "parity8bit";
 
 print "Checking C parity8bit implementation vs Cryptol specification";
 let thm1 = {{ \x -> parity8bit_c x == [ parity8bit x ] }};
-result <- prove abc thm1;
+result <- prove z3 thm1;
 print result;
 
 print "Extracting parity32bit function";
@@ -22,7 +22,7 @@ parity32bit_c <- crucible_llvm_extract l "parity32bit";
 
 print "Checking C parity32bit implementation vs Cryptol specification";
 let thm2 = {{ \x -> parity32bit_c x == parity32bit x }};
-result <- prove abc thm2;
+result <- prove z3 thm2;
 print result;
 
 
@@ -31,7 +31,7 @@ parity64bit_c <- crucible_llvm_extract l "parity64bit";
 
 print "Checking C parity64bit implementation vs Cryptol specification";
 let thm3 = {{ \x -> parity64bit_c x == parity64bit x }};
-result <- prove abc thm3;
+result <- prove z3 thm3;
 print result;
 
 
@@ -40,7 +40,7 @@ reversebyte_c <- crucible_llvm_extract l "reversebyte";
 
 print "Checking C reversebyte implementation vs Cryptol specification";
 let thm4 = {{ \x -> reversebyte_c x == reverseByte x }};
-result <- prove abc thm4;
+result <- prove z3 thm4;
 print result;
 
 print "Extracting anyZeroByte function";
@@ -48,6 +48,6 @@ anyZeroByte_c <- crucible_llvm_extract l "anyZeroByte";
 
 print "Checking C anyZeroByte implementation vs Cryptol specification";
 let thm5 = {{ \x -> anyZeroByte_c x == [ anyZeroByte x ] }};
-result <- prove abc thm5;
+result <- prove z3 thm5;
 print result;
 
