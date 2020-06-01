@@ -13,25 +13,30 @@ parity8bit : [8] -> Bit
 parity8bit b = False
 
 testparity8bit : Bit
-property testparity8bit = parity8bit 1 == True /\ parity8bit 0 == False /\
-                          parity8bit 0xff == False /\ parity8bit 0xef == True
+property testparity8bit = parity8bit 1 == True
+                          /\ parity8bit 0 == False
+                          /\ parity8bit 0xff == False
+                          /\ parity8bit 0xef == True
 
 //Determine the parity of a 32 bit word.  Return 1 if odd, true if even.
 parity32bit : [32] -> [32]
 parity32bit b = zero
 
 testparity32bit : Bit
-property testparity32bit = parity32bit 1 == 1 /\ parity32bit 0 == 0 /\
-                           parity32bit 0xffffffff == 0 /\
-                           parity32bit 0x7fffffff == 1
+property testparity32bit = parity32bit 1 == 1
+                           /\ parity32bit 0 == 0
+                           /\ parity32bit 0xffffffff == 0
+                           /\ parity32bit 0x7fffffff == 1
                            
-
 //Determine the parity of a 64 bit word.  Return 1 if odd, true if even.
+parity64bit : [64] -> [64]
 parity64bit b = zero
 
 testparity64bit : Bit
-property testparity64bit = parity64bit 1 == 1 /\ parity64bit 0 == 0 /\
-                           parity64bit 0xffffffff == False /\ parity64bit 0xffff7fff == True
+property testparity64bit = parity64bit 1 == 1
+                           /\ parity64bit 0 == 0
+                           /\ parity64bit 0xffffffff == 0
+                           /\ parity64bit 0xffff7fff == 1
 
 //Reverse the bit order of a byte
 
@@ -39,7 +44,8 @@ reverseByte : [8] -> [8]
 reverseByte b = zero
 
 testreverseByte : Bit
-property testreverseByte = reverseByte 1 == 0x80 /\ reverseByte 0xaa == 0x55
+property testreverseByte = reverseByte 1 == 0x80
+                           /\ reverseByte 0xaa == 0x55
 
 //Checks if any of the 4 bytes of a 32 bit word is all zeros.
 //Returns true if there is an all zero byte, false otherwise.
@@ -48,4 +54,5 @@ anyZeroByte : [32] -> Bit
 anyZeroByte v = False
 
 testanyZeroByte : Bit
-property testanyZeroByte = anyZeroByte 0x10011001 == False /\ anyZeroByte 0x00112233 == True
+property testanyZeroByte = anyZeroByte 0x10011001 == False
+                           /\ anyZeroByte 0x00112233 == True
