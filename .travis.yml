@@ -1,0 +1,37 @@
+--- 
+jobs: 
+  include: 
+    - 
+      before_install: 
+        - wget https://saw.galois.com/builds/nightly/saw-0.4.0.99-2020-05-21-OSX-64.tar.gz
+        - tar -xzf saw-0.4.0.99-2020-05-21-OSX-64.tar.gz
+        - export PATH=$PATH:$(pwd)/saw-0.4.0.99-2020-05-21-OSX-64/bin
+        - saw --version
+        - curl -fsSL https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-osx-10.14.6.zip -o z3-4.8.8-x64-osx-10.14.6.zip
+        - unzip -j z3-4.8.8-x64-osx-10.14.6.zip -d z3_downloaded
+        - export PATH=$PATH:$(pwd)/z3_downloaded
+        - z3 --version
+      compiler: clang
+      os: osx
+    - 
+      before_install: 
+        - wget https://saw.galois.com/builds/nightly/saw-0.4.0.99-2020-05-21-Ubuntu14.04-64.tar.gz
+        - tar -xzf saw-0.4.0.99-2020-05-21-Ubuntu14.04-64.tar.gz
+        - export PATH=$PATH:$(pwd)/saw-0.4.0.99-2020-05-21-Ubuntu14.04-64/bin
+        - saw --version
+        - curl -fsSL https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-ubuntu-16.04.zip -o z3-4.8.8-x64-ubuntu-16.04.zip
+        - unzip -j z3-4.8.8-x64-ubuntu-16.04.zip -d z3_downloaded
+        - export PATH=$PATH:$(pwd)/z3_downloaded
+        - z3 --version
+      compiler: clang
+      dist: bionic
+      os: linux
+language: c
+script: 
+  - export CRYPTOLPATH=$(pwd)
+# specs directory tests
+  - cryptol -e -c ":m specs::Misc::Sudoku"
+  - cryptol -e -c ":m specs::Primitive::Symmetric::Cipher::Stream::Caesar"
+# Interpreter lab tests
+  - cryptol -e -c ":m labs::interpreter::test" -c ":s base=10" -c "x + 2"
+  - cryptol -e -b labs/interpreter/test.sry
