@@ -35,3 +35,5 @@ script:
 # Interpreter lab tests
   - cryptol -e -c ":m labs::interpreter::test" -c ":s base=10" -c "x + 2"
   - cryptol -e -b labs/interpreter/test.sry
+# Arithmetic verification tests
+  - make -C extras/arithmetic-verification
