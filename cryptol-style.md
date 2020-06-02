@@ -61,7 +61,7 @@ sayHello :
 ```
 
 The `:` should always be surrounded by a single space on either
-side. This aligns type defitions with value definitions (where the `=`
+side. This aligns type definitions with value definitions (where the `=`
 is also surrounded by a single space on either side). For example,
 
 ```haskell
@@ -94,7 +94,7 @@ fun :
 ### Data Declarations
 
 The `=` should always be surrounded by a single space on either
-side. This aligns value defitions with type definitions (where the `:`
+side. This aligns value definitions with type definitions (where the `:`
 is also surrounded by a single space on either side). For example,
 
 ```haskell
