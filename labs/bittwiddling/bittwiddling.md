@@ -16,9 +16,7 @@ Start with a function that finds the parity of a byte.
 
 ```
 parity8bit : [8] -> Bit
-parity8bit b = bs ! 0
-  where
-   bs = [ False ] # [ bit1 ^ bit2 | bit1 <- b | bit2 <- bs ]
+parity8bit b = False
 
 testparity8bit : Bit
 property testparity8bit =
@@ -30,13 +28,11 @@ property testparity8bit =
 
 ### Word parity
 
-Now write a function that finds the parity of a word (the function could look very similar to the byte function).
+Now write a function that finds the parity of a word (the function could look very similar to the previous exercise).
 
 ```
 parity32bit : [32] -> [32]
-parity32bit b = zero # [bs ! 0]
-  where
-   bs = [ False ] # [ bit1 ^ bit2 | bit1 <- b | bit2 <- bs ]
+parity32bit b = zero
 
 testparity32bit : Bit
 property testparity32bit =
@@ -51,9 +47,7 @@ property testparity32bit =
 Finally, write a function that finds the parity of a double word (again, the code could be very similar to the previous two exercises).
 
 parity64bit : [64] -> [64]
-parity64bit b = zero # [bs ! 0]
-  where
-   bs = [ False ] # [ bit1 ^ bit2 | bit1 <- b | bit2 <- bs ]
+parity64bit b = zero
 
 testparity64bit : Bit
 property testparity64bit =
@@ -69,7 +63,7 @@ Write a function which takes a byte and reverses it.  For example, 0b10101010 sh
 
 ```
 reverseByte : [8] -> [8]
-reverseByte b = reverse b
+reverseByte b = zero
 
 testreverseByte : Bit
 property testreverseByte =
@@ -83,10 +77,7 @@ Write a function which takes a word (32 bits, i.e. four bytes) and checks if any
 
 ```
 anyZeroByte : [32] -> Bit
-anyZeroByte v = bytecheck != 0
-  where
-   bytes = split`{4} v
-   bytecheck = [ b == 0 | b <- bytes ]
+anyZeroByte v = False
 
 testanyZeroByte : Bit
 property testanyZeroByte =
