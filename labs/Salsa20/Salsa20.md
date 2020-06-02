@@ -215,9 +215,9 @@ and range of quarterround are the same (`Word 4 -> Word 4`), we know
 that, if the function is injective, it must also be surjective. Hence,
 we only need to prove that quarterround is injective.
 
-[Wikipedia
-describes](https://en.wikipedia.org/wiki/Bijection,_injection_and_surjection)
-defines an injective function as:
+Wikipedia defines an [injective 
+function](https://en.wikipedia.org/wiki/Bijection,_injection_and_surjection#Injection) 
+as:
 
 ![](https://render.githubusercontent.com/render/math?math=\forall%20x,x'%20\in%20X,%20x%20\neq%20x'%20\Rightarrow%20f(x)%20\neq%20f(x'))
 
