@@ -6,8 +6,9 @@ These files are a set of examples meant to demonstrate simple verifications of a
 The file *arithmetic.c* contains definitions for the following functions:
  
  * `add_standard`
-    __Declaration__: `uint32_t add_standard( uint16_t a, uint16_t b)`
-    __Description__: Adds two 16-bit unsigned integers using built-in addition
+ 
+  > __Declaration__: `uint32_t add_standard( uint16_t a, uint16_t b)`
+  > __Description__: Adds two 16-bit unsigned integers using built-in addition
  
  * `add_textbook`
     __Declaration__: `uint32_t add_textbook( uint16_t a, uint16_t b)`
