@@ -227,14 +227,14 @@ different outputs. We can now encode this (almost verbatim) into a
 Cryptol property.
 
 ```
-property quarterroundIsInvertibleProp x x' =
+property quarterroundIsInjectiveProp x x' =
     x != x' ==> quarterround x != quarterround x'
 ```
 
 And then prove that the property is true.
 
 ```bash
-labs::Salsa20::Salsa20> :prove quarterroundIsInvertibleProp 
+labs::Salsa20::Salsa20> :prove quarterroundIsInjectiveProp 
 Q.E.D.
 (Total Elapsed Time: 0.430s, using "Z3")
 ```
@@ -245,7 +245,7 @@ theorem prover, the best one could do is run some tests. Cryptol does
 support automated testing with it's `:check` command.
 
 ```bash
-labs::Salsa20::Salsa20> :check quarterroundIsInvertibleProp 
+labs::Salsa20::Salsa20> :check quarterroundIsInjectiveProp 
 Using random testing.
 Passed 100 tests.
 Expected test coverage: 0.00% (100 of 2^^256 values)
@@ -261,7 +261,7 @@ you'd prefer to try, Cryptol's `:exhaust` is the command to use.
 ```bash
 labs::Salsa20::Salsa20> 2^^256 : Integer
 115792089237316195423570985008687907853269984665640564039457584007913129639936
-labs::Salsa20::Salsa20> :exhaust quarterroundIsInvertibleProp 
+labs::Salsa20::Salsa20> :exhaust quarterroundIsInjectiveProp 
 Using exhaustive testing.
 Testing...     0%
 ```
