@@ -1,20 +1,21 @@
-# Introduction
+Introduction
+============
 
 These files are a set of examples meant to demonstrate simple verifications of arithmetic implemented in C using Cryptol and Saw. These examples are not meant to be especially deep, but may be useful as a reference and also to demonstrate some limitations of these techniques.
 
 The file *arithmetic.c* contains definitions for the following functions:
  
  * `add_standard`
-  * __Declaration__: `uint32_t add_standard( uint16_t a, uint16_t b)`
-  * __Description__: Adds two 16-bit unsigned integers using built-in addition
+    __Declaration__: `uint32_t add_standard( uint16_t a, uint16_t b)`
+    __Description__: Adds two 16-bit unsigned integers using built-in addition
  
  * `add_textbook`
-  * __Declaration__: `uint32_t add_textbook( uint16_t a, uint16_t b)`
-  * __Description__: Adds two 16-bit integers, but simulates how this might be done on a restricted 8-bit architecture using a "textbook" algorithm
+    __Declaration__: `uint32_t add_textbook( uint16_t a, uint16_t b)`
+    __Description__: Adds two 16-bit integers, but simulates how this might be done on a restricted 8-bit architecture using a "textbook" algorithm
  
  * `multiply_standard`
-  * __Declaration__: `uint32_t multiply_standard( uint16_t a, uint16_t b)`
-  * __Description__: Multiplies two 16-bit unsigned integers using built-n multiplication 
+  ** __Declaration__: `uint32_t multiply_standard( uint16_t a, uint16_t b)`
+  ** __Description__: Multiplies two 16-bit unsigned integers using built-n multiplication 
 
  * `multiply_textbook`
   * __Declaration__: `uint32_t multiply_textbook( uint16_t a, uint16_t b)`
@@ -27,7 +28,8 @@ The file *arithmetic.c* contains definitions for the following functions:
 This set of exmples demonstrates how two use Cryptol and Saw to verify that the implementations of these familiar functions are correct and equivalent to one another.
 
 
-# Software Requirements
+Software Requirements
+=====================
 
 This examples requires the following software to operate:
 
@@ -38,7 +40,8 @@ This examples requires the following software to operate:
 These should be configured so that these programs and their components work from your command line.
 
 
-# Walkthrough
+Walkthrough
+===========
 
 The Makefile provided has four targets which drive this set of examples. Running the following commands will drive different portions of this set of examples.
 
@@ -85,6 +88,7 @@ This output resulted from running the provided script on a relatively modest des
 This cleans up the workspace and unnecessary generated files.s
 
 
-# References
+References
+==========
 
 [1] Bryant, Randall E. "On the Complexity of VLSI Implementations and Graph Representations of Boolean Functions with Application to Integer Multiplication". Carnegie Mellon University, July 1998.
