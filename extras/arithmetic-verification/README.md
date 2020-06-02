@@ -11,20 +11,20 @@ The file *arithmetic.c* contains definitions for the following functions:
   > __Description__: Adds two 16-bit unsigned integers using built-in addition  
  
  * `add_textbook`
-    __Declaration__: `uint32_t add_textbook( uint16_t a, uint16_t b)`
-    __Description__: Adds two 16-bit integers, but simulates how this might be done on a restricted 8-bit architecture using a "textbook" algorithm
+  > __Declaration__: `uint32_t add_textbook( uint16_t a, uint16_t b)`  
+  > __Description__: Adds two 16-bit integers, but simulates how this might be done on a restricted 8-bit architecture using a "textbook" algorithm  
  
  * `multiply_standard`
-  ** __Declaration__: `uint32_t multiply_standard( uint16_t a, uint16_t b)`
-  ** __Description__: Multiplies two 16-bit unsigned integers using built-n multiplication 
+  > __Declaration__: `uint32_t multiply_standard( uint16_t a, uint16_t b)`  
+  > __Description__: Multiplies two 16-bit unsigned integers using built-n multiplication  
 
  * `multiply_textbook`
-  * __Declaration__: `uint32_t multiply_textbook( uint16_t a, uint16_t b)`
-  * __Description__: Multiplies two 16-bit integers, but simulates how this might be done on a restricted 8-bit architecture using a "textbook" algorithm
+  > __Declaration__: `uint32_t multiply_textbook( uint16_t a, uint16_t b)`  
+  > __Description__: Multiplies two 16-bit integers, but simulates how this might be done on a restricted 8-bit architecture using a "textbook" algorithm  
  
  * `multiply_karatsuba`
-  * __Declaration__: `uint32_t multiply_karatsuba( uint16_t a, uint16_t b)`
-  * __Description__: Multiplies two 16-bit integers, but uses the Karatsuba multiplication technique as though it was binned on 8-bit bins
+  > __Declaration__: `uint32_t multiply_karatsuba( uint16_t a, uint16_t b)`  
+  > __Description__: Multiplies two 16-bit integers, but uses the Karatsuba multiplication technique as though it was binned on 8-bit bins  
 
 This set of exmples demonstrates how two use Cryptol and Saw to verify that the implementations of these familiar functions are correct and equivalent to one another.
 
@@ -86,7 +86,7 @@ This output resulted from running the provided script on a relatively modest des
 
 * `make clean`
 
-This cleans up the workspace and unnecessary generated files.s
+This cleans up the workspace and unnecessary generated files.
 
 
 References
