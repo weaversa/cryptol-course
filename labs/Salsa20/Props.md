@@ -387,7 +387,7 @@ question yourself.  Reading [2]-[4] should pass the time nicely...
 Salsa20_has_no_collisions :
     Bytes 64 -> Bytes 64 -> Bit
 property Salsa20_has_no_collisions =
-    has_no_collisions Salsa20Hash
+    has_no_collisions Salsa20Core
 ```
 
 When you are ready to move on, interrupt Cryptol (`Ctrl-C`) (unless it
@@ -434,7 +434,7 @@ Salsa20' x =
 Salsa20'_equiv_Salsa20 :
     Words 16 -> Bit
 Salsa20'_equiv_Salsa20 w =
-    Salsa20' w == dejigger (Salsa20Hash (rejigger w))
+    Salsa20' w == dejigger (Salsa20Core (rejigger w))
       where
         rejigger x = zero  /* REPLACE WITH YOUR DEFINITION */
         dejigger x = zero  /* REPLACE WITH YOUR DEFINITION */

@@ -1,9 +1,8 @@
 # Salsa20
 
-Salsa20 is a hash function created by Daniel J. Bernstein. The
+The Salsa20 core is a function created by Daniel J. Bernstein. The
 specification is available [here](https://cr.yp.to/snuffle/spec.pdf),
-but also provided in this repository
-[here](/weaversa/cryptol-course/labs/Salsa20/Salsa20_spec.pdf) for
+but also provided in this repository [here](Salsa20_spec.pdf) for
 ease of access. The specification document describes Salsa20 as well
 as how to use it as a [stream
 cipher](https://en.wikipedia.org/wiki/Stream_cipher) in [counter
@@ -19,6 +18,7 @@ module labs::Salsa20::Salsa20 where
 ```
 
 Now we can begin to dig into the specification document!
+
 
 ## 1 Introduction
 
@@ -149,7 +149,7 @@ quarterround [y0, y1, y2, y3] = [z0, z1, z2, z3] where
 
 ### Examples
 
-Example input-ouput pairs are provided. Cryptol can make use of these
+Example input-output pairs are provided. Cryptol can make use of these
 to provide evidence that quarterround was implemented correctly. Here
 we create a property that will verify whether quarterround works
 correctly on the provided example pairs.
@@ -204,7 +204,7 @@ attempt to create it, but there is a much simpler solution here!
 A function is invertible if
  * each input maps to a unique output (collision free) and
  * every element in the range of the function can be mapped to by some
-   input (no ouput is missing).
+   input (no output is missing).
    
 In mathematics, this type of function would be called
 bijective. Bijective functions are both injective and surjective
@@ -565,7 +565,7 @@ property littleendianInverseProp b = littleendian' (littleendian b) == b
 ### Inputs and outputs
 
 ```
-Salsa20Hash : Bytes 64 -> Bytes 64
+Salsa20Core : Bytes 64 -> Bytes 64
 ```
 
 
@@ -583,12 +583,12 @@ operation can be simply described in four steps:
   4. Transform the 16-word sequence from step 3 into a 64-byte
      sequence using `littleendian'`.
 
-Exercise: Here we provide a skeleton for `Salsa20Hash`. Please replace
+Exercise: Here we provide a skeleton for `Salsa20Core`. Please replace
 the `zero` symbol with the appropriate logic such that `:prove
-Salsa20HashExamplesProp` gives `Q.E.D`.
+Salsa20CoreExamplesProp` gives `Q.E.D`.
 
 ```
-Salsa20Hash x = x'
+Salsa20Core x = x'
   where
     //Step 1
     xs    = map littleendian (split x)
@@ -604,8 +604,8 @@ Salsa20Hash x = x'
 ### Examples
 
 ```
-property Salsa20HashExamplesProp =
-    (Salsa20Hash [  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
+property Salsa20CoreExamplesProp =
+    (Salsa20Core [  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
                     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
                     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
                     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0] ==
@@ -613,7 +613,7 @@ property Salsa20HashExamplesProp =
                     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
                     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
                     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0]) /\
-    (Salsa20Hash [211, 159,  13, 115,  76,  55,  82, 183,   3, 117, 222,  37, 191, 187, 234, 136,
+    (Salsa20Core [211, 159,  13, 115,  76,  55,  82, 183,   3, 117, 222,  37, 191, 187, 234, 136,
                    49, 237, 179,  48,   1, 106, 178, 219, 175, 199, 166,  48,  86,  16, 179, 207,
                    31, 240,  32,  63,  15,  83,  93, 161, 116, 147,  48, 113, 238,  55, 204,  36,
                    79, 201, 235,  79,   3,  81, 156,  47, 203,  26, 244, 243,  88, 118, 104,  54] ==
@@ -621,7 +621,7 @@ property Salsa20HashExamplesProp =
                    29,  29, 150,  26, 150,  30, 235, 249, 190, 163, 251,  48,  69, 144,  51,  57,
                   118,  40, 152, 157, 180,  57,  27,  94, 107,  42, 236,  35,  27, 111, 114, 114,
                   219, 236, 232, 135, 111, 155, 110,  18,  24, 232,  95, 158, 179,  19,  48, 202]) /\
-    (Salsa20Hash [ 88, 118, 104,  54,  79, 201, 235,  79,   3,  81, 156,  47, 203,  26, 244, 243,
+    (Salsa20Core [ 88, 118, 104,  54,  79, 201, 235,  79,   3,  81, 156,  47, 203,  26, 244, 243,
                   191, 187, 234, 136, 211, 159,  13, 115,  76,  55,  82, 183,   3, 117, 222,  37,
                    86,  16, 179, 207,  49, 237, 179,  48,   1, 106, 178, 219, 175, 199, 166,  48,
                   238,  55, 204,  36,  31, 240,  32,  63,  15,  83,  93, 161, 116, 147,  48, 113] ==
@@ -649,7 +649,7 @@ Salsa20_expansion k n = z
     x = if (`a : [2]) == 1
         then t0 # k0 # t1 # n # t2 # k0 # t3
         else s0 # k0 # s1 # n # s2 # k1 # s3
-    z = Salsa20Hash x
+    z = Salsa20Core x
     [k0, k1] = split (k # zero)
 ```
 
