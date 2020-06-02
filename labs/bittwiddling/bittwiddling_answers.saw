@@ -4,7 +4,7 @@
 */
 
 print "Importing Cryptol file";
-import "bittwiddling_answers.cry";
+import "bittwiddling_answers.md";
 
 print "Importing C file";
 l <- llvm_load_module "bittwiddling.bc";
@@ -25,7 +25,6 @@ let thm2 = {{ \x -> parity32bit_c x == parity32bit x }};
 result <- prove z3 thm2;
 print result;
 
-
 print "Extracting parity64bit function";
 parity64bit_c <- crucible_llvm_extract l "parity64bit";
 
@@ -33,7 +32,6 @@ print "Checking C parity64bit implementation vs Cryptol specification";
 let thm3 = {{ \x -> parity64bit_c x == parity64bit x }};
 result <- prove z3 thm3;
 print result;
-
 
 print "Extracting reversebyte function";
 reversebyte_c <- crucible_llvm_extract l "reversebyte";
