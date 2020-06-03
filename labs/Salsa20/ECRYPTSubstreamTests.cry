@@ -39,7 +39,7 @@ encryption' :
   Bytes (16 * a) -> Bytes 8 -> Bytes (64 * w) -> Bytes 64
 encryption' k v m = c
   where
-    seq' = Salsa20_expansion k (v # (reverse (split (`s:[64]))))
+    seq' = Salsa20Expansion k (v # (reverse (split (`s:[64]))))
     c = (take`{64, w_s} (drop`{64 * s} m)) ^ seq'
 
 /**
@@ -58,7 +58,7 @@ encryption_substream_matches :
   ) =>
   Bytes (16 * a) -> Bytes 8 -> Bytes w' -> Bit
 encryption_substream_matches k v m = 
-  take`{64} (drop`{64 * s} (Salsa20_encrypt`{a, w'} k v m)) == encryption'`{s, a, w, w_s} k v m
+  take`{64} (drop`{64 * s} (Salsa20Encrypt`{a, w'} k v m)) == encryption'`{s, a, w, w_s} k v m
 
 // The substream encryption function matches the substreams of the original 
 // for the small message sizes represented in most of the test vectors.

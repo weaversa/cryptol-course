@@ -64,7 +64,7 @@ test vector = (result, passes)
     k = vector.k
     v = vector.v
     m = vector.m
-    c = Salsa20_encrypt k v m
+    c = Salsa20Encrypt k v m
     [e_c0, e_c1, e_c2, e_c3] = vector.e_c
     e_d = vector.e_d
     
