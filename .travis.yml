@@ -30,7 +30,7 @@ language: c
 script: 
   - export CRYPTOLPATH=$(pwd)
 # specs directory tests
-  - cryptol -e -c ":m specs::Misc::Sudoku"
+  - cryptol -e -c ":m labs::Demos::Sudoku"
   - cryptol -e -c ":m specs::Primitive::Symmetric::Cipher::Stream::Caesar"
 # Interpreter lab tests
   - cryptol -e -c ":m labs::interpreter::test" -c ":s base=10" -c "x + 2"
