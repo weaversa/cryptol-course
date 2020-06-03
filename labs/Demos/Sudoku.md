@@ -28,10 +28,10 @@ On with the program...
 
 > # Solving Sudoku Using Cryptol
 > 
-> WEDNESDAY, MARCH 18, 2009
+> WEDNESDAY, MARCH 18, 2009\
 > [DOMAIN SPECIFIC LANGUAGES](https://galois.com/blog/category/domain-specific-languages/), 
-> [FORMAL METHODS](https://galois.com/blog/category/formal-methods/)
-> Galois, Inc
+> [FORMAL METHODS](https://galois.com/blog/category/formal-methods/)\
+> Galois, Inc.
 > 
 > Cryptol is a language tailored for cryptographic algorithms. Sudoku 
 > is a popular puzzle the reader is no-doubt already familiar with. 
