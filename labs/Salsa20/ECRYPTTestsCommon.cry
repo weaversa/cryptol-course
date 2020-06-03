@@ -1,0 +1,78 @@
+/* *
+ * Salsa20 test suite based on ECRYPT full verified test vectors at:
+ * <http://www.ecrypt.eu.org/stream/svn/viewcvs.cgi/ecrypt/trunk/submissions/salsa20/full/verified.test-vectors?logsort=rev&rev=210&view=markup>
+ * (accessed on 6 Sep 2017)
+ * 
+ * This module includes common definitions for full verified test vectors for
+ * "long" 131072-byte messages, which take Cryptol minutes or more to check, and
+ * "short" (512-byte) messages, which require seconds or less.
+ */
+module labs::Salsa20::ECRYPTTestsCommon where 
+
+import labs::Salsa20::Salsa20
+
+/** output of XOR-digest used for test vectors */
+type Digest = [512]
+
+/** 512-byte message type for short tests and substreams */
+type ShortMessage = Bytes 512
+
+/** 131072-byte message type for long tests and substreams */
+type LongMessage = Bytes 131072
+
+/**
+ * type of test vector for full short and long tests
+ * 
+ *   k: key (16 or 32 bytes)
+ *   v: IV/nonce
+ *   m: message (short or long)
+ * e_c: expected encrypted substreams
+ * e_d: expected XOR-digest of full encrypted stream
+ */
+type Vector a w = {
+  k : Bytes (16 * a),
+  v : Bytes 8,
+  m : Bytes w,
+  e_c : [4][512],
+  e_d : Digest
+}
+
+/** actual encrypted substreams and XOR-digest */
+type Result = [5](Bytes 64)
+
+
+/**
+ * xor-digest function used for ecrypt test vectors
+ */
+xor_digest : {w} (fin w) => Bytes (64 * w) -> Bytes 64
+xor_digest c = foldl (^) zero (groupBy`{64} c)
+
+/**
+ * Given a test vector, return results of encryption and digest, and 
+ * whether results match expectations.
+ */
+test : 
+  { s1, s2, a, w' }
+  (
+    2 >= a, a >= 1, 70 >= (width (64 * w'))
+  , 64 * w' > 64 + s2, s2 > s1
+  , 64 * w' <= 2 ^^ 70  // should be inferred
+  ) => 
+  (Vector a (64 * w')) -> (Result, Bit)
+test vector = (result, passes)
+  where
+    k = vector.k
+    v = vector.v
+    m = vector.m
+    c = Salsa20_encrypt k v m
+    [e_c0, e_c1, e_c2, e_c3] = vector.e_c
+    e_d = vector.e_d
+    
+    r_c0 = take`{64} c
+    r_c1 = take`{64} (drop`{s1} c)
+    r_c2 = take`{64} (drop`{s2} c)
+    r_c3 = drop`{back=64} c
+    r_d = xor_digest c
+    
+    result = [r_c0, r_c1, r_c2, r_c3, r_d]
+    passes = (map join result) == [e_c0, e_c1, e_c2, e_c3, e_d]
