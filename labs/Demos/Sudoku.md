@@ -156,7 +156,7 @@ As a sanity check, we can confirm these are equivalent:
 ```
 /** `check` and `check'` are equivalent. */
 check_equiv: SudokuGroup -> Bit
-check_equiv = check === check'
+property check_equiv = check === check'
 ```
 
 For functions `f` and `g` of one argument, `f === g` is `True` iff 
@@ -204,7 +204,7 @@ valid' rows = all check (rows # columns # squares)
 
 valid_equiv:
     SudokuBoard -> Bit
-valid_equiv =
+property valid_equiv =
     valid === valid'
 ```
 
