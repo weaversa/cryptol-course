@@ -1,0 +1,10 @@
+# Demos
+
+- [Caesar](Caesar.md) (TODO)
+  Come, see, and conquer the classic.
+- [One-Time Pad](OTP.md) (TODO)
+  Perfect secrecy, for once.
+- [n-Queens](NQueens.md) (TODO)
+  Cryptol is not just crypto.
+- [Sudoku](Sudoku.md)
+  Diabolical made trivial.
