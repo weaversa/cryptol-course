@@ -3,7 +3,7 @@
 On 18 Mar 2009, Galois, Inc. 
 [blogged](https://galois.com/blog/2009/03/solving-sudoku-using-cryptol/) 
 about how to apply Cryptol to solve 
-[Sudoku]https://en.wikipedia.org/wiki/Sudoku) 
+[Sudoku](https://en.wikipedia.org/wiki/Sudoku) 
 puzzles. Cryptol has advanced greatly since that time, but it can 
 still be straightforwardly applied toward Sudoku. Here, we port the 
 original blog entry to a Markdown-Literate Cryptol file, updating the 
