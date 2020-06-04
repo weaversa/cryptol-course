@@ -66,9 +66,9 @@ Main> encrypt 0xff "attack at dawn"
  0x9e, 0x88, 0x91]
 ```
 
-Cryptol interprets the string `"attack at dawn"` as a sequence of bytes. We will introduce Cryptol types in this lab and discuss them in detail throughout this course.
+Cryptol interprets the string `"attack at dawn"` as a sequence of bytes suitable for the encrypt operations. We will introduce Cryptol types in this lab and discuss them in detail throughout this course.
 
-Furthermore, we can check the property in the interpreter using the currently configured SAT solver (Z3 by default):
+Furthermore, we can prove this property holds in the interpreter using the `:prove` command and the currently configured SAT solver (Z3 by default):
 
 ```haskell
 Main> :prove roundtrip : [8] -> [16][8] -> Bit
@@ -81,7 +81,7 @@ Cryptol reports `Q.E.D.` indicating that our property is indeed true for all pos
 
 # Language Features
 
-So what makes Cryptol special?
+So what makes Cryptol special compared to other langauges?
 
 Cryptol is a language designed with Cryptography specifically in mind -- much of the syntax and language was designed with the way that real cryptographers think about and design systems. This allows the Cryptol user to create formal algorithm specifications that closely imitate the style used to describe these algorithms mathematically.
 
@@ -165,6 +165,27 @@ Cryptol> point.y
 ```
 
 ## Operators
+
+Cryptol provides a collection of built in operators to build expressions and perform computations. Some familiar operators which appear in cryptographic applications include:
+
+* `~` -- bitwise inversion
+* `&&`, `||`, `^` -- bitwise logical operations
+* `==`, `!=` -- structural comparison
+* `>=`, `>`, `<=`, `<` -- nonnegative word comparisons
+* `+`, `-`, `*`, `/`, `%`, `**` -- wordwise modular arithmetic
+* `>>`, `<<`, `>>>`, `<<<` -- shifts and rotates
+* `#` concatenation
+
+There are many more. A list of the currently defined symbols and operators are available by running `:browse` in the interpreter.
+
+An interesting feature of Cryptol's type system is that you can check the type of an operator with the `:t` command in the interpreter just as you can for data:
+
+```haskell
+Cryptol> :t (&&)
+(&&) : {a} (Logic a) => a -> a -> a
+```
+
+In a nutshell, this indicates that the bitwise and operater (`&&`) operates on two elements of type `a` that are in the "`Logic`" typeclass and returns another element of the same type.
 
 ## Primitives
 
