@@ -667,7 +667,10 @@ it's two, the function expects a 32-byte `k`. We also constrain `k`
 two.
 
 ```
-Salsa20Expansion : {a} (a >= 1, 2 >= a) => Bytes (16*a) -> Bytes 16 -> Bytes 64
+Salsa20Expansion :
+    {a}
+    (a >= 1, 2 >= a) =>
+    Bytes (16*a) -> Bytes 16 -> Bytes 64
 ```
 
 
@@ -718,15 +721,15 @@ This last definition for `k0` and `k1` aren't as as nice because `k1
 ```
 property Salsa20ExpansionExamplesProp =
     (Salsa20Expansion (k0#k1) n ==
-     [  69,  37,  68,  39,  41,  15, 107, 193, 255, 139, 122,   6, 170, 233, 217,  98,
-        89, 144, 182, 106,  21,  51, 200,  65, 239,  49, 222,  34, 215, 114,  40, 126,
-       104, 197,   7, 225, 197, 153,  31,   2, 102,  78,  76, 176,  84, 245, 246, 184,
-       177, 160, 133, 130,   6,  72, 149, 119, 192, 195, 132, 236, 234, 103, 246,  74]) /\
+    [ 69,  37,  68,  39,  41,  15, 107, 193, 255, 139, 122,   6, 170, 233, 217,  98,
+      89, 144, 182, 106,  21,  51, 200,  65, 239,  49, 222,  34, 215, 114,  40, 126,
+     104, 197,   7, 225, 197, 153,  31,   2, 102,  78,  76, 176,  84, 245, 246, 184,
+     177, 160, 133, 130,   6,  72, 149, 119, 192, 195, 132, 236, 234, 103, 246,  74]) /\
     (Salsa20Expansion k0 n ==
-     [  39, 173,  46, 248,  30, 200,  82,  17,  48,  67, 254, 239,  37,  18,  13, 247,
-       241, 200,  61, 144,  10,  55,  50, 185,   6,  47, 246, 253, 143,  86, 187, 225,
-       134,  85, 110, 246, 161, 163,  43, 235, 231,  94, 171,  51, 145, 214, 112,  29,
-        14, 232,   5,  16, 151, 140, 183, 141, 171,   9, 122, 181, 104, 182, 177, 193])
+    [ 39, 173,  46, 248,  30, 200,  82,  17,  48,  67, 254, 239,  37,  18,  13, 247,
+     241, 200,  61, 144,  10,  55,  50, 185,   6,  47, 246, 253, 143,  86, 187, 225,
+     134,  85, 110, 246, 161, 163,  43, 235, 231,  94, 171,  51, 145, 214, 112,  29,
+      14, 232,   5,  16, 151, 140, 183, 141, 171,   9, 122, 181, 104, 182, 177, 193])
   where
     k0 = [1 .. 16]
     k1 = [201 .. 216]
@@ -760,7 +763,10 @@ specification language. Cryptol isn't powerful enough to actually run
 expressed, if only for documentation purposes.
 
 ```
-Salsa20Encrypt : {a, l} (a >= 1, 2 >= a, l <= 2^^70) => Bytes (16*a) -> Bytes 8 -> Bytes l -> Bytes l
+Salsa20Encrypt :
+    {a, l}
+    (a >= 1, 2 >= a, l <= 2^^70) =>
+    Bytes (16*a) -> Bytes 8 -> Bytes l -> Bytes l
 ```
 
 
@@ -795,23 +801,76 @@ specification and find that the test vectors are missing. It's more
 often the other way around where testvectors are provided for the main
 function but not for anything else.
 
+Turns out there were official test vectors on
+[ECRYPT](http://www.ecrypt.eu.org/stream/svn/viewcvs.cgi/ecrypt/trunk/submissions/salsa20/full/verified.test-vectors?logsort=rev&rev=210&view=markup),
+but that the link is now defunct. It doesn't seem to be that big of a
+loss because The test vectors really didn't test all the functionality
+of Salsa20Encrypt because they _all_ took a message of entirely zeroes
+as input. This makes it difficult to know if you're processing an
+actual message correctly.
 
-to do:
+So, here we decided to take two of the testvectors from the defunct
+site and rework them with a random message, simply so that you can
+test your `Salsa20Encrypt` function against them.
 
-join (Salsa20Encrypt (groupBy`{8} 0x0053A6F94C9FF24598EB3E91E4378ADD) (groupBy`{8} 0x0D74DB42A91077DE) (zero:Bytes 64)) == 0x05E1E7BEB697D999656BF37C1B978806735D0B903A6007BD329927EFBE1B0E2A8137C1AE291493AA83A821755BEE0B06CD14855A67E46703EBF8F3114B584CBA
-
-join (Salsa20Encrypt (groupBy`{8} 0x0558ABFE51A4F74A9DF04396E93C8FE2) (groupBy`{8} 0x167DE44BB21980E7) (zero:Bytes 64)) == 0xEF5236C33EEEC2E337296AB237F99F56A48639744788E128BC05275D4873B9F0FAFDA8FAF24F0A61C2903373F3DE3E459928CD6F2172EA6CDBE7B0FBF45D3DAD
-
-
-join (Salsa20Encrypt (groupBy`{8} 0x0A5DB00356A9FC4FA2F5489BEE4194E73A8DE03386D92C7FD22578CB1E71C417) (groupBy`{8} 0x1F86ED54BB2289F0) (zero:Bytes 64)) == 0x3FE85D5BB1960A82480B5E6F4E965A4460D7A54501664F7D60B54B06100A37FFDCF6BDE5CE3F4886BA77DD5B44E95644E40A8AC65801155DB90F02522B644023
-join (Salsa20Encrypt (groupBy`{8} 0x0F62B5085BAE0154A7FA4DA0F34699EC3F92E5388BDE3184D72A7DD02376C91C) (groupBy`{8} 0x288FF65DC42B92F9) (zero:Bytes 64)) == 0x5E5E71F90199340304ABB22A37B6625BF883FB89CE3B21F54A10B81066EF87DA30B77699AA7379DA595C77DD59542DA208E5954F89E40EB7AA80A84A6176663F
-
-
-
+```sdf
+property Salsa20EncryptExamplesProp =
+    (Salsa20Encrypt [0x00, 0x53, 0xa6, 0xf9, 0x4c, 0x9f, 0xf2, 0x45,
+                     0x98, 0xeb, 0x3e, 0x91, 0xe4, 0x37, 0x8a, 0xdd]
+                    [0x0d, 0x74, 0xdb, 0x42, 0xa9, 0x10, 0x77, 0xde]
+                    [0x46, 0x82, 0x39, 0x77, 0xf3, 0x81, 0xae, 0xd3,
+                     0x53, 0x45, 0x2c, 0x2f, 0xf2, 0x10, 0xfd, 0xfa,
+                     0x11, 0x44, 0x74, 0x3d, 0x23, 0xf1, 0xf0, 0xdb,
+                     0x6e, 0x99, 0x86, 0x73, 0xba, 0x23, 0xee, 0xfb,
+                     0xff, 0xde, 0xc0, 0x35, 0x03, 0x31, 0x47, 0x70,
+                     0x6d, 0x58, 0x38, 0x88, 0x2d, 0xa7, 0x66, 0xb8,
+                     0x2d, 0xb5, 0x88, 0xa0, 0x19, 0x76, 0x92, 0xcd,
+                     0x32, 0x24, 0x5b, 0xcc, 0x9d, 0xba, 0x2d, 0x2e]
+                 == [0x43, 0x63, 0xde, 0xc9, 0x45, 0x16, 0x77, 0x4a,
+		     0x36, 0x2e, 0xdf, 0x53, 0xe9, 0x87, 0x75, 0xfc,
+		     0x62, 0x19, 0x7f, 0xad, 0x19, 0x91, 0xf7, 0x66,
+		     0x5c, 0x00, 0xa1, 0x9c, 0x04, 0x38, 0xe0, 0xd1,
+		     0x7e, 0xe9, 0x01, 0x9b, 0x2a, 0x25, 0xd4, 0xda,
+		     0xee, 0xf0, 0x19, 0xfd, 0x76, 0x49, 0x6d, 0xbe,
+		     0xe0, 0xa1, 0x0d, 0xfa, 0x7e, 0x92, 0xf5, 0xce,
+		     0xd9, 0xdc, 0xa8, 0xdd, 0xd6, 0xe2, 0x61, 0x94]) /\
+    (Salsa20Encrypt [0x0a, 0x5d, 0xb0, 0x03, 0x56, 0xa9, 0xfc, 0x4f,
+                     0xa2, 0xf5, 0x48, 0x9b, 0xee, 0x41, 0x94, 0xe7,
+		     0x3a, 0x8d, 0xe0, 0x33, 0x86, 0xd9, 0x2c, 0x7f,
+		     0xd2, 0x25, 0x78, 0xcb, 0x1e, 0x71, 0xc4, 0x17]
+		    [0x1f, 0x86, 0xed, 0x54, 0xbb, 0x22, 0x89, 0xf0]
+		    [0x5f, 0xb7, 0x9d, 0xab, 0xec, 0x06, 0x21, 0xd8,
+		     0x76, 0x1e, 0x37, 0x00, 0x86, 0xfe, 0x0a, 0xea,
+		     0x0b, 0x4e, 0x92, 0x19, 0x27, 0x1f, 0x6a, 0x24,
+		     0xda, 0x29, 0xe6, 0x87, 0x9b, 0x8b, 0x8a, 0x72,
+		     0xb7, 0xa2, 0xae, 0x2b, 0x52, 0x9e, 0x82, 0x15,
+		     0x89, 0xd0, 0x0a, 0xf9, 0x3b, 0xcf, 0x9e, 0x4f,
+		     0x76, 0x6b, 0xff, 0x8b, 0x29, 0x57, 0xd5, 0x38,
+		     0x7d, 0x8c, 0x22, 0x88, 0x38, 0x18, 0x26, 0x4c]
+		 == [0x60, 0x5f, 0xc0, 0xf0, 0x5d, 0x90, 0x2b, 0x5a,
+		     0x3e, 0x15, 0x69, 0x6f, 0xc8, 0x68, 0x50, 0xae,
+		     0x6b, 0x99, 0x37, 0x5c, 0x26, 0x79, 0x25, 0x59,
+		     0xba, 0x9c, 0xad, 0x81, 0x8b, 0x81, 0xbd, 0x8d,
+		     0x6b, 0x54, 0x13, 0xce, 0x9c, 0xa1, 0xca, 0x93,
+		     0x33, 0xa7, 0xd7, 0xa2, 0x7f, 0x26, 0xc8, 0x0b,
+		     0x92, 0x61, 0x75, 0x4d, 0x71, 0x56, 0xc0, 0x65,
+		     0xc4, 0x83, 0x20, 0xda, 0x13, 0x7c, 0x66, 0x6f])
+```
 
 
 ### Comments
 
+Well, if you haven't gotten enough of Salsa20 at this point, as one
+last hurrah you could rework Salsa20Encrypt for bits rather than
+bytes. Cryptol makes this pretty easy to do -- in fact, if you've
+written your Salsa20Encrypt function in a straightforward manner, all
+you'd need to do is change the type signature and add one more `join`
+in the definition. Actually, why don't you try it?
+
+Exercise: Create a new function called Salsa20EncryptBits that works
+just like Salsa20Encrypt except that it acts on a message which is
+some number of bits `b` (such that `b /^ 8 <= 2^^70`), rather than `l`
+bytes.
 
 
 # The end
