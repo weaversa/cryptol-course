@@ -48,20 +48,20 @@ ElectionGuard SDK, including key ceremony, ballot encryption, encrypted ballot t
 
 # Language Features
 
-So what makes Cryptol so special?
+So what makes Cryptol special?
 
 Cryptol is a language designed with Cryptography specifically in mind -- much of the syntax and language was designed with the way that real cryptographers think about and design systems. This allows the Cryptol user to create formal algorithm specifications that closely imitate the style used to describe these algorithms mathematically.
 
 Furthermore, Cryptol provides direct access and easily integrates with powerful tools such as SAT solvers and the Software Analysis Workbench (SAW). These tools allow the user to *prove* facts and demonstrate properties about their code which can provide assurance guarantees that go far beyond simple unit testing.
 
+We will introduce some of these features below and discuss how they support building Cryptographic specifications and evaluations. If you have access to the Cryptol interpreter you can follow along with some of the examples, but a detailed introduction to the Cryptol interpreter will be introduced in future lessons.
+
 
 ## Basic Data Types
 
-Cryptol was designed to provide easy access to the sorts of data and operations that 
+Cryptol was designed to provide easy access to the sorts of data and operations that appear in Cryptographic algorithms and specifications. There are five basic data types provided by Cryptol: bits, sequences, integers, tuples, and records. Cryptol also supports the ability to create user defined types built up from the basic types. In this section we present some basic examples deomonstrating these types, note that commands using `:t` are a request to Cryptol to report the type of argument.
 
-There are five basic data types provided by Cryptol: bits, sequences, integers, tuples, and records.
-
- * **Bits** - The simplest data type which can take on two values, `True` and `False`. 
+ * **Bits** - The simplest data type which can take on two values, `True` and `False`. Common operations like `and`, `or`, and `not` are available.
 
 ```haskell
 Cryptol> :t True
@@ -78,10 +78,58 @@ Cryptol> ~True
 False
 ```
 
- * **Sequences** - Finite lists of objects all of the same data type.
+ * **Sequences** - Finite lists of objects all of the same data type. Common cryptographic algorithms make use of *words* or *registers* which are one dimensional sequences of Bits. Cryptol seemlessly handles operations on words of arbitrary sizes and also allows for multi-dimensional sequences (*i.e.* sequences of words or sequences of sequences of words).
+
+```haskell
+Cryptol> let s1 = [True, True, False, True]
+Cryptol> :t s1
+s1 : [4]
+Cryptol> let s2 = [0x1f, 0x11, 0x03, 0xd5]
+Cryptol> :t s2
+s2 : [4][8]
+Cryptol> let s3 = [[0x1, 0x2], [0x3, 0x4], [0x5, 0x6]]
+Cryptol> :t s3
+s3 : [3][2][4]
+```
+ 
  * **Integers** - An arbitrary precision integer type.
- * **Tuples** - Tuples support heterogenous collections.
- * **Records** - 
+
+```haskell
+Cryptol> 1+1
+Showing a specific instance of polymorphic result:
+  * Using 'Integer' for type argument 'a' of '(Cryptol::+)'
+2
+Cryptol> 42*314
+Showing a specific instance of polymorphic result:
+  * Using 'Integer' for type argument 'a' of '(Cryptol::*)'
+13188
+Cryptol> 123456789234567890+234567890123456789
+Showing a specific instance of polymorphic result:
+  * Using 'Integer' for type argument 'a' of '(Cryptol::+)'
+358024679358024679
+```
+
+ * **Tuples** - Tuples support heterogenous collections. Members are accessed with the dot (`.`) operator and are zero indexed.
+```haskell
+Cryptol> let tup = (1 : Integer, 0x02, [0x31, 0x32])
+Cryptol> :t tup
+tup : (Integer, [8], [2][8])
+Cryptol> tup.0
+1
+Cryptol> tup.1
+0x02
+Cryptol> tup.2
+[0x31, 0x32]
+```
+ * **Records** - Records allow for more complex data structures to be formed, where fields may be accessed by their names.
+ 
+```haskell
+Cryptol> let point = {x = 10:[32], y = 25:[32]}
+Cryptol> point.x
+0x0000000a
+Cryptol> point.y
+0x00000019
+```
 
 ## Operators
 
