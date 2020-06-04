@@ -37,4 +37,4 @@ script:
   - cryptol -e -b labs/interpreter/test.sry
 # Salsa20 lab tests
   - cryptol -e -c ":m labs::Salsa20::Salsa20"
-  - cryptol -e -c ":m labs::Salsa20::Props"
+  - cryptol -e -c ":m labs::Salsa20::Salsa20Answers"

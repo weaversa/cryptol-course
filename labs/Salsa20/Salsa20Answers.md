@@ -14,7 +14,7 @@ of Salsa20. But first, since we are creating a module, the first line
 needs to be the module definition.
 
 ```
-module labs::Salsa20::Salsa20 where
+module labs::Salsa20::Salsa20Answers where
 ```
 
 Now we can begin to dig into the specification document!
@@ -303,10 +303,10 @@ the specification and when `:prove rowroundExamplesProp` gives
 rowround [y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14, y15] =
     [z0, z1, z2, z3, z4, z5, z6, z7, z8, z9, z10, z11, z12, z13, z14, z15]
   where
-    [ z0,  z1,  z2,  z3] = zero
-    [ z5,  z6,  z7,  z4] = zero
-    [z10, z11,  z8,  z9] = zero
-    [z15, z12, z13, z14] = zero
+    [ z0,  z1,  z2,  z3] = quarterround [ y0,  y1,  y2,  y3]
+    [ z5,  z6,  z7,  z4] = quarterround [ y5,  y6,  y7,  y4]
+    [z10, z11,  z8,  z9] = quarterround [y10, y11,  y8,  y9]
+    [z15, z12, z13, z14] = quarterround [y15, y12, y13, y14]
 ```
 
 
@@ -354,7 +354,7 @@ specification, but it's a good opportunity here to learn more about
 Cryptol's properties.
 
 ```
-property rowroundOpProp ys = False
+property rowroundOpProp ys = rowroundOpt ys == rowround ys
 ```
 
 ## 4 The columnround function
@@ -379,10 +379,10 @@ the specification and when `:prove columnroundExamplesProp` gives
 columnround [x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15] =
     [y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14, y15]
   where
-    [ y0,  y4,  y8, y12] = zero
-    [ y5,  y9, y13,  y1] = zero
-    [y10, y14,  y2,  y6] = zero
-    [y15,  y3,  y7, y11] = zero
+    [ y0,  y4,  y8, y12] = quarterround [ x0,  x4,  x8, x12]
+    [ y5,  y9, y13,  y1] = quarterround [ x5,  x9, x13,  x1]
+    [y10, y14,  y2,  y6] = quarterround [x10, x14,  x2,  x6]
+    [y15,  y3,  y7, y11] = quarterround [x15,  x3,  x7, x11]
 ```
 
 
@@ -437,7 +437,7 @@ is the transpose of `rowround`.
 property columnroundIsTransposeOfRowround ys =
     columnround ys == rejigger (rowround (rejigger ys))
   where
-    rejigger a = zero
+    rejigger a = join (transpose (split`{4} a))
 ```
 
 
@@ -460,7 +460,7 @@ the specification and when `:prove doubleroundExamplesProp` gives
 `Q.E.D`.
 
 ```
-doubleround xs = zero
+doubleround xs = rowround (columnround xs)
 ```
 
 
@@ -520,7 +520,7 @@ with 24 zeroes, and then do the arithmetic in the
 specification. However, there is a much simpler solution. Good luck!
 
 ```
-littleendian [b0, b1, b2, b3] = zero
+littleendian [b0, b1, b2, b3] = join [b3, b2, b1, b0]
 ```
 
 
@@ -551,7 +551,7 @@ appropriate logic such that `:prove littleendianInverseProp` gives
 
 ```
 littleendian' : {n} (fin n) => [n*8] -> Bytes n
-littleendian' w = zero
+littleendian' w = reverse (split w)
 ```
 
 ```
@@ -604,13 +604,13 @@ Salsa20CoreExamplesProp` gives `Q.E.D`.
 Salsa20Core x = x'
   where
     //Step 1
-    xs    = zero
+    xs    = map littleendian (split x)
     //Step 2
-    zs    = zero
+    zs    = (iterate doubleround xs)@10
     //Step 3
-    xspzs = zero
+    xspzs = xs + zs
     //Step 4
-    x'    = zero
+    x'    = join (map littleendian' xspzs)
 ```
 
 
@@ -702,8 +702,15 @@ Salsa20ExpansionExamplesProp` gives `Q.E.D`. You'll likely want to add
 a `where` clause as well.
 
 ```
-Salsa20Expansion k n = zero
-
+Salsa20Expansion k n = z
+  where
+    x = if (`a : [2]) == 1
+        then t0 # k0 # t1 # n # t2 # k0 # t3
+        else s0 # k0 # s1 # n # s2 # k1 # s3
+    z = Salsa20Core x
+    (k0 # k1) = k # undefined
+    //[k0, k1] = split (k # undefined)
+    //(k0, k1) = (take k, drop k)
 ```
 
 This last definition for `k0` and `k1` aren't as as nice because `k1
