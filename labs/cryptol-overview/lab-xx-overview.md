@@ -42,8 +42,41 @@ Further exposition on the development of these integration tests can be found in
 
 ElectionGuard SDK, including key ceremony, ballot encryption, encrypted ballot tally, and partial decryptions for knowledge proofs of trustees.
 
-##
+## Verifying Properties about Algorithms
 
+Cryptol provides an easy interface for using powerful tools such as SAT solvers for verifying properties about algorithms we care about. Throughout this course we will introduce examples and explain how to take advantage of these tools in your own designs and evaluations. Here is an example packaged with the Cryptol source that demonstrates a simple but important property about an encryption algorithm which only uses the (XOR) operation:
+
+```haskell
+encrypt : {a}(fin a) => [8] -> [a][8] -> [a][8]
+encrypt key plaintext = [pt ^ key | pt <- plaintext ]
+
+decrypt : {a}(fin a) => [8] -> [a][8] -> [a][8]
+decrypt key ciphertext = [ct ^ key | ct <- ciphertext ]
+
+property roundtrip k ip = decrypt k (encrypt k ip) == ip
+```
+
+This file defines an `encrypt` operation, a `decrypt` operation, and a property called `roundtrip` which checks for all keys `k` and all input plaintexts `ip` that `decrypt k (encrypt k ip) == ip` (*i.e.* that these operations are inverse to one another).
+
+We can see the effect of encrypting the particular input `attack at dawn` with the key `0xff`:
+
+'''haskell
+Main> encrypt 0xff "attack at dawn"
+[0x9e, 0x8b, 0x8b, 0x9e, 0x9c, 0x94, 0xdf, 0x9e, 0x8b, 0xdf, 0x9b,
+ 0x9e, 0x88, 0x91]
+```
+
+Cryptol interprets the string `"attack at dawn"` as a sequence of bytes. We will introduce Cryptol types in this lab and discuss them in detail throughout this course.
+
+Furthermore, we can check the property in the interpreter using the currently configured SAT solver (Z3 by default):
+
+```haskell
+Main> :prove roundtrip : [8] -> [16][8] -> Bit
+Q.E.D.
+(Total Elapsed Time: 0.010s, using Z3)
+```
+
+Cryptol reports `Q.E.D.` indicating that our property is indeed true for all possible inputs. Here we must specify the length of the messages that we want to check this property for. This example checks the property for 16 character messages, but we could check this for any arbitrary length.
 
 
 # Language Features
@@ -121,7 +154,7 @@ Cryptol> tup.1
 Cryptol> tup.2
 [0x31, 0x32]
 ```
- * **Records** - Records allow for more complex data structures to be formed, where fields may be accessed by their names.
+ * **Records** - Records allow for more complex data structures to be formed, where fields may be accessed by their tnames.
  
 ```haskell
 Cryptol> let point = {x = 10:[32], y = 25:[32]}
