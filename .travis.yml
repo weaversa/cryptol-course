@@ -38,4 +38,3 @@ script:
 # Salsa20 lab tests
   - cryptol -e -c ":m labs::Salsa20::Salsa20"
   - cryptol -e -c ":m labs::Salsa20::Salsa20Answers"
-  - cryptol -e -c ":m labs::Salsa20::Salsa20Props"
