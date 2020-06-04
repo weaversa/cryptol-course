@@ -55,14 +55,32 @@ Cryptol is a language designed with Cryptography specifically in mind -- much of
 Furthermore, Cryptol provides direct access and easily integrates with powerful tools such as SAT solvers and the Software Analysis Workbench (SAW). These tools allow the user to *prove* facts and demonstrate properties about their code which can provide assurance guarantees that go far beyond simple unit testing.
 
 
-## Data and Programs
+## Basic Data Types
+
+Cryptol was designed to provide easy access to the sorts of data and operations that 
 
 There are five basic data types provided by Cryptol: bits, sequences, integers, tuples, and records.
 
- * **Bits** - The simplest data type which can take on two values, `True` and `False`.
+ * **Bits** - The simplest data type which can take on two values, `True` and `False`. 
+
+```haskell
+Cryptol> :t True
+True : Bit
+Cryptol> True && False
+False
+Cryptol> True /\ False
+False
+Cryptol> True || False
+True
+Cryptol> True \/ False
+True
+Cryptol> ~True
+False
+```
+
  * **Sequences** - Finite lists of objects all of the same data type.
  * **Integers** - An arbitrary precision integer type.
- * **Tuples** - 
+ * **Tuples** - Tuples support heterogenous collections.
  * **Records** - 
 
 ## Operators
