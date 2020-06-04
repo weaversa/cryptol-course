@@ -135,7 +135,7 @@ quarterround : Words 4 -> Words 4
 ### Definition
 
 This section then goes on to define quarterround. Two syntactic change
-is required, namely, sequences in Cryptol are bookended by `[]` rather
+is required, namely, sequences in Cryptol are book-ended by `[]` rather
 than `()` and commas are not needed after statements in a where
 clause.
 
@@ -425,7 +425,7 @@ a special way) will cause `rowround` to produce results identical to
   * transform the 16 element input sequence into a 4 by 4 element
 sequence,
   * transpose this matrix, and
-  * ttransform the transposed 4 by 4 matrix back into a 16 element
+  * transform the transposed 4 by 4 matrix back into a 16 element
 sequence.
 
 Luckily Cryptol provides `split`, `transpose`, and `join` to perform
@@ -513,7 +513,7 @@ the Salsa20 specification. You'll know you've gotten it right when
 This one is a little tricky because the elegant solution does not look
 like the solution in the paper document. This is because, for example,
 `b0` (and 8-bit value) added to anything can never produce a 32-bit
-result --- Crytpol enforces that it can only add, multiply, subtract,
+result --- Cryptol enforces that it can only add, multiply, subtract,
 etc. n-bit things to other n-bit things. So, one solution would be to
 create new 32-bit variables that are `b0` through `b3` each padded
 with 24 zeroes, and then do the arithmetic in the
@@ -798,7 +798,7 @@ Salsa20Encrypt k v m = c
 
 It's a little strange to get to the main encryption function in a
 specification and find that the test vectors are missing. It's more
-often the other way around where testvectors are provided for the main
+often the other way around where test vectors are provided for the main
 function but not for anything else.
 
 Turns out there were official test vectors on
@@ -809,11 +809,11 @@ of Salsa20Encrypt because they _all_ took a message of entirely zeroes
 as input. This makes it difficult to know if you're processing an
 actual message correctly.
 
-So, here we decided to take two of the testvectors from the defunct
+So, here we decided to take two of the test vectors from the defunct
 site and rework them with a random message, simply so that you can
 test your `Salsa20Encrypt` function against them.
 
-```sdf
+```
 property Salsa20EncryptExamplesProp =
     (Salsa20Encrypt [0x00, 0x53, 0xa6, 0xf9, 0x4c, 0x9f, 0xf2, 0x45,
                      0x98, 0xeb, 0x3e, 0x91, 0xe4, 0x37, 0x8a, 0xdd]
