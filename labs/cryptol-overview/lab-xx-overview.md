@@ -60,7 +60,7 @@ This file defines an `encrypt` operation, a `decrypt` operation, and a property 
 
 We can see the effect of encrypting the particular input `attack at dawn` with the key `0xff`:
 
-'''haskell
+```haskell
 Main> encrypt 0xff "attack at dawn"
 [0x9e, 0x8b, 0x8b, 0x9e, 0x9c, 0x94, 0xdf, 0x9e, 0x8b, 0xdf, 0x9b,
  0x9e, 0x88, 0x91]
