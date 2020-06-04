@@ -604,11 +604,11 @@ Salsa20CoreExamplesProp` gives `Q.E.D`.
 Salsa20Core x = x'
   where
     //Step 1
-    xs    = zero
+    xs    = zero : [inf]
     //Step 2
-    zs    = zero
+    zs    = zero : [inf]
     //Step 3
-    xspzs = zero
+    xspzs = zero : [inf]
     //Step 4
     x'    = zero
 ```
