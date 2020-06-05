@@ -4,7 +4,7 @@
   Come, see, and conquer the classic.
 - [One-Time Pad](OTP.md) (TODO)
   Perfect secrecy, for once.
-- [n-Queens](NQueens.md) (TODO)
+- [n-Queens](NQueens.md)
   Cryptol is not just crypto.
 - [Sudoku](Sudoku.md)
   Diabolical made trivial.
