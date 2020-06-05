@@ -56,7 +56,7 @@ property doubleroundIsInvertibleProp xs xs' = False
 
 So far we've been proving that functions are invertible by showing
 that no two different inputs cause a function's outputs to
-_collide_. Though, for `Salsa20Core` we'll actuall be trying to find
+_collide_. Though, for `Salsa20Core` we'll actually be trying to find
 such collisions.
 
 [Dr. Bernstein states](http://cr.yp.to/salsa20.html) [1],
@@ -74,7 +74,7 @@ Salsa20](https://www.iacr.org/archive/fse2008/50860470/50860470.pdf)
 > plagiarism of an observation that was made by Matt Robshaw in June
 2005, that was [independently posted to
 `sci.crypt`](https://groups.google.com/d/msg/sci.crypt/AkQnSoO40BA/o4eG96rjkgYJ)
-[4] by David Wagner in September 2005 ...
+[4] by David Wagner in September 2005...
 
 High drama!
 
@@ -82,17 +82,18 @@ The notion that `Salsa20Core` does not compress is obvious from its
 type signature (`Bytes 64 -> Bytes 64`). So, we'll work now to show
 that `Salsa20Core` collides.
 
-The security of many cryptographic algorithms rely on [collision
-resistance](https://en.wikipedia.org/wiki/Collision_resistance). Collisions
-are actually ok in many types of cryptography (think hash functions),
-but collisions should be _astronomically_ hard to find. Here,
-Dr. Bernstein says that collisions exist in `Salsa20Core` and are easy
-to find, though not so easy that `z3` just works out of the box.
+The security of many cryptographic algorithms relies on [collision
+resistance](https://en.wikipedia.org/wiki/Collision_resistance). 
+Collisions are actually OK in many types of cryptography (think hash 
+functions), but collisions should be _astronomically_ hard to find. 
+Here, Dr. Bernstein says that collisions exist in `Salsa20Core` and 
+are easy to find, though not so easy that `z3` just works out of the 
+box.
 
-We know from the section above that `doubleround` is collision
-free. Collision free functions remain so even when iterated
-(`Salsa20Core` iterates `doubleround` ten times). The proof of this
-last statement is left to the reader --- we suggest the [100 prisoners
+We know from the section above that `doubleround` is collision free. 
+Collision free functions remain so even when iterated (`Salsa20Core` 
+iterates `doubleround` ten times). The proof of this last statement 
+is left to the reader -- we suggest the [100 prisoners
 problem](https://en.wikipedia.org/wiki/100_prisoners_problem) as a
 good starting place. Then, where do the collisions in `Salsa20Core`
 come from? Looking over the details of `Salsa20Core`, we see
@@ -102,11 +103,11 @@ specification states that
 
 > Salsa20Core x = x + doubleround10 x
 
-To demonstrate the potential for a collision here, consider what would
-happen if `x` was a single bit and `doubleround10 0 == 1` and
+To demonstrate the potential for a collision here, consider what 
+would happen if `x` was a single bit and `doubleround10 0 == 1` and
 `doubleround10 1 == 0`. In this case, `doubleround10` is collision
 free, but `Salsa20Core` would return `1` when given `x = 0` and `x =
-1` --- a collision. Next we move on to finding such collisions using
+1` -- a collision. Next we move on to finding such collisions using
 the fully defined function.
 
 Working from
@@ -118,14 +119,14 @@ Theorem 6 states the collision property for `Salsa20Core`:
 > of the `Salsa20` "hash" [core] function, producing `h` (defined
 > below) as a common hash value.
 > 
-> M =  [  Z , -Z ,  Z , -Z
->      , -Z ,  Z , -Z ,  Z
->      ,  Z , -Z ,  Z , -Z
->      , -Z ,  Z , -Z ,  Z  ]
-> M' = [  Z', -Z',  Z', -Z'
->      , -Z',  Z', -Z',  Z'
->      ,  Z', -Z',  Z', -Z'
->      , -Z',  Z', -Z',  Z' ]
+> M =  [  Z , -Z ,  Z , -Z    \
+>      , -Z ,  Z , -Z ,  Z    \
+>      ,  Z , -Z ,  Z , -Z    \
+>      , -Z ,  Z , -Z ,  Z  ] \
+> M' = [  Z', -Z',  Z', -Z'   \
+>      , -Z',  Z', -Z',  Z'   \
+>      ,  Z', -Z',  Z', -Z'   \
+>      , -Z',  Z', -Z',  Z' ] \
 > h  = 2*M
 
 In this definition, `Z` and `Z'` are `Word`s, but our Cryptol spec
