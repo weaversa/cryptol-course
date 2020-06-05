@@ -1,18 +1,21 @@
 # Salsa20
 
-The Salsa20 core is a function created by Daniel J. Bernstein. The
-specification is available [here](https://cr.yp.to/snuffle/spec.pdf),
-but also provided in this repository [here](Salsa20_spec.pdf) for
-ease of access. The specification document describes Salsa20 as well
-as how to use it as a [stream
-cipher](https://en.wikipedia.org/wiki/Stream_cipher) in [counter
+Salsa20 is a cryptographic algorithm created by Daniel
+J. Bernstein. The specification is available
+[here](https://cr.yp.to/snuffle/spec.pdf), but also provided in this
+repository [here](Salsa20Spec.pdf) for ease of access. The
+specification document describes Salsa20 as well as how to use it as a
+[stream cipher](https://en.wikipedia.org/wiki/Stream_cipher) in
+[counter
 mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Counter_(CTR)).
 
-This lab will go through the [Salsa20 specification
-document](labs/Salsa20/Salsa20Spec.pdf) section by section, showing
-how to write a fairly pedantic Cryptol specification of Salsa20. We
-recommend you have this lab and the specification document open
-side-by-side.
+This lab is a
+[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
+document --- that is, it can be loaded directly into the Cryptol
+interpreter. It goes through the [Salsa20 specification
+document](Salsa20Spec.pdf) section by section, showing how to write a
+fairly pedantic Cryptol specification of Salsa20. We recommend you
+have this lab and the specification document open side-by-side.
 
 First, since we are creating a module, the first line needs to be the
 module definition.
