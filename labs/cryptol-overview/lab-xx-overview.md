@@ -174,18 +174,18 @@ Cryptol provides a collection of built in operators to build expressions and per
 * `>=`, `>`, `<=`, `<` -- nonnegative word comparisons
 * `+`, `-`, `*`, `/`, `%`, `**` -- wordwise modular arithmetic
 * `>>`, `<<`, `>>>`, `<<<` -- shifts and rotates
-* `#` concatenation
+* `#` -- concatenation
 
 There are many more. A list of the currently defined symbols and operators are available by running `:browse` in the interpreter.
 
-An interesting feature of Cryptol's type system is that you can check the type of an operator with the `:t` command in the interpreter just as you can for data:
+An interesting feature of Cryptol's type system is that operators are typed and which you can check with the `:t` command in the interpreter just as you can for data:
 
 ```haskell
 Cryptol> :t (&&)
 (&&) : {a} (Logic a) => a -> a -> a
 ```
 
-In a nutshell, this indicates that the bitwise and operater (`&&`) operates on two elements of type `a` that are in the "`Logic`" typeclass and returns another element of the same type.
+In a nutshell, this indicates that the bitwise and operater (`&&`) operates on two elements of type `a` that are in the "`Logic`" typeclass and returns another element of the same type. Sometimes this information is useful for debugging a design.
 
 ## Primitives
 
@@ -195,8 +195,86 @@ In a nutshell, this indicates that the bitwise and operater (`&&`) operates on t
 
 ## Enumerations
 
+Cryptol supports compact notation for sequences that increase or decrease in regular steps:
+
+```haskell
+Cryptol> [1, 2 .. 10]
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+Cryptol> [1, 4 .. 12]
+[1, 4, 7, 10]
+Cryptol> [10, 9 .. 0]
+[10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
+```
+
+For clarity, some output above was ommitted. Cryptol is kind enough to inform us that it is making an assumption about the type in the list. Here is the full output:
+
+```haskell
+Cryptol> [1, 2 .. 10]
+Showing a specific instance of polymorphic result:
+  * Using 'Integer' for type argument 'a' of 'Cryptol::fromThenTo'
+[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+```
+
+We can nudge Cryptol with the element types to control the types of the elements of the enumeration:
+
+```haskell
+Cryptol> [0:[32] .. 15]
+[0x00000000, 0x00000001, 0x00000002, 0x00000003, 0x00000004,
+ 0x00000005, 0x00000006, 0x00000007, 0x00000008, 0x00000009,
+ 0x0000000a, 0x0000000b, 0x0000000c, 0x0000000d, 0x0000000e,
+ 0x0000000f]
+```
+
+Furthermore, Cryptol even supports *infinite* lists and accessing their members, here is an example of creating an infinite list of odd integers and also accessing the 100th element of that list:
+
+```haskell
+Cryptol> [1, 3 ... ] 
+[1, 3, 5, 7, 9, ...]
+Cryptol> [1, 3 ... ] @ 100
+201
+```
+
+Note that two dots (`..`) are used for constructing finite enumerations and three dots (`...`) are used for constructing infinite lists.
+
 ## Sequence Comprehensions
+
+Sequence Comprehensions are a technique for computing the elements of a new sequence, out of the elements of existing ones. Here is a simple comprehension that computes the squares of the numbers from 1 to 10:
+
+```haskell
+Cryptol> [ x^^2 | x <- [1 .. 10]]
+[1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+```
+
+Comprehensions also support notions of *cartesian*, *parallel*, and *self-referential* definitions.
+
+* **Cartesian** -- A new sequence is formed from all possible combinations of pairs taken from the supplied lists, when they are separated by commas. The size of a Cartesian comprehension will, in general, be the product of the sizes of the supplied lists:
+
+```haskell
+Cryptol> [ (x, y) | x <- [0 .. 2], y <- [0 .. 2] ]
+[(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]
+Cryptol> [ x * y | x <- [0 .. 2], y <- [0 .. 2] ]
+[0, 0, 0, 0, 1, 2, 0, 2, 4]
+```
+
+* **Parallel** -- Parallel definitions consume elements from multiple lists simultaneously and terminate when one list is exhausted. In general the size of a Parallel comprehension will be the minimum of the sizes of the supplied lists:
+
+```haskell
+Cryptol> [ x + y | x <- [1 .. 10] | y <- [1 .. 10] ]
+[2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
+Cryptol> [ x + y | x <- [1 .. 3] | y <- [1 .. 10] ]
+[2, 4, 6]
+```
+
+* **Self-Referential** -- Lists can even refer to themselves in a comprehension. This is a very powerful technique which is frequently used in cryptographic applications.
+
+```haskell
+Cryptol> let fibs = [0, 1] # [ x + y | x <- fibs | y <- tail(fibs)]
+Cryptol> fibs
+[0, 1, 1, 2, 3, ...]
+```
 
 ## Control Structures
 
 # References
+
+
