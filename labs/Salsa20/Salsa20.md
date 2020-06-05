@@ -8,10 +8,14 @@ as how to use it as a [stream
 cipher](https://en.wikipedia.org/wiki/Stream_cipher) in [counter
 mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Counter_(CTR)).
 
-This lab will go through the Salsa20 specification document section by
-section, showing how to write a fairly pedantic Cryptol specification
-of Salsa20. But first, since we are creating a module, the first line
-needs to be the module definition.
+This lab will go through the [Salsa20 specification
+document](labs/Salsa20/Salsa20Spec.pdf) section by section, showing
+how to write a fairly pedantic Cryptol specification of Salsa20. We
+recommend you have this lab and the specification document open
+side-by-side.
+
+First, since we are creating a module, the first line needs to be the
+module definition.
 
 ```
 module labs::Salsa20::Salsa20 where
