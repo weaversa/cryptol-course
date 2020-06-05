@@ -119,15 +119,17 @@ Theorem 6 states the collision property for `Salsa20Core`:
 > of the `Salsa20` "hash" [core] function, producing `h` (defined
 > below) as a common hash value.
 > 
-> M =  [  Z , -Z ,  Z , -Z    \
->      , -Z ,  Z , -Z ,  Z    \
->      ,  Z , -Z ,  Z , -Z    \
->      , -Z ,  Z , -Z ,  Z  ] \
-> M' = [  Z', -Z',  Z', -Z'   \
->      , -Z',  Z', -Z',  Z'   \
->      ,  Z', -Z',  Z', -Z'   \
->      , -Z',  Z', -Z',  Z' ] \
+> ```
+> M =  [  Z , -Z ,  Z , -Z
+>      , -Z ,  Z , -Z ,  Z
+>      ,  Z , -Z ,  Z , -Z
+>      , -Z ,  Z , -Z ,  Z  ]
+> M' = [  Z', -Z',  Z', -Z'
+>      , -Z',  Z', -Z',  Z'
+>      ,  Z', -Z',  Z', -Z'
+>      , -Z',  Z', -Z',  Z' ]
 > h  = 2*M
+> ```
 
 In this definition, `Z` and `Z'` are `Word`s, but our Cryptol spec
 follows the original in defining `Salsa20Core` to map `Bytes 64 ->
