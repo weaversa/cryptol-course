@@ -25,37 +25,200 @@ invertible.
 spec. Your goal is to determine which other functions are invertible
 by filling in a roperty for each that attempts to prove invertibility.
 
+
+### rowround
+
 ```
 property rowroundIsInvertibleProp y y' = False
 ```
+
+
+### columnround
 
 ```
 property columnroundIsInvertibleProp x x' = False
 ```
 
+
+### doubleround
+
 This next one (`doubleround`) may take about a minute to prove using
-the `z3` solver. It may seem a bit frustrating to have to wait, but
-please keep in mind that the solvers are searching over a space of
+the `z3` solver. It may also seem a bit frustrating to have to wait,
+but please keep in mind that the solver is searching over a space of
 about `2^^1024` possibilities.
 
 ```
 property doubleroundIsInvertibleProp xs xs' = False
 ```
 
+
+### Salsa20Core
+
+So far we've been proving that functions are bijective by showing that
+no two different inputs cause a function's outputs to
+_collide_. Though, for `Salsa20Core` we'll really be trying to find
+such collisions.
+
+[Dr. Bernstein states](http://cr.yp.to/salsa20.html),
+
+> I originally introduced the Salsa20 core as the "Salsa20 hash
+function," but this terminology turns out to confuse people who think
+that "hash function" means "collision-resistant compression function."
+The Salsa20 core does not compress and is not collision-resistant.
+
+This was [in response](https://cr.yp.to/snuffle/reoncore-20080224.pdf)
+to a [paper detailing collisions in
+Salsa20](https://www.iacr.org/archive/fse2008/50860470/50860470.pdf),
+which Dr. Bernstein calls
+
+> plagiarism of an observation that was made by Matt Robshaw in June
+2005, that was [independently posted to
+`sci.crypt`](https://groups.google.com/d/msg/sci.crypt/AkQnSoO40BA/o4eG96rjkgYJ)
+by David Wagner in September 2005 ...
+
+High drama!
+
+That `Salsa20Core` does not compress is obvious from its type
+signature (`Bytes 64 -> Bytes 64`). We'll work now to show that
+`Salsa20Core` collides.
+
+The security of many cryptographic algorithms rely on [collision
+resistant](https://en.wikipedia.org/wiki/Collision_resistance). Collisions
+are actually ok in many types of cryptography (think hash functions),
+but collisions should be _astronomically_ hard to find. Here,
+Dr. Bernstein says that collisions in `Salsa20Core` are easy to find,
+though not so easy that `z3` just works out of the box.
+
+We know from above that `doubleround` is collision free. Collision
+free functions remain so when iterated (`Salsa20Core` iterates
+`doubleround` ten times). The proof of this last statement is left to
+the reader, and we suggest considering with [100 prisoners
+problem](https://en.wikipedia.org/wiki/100_prisoners_problem) as a
+good starting place. So, where do the collisions come from?  Looking
+over the details of `Salsa20Core`, we see reshaping from bytes to
+words and back, but reshaping also can't cause collisions. All that's
+left is `xs + zs`. This addition takes two sequences of 16 words each
+and creates one sequence of 16 words. Since the domain is larger than
+the range, addition cannot be bijective, and hence is the source of
+collisions in `Salsa20Core`. Next we move on to finding such
+collisions.
+
+Working from
+[[3]](https://www.iacr.org/archive/fse2008/50860470/50860470.pdf),
+Theorem 6 states the collision property for `Salsa20Core`:
+
+> Any pair of inputs M and M' (defined below) such that `Z < 2^^31`
+> and `Z' = Z + 2^^31`, generate a collision for any number of rounds
+> of the `Salsa20` "hash" [core] function, producing `h` (defined
+> below) as a common hash value.
+> 
+> M =  [  Z , -Z ,  Z , -Z
+>      , -Z ,  Z , -Z ,  Z
+>      ,  Z , -Z ,  Z , -Z
+>      , -Z ,  Z , -Z ,  Z  ]
+> M' = [  Z', -Z',  Z', -Z'
+>      , -Z',  Z', -Z',  Z'
+>      ,  Z', -Z',  Z', -Z'
+>      , -Z',  Z', -Z',  Z' ]
+> h  = 2*M
+
+In this definition, `Z` and `Z'` are `Word`s, but our Cryptol spec
+follows the original in defining `Salsa20` to map `Bytes 64 -> Bytes
+64`.  Thus, we will reshape `Salsa20Core` before proceeding:
+
+**EXERCISE**: Define `Salsa20Core'` to mimic `Salsa20Core`, but over
+`Words 16` rather than `Bytes 64`: (Hint: This can be defined in one
+line with `doubleround`, `iterate`, and basic Cryptol operators.)
+
+```
+/** `Salsa20Core` equivalent over `Words 16` */
+Salsa20Core' : Words 16 -> Words 16
+Salsa20Core' x =
+    x + (iterate doubleround x @ 10)
+```
+
+**EXERCISE**: Verify that `Salsa20Core'` agrees with `Salsa20Core`:
+
+```
+property Salsa20CoreEquivProp w =
+    Salsa20Core' (rejigger w) == rejigger (Salsa20Core w)
+  where
+    rejigger x = map littleendian (split x)
+```
+
+**EXERCISE** Formalize Theorem 6 :
+
+```
+Salsa20CoreCollides_Th6 : [32] -> Bit
+property Salsa20CoreCollides_Th6 Z =
+    h == h'
+  where
+    Z' = Z + (2^^31)
+    M  = [  Z , -Z ,  Z , -Z
+         , -Z ,  Z , -Z ,  Z
+         ,  Z , -Z ,  Z , -Z
+         , -Z ,  Z , -Z ,  Z ]
+    M' = [  Z', -Z',  Z', -Z'
+         , -Z',  Z', -Z',  Z'
+         ,  Z', -Z',  Z', -Z'
+         , -Z',  Z', -Z',  Z']
+    h  = Salsa20Core' M
+    h' = Salsa20Core' M'
+```
+
+/*
+
+Theorem 7 [3] states a corresponding [2nd preimage attack]
+(https://en.wikipedia.org/wiki/Preimage_attack):
+
+> Any pair of inputs `A, B` with a difference `A - B = A ^ B == D` (defined 
+> below) will produce the same output [of `Salsa20`] over any number of rounds.
+> 
+> A - B = A ^ B = [ 0x80000000, 0x80000000, 0x80000000, 0x80000000
+>                 , 0x80000000, 0x80000000, 0x80000000, 0x80000000
+>                 , 0x80000000, 0x80000000, 0x80000000, 0x80000000
+>                 , 0x80000000, 0x80000000, 0x80000000, 0x80000000 ]
+
+We might ask Cryptol to convince us whether this property holds, but
+before proceeding with the general theorem, let's first address the
+case of one round:
+
+```
+/** Theorem 7 [3] holds for one round. */
+Salsa20'_collides_Th7_oneround :
+    Words 16 -> Bit
+property Salsa20'_collides_Th7_oneround x =
+    Salsa20' x == Salsa20' zero  /* REPLACE WITH YOUR DEFINITION */
+```
+
+Trying to `:prove` this might have taken a while.  Let's cautiously
+move on to the general case.
+
+**EXERCISE** State and try to `:prove` Theorem 7 for any number of
+rounds.
+
+```
+/** Theorem 7 [3] holds for any number of rounds...well, _almost_ any... */
+Salsa20'_collides_Th7 :
+    {n}
+    (fin n) =>
+    [n] -> Words 16 -> Bit  /* REPLACE WITH YOUR DEFINITION */
+Salsa20'_collides_Th7 i x =
+    True \/                         /* REPLACE WITH YOUR DEFINITION */
+    iterate Salsa20' x @ i == zero  /* REPLACE WITH YOUR DEFINITION */
+
+property Salsa20'_collides_Th7_2_rounds =
+    Salsa20'_collides_Th7 (2 : [2])
+
+property Salsa20'_collides_Th7_3_rounds =
+    Salsa20'_collides_Th7 (3 : [2])
+```
+
+
 ```
 property Salsa20CoreIsInvertibleProp x x' = False
 ```
 
-`Salsa20Expansion` takes two different key sizes and the key is also
-viewed as a fixed parameter in terms of invertiblity.
-
-```
-property Salsa20ExpansionIsInvertibleProp k n n' = False
-```
-
-```
-property Salsa20EncryptIsInvertibleProp k v m m' = False
-```
 
 
 ## `Salsa20_encrypt`
@@ -411,6 +574,7 @@ property rowround_parallel_is_rowround =
     rowround === rowround_parallel
 ```
 
+
 # References
 
 [1] [The Salsa20 core]
@@ -447,3 +611,5 @@ private
     clear x = zero
 
 ```
+
+*/
