@@ -265,7 +265,7 @@ Cryptol> [ x + y | x <- [1 .. 3] | y <- [1 .. 10] ]
 [2, 4, 6]
 ```
 
-* **Self-Referential** -- Lists can even refer to themselves in a comprehension. This is a very powerful technique which is frequently used in cryptographic applications.
+* **Self-Referential** -- Lists can even refer to themselves in a comprehension. This is a very powerful technique which is frequently used in cryptographic applications. Here we construct a representation of the infinite list of Fibbonacci numbers. Note that here we assign a name to the list so that we can use it self-referentially in the definition:
 
 ```haskell
 Cryptol> let fibs = [0, 1] # [ x + y | x <- fibs | y <- tail(fibs)]
@@ -274,6 +274,46 @@ Cryptol> fibs
 ```
 
 ## Control Structures
+
+Building formal specifications in Cryptol requires imitating the sorts of control structures that you commonly see 
+
+* `if ... then ... else ...` -- Conditional expressions in Cryptol work similar to the ternary conditional operator (`... ? ... : ...`) in C.
+
+```haskell
+Cryptol> if True then 0x2 else 0x3
+0x2
+Cryptol> if False then 0x2 else 0x3
+0x3
+```
+
+Cryptol conditionals are subject to typing conditions and the two branches must have the same type to be a valid conditional expression. The type of a conditional expression is the shared type of the two branches.
+
+```haskell
+Cryptol> :t (if True then 0x2 else 0x3)
+(if True then 0x2 else 0x3) : [4]
+```
+
+If the two branches are typed differently, then Cryptol flags this as an error:
+
+```haskell
+Cryptol> :t (if True then 0x2:[16] else 0x3:[32])
+
+[error] at <interactive>:1:15--1:18:
+  Type mismatch:
+    Expected type: 16
+    Inferred type: 4
+[error] at <interactive>:1:29--1:32:
+  Type mismatch:
+    Expected type: 32
+    Inferred type: 4
+[error] at <interactive>:1:29--1:37:
+  Type mismatch:
+    Expected type: 16
+    Inferred type: 32
+```
+
+This may feel restrictive to those unfamiliar with strongly typed languages at first, but this is an important feature of Cryptol that allows for precise specifications to be built and powerful evaluation tools to be levied against Cryptol specifications.
+
 
 # References
 
