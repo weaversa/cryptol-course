@@ -71,7 +71,7 @@ property hexadecimalProp =
     (0xc0a8787e == 3232266366)
 ```
 
-This document is interactive and literate. So, takes some time now to
+This document is interactive and literate. So, take some time now to
 open this document in the Cryptol interpreter.
 
 ```bash
