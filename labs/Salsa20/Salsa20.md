@@ -141,8 +141,8 @@ quarterround : Words 4 -> Words 4
 
 ### Definition
 
-This section then goes on to define quarterround. Two syntactic change
-is required, namely, sequences in Cryptol are book-ended by `[]` rather
+This section then goes on to define quarterround. Two syntactic changes are
+required, namely, sequences in Cryptol are book-ended by `[]` rather
 than `()` and commas are not needed after statements in a where
 clause.
 
