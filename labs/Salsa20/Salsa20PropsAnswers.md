@@ -6,7 +6,7 @@ being proposed for [eSTREAM, the ECRYPT Stream Cipher Project]
 (https://www.ecrypt.eu.org/stream).
 
 ```
-module labs::Salsa20::Salsa20Props where
+module labs::Salsa20::Salsa20PropsAnswers where
 
 import labs::Salsa20::Salsa20Answers
 ```
