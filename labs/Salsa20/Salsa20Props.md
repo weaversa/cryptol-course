@@ -1,8 +1,8 @@
-# Salsa 20 Properties
+# Salsa20 Security Properties
 
-In this module, we consider additional properties of the [Salsa20]
-(../Salsa20.md) stream cipher, which has undergone much scrutiny since
-being proposed for [eSTREAM, the ECRYPT Stream Cipher Project]
+In this lab, we consider additional properties of the [Salsa20]
+(Salsa20Spec.md) stream cipher, which has undergone much scrutiny
+since being proposed for [eSTREAM, the ECRYPT Stream Cipher Project]
 (https://www.ecrypt.eu.org/stream).
 
 ```
@@ -13,183 +13,50 @@ import labs::Salsa20::Salsa20Answers
 
 ## Invertibility
 
-Throughout [the original spec](https://cr.yp.to/snuffle/spec.pdf),
-various functions are noted as being "invertible".  Let's specify this
-formally in Cryptol, and then prove it for the components of Salsa20:
+Throughout [the original spec](Salsa20Spec.pdf), various functions are
+noted as being "invertible". In the [Salsa20 lab](Salsa20Answers.md),
+we proved that the `quarterround` and `littleendian` functions are
+invertible. We did this because the specification explicitly mentioned
+these properties. Similarly, though not called out in the
+specification, other functions defined in the spec are also
+invertible.
+
+**EXERCISE**: Below is a rundown of each function defined in the
+spec. Your goal is to determine which other functions are invertible
+by filling in a roperty for each that attempts to prove invertibility.
 
 ```
-/** type of one-argument function from domain `a` to range `a'` */
-type Unary a a' =
-    a -> a'
+property rowroundIsInvertibleProp y y' = False
 ```
 
-**EXERCISE**: Define `inverts` to return `True` iff `g` [inverts]
-(https://en.wikipedia.org/wiki/Inverse_function) `f` for a given
-argument `x`; i.e. `(f ∘ g) x == x`:
-
 ```
-/** whether unary function `g` inverts unary function `f` for argument `x` */
-inverts :
-    {a, a'}
-    Unary a' a ->
-    Unary a a' ->
-    a -> Bit
-inverts g f x =
-    FalseBinary g f  /* REPLACE WITH YOUR DEFINITION */
+property columnroundIsInvertibleProp x x' = False
 ```
 
-### `littleendian`
-
-Before moving to the various `round` functions, let's address
-`littleendian`, which the original spec notes is invertible.
-
-**EXERCISE**: Specify properties that `littleendian'` inverts
-`littleendian`, and vice versa.
+This next one (`doubleround`) may take about a minute to prove using
+the `z3` solver. It may seem a bit frustrating to have to wait, but
+please keep in mind that the solvers are searching over a space of
+about `2^^1024` possibilities.
 
 ```
-/** `littleendian` is invertible; its inverse is `littleendian'`. */
-littleendian'_inverts_littleendian :
-    Bytes 4 -> Bit
-property littleendian'_inverts_littleendian =
-    inverts littleendian' littleendian
-
-/** `littleendian` is invertible; its inverse is `littleendian'`. */
-littleendian_inverts_littleendian' :
-    Bytes 4 -> Bit
-property littleendian_inverts_littleendian' =
-    FalseUnary  /* REPLACE WITH YOUR DEFINITION */
+property doubleroundIsInvertibleProp xs xs' = False
 ```
 
-### `quarterround`
-
-Now let's proceed with the `round` functions...
-
-> One can visualize the `quarterround` function as modifying `y` in
-> place: first `y1` changes to `z1`, then `y2` changes to `z2`, then
-> `y3` changes to `z3`, then `y0` changes to `z0`. Each modification
-> is invertible, so the entire function is invertible. [5]
-
-**EXERCISE**: Exhibit a function `quarterround_inverse` that inverts
-`quarterround`; your function must satisfy
-`quarterround_inverse_inverts_quarterround`:
-
 ```
-/** inverse of `quarterround` */
-quarterround_inverse :
-    Words 4 -> Words 4
-quarterround_inverse [z0, z1, z2, z3] =
-    [y0, y1, y2, y3]
-  where
-    y0 = z0 ^ ((z3 + z2) <<< 0x00000012)
-    y3 = zero  /* REPLACE WITH YOUR DEFINITION */
-    y2 = zero  /* REPLACE WITH YOUR DEFINITION */
-    y1 = zero  /* REPLACE WITH YOUR DEFINITION */
-
-/** `quarterround` is invertible; its inverse is `quarterround_inverse`. */
-quarterround_inverse_inverts_quarterround :
-    Words 4 -> Bit
-property quarterround_inverse_inverts_quarterround =
-    inverts quarterround_inverse quarterround
+property Salsa20CoreIsInvertibleProp x x' = False
 ```
 
-Less interestingly, `quarterround` also inverts
-`quarterround_inverse`.
-
-**EXERCISE**: Define a `property` specifying that `quarterround`
-inverts `quarterround_inverse`:
+`Salsa20Expansion` takes two different key sizes and the key is also
+viewed as a fixed parameter in terms of invertiblity.
 
 ```
-/** `quarterround_inverse` is invertible; its inverse is `quarterround`. */
-quarterround_inverts_quarterround_inverse :
-    Words 4 -> Bit
-property quarterround_inverts_quarterround_inverse =
-    FalseUnary  /* REPLACE WITH YOUR DEFINITION */
+property Salsa20ExpansionIsInvertibleProp k n n' = False
 ```
 
-### `rowround` and `columnround`
-
-Similarly, though not called out in [5], `rowround` and `columnround`
-are invertible.
-
-**EXERCISE**: Exhibit inverse functions for `rowround` and
-`columnround` and specify properties to verify their invertibility:
-
+```
+property Salsa20EncryptIsInvertibleProp k v m m' = False
 ```
 
-/** inverse of `rowround` */
-rowround_inverse :
-    Words 16 -> Words 16
-rowround_inverse
-    [z0, z1, z2, z3, z4, z5, z6, z7, z8, z9, z10, z11, z12, z13, z14, z15]
-  = [y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14, y15]
-  where
-    [y15, y12, y13, y14] = quarterround_inverse [z15, z12, z13, z14]
-    [y10, y11,  y8,  y9] = zero  /* REPLACE WITH YOUR DEFINITION */
-    [ y5,  y6,  y7,  y4] = zero  /* REPLACE WITH YOUR DEFINITION */
-    [ y0,  y1,  y2,  y3] = zero  /* REPLACE WITH YOUR DEFINITION */
-
-/** `rowround` is invertible; its inverse is `rowround_inverse`. */
-rowround_inverse_inverts_rowround :
-    Words 16 -> Bit
-property rowround_inverse_inverts_rowround =
-    FalseUnary  /* REPLACE WITH YOUR DEFINITION */
-
-/** `rowround_inverse` is invertible; its inverse is `rowround`. */
-rowround_inverts_rowround_inverse :
-    Words 16 -> Bit
-property rowround_inverts_rowround_inverse =
-    FalseUnary  /* REPLACE WITH YOUR DEFINITION */
-
-
-/** inverse of `columnround` */
-columnround_inverse :
-    Words 16 -> Words 16
-columnround_inverse
-    [y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14, y15]
-  = [x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15]
-  where
-    /* REPLACE WITH YOUR DEFINITION */
-    [x0, x1,  x2,  x3,  x4,  x5,  x6,  x7,
-     x8, x9, x10, x11, x12, x13, x14, x15] = zero
-
-/** `columnround` is invertible; its inverse is `columnround_inverse`. */
-columnround_inverse_inverts_columnround :
-    Words 16 -> Bit
-property columnround_inverse_inverts_columnround =
-    FalseUnary  /* REPLACE WITH YOUR DEFINITION */
-
-/** `columnround_inverse` is invertible; its inverse is `columnround`. */
-columnround_inverts_columnround_inverse :
-    Words 16 -> Bit
-property columnround_inverts_columnround_inverse =
-    FalseUnary  /* REPLACE WITH YOUR DEFINITION */
-
-```
-
-## `doubleround`
-
-**EXERCISE**: Finally, verify that `doubleround` is invertible.  This
-should be straightforward given what `doubleround` does.
-
-```
-/** inverse of `doubleround` */
-doubleround_inverse :
-    Words 16 -> Words 16
-doubleround_inverse xs =
-    zero  /* REPLACE WITH YOUR DEFINITION */
-
-/** `doubleround` is invertible; its inverse is `doubleround_inverse` */
-doubleround_inverse_inverts_doubleround :
-    Words 16 -> Bit
-property doubleround_inverse_inverts_doubleround =
-    FalseUnary  /* REPLACE WITH YOUR DEFINITION */
-
-/** `doubleround_inverse` is invertible; its inverse is `doubleround` */
-doubleround_inverts_doubleround_inverse :
-    Words 16 -> Bit
-property doubleround_inverts_doubleround_inverse =
-    FalseUnary  /* REPLACE WITH YOUR DEFINITION */
-```
 
 ## `Salsa20_encrypt`
 
