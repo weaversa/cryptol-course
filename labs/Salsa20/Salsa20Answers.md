@@ -1,17 +1,24 @@
 # Salsa20
 
-The Salsa20 core is a function created by Daniel J. Bernstein. The
-specification is available [here](https://cr.yp.to/snuffle/spec.pdf),
-but also provided in this repository [here](Salsa20_spec.pdf) for
-ease of access. The specification document describes Salsa20 as well
-as how to use it as a [stream
-cipher](https://en.wikipedia.org/wiki/Stream_cipher) in [counter
+Salsa20 is a cryptographic algorithm created by Daniel
+J. Bernstein. The specification is available
+[here](https://cr.yp.to/snuffle/spec.pdf), but also provided in this
+repository [here](Salsa20Spec.pdf) for ease of access. The
+specification document describes Salsa20 as well as how to use it as a
+[stream cipher](https://en.wikipedia.org/wiki/Stream_cipher) in
+[counter
 mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Counter_(CTR)).
 
-This lab will go through the Salsa20 specification document section by
-section, showing how to write a fairly pedantic Cryptol specification
-of Salsa20. But first, since we are creating a module, the first line
-needs to be the module definition.
+This lab is a
+[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
+document --- that is, it can be loaded directly into the Cryptol
+interpreter. It goes through the [Salsa20 specification
+document](Salsa20Spec.pdf) section by section, showing how to write a
+fairly pedantic Cryptol specification of Salsa20. We recommend you
+have this lab and the specification document open side-by-side.
+
+First, since we are creating a module, the first line needs to be the
+module definition.
 
 ```
 module labs::Salsa20::Salsa20Answers where
@@ -64,7 +71,7 @@ property hexadecimalProp =
     (0xc0a8787e == 3232266366)
 ```
 
-This document is interactive and literate. So, takes some time now to
+This document is interactive and literate. So, take some time now to
 open this document in the Cryptol interpreter.
 
 ```bash
@@ -134,8 +141,8 @@ quarterround : Words 4 -> Words 4
 
 ### Definition
 
-This section then goes on to define quarterround. Two syntactic change
-is required, namely, sequences in Cryptol are book-ended by `[]` rather
+This section then goes on to define quarterround. Two syntactic changes are
+required, namely, sequences in Cryptol are book-ended by `[]` rather
 than `()` and commas are not needed after statements in a where
 clause.
 
