@@ -92,7 +92,7 @@ though not so easy that `z3` just works out of the box.
 We know from above that `doubleround` is collision free. Collision
 free functions remain so when iterated (`Salsa20Core` iterates
 `doubleround` ten times). The proof of this last statement is left to
-the reader, and we suggest considering with [100 prisoners
+the reader, and we suggest the [100 prisoners
 problem](https://en.wikipedia.org/wiki/100_prisoners_problem) as a
 good starting place. So, where do the collisions come from?  Looking
 over the details of `Salsa20Core`, we see reshaping from bytes to
