@@ -29,14 +29,16 @@ property for each that attempts to prove invertibility.
 ### rowround
 
 ```
-property rowroundIsInvertibleProp y y' = False
+property rowroundIsInvertibleProp y y' =
+    y != y' ==> rowround y != rowround y'
 ```
 
 
 ### columnround
 
 ```
-property columnroundIsInvertibleProp x x' = False
+property columnroundIsInvertibleProp x x' =
+    x != x' ==> columnround x != columnround x'
 ```
 
 
@@ -48,7 +50,8 @@ but please keep in mind that the solver is searching over a space of
 about `2^^1024` possibilities.
 
 ```
-property doubleroundIsInvertibleProp xs xs' = False
+property doubleroundIsInvertibleProp xs xs' =
+    xs != xs' ==> doubleround xs != doubleround xs'
 ```
 
 
@@ -139,7 +142,8 @@ line with `doubleround`, `iterate`, and basic Cryptol operators.)
 ```
 /** `Salsa20Core` equivalent over `Words 16` */
 Salsa20Core' : Words 16 -> Words 16
-Salsa20Core' x = zero
+Salsa20Core' x =
+    x + (iterate doubleround x @ 10)
 ```
 
 **EXERCISE**: Verify that `Salsa20Core'` agrees with `Salsa20Core`:
@@ -148,7 +152,7 @@ Salsa20Core' x = zero
 property Salsa20CoreEquivProp w =
     Salsa20Core' (rejigger w) == rejigger (Salsa20Core w)
   where
-    rejigger x = zero
+    rejigger x = map littleendian (split x)
 ```
 
 Theorem 6 states that collisions should happen for any number of
@@ -163,9 +167,15 @@ Salsa20CoreCollidesProp : [32] -> Bit
 property Salsa20CoreCollidesProp Z =
     h == h'
   where
-    Z' = zero : [32]
-    M  = zero
-    M' = zero
+    Z' = Z + (2^^31)
+    M  = [  Z , -Z ,  Z , -Z
+         , -Z ,  Z , -Z ,  Z
+         ,  Z , -Z ,  Z , -Z
+         , -Z ,  Z , -Z ,  Z ]
+    M' = [  Z', -Z',  Z', -Z'
+         , -Z',  Z', -Z',  Z'
+         ,  Z', -Z',  Z', -Z'
+         , -Z',  Z', -Z',  Z']
     h  = Salsa20Core' M
     h' = Salsa20Core' M'
 ```
@@ -190,7 +200,8 @@ Salsa20EncryptInvolutionProp :
     {a, l}
     (a >= 1, 2 >= a, l <= 2^^70) =>
     Bytes (16*a) -> Bytes 8 -> Bytes l -> Bit
-Salsa20EncryptInvolutionProp k v m = zero
+Salsa20EncryptInvolutionProp k v m =
+    Salsa20Encrypt k v (Salsa20Encrypt k v m) == m
 ```
 
 
