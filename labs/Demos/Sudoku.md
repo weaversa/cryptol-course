@@ -243,7 +243,7 @@ f x = x*x - 7*x + 12 == 0
 > solution to the quadratic equation `x^2 – 7x + 12 = 0`. We have:
 
 ```sh
-Cryptol> :sat f
+labs::Demos::Sudoku> :sat f
 f 4 = True
 (Total Elapsed Time: 0.151s, using "Z3")
 ```
@@ -253,7 +253,7 @@ f 4 = True
 > notation:
 
 ```sh
-Cryptol> :sat (\x -> f x && (x != 4))
+labs::Demos::Sudoku> :sat (\x -> f x && (x != 4))
 (\x -> f x && (x != 4)) 3 = True
 (Total Elapsed Time: 0.034s, using "Z3")
 ```
@@ -262,7 +262,7 @@ Cryptol> :sat (\x -> f x && (x != 4))
 > equation, there can be at most two solutions; let’s verify:
 
 ```sh
-Cryptol> :sat (\x -> f x && (x != 4) && (x != 3))
+labs::Demos::Sudoku> :sat (\x -> f x && (x != 4) && (x != 3))
 Unsatisfiable
 (Total Elapsed Time: 0.034s, using "Z3")
 ```
@@ -336,7 +336,7 @@ Ahem...sorry.
 > assignment. Here’s the response from Cryptol:
 
 ```sh
-Sudoku> :sat puzzle
+labs::Demos::Sudoku> :sat puzzle
 puzzle
 puzzle
   [2, 5, 4, 3, 1, 4, 8, 6, 9, 7, 7, 1, 9, 2, 5, 4, 3, 3, 8, 4, 9, 2,
@@ -405,6 +405,12 @@ property puzzle_unique
            [i1,  5,  4, i4, i5,  8, i7,  7, i9]]
 ```
 
+```sh
+labs::Demos::Sudoku> :prove puzzle_unique
+Q.E.D.
+(Total Elapsed Time: 0.813s, using "Z3")
+```
+
 But let's be honest: that puzzle is pretty easy. Let's throw in [a 
 harder puzzle](https://www.conceptispuzzles.com/index.aspx?uri=info/article/424) 
 by Arto Inkala that garnered some publicity in 2010 as the "World's 
@@ -448,7 +454,7 @@ hard_puzzle
 ```
 
 ```sh
-specs::Misc::Sudoku> :sat hard_puzzle
+labs::Demos::Sudoku> :sat hard_puzzle
 hard_puzzle
   [0x1, 0x2, 0x7, 0x5, 0x3, 0x6, 0x4, 0x9, 0x9, 0x4, 0x8, 0x2, 0x1,
    0x7, 0x5, 0x6, 0x5, 0x4, 0x1, 0x8, 0x3, 0x1, 0x4, 0x2, 0x3, 0x8,
@@ -511,7 +517,7 @@ property hard_unique
 ```
 
 ```sh
-specs::Misc::Sudoku> :prove hard_unique
+labs::Demos::Sudoku> :prove hard_unique
 Q.E.D.
 (Total Elapsed Time: 5.431s, using "Z3")
 ```
