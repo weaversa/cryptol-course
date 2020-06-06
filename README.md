@@ -25,7 +25,7 @@ capabilities of [Cryptol](https://github.com/GaloisInc/cryptol) and the [Softwar
    - Students interact and experiment with partially worked examples
    - Verify some properties of simple functions
       - [XOR](https://github.com/GaloisInc/cryptol/blob/master/examples/xor_cipher.cry): show that double xor is the identity
-      - [Caesar Ciphers](specs/Primitive/Symmetric/Cipher/Stream/Caesar.cry): show that encrypt/decrypt is the identity
+      - [Caesar Ciphers](labs/Demos/Caesar.md): show that encrypt/decrypt is the identity
    - Show examples of how the SAT tool can be used to solve puzzles
       - [Sudoku](labs/Demos/Sudoku.md): show that solutions to Sudoku puzzles exist and are unique
       - [n-Queens](labs/Demos/NQueens.md): show that queens don't see each other
