@@ -145,10 +145,10 @@ In Cryptol, the `infix` operator `==` can be called in prefix
 notation, so `(==) x y` and `x == y` are equivalent. Functions are 
 first-class values in Cryptol, and `(==)` has type 
 `(==): {a} Cmp a -> Cmp a -> Bit`, so `(==) x` is a predicate that 
-returns `True` iff its argument equals `x`. Using `any`, `contains` 
+returns `True` iff its argument equals `x`. Using `any`, `contains'` 
 checks whether any item in `G` is equal to `x` (satisfies `(==) x`).
 `contains` is a similarly nested function, so `contains G` checks 
-whether `G` contains the argument being passed, and `permutes` maps 
+whether `G` contains the argument being passed, and `supset'` maps 
 this over `H` to determine if `G` contains all items in `H`.
 
 As a sanity check, we can confirm these are equivalent:
