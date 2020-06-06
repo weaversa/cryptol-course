@@ -11,7 +11,7 @@ code for syntax and new features and interjecting occasionally. We
 hope to have done justice to the original.
 
 
-# Module System
+## Module System
 
 Cryptol Version 2 was [released](https://github.com/GaloisInc/cryptol/tree/v2.0.0) 
 to GitHub on April 24, 2014. Among [many 
