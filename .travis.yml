@@ -35,3 +35,6 @@ script:
 # Interpreter lab tests
   - cryptol -e -c ":m labs::interpreter::test" -c ":s base=10" -c "x + 2"
   - cryptol -e -b labs/interpreter/test.sry
+# Salsa20 lab tests
+  - cryptol -e -c ":m labs::Salsa20::Salsa20"
+  - cryptol -e -c ":m labs::Salsa20::Salsa20Answers"
