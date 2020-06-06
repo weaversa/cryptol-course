@@ -1,6 +1,6 @@
 # Demos
 
-- [Caesar](Caesar.md) (TODO)
+- [Caesar](Caesar.md)
   Come, see, and conquer the classic.
 - [One-Time Pad](OTP.md) (TODO)
   Perfect secrecy, for once.
