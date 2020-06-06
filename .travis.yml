@@ -42,3 +42,6 @@ script:
   - clang -emit-llvm -c labs/bittwiddling/bittwiddling.c -o labs/bittwiddling/bittwiddling.bc
   - cryptol -e -c ":l labs/bittwiddling/bittwiddling_answers.md"
   - saw labs/bittwiddling/bittwiddling_answers.saw
+# Salsa20 lab tests
+  - cryptol -e -c ":m labs::Salsa20::Salsa20"
+  - cryptol -e -c ":m labs::Salsa20::Salsa20Answers"
