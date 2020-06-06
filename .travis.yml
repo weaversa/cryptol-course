@@ -37,3 +37,6 @@ script:
   - cryptol -e -b labs/interpreter/test.sry
 # Arithmetic verification tests
   - make -C extras/arithmetic-verification
+# Salsa20 lab tests
+  - cryptol -e -c ":m labs::Salsa20::Salsa20"
+  - cryptol -e -c ":m labs::Salsa20::Salsa20Answers"
