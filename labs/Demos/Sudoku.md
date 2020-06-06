@@ -70,7 +70,7 @@ type SudokuBoard = [9]SudokuGroup
 
 (Cryptol 2.6.0 introduced [modular 
 integers](https://github.com/GaloisInc/cryptol/releases/tag/2.6.0), 
-so `Z 10` would also be a good choice for `SudoNum`, but we retain 
+so `Z 10` would also be a good choice for `SudokuNum`, but we retain 
 `[4]` to minimize disruption to the original article.)
 
 Sorry, you were saying...?
