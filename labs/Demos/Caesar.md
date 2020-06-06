@@ -180,6 +180,24 @@ property v2 =
 property v3 = encrypt 13 "ABJURER" == "NOWHERE"
 ```
 
+Though we could `:prove` these, for static test cases with no 
+variables, it makes more sense to `:check` these (this saves 
+the solver some work and often speeds up such tests).
+
+```sh
+labs::Demos::Caesar> :check v1
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::Demos::Caesar> :check v2
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::Demos::Caesar> :check v3
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+```
 
 ## Properties
 
