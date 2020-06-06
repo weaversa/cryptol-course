@@ -83,7 +83,7 @@ property charIsAtIndex = indexCorrect alphabet
 ```
 
 ```sh
-> :prove charIsAtIndex
+labs::Demos::Caesar> :prove charIsAtIndex
 Q.E.D.
 (Total Elapsed Time: 0.072s, using "Z3")
 ```
@@ -91,10 +91,10 @@ Q.E.D.
 The property even holds for other sequences, repeating or not:
 
 ```sh
-> :prove \(A:[64]Char) -> indexCorrect A
+labs::Demos::Caesar> :prove \(A:[64]Char) -> indexCorrect A
 Q.E.D.
 (Total Elapsed Time: 1.172s, using "Z3")
-> :prove \(L:[33]Integer) -> indexCorrect L
+labs::Demos::Caesar> :prove \(L:[33]Integer) -> indexCorrect L
 Q.E.D.
 (Total Elapsed Time: 0.347s, using "Z3")
 ```
@@ -281,4 +281,4 @@ labs::Demos::Caesar> :sat \k -> encrypt k "ILLUMINATI CONFIRMED" == "NQQZRNSFYN 
 ## Conclusion
 
 You came, you saw, and you conquered the Caesar cipher in Cryptol.
-Hail, Caesar!
+Ave, Caesar!

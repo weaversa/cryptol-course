@@ -146,7 +146,7 @@ The instructions for [1] also work here:
 > To do that,
 > 
 > ```sh
-> > :set prover=Z3
+> > :set prover=z3
 > ```
 > 
 > or
@@ -158,9 +158,10 @@ The instructions for [1] also work here:
 Here is one possible outcome for `n = 8`:
 
 ```sh
-> :sat nQueens : (Solution 8)
+labs::Demos::NQueens> :s base=10
+labs::Demos::NQueens> :sat nQueens : (Solution 8)
 (nQueens : Solution 8)
-  [0x1, 0x7, 0x5, 0x0, 0x2, 0x4, 0x6, 0x3] = True
+  [1, 7, 5, 0, 2, 4, 6, 3] = True
 (Total Elapsed Time: 0.053s, using "Z3")
 ```
 

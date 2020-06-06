@@ -529,7 +529,7 @@ Okay then. Let's defer to the original for some closing remarks...
 > Apologies if you were expecting to see Cryptol code that actually 
 > searched for the values of the empty cells! Note that we have not 
 > written a single line of code that tried to deduce what must go in 
-> the empty cells, nor  have we implemented a search algorithm. We 
+> the empty cells, nor have we implemented a search algorithm. We 
 > merely viewed Sudoku as a satisfiability problem, and asked 
 > Cryptol’s formal-methods tools to find the missing values for us. 
 > The necessary search is all done by the underlying formal-methods 
