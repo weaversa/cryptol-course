@@ -7,6 +7,10 @@ draws from and cites [Galois, Inc.'s
 example](https://github.com/GaloisInc/cryptol/blob/master/examples/funstuff/NQueens.cry)
 [1].
 
+```
+module labs::Demos::NQueens where
+```
+
 Before proceeding, we define some helper functions. `product` returns 
 the [Cartesian 
 product](https://en.wikipedia.org/wiki/Cartesian_product) of two 
