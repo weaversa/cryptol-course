@@ -21,11 +21,12 @@ for instance, one can express a polynomial like so `<| x^^3 + x + 1 |>
 which is simply the four bit string `0b1011`. It's important to note
 that even though this is a degree-3 polynomial, it takes four bits to
 represent. So, in Cryptol, a degree-n+1 polynomial takes n bits. We'll
-also need a message M which is simply a sequence of, say, m bits.
+also need a message M which is simply a sequence of, say, m bits. In
+the definition from [1], the message is extended (concatenated) with n
+zeroes.
 
-In the definition from [1], the message is extended (concatenated)
-with n zeroes. Let's make our CRC a little more generic and support
-extension with n user supplied bits. This new parameter broadens the
+Let's make our CRC a little more generic and support XORing in n user
+supplied bits with the message. This new parameter broadens the
 families of CRCs we can support. Let's call this parameter `fill`
 because it's identical to the initial fill of a CRC when implemented
 by a linear feedback shift register.
@@ -38,17 +39,23 @@ Our CRC definition,
 
 ```
 CRC : {n, m} (fin n, fin m, n >= 1, m >= 1) => [n+1] -> [n] -> [m] -> [n]
-CRC G fill M = pmod ((fill#0) ^ (M # (0 : [n]))) G
-
+CRC G fill M = pmod ((fill # 0) ^ (M # (0 : [n]))) G
 ```
 
 ```
 message = 0b11010011101100
 CRCExample = CRC <| x^^3 + x + 1 |> 0
 
-CRC32Posix M = (CRC <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |> 0 M) ^ 0xffffffff
+CRC32Posix M = crc ^ 0xffffffff
+  where crc  = CRC poly 0 M
+        poly = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
-CRC32BZIP2 M = (CRC <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |> 0xffffffff M) ^ 0xffffffff
+CRC32BZIP2 M = crc ^ 0xffffffff
+  where crc  = CRC poly 0xffffffff M
+        poly = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
-CRC32 M = reverse (CRC <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |> 0xffffffff (join (map reverse (groupBy`{8} (0#M))))) ^ 0xffffffff
+CRC32 M = reverse crc ^ 0xffffffff
+  where crc  = CRC poly 0xffffffff M'
+        poly = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
+        M'   = join (map reverse (groupBy`{8} (0#M)))
 ```
