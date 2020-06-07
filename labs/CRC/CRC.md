@@ -59,16 +59,14 @@ CRCSimple :
     (fin n, fin m) =>
     [n+1] -> [m] -> [n]
 CRCSimple G M = zero
-  where M' = //Concatenate M with n zero bits
+  where M' = False //Concatenate M with n zero bits
 ```
 
 This test-case is from [1].
 
 ```
-property CRCSimpleTest =
-    CRCSimple G 0b11010011101100 == 0b100
-  where
-    G  = <| x^^3 + x + 1 |>
+property CRCSimpleTest = CRCSimple G 0b11010011101100 == 0b100
+  where G = <| x^^3 + x + 1 |>
 ```
 
 
@@ -154,10 +152,10 @@ CRC :
 CRC G fill post rib ro M =
     zero //if R should be reversed, then reverse R, else return R
   where
-    R      = zero //modulus of fill' ^ M'' and G, and don't forget to XOR post
-    M'     = zero //reflect the input bytes, if necessary, and then join the bytes into a bitvector
-    M''    = zero //extend M' with n zero bits
-    fill'  = zero //extend fill with (m*8) zero bits (so that fill' matches the type of M''
+    R      = False //modulus of fill' ^ M'' and G, and don't forget to XOR post
+    M'     = False //reflect the input bytes, if necessary, and then join the bytes into a bitvector
+    M''    = False //extend M' with n zero bits
+    fill'  = False //extend fill with (m*8) zero bits (so that fill' matches the type of M''
 ```
 
 Here is a definition of CRC32, using the parameterized `CRC` function.
