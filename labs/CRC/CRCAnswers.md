@@ -1,5 +1,5 @@
 ```
-module labs::CRC::CRC where
+module labs::CRC::CRCAnswers where
 ```
 
 
