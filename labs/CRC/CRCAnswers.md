@@ -58,8 +58,8 @@ CRCSimple :
     {n, m}
     (fin n, fin m) =>
     [n+1] -> [m] -> [n]
-CRCSimple G M = zero
-  where M' = //Concatenate M with n zero bits
+CRCSimple G M = pmod M' G
+  where M' = M # (0 : [n])
 ```
 
 This test-case is from [1].
@@ -152,12 +152,12 @@ CRC :
     (fin n, fin m) =>
     [n+1] -> [n] -> [n] -> Bit -> Bit -> [m][8] -> [n]
 CRC G fill post rib ro M =
-    zero //if R should be reversed, then reverse R, else return R
+    if ro then reverse R else R
   where
-    R      = zero //modulus of fill' ^ M'' and G, and don't forget to XOR post
-    M'     = zero //reflect the input bytes, if necessary, and then join the bytes into a bitvector
-    M''    = zero //extend M' with n zero bits
-    fill'  = zero //extend fill with (m*8) zero bits (so that fill' matches the type of M''
+    R      = pmod (fill' ^ M'') G ^ post
+    M'     = join (if rib then (map reverse M) else M)
+    M''    = M'   # (0 : [n])
+    fill'  = fill # (0 : [m*8])
 ```
 
 Here is a definition of CRC32, using the parameterized `CRC` function.
@@ -180,7 +180,7 @@ simulator](http://www.sunshine2k.de/coding/javascript/crc/crc_js.html)
 ### BZIP2
 
 ```
-CRC32_BZIP2 = CRC G 0 0 False False
+CRC32_BZIP2 = CRC G 0xffffffff 0xffffffff False False
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
 property CRC32_BZIP2Test =
@@ -192,7 +192,7 @@ property CRC32_BZIP2Test =
 ### C
 
 ```
-CRC32_C = CRC G 0 0 False False
+CRC32_C = CRC G 0xffffffff 0xffffffff True True
   where G = <| x^^32 + x^^28 + x^^27 + x^^26 + x^^25 + x^^23 + x^^22 + x^^20 + x^^19 + x^^18 + x^^14 + x^^13 + x^^11 + x^^10 + x^^9 + x^^8 + x^^6 + 1 |>
 
 property CRC32_CTest =
@@ -204,7 +204,7 @@ property CRC32_CTest =
 ### D
 
 ```
-CRC32_D = CRC G 0 0 False False
+CRC32_D = CRC G 0xffffffff 0xffffffff True True
   where G = <| x^^32 + x^^31 + x^^29 + x^^27 + x^^21 + x^^20 + x^^17 + x^^16 + x^^15 + x^^12 + x^^11 + x^^5 + x^^3 + x + 1 |>
 
 property CRC32_DTest =
@@ -215,7 +215,7 @@ property CRC32_DTest =
 ### MPEG2
 
 ```
-CRC32_MPEG2 = CRC G 0 0 False False
+CRC32_MPEG2 = CRC G 0xffffffff 0x00000000 False False
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
 property CRC32_MPEG2Test =
@@ -226,7 +226,7 @@ property CRC32_MPEG2Test =
 ### POSIX
 
 ```
-CRC32_POSIX = CRC G 0 0 False False
+CRC32_POSIX = CRC G 0x00000000 0xffffffff False False
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
 property CRC_POSIXTest =
@@ -237,7 +237,7 @@ property CRC_POSIXTest =
 ### Q
 
 ```
-CRC32_Q = CRC G 0 0 False False
+CRC32_Q = CRC G 0x00000000 0x00000000 False False
   where G = <| x^^32 + x^^31 + x^^24 + x^^22 + x^^16 + x^^14 + x^^8 + x^^7 + x^^5 + x^^3 + x + 1 |>
 
 property CRC32_QTest = 
@@ -248,7 +248,7 @@ property CRC32_QTest =
 ### JAMCRC
 
 ```
-CRC32_JAMCRC = CRC G 0 0 False False
+CRC32_JAMCRC = CRC G 0xffffffff 0x00000000 True True
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
 property CRC32_JAMCRCTest =
@@ -259,7 +259,7 @@ property CRC32_JAMCRCTest =
 ### XFER
 
 ```
-CRC32_XFER = CRC G 0 0 False False
+CRC32_XFER = CRC G 0x00000000 0x00000000 False False
   where G = <| x^^32 + x^^7 + x^^5 + x^^3 + x^^2 + x + 1 |>
 
 property CRC32_XFERTest =
