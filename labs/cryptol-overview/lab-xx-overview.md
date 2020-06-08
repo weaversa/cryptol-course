@@ -56,7 +56,7 @@ decrypt key ciphertext = [ct ^ key | ct <- ciphertext ]
 property roundtrip k ip = decrypt k (encrypt k ip) == ip
 ```
 
-This file defines an `encrypt` operation, a `decrypt` operation, and a property called `roundtrip` which checks for all keys `k` and all input plaintexts `ip` that `decrypt k (encrypt k ip) == ip` (*i.e.* that these operations are inverse to one another).
+This file defines an `encrypt` operation, a `decrypt` operation, and a property named `roundtrip` which checks for all keys `k` and all input plaintexts `ip` that `decrypt k (encrypt k ip) == ip` (*i.e.* that these operations are inverse to one another).
 
 We can see the effect of encrypting the particular input `attack at dawn` with the key `0xff`:
 
@@ -87,7 +87,7 @@ Cryptol is a language designed with Cryptography specifically in mind -- much of
 
 Furthermore, Cryptol provides direct access and easily integrates with powerful tools such as SAT solvers and the Software Analysis Workbench (SAW). These tools allow the user to *prove* facts and demonstrate properties about their code which can provide assurance guarantees that go far beyond simple unit testing.
 
-We will introduce some of these features below and discuss how they support building Cryptographic specifications and evaluations. If you have access to the Cryptol interpreter you can follow along with some of the examples, but a detailed introduction to the Cryptol interpreter will be introduced in future lessons.
+We will introduce some of these features below and discuss how they support building Cryptographic specifications and evaluations. If you have access to the Cryptol interpreter you can follow along with some of the examples, but a detailed introduction to the Cryptol interpreter will be provided in future lessons.
 
 
 ## Basic Data Types
@@ -190,9 +190,104 @@ In a nutshell, this indicates that the bitwise and operater (`&&`) operates on t
 
 ## Primitives
 
+Cryptol offers a robust set of primitives to construct more complex functions and specifications with. The built-in primitives cover a wide variety of purposes. A sampling of these built-ins include:
+
+ * **List manipulation** -- `take`, `drop`
+ 
+```haskell
+Main> take `{1} [1, 2, 3]
+[1]
+Main> drop `{1} [1, 2, 3]
+[2, 3]
+```
+ 
+ * **Structural manipulation** -- `split`, `groupBy`
+
+```haskell
+Main> split `{3} [1, 2, 3, 4, 5, 6]
+[[1, 2], [3, 4], [5, 6]]
+Main> groupBy `{3} [1, 2, 3, 4, 5, 6]
+[[1, 2, 3], [4, 5, 6]]
+```
+
+ * **Arithmetic** -- `sum`, `min`, `max`
+
+```haskell
+Main> sum [1, 2, 3, 4, 5]
+15
+Main> min 5 10
+5
+Main> max 5 10
+10
+```
+
+Inside of the Cryptol interpreter you can inspect the symbols, functions, and primitives that are defined within the current context using the `:browse` (or simply `:b`) command. Doing so at the beginning of a fresh interpreter session will show you the list of built-ins and other information about the environment:
+
+```haskell
+Main> :b
+    all : {n, a} (fin n) => (a -> Bit) -> [n]a -> Bit
+    and : {n} (fin n) => [n] -> Bit
+    any : {n, a} (fin n) => (a -> Bit) -> [n]a -> Bit
+    ...
+    zext : {m, n} (fin m, m >= n) => [n] -> [m]
+    zip : {n, a, b} [n]a -> [n]b -> [n](a, b)
+    zipWith : {n, a, b, c} (a -> b -> c) -> [n]a -> [n]b -> [n]c
+```
+
+
 ## Functions
 
-## Functions and Laziness
+Cryptol allows users to define functions allowing subcomponents to be reused or allow greater clarity in a program. Functions are typically specified in two parts: the *type definition* and the *function definition*.
+
+Suppose that a project file `rotword.cry` contains the following code:
+
+```haskell
+RotWord : [4][8] -> [4][8]
+RotWord [a0, a1, a2, a3] = [a1, a2, a3, a0]
+```
+
+This provides a type for `RotWord` (`[4][8] -> [4][8]`) and a definition (`RotWord [a0, a1, a2, a3] = [a1, a2, a3, a0]`). Within the interpreter we can perform computations and check the type of this function as follows
+
+```haskell
+Main> RotWord [0x01, 0x02, 0x03, 0x04]
+[0x02, 0x03, 0x04, 0x01]
+Main> :t RotWord 
+RotWord : [4][8] -> [4][8]
+```
+
+To enjoy greater overall confidence in a system we are developing, we may want to check properties about the components we build. Suppose we wanted to check that `RotWord` was the identity on sequences where all the elements were the same. We could add the following line to `rotword.cry`:
+
+```haskell
+RotWord : [4][8] -> [4][8]
+RotWord [a0, a1, a2, a3] = [a1, a2, a3, a0]
+
+property check_identity x = RotWord [x, x, x, x] == [x, x, x, x]
+```
+
+and then from the interpreter we could check that this property was true:
+
+```haskell
+Cryptol> :l rotword.cry 
+Loading module Cryptol
+Loading module Main
+Main> :prove
+:prove check_identity
+	Q.E.D.
+(Total Elapsed Time: 0.005s, using Z3)
+```
+
+`Q.E.D.` Building up more complex properties and relationships between the components of a system allow us to assert with very high confidence that the system is correct.
+
+* **lambda expressions** / **anonymous functions** -- Cryptol lets users define functions without having to specify a name which can be useful in some circumstances, often to formulate a function which will be the return value of another function. Lambda expressions are formed as follows and have types and can be computed with just like regular functions:
+
+```haskell
+Main> \(x:[32]) -> x*x
+<function>
+Main> :t \(x:[32]) -> x*x
+(\(x : [32]) -> x * x) : [32] -> [32]
+Main> (\(x:[32]) -> x*x) 3
+0x00000009
+```
 
 ## Enumerations
 
@@ -278,7 +373,7 @@ Cryptol> fibs
 
 Building formal specifications in Cryptol requires imitating the sorts of control structures that you commonly see 
 
-* `if ... then ... else ...` -- Conditional expressions in Cryptol work similar to the ternary conditional operator (`... ? ... : ...`) in C.
+* `if ... then ... else ...` -- Conditional expressions in Cryptol work similar to the ternary conditional operator (`... ? ... : ...`) in C. This structure checks that the first field evaluates to `True` and evaluates to the second field or checks that the first field evaluates to `False` and evaluates to the third field:
 
 ```haskell
 Cryptol> if True then 0x2 else 0x3
