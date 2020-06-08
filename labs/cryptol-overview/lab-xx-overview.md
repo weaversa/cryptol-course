@@ -38,9 +38,128 @@ Further exposition on the development of these integration tests can be found in
  * [Part 2](https://galois.com/blog/2016/09/specifying-hmac-in-cryptol/) - **Specifying HMAC in Cryptol**
  * [Part 3](https://galois.com/blog/2016/09/proving-program-equivalence-with-saw/) - **Proving Program Equivalence with SAW**
 
-## Microsoft ElectionGuard
+## Verifying Cryptographic Implementations -- The `xxhash` Algorithm
 
-ElectionGuard SDK, including key ceremony, ballot encryption, encrypted ballot tally, and partial decryptions for knowledge proofs of trustees.
+The tools that Cryptol provides access to allows users to bring together cryptographic implementations from other languages like *Java* or *C* and prove that they are equivalent to "gold standard" specifications one can create in Cryptol. This allows users to iteratively optimize code in performance-centric or system languages while maintaining a single trusted specification in Cryptol.
+
+Take a look through the [`saw-demos` repository](https://github.com/GaloisInc/saw-demos) by GaloisInc hosted on GitHub which highlights several of these applications. We will do a brief survey of the `xxhash` example which you can find in the `demos/xxhash` directory of this repository. This is a demo of using Cryptol algorithm specifications (along with SAW 
+
+This directory contains the following files
+
+```
+.
+├── Makefile
+├── output
+├── xxhash32-ref.c
+├── xxhash32-ref.saw
+├── xxhash64-ref.c
+├── xxhash64-ref.saw
+└── xxhash.cry
+```
+
+`xxhash.cry` contains Cryptol specifications for 32- and 64-bit variants of the `xxhash` algorithm along with related subroutines. The 32-bit variant has the following definition:
+
+```haskell
+XXH32 : {L} (fin L) => [L][8] -> [32] -> [32]
+XXH32 input seed = XXH32_avalanche acc1
+  where (stripes16 # stripes4 # stripes1) = input
+        accR = foldl XXH32_rounds (XXH32_init seed) (split stripes16 : [L/16][16][8])
+        accL = `(L % 2^^32) + if (`L:Integer) < 16
+                              then seed + PRIME32_5
+                              else XXH32_converge accR
+        acc4 = foldl XXH32_digest4 accL (split stripes4 : [(L%16)/4][4][8])
+        acc1 = foldl XXH32_digest1 acc4 (stripes1 : [L%4][8])
+```
+
+This function depends on other components defined in this file such as `XXH32_avalanche`, `XXH32_rounds`, and `XXH32_init` which you can take a look at as well. At a glance we see that this function has the type signature `{L} (fin L) => [L][8] -> [32] -> [32]` which indicates that this function takes a finite sequence of bytes, a 32-bit seed and produces a 32-bit result (the hash).
+
+`xxhash32-ref.c` and `xxhash64-ref.c` contain `C` implementations of the `xxhash` algorithm which might commonly be seen in a real-world system implementation where performance was critical. Here is a snippet containing the `C` implementation of the hash function which is called`XXH32`:
+
+```C
+/* The XXH32 hash function.
+ * input:   The data to hash.
+ * length:  The length of input. It is undefined behavior to have length larger than the
+ *          capacity of input.
+ * seed:    A 32-bit value to seed the hash with.
+ * returns: The 32-bit calculated hash value. */
+uint32_t XXH32(void const *const input, size_t const length, uint32_t const seed)
+{
+    uint8_t const *const data = (uint8_t const *) input;
+    uint32_t hash;
+    size_t remaining = length;
+    size_t offset = 0;
+
+    /* Don't dereference a null pointer. The reference implementation notably doesn't
+     * check for this by default. */
+    if (input == NULL) {
+        return XXH32_avalanche(seed + PRIME32_5);
+    }
+
+    if (remaining >= 16) {
+        /* Initialize our accumulators */
+        uint32_t acc1 = seed + PRIME32_1 + PRIME32_2;
+        uint32_t acc2 = seed + PRIME32_2;
+        uint32_t acc3 = seed + 0;
+        uint32_t acc4 = seed - PRIME32_1;
+
+        while (remaining >= 16) {
+            acc1 = XXH32_round(acc1, XXH_read32(data, offset)); offset += 4;
+            acc2 = XXH32_round(acc2, XXH_read32(data, offset)); offset += 4;
+            acc3 = XXH32_round(acc3, XXH_read32(data, offset)); offset += 4;
+            acc4 = XXH32_round(acc4, XXH_read32(data, offset)); offset += 4;
+            remaining -= 16;
+        }
+
+        hash = XXH_rotl32(acc1, 1) + XXH_rotl32(acc2, 7) + XXH_rotl32(acc3, 12) + XXH_rotl32(acc4, 18);
+    } else {
+        /* Not enough data for the main loop, put something in there instead. */
+        hash = seed + PRIME32_5;
+    }
+
+    hash += (uint32_t) length;
+
+    /* Process the remaining data. */
+    while (remaining >= 4) {
+        hash += XXH_read32(data, offset) * PRIME32_3;
+        hash  = XXH_rotl32(hash, 17);
+        hash *= PRIME32_4;
+        offset += 4;
+        remaining -= 4;
+    }
+
+    while (remaining != 0) {
+        hash += (uint32_t) data[offset] * PRIME32_5;
+        hash  = XXH_rotl32(hash, 11);
+        hash *= PRIME32_1;
+        --remaining;
+        ++offset;
+    }
+    return XXH32_avalanche(hash);
+}
+```
+Finally the files ```xxhash32-ref.saw``` and ```xxhash64-ref.saw``` which contain SAW scripts which drive the verification that this `C` code is equivalent to the specification found in this Cryptol specification of `xxhash`.
+
+Running `make` at the commandline will initiate the verification for both the 32- and 64-bit implementations, producing the following output:
+
+```
+$ make
+clang xxhash32-ref.c -o xxhash32-ref.bc -c -emit-llvm -O0 -std=c90
+clang xxhash64-ref.c -o xxhash64-ref.bc -c -emit-llvm -O0 -std=c90
+saw xxhash32-ref.saw
+[17:48:43.283] Loading file "/home/jdwoolc/Projects/saw-demos/demos/xxhash/xxhash32-ref.saw"
+[17:48:43.285] Loading file "/home/jdwoolc/Projects/saw-demos/common/llvm.saw"
+[17:48:43.613] Verifying XXH_rotl32 ...
+[17:48:43.615] Simulating XXH_rotl32 ...
+[17:48:43.617] Checking proof obligations XXH_rotl32 ...
+[17:48:43.778] Proof succeeded! XXH_rotl32
+
+... output ommitted ...
+
+[17:48:54.220] Checking proof obligations XXH64 ...
+[17:48:54.311] Proof succeeded! XXH64
+```
+
+These scripts will check that the `C` implementations match the Cryptol specification for *every possible* input for the hash lengths specified, which important to highlight because this is far beyond the capability of unit testing to detect errors. For instance, for inputs of length `128` bits there are `2^160` input/seed combinations to check. Unit tests -- even random unit tests -- may only typically cover a few hundred or thousand cases. Cryptol and SAW are able to provide confidence on a space many orders of magnitude larger.
 
 ## Verifying Properties about Algorithms
 
