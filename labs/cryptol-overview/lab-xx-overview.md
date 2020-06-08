@@ -56,11 +56,7 @@ decrypt key ciphertext = [ ct ^ key | ct <- ciphertext ]
 property roundtrip key plaintext = decrypt key (encrypt key plaintext) == plaintext
 ```
 
-<<<<<<< HEAD
-This file defines an `encrypt` operation, a `decrypt` operation, and a property named `roundtrip` which checks for all keys `k` and all input plaintexts `ip` that `decrypt k (encrypt k ip) == ip` (*i.e.* that these operations are inverse to one another).
-=======
 This file defines an `encrypt` operation, a `decrypt` operation, and a property called `roundtrip` which checks for all keys `key` and all input plaintexts `plaintext` that `decrypt key (encrypt key plaintext) == plaintext` (*i.e.* that these operations are inverse to one another).
->>>>>>> 8b231fda8e5fc81826fe983e9854743489c51632
 
 We can see the effect of encrypting the particular input `attack at dawn` with the key `0xff`:
 
@@ -396,7 +392,7 @@ Cryptol> :t if True then 2:[16] else 3:[32]
 
 This may feel restrictive to those unfamiliar with strongly typed languages at first, but this is an important feature of Cryptol that allows for precise specifications to be built and powerful evaluation tools to be levied against Cryptol specifications.
 
-* `for ... next` loops -- Sequence comprehensions can be used to represent for loops from other languages. For exmample, consider the follow snippet of C code that sums up the numbers from 1 to 100:
+* `for ... next` loops -- Sequence comprehensions can be used to represent for loops from other languages. For example, consider the follow snippet of C code that sums up the numbers from 1 to 100:
 
 ```C
 s = 0
