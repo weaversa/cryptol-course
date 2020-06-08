@@ -46,6 +46,7 @@ property testparity32bit =
 
 Finally, write a function that finds the parity of a double word (again, the code could be very similar to the previous two exercises).
 
+```
 parity64bit : [64] -> [64]
 parity64bit b = zero
 
@@ -55,7 +56,7 @@ property testparity64bit =
     parity64bit 0x0000000000000000 == 0 /\
     parity64bit 0xffffffffffffffff == 0 /\
     parity64bit 0xffffffff7fffffff == 1
-
+```
 
 ## Reverse a byte
 
