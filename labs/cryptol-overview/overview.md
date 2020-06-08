@@ -25,9 +25,7 @@ Further examples are distributed with the [Cryptol software source](https://gith
 
 Amazon s2n is "a C99 implementation of the TLS/SSL protocols that is designed to be simple, small, fast, and with security as a priority". TLS/SSL is a suite of cryptographic protocols and algorithms used to provide integrity, confidentiality and other familiar security services. Amazon s2n is an implementation of this suite used to protect communications on Amazon's cloud infrastructure platforms such as Amazon Web Services (AWS) and Amazon Simple Storage Service (S3).
 
-[TODO: A blurb about the application of Cryptol here]
-
-Furthermore, these security property tests are performed as part of a continuous integration pipline using the [Travis Continuous Integration Service](https://travis-ci.com/). Whenever changes are made -- no matter how small -- to the C implementations, Cryptol and SAW evaluations are automatically run to ensure that no security properties of the system have been disrupted by the proposed updates.
+These security property tests are performed as part of a continuous integration pipline using the [Travis Continuous Integration Service](https://travis-ci.com/). Whenever changes are made -- no matter how small -- to the C implementations, Cryptol and SAW evaluations are automatically run to ensure that no security properties of the system have been disrupted by the proposed updates.
 
 A thorough description of the research, design decisions, and application of Cryptol to evaluating cryptographic implementations in Amazon's s2n system can be found in the paper [Contiuous Formal Verificationof Amazon s2n](https://link.springer.com/chapter/10.1007/978-3-319-96142-2_26). This paper was selected by NSA's Science of Security group for honorable mention in the [7th Annual Best Scientific Cybersecurity Paper Competition](https://cps-vo.org/group/sos/papercompetition/pastcompetitions).
 
@@ -38,7 +36,7 @@ Further exposition on the development of these integration tests can be found in
  * [Part 2](https://galois.com/blog/2016/09/specifying-hmac-in-cryptol/) - **Specifying HMAC in Cryptol**
  * [Part 3](https://galois.com/blog/2016/09/proving-program-equivalence-with-saw/) - **Proving Program Equivalence with SAW**
 
-## Verifying Cryptographic Implementations -- The `xxhash` Algorithm
+## Verifying Cryptographic Implementations: The `xxhash` Algorithm
 
 The tools that Cryptol provides access to allows users to bring together cryptographic implementations from other languages like *Java* or *C* and prove that they are equivalent to "gold standard" specifications one can create in Cryptol. This allows users to iteratively optimize code in performance-centric or system languages while maintaining a single trusted specification in Cryptol.
 
@@ -542,4 +540,5 @@ Cryptol> last ss
 
 # References
 
+* [Programming Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf) -- A good overview and reference for the Cryptol language. Contains many examples and references for programming language features.
 
