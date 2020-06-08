@@ -48,15 +48,15 @@ Cryptol provides an easy interface for using powerful tools such as SAT solvers 
 
 ```haskell
 encrypt : {a}(fin a) => [8] -> [a][8] -> [a][8]
-encrypt key plaintext = [pt ^ key | pt <- plaintext ]
+encrypt key plaintext = [ pt ^ key | pt <- plaintext ]
 
 decrypt : {a}(fin a) => [8] -> [a][8] -> [a][8]
-decrypt key ciphertext = [ct ^ key | ct <- ciphertext ]
+decrypt key ciphertext = [ ct ^ key | ct <- ciphertext ]
 
-property roundtrip k ip = decrypt k (encrypt k ip) == ip
+property roundtrip key plaintext = decrypt key (encrypt key plaintext) == plaintext
 ```
 
-This file defines an `encrypt` operation, a `decrypt` operation, and a property called `roundtrip` which checks for all keys `k` and all input plaintexts `ip` that `decrypt k (encrypt k ip) == ip` (*i.e.* that these operations are inverse to one another).
+This file defines an `encrypt` operation, a `decrypt` operation, and a property called `roundtrip` which checks for all keys `key` and all input plaintexts `plaintext` that `decrypt key (encrypt key plaintext) == plaintext` (*i.e.* that these operations are inverse to one another).
 
 We can see the effect of encrypting the particular input `attack at dawn` with the key `0xff`:
 
@@ -76,7 +76,7 @@ Q.E.D.
 (Total Elapsed Time: 0.010s, using Z3)
 ```
 
-Cryptol reports `Q.E.D.` indicating that our property is indeed true for all possible inputs. Here we must specify the length of the messages that we want to check this property for. This example checks the property for 16 character messages, but we could check this for any arbitrary length.
+Cryptol reports `Q.E.D.` indicating that our property is indeed true for all keys and all 16-character inputs. Cryptol currently only supports proofs of [total](https://en.wikipedia.org/wiki/Partial_function#Function) [monomorphic](https://en.wikipedia.org/wiki/Polymorphism_(computer_science)) properties with a finite domain. Here we must specify the length of the messages that we want to check this property for. This example checks the property for 16 character messages, but we could check this for at any (reasonable) length.
 
 
 # Language Features
@@ -99,12 +99,8 @@ Cryptol was designed to provide easy access to the sorts of data and operations 
 ```haskell
 Cryptol> :t True
 True : Bit
-Cryptol> True && False
-False
 Cryptol> True /\ False
 False
-Cryptol> True || False
-True
 Cryptol> True \/ False
 True
 Cryptol> ~True
@@ -128,17 +124,11 @@ s3 : [3][2][4]
  * **Integers** - An arbitrary precision integer type.
 
 ```haskell
-Cryptol> 1+1
-Showing a specific instance of polymorphic result:
-  * Using 'Integer' for type argument 'a' of '(Cryptol::+)'
+Cryptol> 1+1 : Integer
 2
-Cryptol> 42*314
-Showing a specific instance of polymorphic result:
-  * Using 'Integer' for type argument 'a' of '(Cryptol::*)'
+Cryptol> 42*314 : Integer
 13188
-Cryptol> 123456789234567890+234567890123456789
-Showing a specific instance of polymorphic result:
-  * Using 'Integer' for type argument 'a' of '(Cryptol::+)'
+Cryptol> 123456789234567890+234567890123456789 : Integer
 358024679358024679
 ```
 
@@ -219,7 +209,7 @@ Showing a specific instance of polymorphic result:
 We can nudge Cryptol with the element types to control the types of the elements of the enumeration:
 
 ```haskell
-Cryptol> [0:[32] .. 15]
+Cryptol> [0 .. 15 : [32]]
 [0x00000000, 0x00000001, 0x00000002, 0x00000003, 0x00000004,
  0x00000005, 0x00000006, 0x00000007, 0x00000008, 0x00000009,
  0x0000000a, 0x0000000b, 0x0000000c, 0x0000000d, 0x0000000e,
@@ -269,7 +259,7 @@ Cryptol> [ x + y | x <- [1 .. 3] | y <- [1 .. 10] ]
 * **Self-Referential** -- Lists can even refer to themselves in a comprehension. This is a very powerful technique which is frequently used in cryptographic applications. Here we construct a representation of the infinite list of Fibbonacci numbers. Note that here we assign a name to the list so that we can use it self-referentially in the definition:
 
 ```haskell
-Cryptol> let fibs = [0, 1] # [ x + y | x <- fibs | y <- tail(fibs)]
+Cryptol> let fibs = [0, 1] # [ x + y | x <- fibs | y <- tail fibs ]
 Cryptol> fibs
 [0, 1, 1, 2, 3, ...]
 ```
@@ -290,24 +280,16 @@ Cryptol> if False then 0x2 else 0x3
 Cryptol conditionals are subject to typing conditions and the two branches must have the same type to be a valid conditional expression. The type of a conditional expression is the shared type of the two branches.
 
 ```haskell
-Cryptol> :t (if True then 0x2 else 0x3)
+Cryptol> :t if True then 0x2 else 0x3
 (if True then 0x2 else 0x3) : [4]
 ```
 
 If the two branches are typed differently, then Cryptol flags this as an error:
 
 ```haskell
-Cryptol> :t (if True then 0x2:[16] else 0x3:[32])
+Cryptol> :t if True then 2:[16] else 3:[32]
 
-[error] at <interactive>:1:15--1:18:
-  Type mismatch:
-    Expected type: 16
-    Inferred type: 4
-[error] at <interactive>:1:29--1:32:
-  Type mismatch:
-    Expected type: 32
-    Inferred type: 4
-[error] at <interactive>:1:29--1:37:
+[error] at <interactive>:1:27--1:33:
   Type mismatch:
     Expected type: 16
     Inferred type: 32
@@ -340,7 +322,7 @@ Cryptol> ss
  3828, 3916, 4005, 4095, 4186, 4278, 4371, 4465, 4560, 4656, 4753,
  4851, 4950, 5050]
 
-Cryptol> ss!0
+Cryptol> last ss
 5050
 ```
 
