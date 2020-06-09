@@ -1,0 +1,4 @@
+sayHello : {a} (fin a) => [a][8] -> [7+a][8]
+sayHello name = greeting
+  where
+    greeting = "Hello, " # name

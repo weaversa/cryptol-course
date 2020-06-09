@@ -13,8 +13,42 @@ This lab will provide a quick overview of Cryptol, some motivating applications 
 
 More information about Cryptol is available at [http://www.cryptol.net](https://cryptol.net).
 
+# First Steps: Hello, Cryptol!
 
-# Real World Cryptol
+A grand tradition when learning any new programming language is to test out the waters with a Hello World program. In `helloworld.cry` we define a function `sayHello` which is defined as follows:
+
+```haskell
+sayHello : {a} (fin a) => [a][8] -> [7+a][8]
+sayHello name = greeting
+  where
+    greeting = "Hello, " # name
+```
+
+If you have Cryptol properly installed you should be able to do the following from the terminal:
+
+```shell
+$ cryptol
+┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
+┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
+┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
+version 2.8.1 (e914cef)
+https://cryptol.net  :? for help
+
+Loading module Cryptol
+Cryptol> :l helloworld.cry
+Loading module Cryptol
+Loading module Main
+Main> sayHello "Cryptol!"
+[0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x43, 0x72, 0x79, 0x70,
+ 0x74, 0x6f, 0x6c, 0x21]
+Main> :s ascii=on
+Main> sayHello "Cryptol!"
+"Hello, Cryptol!"
+Main>
+```
+Congratulations, you are now officially on speaking terms!
+
+# Cryptol in the Wild
 
 Cryptol has been used in the development and evaluation of high assurance cryptographic systems that enjoy wide use. Notable examples where Cryptol has been successfully applied by industry leaders to add assurance to cryptographic implementations include Amazon s2n and Microsoft's ElectionGuard.
 
@@ -55,7 +89,7 @@ This directory contains the following files
 └── xxhash.cry
 ```
 
-`xxhash.cry` contains Cryptol specifications for 32- and 64-bit variants of the `xxhash` algorithm along with related subroutines. The 32-bit variant has the following definition:
+[`xxhash.cry`](https://github.com/GaloisInc/saw-demos/blob/master/demos/xxhash/xxhash.cry) contains Cryptol specifications for 32- and 64-bit variants of the `xxhash` algorithm along with related subroutines. The 32-bit variant has the following definition:
 
 ```haskell
 XXH32 : {L} (fin L) => [L][8] -> [32] -> [32]
@@ -71,7 +105,7 @@ XXH32 input seed = XXH32_avalanche acc1
 
 This function depends on other components defined in this file such as `XXH32_avalanche`, `XXH32_rounds`, and `XXH32_init` which you can take a look at as well. At a glance we see that this function has the type signature `{L} (fin L) => [L][8] -> [32] -> [32]` which indicates that this function takes a finite sequence of bytes, a 32-bit seed and produces a 32-bit result (the hash).
 
-`xxhash32-ref.c` and `xxhash64-ref.c` contain `C` implementations of the `xxhash` algorithm which might commonly be seen in a real-world system implementation where performance was critical. Here is a snippet containing the `C` implementation of the hash function which is called`XXH32`:
+[`xxhash32-ref.c`](https://github.com/GaloisInc/saw-demos/blob/master/demos/xxhash/xxhash32-ref.saw) and [`xxhash64-ref.c`](https://github.com/GaloisInc/saw-demos/blob/master/demos/xxhash/xxhash64-ref.c) contain `C` implementations of the `xxhash` algorithm which might commonly be seen in a real-world system implementation where performance was critical. Here is a snippet containing the `C` implementation of the hash function which is called`XXH32`:
 
 ```C
 /* The XXH32 hash function.
@@ -135,7 +169,7 @@ uint32_t XXH32(void const *const input, size_t const length, uint32_t const seed
     return XXH32_avalanche(hash);
 }
 ```
-Finally the files ```xxhash32-ref.saw``` and ```xxhash64-ref.saw``` which contain SAW scripts which drive the verification that this `C` code is equivalent to the specification found in this Cryptol specification of `xxhash`.
+Finally the files [```xxhash32-ref.saw```](https://github.com/GaloisInc/saw-demos/blob/master/demos/xxhash/xxhash32-ref.saw) and [```xxhash64-ref.saw```](https://github.com/GaloisInc/saw-demos/blob/master/demos/xxhash/xxhash64-ref.saw) which contain SAW scripts which drive the verification that this `C` code is equivalent to the specification found in this Cryptol specification of `xxhash`.
 
 Running `make` at the commandline will initiate the verification for both the 32- and 64-bit implementations, producing the following output:
 
@@ -161,7 +195,7 @@ These scripts will check that the `C` implementations match the Cryptol specific
 
 ## Verifying Properties about Algorithms
 
-Cryptol provides an easy interface for using powerful tools such as SAT solvers for verifying properties about algorithms we care about. Throughout this course we will introduce examples and explain how to take advantage of these tools in your own designs and evaluations. Here is an example packaged with the Cryptol source that demonstrates a simple but important property about an encryption algorithm which only uses the (XOR) operation:
+Cryptol provides an easy interface for using powerful tools such as SMT solvers for verifying properties about algorithms we care about. Throughout this course we will introduce examples and explain how to take advantage of these tools in your own designs and evaluations. Here is an example packaged with the Cryptol source that demonstrates a simple but important property about an encryption algorithm which only uses the (XOR) operation:
 
 ```haskell
 encrypt : {a}(fin a) => [8] -> [a][8] -> [a][8]
@@ -185,7 +219,7 @@ Main> encrypt 0xff "attack at dawn"
 
 Cryptol interprets the string `"attack at dawn"` as a sequence of bytes suitable for the encrypt operations. We will introduce Cryptol types in this lab and discuss them in detail throughout this course.
 
-Furthermore, we can prove this property holds in the interpreter using the `:prove` command and the currently configured SAT solver (Z3 by default):
+Furthermore, we can prove this property holds in the interpreter using the `:prove` command and the currently configured SMT solver (Z3 by default):
 
 ```haskell
 Main> :prove roundtrip : [8] -> [16][8] -> Bit
@@ -202,7 +236,7 @@ So what makes Cryptol special compared to other langauges?
 
 Cryptol is a language designed with Cryptography specifically in mind -- much of the syntax and language was designed with the way that real cryptographers think about and design systems. This allows the Cryptol user to create formal algorithm specifications that closely imitate the style used to describe these algorithms mathematically.
 
-Furthermore, Cryptol provides direct access and easily integrates with powerful tools such as SAT solvers and the Software Analysis Workbench (SAW). These tools allow the user to *prove* facts and demonstrate properties about their code which can provide assurance guarantees that go far beyond simple unit testing.
+Furthermore, Cryptol provides direct access and easily integrates with powerful tools such as SMT solvers and the Software Analysis Workbench (SAW). These tools allow the user to *prove* facts and demonstrate properties about their code which can provide assurance guarantees that go far beyond simple unit testing.
 
 We will introduce some of these features below and discuss how they support building Cryptographic specifications and evaluations. If you have access to the Cryptol interpreter you can follow along with some of the examples, but a detailed introduction to the Cryptol interpreter will be provided in future lessons.
 
@@ -344,7 +378,7 @@ Main> :b
 
 ## Functions
 
-Cryptol allows users to define functions allowing subcomponents to be reused or allow greater clarity in a program. Functions are typically specified in two parts: the *type definition* and the *function definition*.
+Like many languages, Cryptol enables users to define functions, thereby allowing subcomponents to be reused and providing greater clarity. Functions are typically specified in two parts: the *type definition* and the *function definition*.
 
 Suppose that a project file `rotword.cry` contains the following code:
 
@@ -383,7 +417,7 @@ Main> :prove
 (Total Elapsed Time: 0.005s, using Z3)
 ```
 
-`Q.E.D.` Building up more complex properties and relationships between the components of a system allow us to assert with very high confidence that the system is correct.
+Building up more complex properties and relationships between the components of a system allow us to assert with very high confidence that the system is correct.
 
 * **lambda expressions** / **anonymous functions** -- Cryptol lets users define functions without having to specify a name which can be useful in some circumstances, often to formulate a function which will be the return value of another function. Lambda expressions are formed as follows and have types and can be computed with just like regular functions:
 
@@ -398,7 +432,7 @@ Main> (\(x:[32]) -> x*x) 3
 
 ## Enumerations
 
-Cryptol supports compact notation for sequences that increase or decrease in regular steps:
+Cryptol supports compact notation for [Arithmetic Sequences](https://en.m.wikipedia.org/wiki/Arithmetic_progression) (which increase or decrease in regular intervals):
 
 ```haskell
 Cryptol> [1, 2 .. 10]
@@ -409,7 +443,7 @@ Cryptol> [10, 9 .. 0]
 [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 ```
 
-For clarity, some output above was ommitted. Cryptol is kind enough to inform us that it is making an assumption about the type in the list. Here is the full output:
+Cryptol is kind enough to inform us that it is making an assumption about the type in the list. Here is the full output:
 
 ```haskell
 Cryptol> [1, 2 .. 10]
@@ -538,7 +572,11 @@ Cryptol> last ss
 5050
 ```
 
-# References
+# Documentation and References
 
 * [Programming Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf) -- A good overview and reference for the Cryptol language. Contains many examples and references for programming language features.
+
+* [Cryptol Version 2 Syntax](https://github.com/GaloisInc/cryptol/blob/master/docs/Syntax.pdf) -- A comprehensive guide to Cryptol Syntax
+
+* [Cryptol Semantics](https://github.com/GaloisInc/cryptol/blob/master/docs/Semantics.pdf) -- A guide to Cryptol language semantics and overview of the underlying representations of Cryptol's type system
 
