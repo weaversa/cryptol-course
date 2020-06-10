@@ -34,7 +34,6 @@ sumfactdigits n = if n == 0 then 0 else factorial (n % 10) + sumfactdigits (n / 
 
 sumfactprop : Integer -> Bit
 property sumfactprop n = sumfactdigits n == n
-
 ```
 
 ### [Problem 36](https://projecteuler.net/problem=36)
