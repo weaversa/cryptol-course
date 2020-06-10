@@ -4,6 +4,11 @@
 > 
 > For example, 3^2 + 4^2 = 9 + 16 = 25 = 5^2.  There exists exactly one Pythagorean triplet for which a + b + c = 1000.  Find the product abc.
 
+```
+pythagoreantriple : Integer -> Integer -> Integer -> Bit
+property pythagoreantriple a b c = a^^2 + b^^2 == c^^2 /\ a + b + c == 1000 /\ a != 0
+```
+
 ### [Problem 34](https://projecteuler.net/problem=34)
 
 > 145 is a curious number, as 1! + 4! + 5! = 1 + 24 + 120 = 145.
@@ -11,6 +16,26 @@
 > Find the sum of all numbers which are equal to the sum of the factorial of their digits.
 > 
 > Note: as 1! = 1 and 2! = 2 are not sums they are not included.
+
+```
+factorial : Integer -> Integer
+factorial n = if n == 2 then      2 else
+	      if n == 3 then      6 else
+	      if n == 4 then     24 else
+	      if n == 5 then    120 else
+	      if n == 6 then    720 else
+	      if n == 7 then   5040 else
+	      if n == 8 then  40320 else
+	      if n == 9 then 362880 else
+	      1
+
+sumfactdigits : Integer -> Integer
+sumfactdigits n = if n == 0 then 0 else factorial (n % 10) + sumfactdigits (n / 10)
+
+sumfactprop : Integer -> Bit
+property sumfactprop n = sumfactdigits n == n
+
+```
 
 ### [Problem 36](https://projecteuler.net/problem=36)
 
