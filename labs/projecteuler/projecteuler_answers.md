@@ -16,7 +16,8 @@ property pythagoreantriple a b c = a^^2 + b^^2 == c^^2 /\ a + b + c == 1000 /\ a
 > Find the sum of all numbers which are equal to the sum of the factorial of their digits.
 > 
 > Note: as 1! = 1 and 2! = 2 are not sums they are not included.
-
+>
+> (Aside: these numbers are called [factorions](https://en.wikipedia.org/wiki/Factorion).  It is unclear why Project Euler does not include 1 and 2).
 ```
 factorial : Integer -> Integer
 factorial n = if n == 2 then      2 else
