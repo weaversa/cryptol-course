@@ -29,11 +29,28 @@ factorial n = if n == 2 then      2 else
 	      if n == 9 then 362880 else
 	      1
 
-sumfactdigits : Integer -> Integer
-sumfactdigits n = if n == 0 then 0 else factorial (n % 10) + sumfactdigits (n / 10)
+sum l = s ! 0
+    where
+     s = [0] # [ t + i | t <- l | i <- s ]
 
-sumfactprop : Integer -> Bit
-property sumfactprop n = sumfactdigits n == n
+powersoften = [1] # [ 10 * i | i <- powersoften ]
+
+alldigits : {a} (fin a) => [a]Integer -> Bit
+alldigits l = [ 0 <= i /\ i < 10 | i <- l ] == ~0
+
+basetenrep : {a} (fin a, a >= 1) => Integer -> [a]Integer -> Bit
+basetenrep n l = n == s /\ alldigits l /\ l @ 0 != 0
+    where
+     p = take powersoften
+     z = zip (reverse l) p
+     f = [ t.0 * t.1 | t <- z ]
+     s = sum f
+
+sumfactorial : {a} (fin a) => [a]Integer -> Integer
+sumfactorial l = sum [ factorial i | i <- l ]
+
+//sumfactprop : Integer -> Bit
+//property sumfactprop n = sumfactdigits n == n
 ```
 
 ### [Problem 36](https://projecteuler.net/problem=36)
@@ -43,6 +60,8 @@ property sumfactprop n = sumfactdigits n == n
 > Find the sum of all numbers, less than one million, which are palindromic in base 10 and base 2.
 >
 > (Please note that the palindromic number, in either base, may not include leading zeros.)
+
+
 
 ### [Problem 43](https://projecteuler.net/problem=43)
 
