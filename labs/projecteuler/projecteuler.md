@@ -55,6 +55,10 @@ Clearly we don't need SAT solvers to figure out how to subtract one.  And factor
 > Find the sum of all numbers which are equal to the sum of the factorial of their digits.
 > 
 > Note: as 1! = 1 and 2! = 2 are not sums they are not included.
+>
+> (Aside: these numbers are called [factorions](https://en.wikipedia.org/wiki/Factorion).  It is unclear why Project Euler does not include 1 and 2).
+>
+> Hints: the factorial function is usually defined recursively, but that tends to make SAT solving difficult.  Since you only need to calculate the factorial of the numbers 0-9, make your function just do a case by case calculation.  To get the digital representation of the number, create a function which takes in a number and a list of numbers and returns true exactly when the list is the base 10 representation.
 
 ### [Problem 36](https://projecteuler.net/problem=36)
 
