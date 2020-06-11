@@ -90,7 +90,6 @@ Unsatisfiable
 (Total Elapsed Time: 0.205s, using Z3)
 ```
 
-
 ### [Problem 36](https://projecteuler.net/problem=36)
 
 > The decimal number, 585 = 1001001001_(2) (binary), is palindromic in both bases.
@@ -99,7 +98,22 @@ Unsatisfiable
 >
 > (Please note that the palindromic number, in either base, may not include leading zeros.)
 
+```
+doublepalindrome : {a, b} (fin a, a >= 1, fin b) => [b] -> [a]Integer -> Bit
+property doublepalindrome x l = basetenrep (toInteger x) l /\ reverse l == l /\reverse x == x /\ x@0
+```
 
+```shell
+Main> :sat doublepalindrome`{1,3}
+doublepalindrome`{1, 3} 0x5 [5] = True
+(Total Elapsed Time: 0.042s, using Z3)
+Main> :sat doublepalindrome`{3,10}
+doublepalindrome`{3, 10} 0x2cd [7, 1, 7] = True
+(Total Elapsed Time: 0.060s, using Z3)
+Main> :sat doublepalindrome`{3,9}
+doublepalindrome`{3, 9} 0x139 [3, 1, 3] = True
+(Total Elapsed Time: 0.073s, using Z3)
+```
 
 ### [Problem 43](https://projecteuler.net/problem=43)
 
