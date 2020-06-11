@@ -17,7 +17,10 @@ property pythagoreantriple a b c = a^^2 + b^^2 == c^^2 /\ a + b + c == 1000 /\ a
 > 
 > Note: as 1! = 1 and 2! = 2 are not sums they are not included.
 >
-> (Aside: these numbers are called [factorions](https://en.wikipedia.org/wiki/Factorion).  It is unclear why Project Euler does not include 1 and 2).
+> (Aside: these numbers are called [factorions](https://en.wikipedia.org/wiki/Factorion).  It is unclear why Project Euler does not include 1 and 2.  Finally, it is known that the most number of digits a factorion can have is 6).
+>
+> Hints: the factorial function is usually defined recursively, but that tends to make SAT solving difficult.  Since you only need to calculate the factorial of the numbers 0-9, make your function just do a case by case calculation.  To get the digital representation of the number, create a function which takes in a number and a list of numbers and returns true exactly when the list is the base 10 representation.
+
 ```
 factorial : Integer -> Integer
 factorial n = if n == 2 then      2 else
@@ -50,9 +53,43 @@ basetenrep n l = n == s /\ alldigits l /\ l @ 0 != 0
 sumfactorial : {a} (fin a) => [a]Integer -> Integer
 sumfactorial l = sum [ factorial i | i <- l ]
 
-//sumfactprop : Integer -> Bit
-//property sumfactprop n = sumfactdigits n == n
+
+factorionprop : {a} (fin a, a >= 1) => Integer -> [a]Integer -> Bit
+property factorionprop n l = basetenrep n l /\ sumfactorial l == n
 ```
+```shell
+Main> :sat factorionprop`{1}
+factorionprop`{1} 2 [2] = True
+(Total Elapsed Time: 0.048s, using Z3)
+Main> :sat (\(x, l) -> factorionprop`{1} x l /\ x != 2)
+(\(x, l) -> factorionprop`{1} x l /\ x != 2) (1, [1]) = True
+(Total Elapsed Time: 0.047s, using Z3)
+Main> :sat (\(x, l) -> factorionprop`{1} x l /\ x != 2 /\ x != 1)
+Unsatisfiable
+(Total Elapsed Time: 0.046s, using Z3)
+Main> :sat factorionprop`{2}
+Unsatisfiable
+(Total Elapsed Time: 0.041s, using Z3)
+Main> :sat factorionprop`{3}
+factorionprop`{3} 145 [1, 4, 5] = True
+(Total Elapsed Time: 0.067s, using Z3)
+Main> :sat (\(x,l) -> factorionprop`{3} x l /\ x != 145)
+Unsatisfiable
+(Total Elapsed Time: 0.063s, using Z3)
+Main> :sat factorionprop`{4}
+Unsatisfiable
+(Total Elapsed Time: 0.086s, using Z3)
+Main> :sat factorionprop`{5}
+factorionprop`{5} 40585 [4, 0, 5, 8, 5] = True
+(Total Elapsed Time: 0.096s, using Z3)
+Main> :sat (\(x,l) -> factorionprop`{5} x l /\ x != 40585)
+Unsatisfiable
+(Total Elapsed Time: 0.141s, using Z3)
+Main> :sat factorionprop`{6}
+Unsatisfiable
+(Total Elapsed Time: 0.205s, using Z3)
+```
+
 
 ### [Problem 36](https://projecteuler.net/problem=36)
 
