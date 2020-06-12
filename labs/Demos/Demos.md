@@ -2,7 +2,7 @@
 
 - [Caesar](Caesar.md)
   Come, see, and conquer the classic.
-- [One-Time Pad](OTP.md) (TODO)
+- [One-Time Pad](OneTimePad.md)
   Perfect secrecy, for once.
 - [n-Queens](NQueens.md)
   Cryptol is not just crypto.
