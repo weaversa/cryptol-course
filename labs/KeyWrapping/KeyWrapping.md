@@ -60,7 +60,7 @@ block cipher. Section 5.1 (p. 8) of the standard states:
 > is therefore 64 bits; the KEK for TKW may have any length for which TDEA is
 > approved; see [8].
 
-The necessary block ciphers are to be [`AES`](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) -- with key sizes 128, 192, and 256 bits. The 
+We will need to   [`AES`](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) -- with key sizes 128, 192, and 256 bits. The 
 standard does not indicate a specific key size for [`TDEA`](https://en.wikipedia.org/wiki/Triple_DES), so we will use the **TODO** standard 168 bit key size.
 
 Will will not be developing these algorithms in this lab. Instead we will use
