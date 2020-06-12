@@ -54,6 +54,7 @@ function works correctly.
 ```
 parity : {n} (fin n) => [n] -> Bit
 parity w = zero
+```
 
 ```
 property parity8bitProp =
