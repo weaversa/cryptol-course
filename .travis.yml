@@ -46,7 +46,7 @@ script:
   - cryptol -e -c ":l labs/saw/bittwiddling/bittwiddling.md"
   - clang -emit-llvm -c labs/saw/bittwiddling/bittwiddling.c -o labs/saw/bittwiddling/bittwiddling.bc
   - cryptol -e -c ":l labs/saw/bittwiddling/bittwiddling_answers.md"
-  - ! command -v saw >/dev/null 2>&1 || { saw labs/saw/bittwiddling/bittwiddling_answers.saw }
+# - ! command -v saw >/dev/null 2>&1 || { saw labs/saw/bittwiddling/bittwiddling_answers.saw }
 # Salsa20 lab tests
   - cryptol -e -c ":m labs::Salsa20::Salsa20"
   - cryptol -e -c ":m labs::Salsa20::Salsa20Answers"
