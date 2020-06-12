@@ -1,4 +1,6 @@
---- 
+---
+services:
+  - docker
 jobs: 
   include: 
     - 
@@ -37,6 +39,11 @@ script:
   - cryptol -e -b labs/interpreter/test.sry
 # Arithmetic verification tests
   - make -C extras/arithmetic-verification
+# Bittwiddling lab tests
+  - cryptol -e -c ":l labs/saw/bittwiddling/bittwiddling.md"
+  - clang -emit-llvm -c labs/saw/bittwiddling/bittwiddling.c -o labs/saw/bittwiddling/bittwiddling.bc
+  - cryptol -e -c ":l labs/saw/bittwiddling/bittwiddling_answers.md"
+  - saw labs/saw/bittwiddling/bittwiddling_answers.saw
 # Salsa20 lab tests
   - cryptol -e -c ":m labs::Salsa20::Salsa20"
   - cryptol -e -c ":m labs::Salsa20::Salsa20Answers"
