@@ -1,7 +1,7 @@
-/*This is the SAW script you will use to compare your
-  Cryptol code against the C implementations in
-  bittwiddling.c.
-*/
+/**
+ * This is the SAW script you will use to compare your Cryptol code
+ * against the C implementations in bittwiddling.c.
+ */
 
 print "Importing Cryptol file";
 import "bittwiddling_answers.md";
@@ -13,7 +13,7 @@ print "Extracting parity8bit function";
 parity8bit_c <- crucible_llvm_extract l "parity8bit";
 
 print "Checking C parity8bit implementation vs Cryptol specification";
-let thm1 = {{ \x -> parity8bit_c x == [ parity8bit x ] }};
+let thm1 = {{ \x -> parity8bit_c x == [ parity x ] }};
 result <- prove z3 thm1;
 print result;
 
@@ -21,7 +21,7 @@ print "Extracting parity32bit function";
 parity32bit_c <- crucible_llvm_extract l "parity32bit";
 
 print "Checking C parity32bit implementation vs Cryptol specification";
-let thm2 = {{ \x -> parity32bit_c x == parity32bit x }};
+let thm2 = {{ \x -> parity32bit_c x == [ parity x ] }};
 result <- prove z3 thm2;
 print result;
 
@@ -29,7 +29,7 @@ print "Extracting parity64bit function";
 parity64bit_c <- crucible_llvm_extract l "parity64bit";
 
 print "Checking C parity64bit implementation vs Cryptol specification";
-let thm3 = {{ \x -> parity64bit_c x == parity64bit x }};
+let thm3 = {{ \x -> parity64bit_c x == [ parity x ] }};
 result <- prove z3 thm3;
 print result;
 
