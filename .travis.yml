@@ -38,7 +38,7 @@ script:
   - cryptol -e -c ":m labs::interpreter::test" -c ":s base=10" -c "x + 2"
   - cryptol -e -b labs/interpreter/test.sry
 # Arithmetic verification tests
-  - make -C extras/arithmetic-verification
+  - make -C labs/saw/arithmetic-verification
 # Bittwiddling lab tests
   - cryptol -e -c ":l labs/saw/bittwiddling/bittwiddling.md"
   - clang -emit-llvm -c labs/saw/bittwiddling/bittwiddling.c -o labs/saw/bittwiddling/bittwiddling.bc
