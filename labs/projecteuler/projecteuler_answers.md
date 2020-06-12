@@ -1,4 +1,4 @@
-### [Problem 9](https://projecteuler.net/problem=9)
+### AAAA[Problem 9](https://projecteuler.net/problem=9)
 
 > A Pythagorean triplet is a set of three natural numbers, a < b < c, for which a^2 + b^2 = c^2.
 > 
@@ -6,7 +6,10 @@
 
 ```
 pythagoreantriple : Integer -> Integer -> Integer -> Bit
-property pythagoreantriple a b c = a^^2 + b^^2 == c^^2 /\ a + b + c == 1000 /\ a != 0
+property pythagoreantriple a b c =
+    a^^2 + b^^2 == c^^2 /\
+    a + b + c == 1000   /\
+    a != 0
 ```
 
 ### [Problem 34](https://projecteuler.net/problem=34)
@@ -42,20 +45,28 @@ powersoften = [1] # [ 10 * i | i <- powersoften ]
 alldigits : {a} (fin a) => [a]Integer -> Bit
 alldigits l = [ 0 <= i /\ i < 10 | i <- l ] == ~0
 
-basetenrep : {a} (fin a, a >= 1) => Integer -> [a]Integer -> Bit
+basetenrep :
+    {a}
+    (fin a, a >= 1) =>
+    Integer -> [a]Integer -> Bit
 basetenrep n l = n == s /\ alldigits l /\ l @ 0 != 0
-    where
-     p = take powersoften
-     z = zip (reverse l) p
-     f = [ t.0 * t.1 | t <- z ]
-     s = sum f
+     where
+      p = take powersoften
+      z = zip (reverse l) p
+      f = [ t.0 * t.1 | t <- z ]
+      s = sum f
 
 sumfactorial : {a} (fin a) => [a]Integer -> Integer
 sumfactorial l = sum [ factorial i | i <- l ]
 
 
-factorionprop : {a} (fin a, a >= 1) => Integer -> [a]Integer -> Bit
-property factorionprop n l = basetenrep n l /\ sumfactorial l == n
+factorionprop :
+    {a}
+    (fin a, a >= 1) =>
+    Integer -> [a]Integer -> Bit
+property factorionprop n l =
+    basetenrep n l /\
+    sumfactorial l == n
 ```
 ```shell
 Main> :sat factorionprop`{1}
@@ -99,8 +110,15 @@ Unsatisfiable
 > (Please note that the palindromic number, in either base, may not include leading zeros.)
 
 ```
-doublepalindrome : {a, b} (fin a, a >= 1, fin b) => [b] -> [a]Integer -> Bit
-property doublepalindrome x l = basetenrep (toInteger x) l /\ reverse l == l /\reverse x == x /\ x@0
+doublepalindrome :
+    {a, b}
+    (fin a, a >= 1, fin b) =>
+    [b] -> [a]Integer -> Bit
+property doublepalindrome x l =
+    basetenrep (toInteger x) l /\
+    reverse l == l             /\
+    reverse x == x             /\
+    x@0
 ```
 
 ```shell
@@ -113,6 +131,7 @@ doublepalindrome`{3, 10} 0x2cd [7, 1, 7] = True
 Main> :sat doublepalindrome`{3,9}
 doublepalindrome`{3, 9} 0x139 [3, 1, 3] = True
 (Total Elapsed Time: 0.073s, using Z3)
+...
 ```
 
 ### [Problem 43](https://projecteuler.net/problem=43)
@@ -131,6 +150,56 @@ doublepalindrome`{3, 9} 0x139 [3, 1, 3] = True
 >
 > Find the sum of all 0 to 9 pandigital numbers with this property.  
 
+```
+listhasdigit :
+    {a}
+    (fin a, a >=1) =>
+    [a]Integer -> Integer -> Bit
+listhasdigit l n = [ i == n | i <- l ] != 0
+
+hasalldigits : [10]Integer -> Bit
+hasalldigits l =
+    [ listhasdigit l i | i <- [0..9] ] == ~0
+
+formnumber :
+    {a}
+    (fin a) =>
+    [a]Integer -> Integer
+formnumber l =
+    sum [ i * t | i <- reverse l | t <- powersoften ]
+
+pandigital : Integer -> [10]Integer -> Bit
+pandigital n l =
+    basetenrep n l  /\
+    hasalldigits l  /\
+    n234 % 2  == 0  /\
+    n345 % 3  == 0  /\
+    n456 % 5  == 0  /\
+    n567 % 7  == 0  /\
+    n678 % 11 == 0  /\
+    n789 % 13 == 0  /\
+    n890 % 17 == 0
+     where
+      n234 = formnumber (l @@ ([1,2,3] : [3][16]))
+      n345 = formnumber (l @@ ([2,3,4] : [3][16]))
+      n456 = formnumber (l @@ ([3,4,5] : [3][16]))
+      n567 = formnumber (l @@ ([4,5,6] : [3][16]))
+      n678 = formnumber (l @@ ([5,6,7] : [3][16]))
+      n789 = formnumber (l @@ ([6,7,8] : [3][16]))
+      n890 = formnumber (l @@ ([7,8,9] : [3][16]))
+```
+
+```shell
+Main> :sat pandigital 
+pandigital 4130952867 [4, 1, 3, 0, 9, 5, 2, 8, 6, 7] = True
+(Total Elapsed Time: 1.001s, using Z3)
+Main> :sat (\(x, l) -> pandigital x l /\ x != 4130952867)
+(\(x, l) -> pandigital x l /\ x != 4130952867)
+  (4160357289, [4, 1, 6, 0, 3, 5, 7, 2, 8, 9]) = True
+(Total Elapsed Time: 7.419s, using Z3)
+...
+```
+
 ### [Problem 48](https://projecteuler.net/problem=48)
 
 > The series, 1^(1) + 2^(2) + 3^(3) + ... + 10^(10) = 10405071317.
@@ -141,7 +210,26 @@ doublepalindrome`{3, 9} 0x139 [3, 1, 3] = True
 
 >It can be seen that the number, 125874, and its double, 251748, contain exactly the same digits, but in a different order.
 >
-> Find the smallest positive integer, x, such that 2x, 3x, 4x, 5x, and 6x, contain the same digits. 
+> Find the smallest positive integer, x, such that 2x, 3x, 4x, 5x, and 6x, contain the same digits.
+
+```
+twolistssamedigits :
+    {a}
+    (fin a, a >=1) =>
+    [a]Integer -> [a]Integer -> Bit
+twolistssamedigits l1 l2 =
+    [ listhasdigit l1 i | i <- l2 ] == ~0
+
+productdigits : {a} (fin a, a >= 1) => Integer -> [6][a]Integer -> Bit
+property productdigits n ls =
+    basetenrep n l1                                            /\
+    [ twolistssamedigits l1 l | l <- tls ] == ~0               /\
+    [ formnumber li == i * n | li <- tls | i <- [2..6] ] == ~0 /\
+    [ alldigits l | l <- ls ] == ~0
+    where
+     [l1, l2, l3, l4, l5, l6] = ls
+     tls = tail ls
+```
 
 ### [Problem 59](https://projecteuler.net/problem=59)
 
