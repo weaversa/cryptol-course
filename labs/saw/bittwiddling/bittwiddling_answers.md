@@ -54,6 +54,7 @@ function works correctly.
 ```
 parity : {n} (fin n) => [n] -> Bit
 parity w = foldl (^) False w
+```
 
 ```
 property parity8bitProp =
