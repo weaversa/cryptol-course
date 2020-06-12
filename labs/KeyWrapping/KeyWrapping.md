@@ -28,22 +28,26 @@ module definition.
 
 ```
 module labs::KeyWrapping::KeyWrapping where
-
-import specs::Primitive::Symmetric::Cipher::Block::AES::TripleDES
 ```
+
+**TODO** In this lab we will...
 
 # Getting Started
 
-[NIST Special Publications](https://www.nist.gov/itl/publications-0/nist-special-publication-800-series-general-information) in the 800 Series provide 
-information of interest to the computer security community. The series 
-comprises guidelines, recommendations, technical specifications, and annual
-reports of NIST’s cybersecurity activities.
+The [NIST Special Publications 800 Series](https://www.nist.gov/itl/publications-0/nist-special-publication-800-series-general-information) provide information of interest to
+the computer security community. The series comprises guidelines, 
+recommendations, technical specifications, and annual reports of NIST’s 
+cybersecurity activities.
 
 Reading through and implementing a formal specification in Cryptol for one of 
-these cryptography standards can be a challeng. The standards are written by
-a variety of authors with the algorithms often described in an implementation language agnostic pseudo-code.
+these cryptography standards can be a challenge. The standards are written by
+a variety of authors and the algorithms are often described in language-agnostic
+pseudo code.
 
-Our job is to extract the relevant details 
+Our job is to extract the relevant details from the specifictation and build
+specifications for the three main algorithms listed above.
+
+
 
 
 
