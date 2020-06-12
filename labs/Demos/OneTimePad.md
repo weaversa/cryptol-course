@@ -33,10 +33,11 @@ is at least as long as the plaintext and only used once.
 
 ### Example
 
-Suppose Alice wishes to encipher the message `HELLO` using the pre-
-shared key `ZUGESAGT` with [ASCII](https://ascii.cl) encoding and the 
-[XOR](https://en.wikipedia.org/wiki/Exclusive_or) pairing operation. 
-Then she encodes `HELLO` as the ASCII hexadecimal sequence 
+Suppose Alice wishes to encipher the message `HELLO` using the 
+pre-shared key `ZUGESAGT` with [ASCII](https://ascii.cl) encoding 
+and the [XOR](
+https://en.wikipedia.org/wiki/Exclusive_or) pairing operation. Then 
+she encodes `HELLO` as the ASCII hexadecimal sequence 
 `[48 45 4C 4C 4F]` and `ZUGES` (the letters needed from the one-time 
 pad to cover the plaintext) as `[5A 55 47 45 53]`. Pairing these 
 yields the ciphertext `[48⊕5A 45⊕55 4C⊕47 4C⊕45 4F⊕53] = 
