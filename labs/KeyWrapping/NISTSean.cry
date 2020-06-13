@@ -1,0 +1,70 @@
+module labs::KeyWrapping::NISTSean where
+
+import specs::Primitive::Symmetric::Cipher::Block::AES128 as AES128
+
+/**
+ * This algorithm specifies the wrapping function, W, for KW-AE (see
+ * Sec. 6.2) and KWP-AE (see Sec. 6.3), using the same KEK and
+ * designated cipher function.
+ *
+ * Prerequisites: KEK, K, for an approved, 128-bit block cipher;
+ * designated cipher function, CIPHK. This necessarily implies that a
+ * semiblock is 64-bits.
+ *
+ * Input: a string, S, of n semiblocks, for some integer n ≥ 3.
+ **/
+
+W :
+    {n}
+    (fin n, n >= 3, 64 >= width (6 * (n - 1))) =>
+    ([128] -> [128]) -> [n][64] -> [n][64]
+W CIPHk S = C
+  where
+    t = [ 1 .. 6*(n-1) ]
+    C = foldl (WStep CIPHk) S t
+
+/**
+ * This algorithm implements step 2 of W, the inner loop that
+ * calculates the intermediate values At and Rt.
+ */
+
+WStep :
+    {n}
+    (fin n, n >= 3) =>
+    ([128] -> [128]) -> [n][64] -> [64] -> [n][64]
+WStep CIPHk ([At] # Rt) t = ([At' ^ t] # Rt')
+  where
+    [At', Rtn] = split (CIPHk (At # head Rt))
+    Rt'        = tail Rt # [Rtn]
+
+/**
+ * This algorithm specifies the authenticated-encryption function for
+ * KW for a given block cipher and KEK. The wrapping function, W,
+ * specified in the algorithm above, is invoked in Step 3 with the same
+ * block cipher and KEK as prerequisites.
+ *
+ * Prerequisites: KEK, K, for an approved, 128-bit block cipher;
+ * designated cipher function, CIPHK; definition of valid plaintext
+ * lengths.
+ *
+ * Input: plaintext P, with valid length n.
+ *
+ * Output: ciphertext C.
+ */
+
+KW :
+    {n}
+    (fin n, n >= 2, 64 >= width (6 * n)) =>
+    ([128] -> [128]) -> [n][64] -> [n+1][64]
+KW CIPHk P = C
+  where
+    ICV1 = 0xA6A6A6A6A6A6A6A6
+    S = [ICV1] # P
+    C = W CIPHk S
+
+
+
+test : [128] -> [128] -> [192]
+test k pt = join ct
+  where
+    ct = KW (\p -> AES128::aesEncrypt (p, k)) (split pt)
