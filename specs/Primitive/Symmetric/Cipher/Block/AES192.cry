@@ -243,28 +243,28 @@ testmsgs = [0x6bc1bee22e409f96e93d7e117393172a
 
 // AES128 tests
 
-testkey128 = 0x2b7e151628aed2a6abf7158809cf4f3c
+//testkey128 = 0x2b7e151628aed2a6abf7158809cf4f3c
 
-testct128 = [0x3ad77bb40d7a3660a89ecaf32466ef97
-            ,0xf5d3d58503b9699de785895a96fdbaaf
-            ,0x43b1cd7f598ece23881b00e3ed030688
-            ,0x7b0c785e27e8ad3f8223207104725dd4]
+//testct128 = [0x3ad77bb40d7a3660a89ecaf32466ef97
+//            ,0xf5d3d58503b9699de785895a96fdbaaf
+//            ,0x43b1cd7f598ece23881b00e3ed030688
+//            ,0x7b0c785e27e8ad3f8223207104725dd4]
 
-property testsPass = and [ aesEncrypt (msg, testkey128) == ct
-                         | msg <- testmsgs | ct <- testct128 ]
+//property testsPass = and [ aesEncrypt (msg, testkey128) == ct
+//                         | msg <- testmsgs | ct <- testct128 ]
 
 
 // AES192 tests
 
-// testkey192 = 0x8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b
+ testkey192 = 0x8e73b0f7da0e6452c810f32b809079e562f8ead2522c6b7b
 
-// testct192 = [0xbd334f1d6e45f25ff712a214571fa5cc 
-//             ,0x974104846d0ad3ad7734ecb3ecee4eef 
-//             ,0xef7afd2270e2e60adce0ba2face6444e 
-//             ,0x9a4b41ba738d6c72fb16691603c18e0e]
+ testct192 = [0xbd334f1d6e45f25ff712a214571fa5cc 
+             ,0x974104846d0ad3ad7734ecb3ecee4eef 
+             ,0xef7afd2270e2e60adce0ba2face6444e 
+             ,0x9a4b41ba738d6c72fb16691603c18e0e]
 
-// property testsPass = and [ aesEncrypt (msg, testkey192) == ct
-//                          | msg <- testmsgs | ct <- testct192 ]
+ property testsPass = and [ aesEncrypt (msg, testkey192) == ct
+                          | msg <- testmsgs | ct <- testct192 ]
 
 
 // AES256 tests

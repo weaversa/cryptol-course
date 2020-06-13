@@ -1,6 +1,8 @@
 module labs::KeyWrapping::NIST where
 
 import specs::Primitive::Symmetric::Cipher::Block::AES128 as AES128
+import specs::Primitive::Symmetric::Cipher::Block::AES192 as AES192
+import specs::Primitive::Symmetric::Cipher::Block::AES256 as AES256
 //import specs::Primitive::Symmetric::Cipher::Block::TripleDES as TDES
 
 type BlockSize = 128
@@ -44,4 +46,34 @@ KW128 KEK P = C
     ICV1 = 0xA6A6A6A6A6A6A6A6
     S = ICV1 # P
     C = W128 KEK S
+    
+// Start the KWInv stuff...    
+W128InvStep : [KEKSize] -> [64] -> (SemiBlock, [2]SemiBlock) -> (SemiBlock, [2]SemiBlock)
+W128InvStep KEK t (A, Ris) = (A', Ris')
+  where
+    CIPHInv_K C = AES128::aesDecrypt (C, KEK)
+    P_tmp       = CIPHInv_K ( (A ^ t) #  last(Ris) )
+    MSB_64      = take`{64} P_tmp
+    LSB_64      = drop`{64} P_tmp
+    A'          = MSB_64
+    Ris'        = [LSB_64] # (take`{1} Ris)  // need to drop the last 1... take the first (n-2)?
+    
+W128Inv : [KEKSize] -> [3 * SemiBlockSize] -> [3 * SemiBlockSize] 
+W128Inv KEK C = Ss
+  where  
+    Cs = split`{3} C
+    A0 = Cs@0         // They call this A_s, not sure how I want to notate this... 'As' breaks a pattern...
+    Rs = drop`{1} Cs
+
+    States = [(A0, Rs)] # [ W128InvStep KEK t state | state <- States | t:[64] <- [12, 11..1] ]
+    S1  = (last States).0
+    Sis = (last States).1
+    Ss  = S1 # (join Sis)
+    
+KWInv128 : [KEKSize] -> [3*SemiBlockSize] -> [3*SemiBlockSize]
+KWInv128 KEK C = P
+  where
+    //ICV1 = 0xA6A6A6A6A6A6A6A6
+    //S = ICV1 # P
+    P = W128Inv KEK C
 
