@@ -2,10 +2,7 @@
 
 ## Option 1: Docker
 
-[Docker](https://www.docker.com) images are available for both [Cryptol]
-(https://hub.docker.com/r/galoisinc/cryptol) and [SAW]
-(https://hub.docker.com/r/galoisinc/saw).  If Docker has been [installed]
-(https://docs.docker.com/get-docker), it is easy to `pull` and `run` these
+[Docker](https://www.docker.com) images are available for both [Cryptol](https://hub.docker.com/r/galoisinc/cryptol) and [SAW](https://hub.docker.com/r/galoisinc/saw).  If Docker has been [installed](https://docs.docker.com/get-docker), it is easy to `pull` and `run` these
 images:
 
 ```sh

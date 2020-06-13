@@ -104,7 +104,7 @@ Section `4.4` introduces operators and notation for cryptographic functions and 
  
  * **Section 7, Specification of TKW** -- This section specifies the final major algorithm `TKW`. It is structurally very similar to `KW`, but there are some differences that warrant its own section.
  
- * **Section 8, Conformance** -- This section has information about how implementations may claim conformance to the algorithms described in this standard. We will not need to 
+ * **Section 8, Conformance** -- This section has information about how implementations may claim conformance to the algorithms described in this standard.
  
 # The end
 
