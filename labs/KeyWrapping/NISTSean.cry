@@ -32,7 +32,7 @@ WStep :
     {n}
     (fin n, n >= 3) =>
     ([128] -> [128]) -> [n][64] -> [64] -> [n][64]
-WStep CIPHk ([At] # Rt) t = ([At' ^ t] # Rt')
+WStep CIPHk ([At] # Rt) t = [At' ^ t] # Rt'
   where
     [At', Rtn] = split (CIPHk (At # head Rt))
     Rt'        = tail Rt # [Rtn]
