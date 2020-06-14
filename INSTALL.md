@@ -194,5 +194,5 @@ sawscript> :quit
 For more help installing Cryptol or SAW, please refer to the
 documentation provided in their respective repositories, found here:
 
-https://github.com/GaloisInc/cryptol
-https://github.com/GaloisInc/saw-script
+* Cryptol: https://github.com/GaloisInc/cryptol
+* SAW: https://github.com/GaloisInc/saw-script
