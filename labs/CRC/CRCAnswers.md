@@ -97,7 +97,7 @@ soon. Though first, two of these, namely, `CRC32_Q` and `CRC32_XFER`,
 are simple enough to be compatible with `CRCSimple`.
 
 Here we define a test message using the [canonical
-pangram](https://en.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog)
+pangram](https://en.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog).
 
 ```
 testM = "The quick brown fox jumps over the lazy dog"
