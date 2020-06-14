@@ -6,10 +6,12 @@ interpreter.
 
 Some challenge labs make use of SAW, a companion verification tool
 associated with Cryptol. However, SAW is not a requirement for success
-here. Also, Galois does not currently provide a Windows installer for
-SAW, and Homebrew doesn't provide SAW installers on any platform. So,
-if you want to use SAW, we recommend installing SAW via docker as it
-is platform agnostic and easy to install and use.
+here. Also, [Galois](https://galois.com) (the maintainer of Cryptol
+and SAW) does not currently provide a Windows installer for SAW and
+Homebrew ([Option 2](#option-2-homebrew)) doesn't provide SAW
+installers on any platform. So, if you want to use SAW, we recommend
+installing SAW via docker (see [Option 1](#option-1-docker) as it is
+platform agnostic and easy to install and use.
 
 ## Option 1: Docker
 
@@ -19,7 +21,7 @@ is platform agnostic and easy to install and use.
 [installed](https://docs.docker.com/get-docker), it is easy to `pull`
 and `run` these images. *(Note that this docker approach may require
 `sudo` privileges. If so, and you don't have such privileges, follow
-the steps in [Option 2](option-2-homebrew) or [Option
+the steps in [Option 2](#option-2-homebrew) or [Option
 3](#option-3-downloading-pre-built-cryptol-and-saw-binaries) for
 user-mode solutions.)*
 
@@ -108,13 +110,12 @@ Unfortunately, SAW is not available via Homebrew.
 
 ### Downloading Cryptol and SAW
 
-[Galois](https://galois.com) (the maintainers of Cryptol and SAW)
-provide a server with nightly builds of SAW for CentOS, Ubuntu, and
-OSX. Cryptol comes bundled with SAW, so if your computer is running
-one of these operating systems, you should download a recent version
-from https://saw.galois.com/builds/nightly. *(Note that the Ubuntu
-files indicate Ubuntu14.04, but they work on later versions of Ubuntu
-as well.)*
+Galois provide a server with nightly builds of SAW for CentOS, Ubuntu,
+and OSX. Cryptol comes bundled with SAW, so if your computer is
+running one of these operating systems, you should download a recent
+version from https://saw.galois.com/builds/nightly. *(Note that the
+Ubuntu files indicate Ubuntu14.04, but they work on later versions of
+Ubuntu as well.)*
 
 The `bin` directory (containing `cryptol` and/or `saw`) of the archive
 you downloaded should be placed in your system path.
