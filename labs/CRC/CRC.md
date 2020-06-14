@@ -153,7 +153,7 @@ CRC :
 CRC G fill post rib ro M =
     zero //if R should be reversed, then reverse R, else return R
   where
-    R      = False //modulus of fill' ^ M'' and G, and don't forget to XOR post
+    R      = False //fill' XOR M'' modulus G XORd with post
     M'     = False //reflect the input bytes, if necessary, and then join the bytes into a bitvector
     M''    = False //extend M' with n zero bits
     fill'  = False //extend fill with (m*8) zero bits (so that fill' matches the type of M''
