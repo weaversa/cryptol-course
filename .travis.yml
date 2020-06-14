@@ -52,6 +52,3 @@ script:
   - cryptol -e -c ":m labs::Salsa20::Salsa20Answers"
   - cryptol -e -c ":m labs::Salsa20::Salsa20Props"
   - cryptol -e -c ":m labs::Salsa20::Salsa20PropsAnswers"
-# CRC lab tests
-  - cryptol -e -c ":m labs::CRC::CRC"
-  - cryptol -e -c ":m labs::CRC::CRCAnswers"
