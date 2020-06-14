@@ -3,7 +3,7 @@ module labs::KeyWrapping::NIST where
 import specs::Primitive::Symmetric::Cipher::Block::AES128 as AES128
 import specs::Primitive::Symmetric::Cipher::Block::AES192 as AES192
 import specs::Primitive::Symmetric::Cipher::Block::AES256 as AES256
-//import specs::Primitive::Symmetric::Cipher::Block::TripleDES as TDES
+//import specs::Primitive::Symmetric::Cipher::Block::TripleDES as TDEA
 
 type BlockSize = 128
 type SemiBlockSize = BlockSize / 2
