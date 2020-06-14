@@ -136,7 +136,7 @@ parameters.
       bytes) should have the bits inside each byte reversed.
 * Reverse Output
     * Denotes whether or not the output (when viewed as a bitvector)
-      should be `reverse`d.
+      should be reversed.
 
 **EXERCISE**: Here we provide a skeleton for a fully parameterized CRC
 for you to fill in. Please use augment the `CRCSimple` function with
