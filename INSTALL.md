@@ -10,7 +10,7 @@ here. Also, [Galois](https://galois.com) (the maintainer of Cryptol
 and SAW) does not currently provide a Windows installer for SAW and
 Homebrew ([Option 2](#option-2-homebrew)) doesn't provide SAW
 installers on any platform. So, if you want to use SAW, we recommend
-installing SAW via docker (see [Option 1](#option-1-docker) as it is
+installing SAW via docker ([Option 1](#option-1-docker)) as it is
 platform agnostic and easy to install and use.
 
 ## Option 1: Docker
