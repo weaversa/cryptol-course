@@ -1,8 +1,7 @@
 module labs::KeyWrapping::NIST where
 
-import specs::Primitive::Symmetric::Cipher::Block::AES128 as AES128
-import specs::Primitive::Symmetric::Cipher::Block::AES192 as AES192
-import specs::Primitive::Symmetric::Cipher::Block::AES256 as AES256
+import specs::Primitive::Symmetric::Cipher::Block::AES_parameterized as AES
+
 //import specs::Primitive::Symmetric::Cipher::Block::TripleDES as TDEA
 
 type BlockSize = 128
@@ -21,7 +20,7 @@ type KEKSize = 128
 W128Step : [KEKSize] -> [64] -> (SemiBlock, [2]SemiBlock) -> (SemiBlock, [2]SemiBlock)
 W128Step KEK t (A, Ris) = (A', Ris')
   where
-    CIPH_K P = AES128::aesEncrypt (P, KEK)
+    CIPH_K P = AES::encrypt KEK P
     C_tmp    = CIPH_K ( A #  Ris@0 )
     MSB_64   = take`{64} C_tmp
     LSB_64   = drop`{64} C_tmp
@@ -51,7 +50,7 @@ KW128 KEK P = C
 W128InvStep : [KEKSize] -> [64] -> (SemiBlock, [2]SemiBlock) -> (SemiBlock, [2]SemiBlock)
 W128InvStep KEK t (A, Ris) = (A', Ris')
   where
-    CIPHInv_K C = AES128::aesDecrypt (C, KEK)
+    CIPHInv_K C = AES::decrypt KEK C
     P_tmp       = CIPHInv_K ( (A ^ t) #  last(Ris) )
     MSB_64      = take`{64} P_tmp
     LSB_64      = drop`{64} P_tmp
