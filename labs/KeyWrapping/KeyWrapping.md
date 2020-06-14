@@ -106,6 +106,11 @@ Section `4.4` introduces operators and notation for cryptographic functions and 
  
  * **Section 8, Conformance** -- This section has information about how implementations may claim conformance to the algorithms described in this standard.
  
+ 
+# Writing `KW`
+
+Let's 
+ 
 # The end
 
 How was your experience with this lab? Suggestions are welcome in the form of a 

@@ -70,28 +70,28 @@ KW CIPHk P = C
 
 
 /**
- * This algorithm specifies the wrapping function, W, for KW-AE (see
+ * This algorithm specifies the inverse wrapping function, WInv, for KW-AE (see
  * Sec. 6.2) and KWP-AE (see Sec. 6.3), using the same KEK and
  * designated cipher function.
  *
  * Prerequisites: KEK, K, for an approved, 128-bit block cipher;
- * designated cipher function, CIPHK. This necessarily implies that a
- * semiblock is 64-bits.
+ * designated cipher decryption function, CIPHkInv. This necessarily implies 
+ * that a semiblock is 64-bits.
  *
- * Input: a string, S, of n semiblocks, for some integer n ≥ 3.
+ * Input: a string, C, of n semiblocks, for some integer n ≥ 3.
  **/
 
 WInv :
     {n}
     (fin n, n >= 3, 64 >= width (6 * (n - 1))) =>
     ([128] -> [128]) -> [n][64] -> [n][64]
-WInv CIPHk C = S
+WInv CIPHkInv C = S
   where
     t = [ 1 .. 6*(n-1) ]
-    S = foldl (WInvStep CIPHk) C t
+    S = foldl (WInvStep CIPHkInv) C t
 
 /**
- * This algorithm implements step 2 of W, the inner loop that
+ * This algorithm implements step 2 of WInv, the inner loop that
  * calculates the intermediate values At and Rt.
  */
 
@@ -99,14 +99,14 @@ WInvStep :
     {n}
     (fin n, n >= 3) =>
     ([128] -> [128]) -> [n][64] -> [64] -> [n][64]
-WInvStep CIPHk ([At] # Rt) t = ([At'] # Rt')
+WInvStep CIPHkInv ([At] # Rt) t = ([At'] # Rt')
   where
-    [At', Rt2] = split (CIPHk ((At ^ t) # (last Rt)))
-    Rt'        = [Rt2] # (take`{n-2} Rt)
+    [At', Rt2] = split (CIPHkInv ((At ^ t) # (last Rt)))
+    Rt'        = [Rt2] # (take`{n-2} Rt) 
 
 /**
- * This algorithm specifies the authenticated-encryption function for
- * KW for a given block cipher and KEK. The wrapping function, W,
+ * This algorithm specifies the authenticated-decryption function for
+ * KW for a given block cipher and KEK. The unwrapping function, WInv,
  * specified in the algorithm above, is invoked in Step 3 with the same
  * block cipher and KEK as prerequisites.
  *
@@ -114,20 +114,24 @@ WInvStep CIPHk ([At] # Rt) t = ([At'] # Rt')
  * designated cipher function, CIPHK; definition of valid plaintext
  * lengths.
  *
- * Input: plaintext P, with valid length n.
+ * Input: ciphertext C, with valid length n+1.
  *
- * Output: ciphertext C.
+ * Output: ciphertext C, and a semiblock tag which authenticates the decryption
+ *         if it equals ICV1
  */
 
 KWInv :
     {n}
     (fin n, n >= 2, 64 >= width (6 * n)) =>
-    ([128] -> [128]) -> [n+1][64] -> [n+1][64]
-KWInv CIPHk C = P
+    ([128] -> [128]) -> [n+1][64] -> (Bit, [n][64])
+KWInv CIPHkInv C = (Auth, P)
   where
-    ICV1 = 0xA6A6A6A6A6A6A6A6
-    P = WInv CIPHk C
+    ICV1     = 0xA6A6A6A6A6A6A6A6
+    (Tag, P) = splitAt`{1, n, [64]} (WInv CIPHkInv C)
+    Auth     = if head Tag == ICV1 then True else False
     
+
+
 
 
 Test_128_128 : [128] -> [128] -> [192]
