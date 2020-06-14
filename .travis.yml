@@ -1,7 +1,9 @@
---- 
+---
+services:
+  - docker
 jobs: 
   include: 
-    - 
+    -
       before_install: 
         - wget https://saw.galois.com/builds/nightly/saw-0.4.0.99-2020-05-21-OSX-64.tar.gz
         - tar -xzf saw-0.4.0.99-2020-05-21-OSX-64.tar.gz
@@ -11,6 +13,11 @@ jobs:
         - unzip -j z3-4.8.8-x64-osx-10.14.6.zip -d z3_downloaded
         - export PATH=$PATH:$(pwd)/z3_downloaded
         - z3 --version
+      compiler: clang
+      os: osx
+    -
+      before_install: 
+        - brew install cryptol
       compiler: clang
       os: osx
     - 
@@ -32,6 +39,11 @@ script:
 # Interpreter lab tests
   - cryptol -e -c ":m labs::interpreter::test" -c ":s base=10" -c "x + 2"
   - cryptol -e -b labs/interpreter/test.sry
+# Bittwiddling lab tests
+  - cryptol -e -c ":l labs/saw/bittwiddling/bittwiddling.md"
+  - clang -emit-llvm -c labs/saw/bittwiddling/bittwiddling.c -o labs/saw/bittwiddling/bittwiddling.bc
+  - cryptol -e -c ":l labs/saw/bittwiddling/bittwiddling_answers.md"
+  - "! command -v saw >/dev/null 2>&1 || saw labs/saw/bittwiddling/bittwiddling_answers.saw"
 # Salsa20 lab tests
   - cryptol -e -c ":m labs::Salsa20::Salsa20"
   - cryptol -e -c ":m labs::Salsa20::Salsa20Answers"
