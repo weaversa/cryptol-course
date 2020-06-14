@@ -11,7 +11,7 @@ import specs::Primitive::Symmetric::Cipher::Block::AES128 as AES128
  * designated cipher function, CIPHK. This necessarily implies that a
  * semiblock is 64-bits.
  *
- * Input: a string, S, of n semiblocks, for some integer n ≥ 3.
+ * Input: a string, S, of n semiblocks, for some integer n >= 3.
  **/
 
 W :
@@ -20,7 +20,8 @@ W :
     ([128] -> [128]) -> [n][64] -> [n][64]
 W CIPHk S = C
   where
-    t = [ 1 .. 6*(n-1) ]
+    type s = 6*(n-1)
+    t = [ 1 .. s ]
     C = foldl (WStep CIPHk) S t
 
 /**
@@ -40,13 +41,64 @@ WStep CIPHk ([A] # Rs) t = [A'] # Rs'
     Rs'        = tail Rs # [LSB]
 
 /**
+ * This algorithm specifies the wrapping function, W', for KW-AD (see
+ * Sec. 6.2) and KWP-AD (see Sec. 6.3), with a given block cipher and KEK.
+ *
+ * Prerequisites: KEK, K, for an approved, 128-bit block cipher;
+ * inverse of the designated cipher function, CIPHK'. This necessarily
+ * implies that a semiblock is 64-bits.
+ *
+ * Input: a string, C, of n semiblocks, for some integer n >= 3.
+ **/
+
+W' :
+    {n}
+    (fin n, n >= 3, 64 >= width (6 * (n - 1))) =>
+    ([128] -> [128]) -> [n][64] -> [n][64]
+W' CIPHk' C = S
+  where
+    type s = 6*(n-1)
+    t = [ s, s-1 .. 1 ]
+    S = foldl (WStep' CIPHk') C t
+
+/**
+ * This algorithm implements step 2 of W', the inner loop that
+ * calculates the intermediate values of A and the R sequence.
+ * See Figure 3 on page 13 for a corresponding picture.
+ */
+
+WStep' :
+    {n}
+    (fin n, n >= 3) =>
+    ([128] -> [128]) -> [n][64] -> [64] -> [n][64]
+WStep' CIPHk' ([A] # Rs) t = [A'] # Rs'
+  where
+    [MSB, LSB] = split (CIPHk' ((A ^ t) # last Rs))
+    A'         = MSB
+    Rs'        = [LSB] # take Rs
+
+/**
+ * This is a property to help show that WStep and WStep' are inverses.
+ */
+
+property WStepInvProp ARs t =
+    WStep'`{3} (\a -> a-1) (WStep (\a -> a+1) ARs t) t == ARs
+
+/**
+ * This is a property to help show that W and W' are inverses.
+ */
+ 
+property WInvProp S =
+    W'`{3} (\a -> a-1) (W (\a -> a+1) S) == S
+
+/**
  * This algorithm specifies the authenticated-encryption function for
  * KW for a given block cipher and KEK. The wrapping function, W,
  * specified in the algorithm above, is invoked in Step 3 with the same
  * block cipher and KEK as prerequisites.
  *
  * Prerequisites: KEK, K, for an approved, 128-bit block cipher;
- * designated cipher function, CIPHK; definition of valid plaintext
+ * designated cipher function, CIPHk; definition of valid plaintext
  * lengths.
  *
  * Input: plaintext P, with valid length n.
@@ -54,19 +106,46 @@ WStep CIPHk ([A] # Rs) t = [A'] # Rs'
  * Output: ciphertext C.
  */
 
-KW :
+KWAE :
     {n}
     (fin n, n >= 2, 64 >= width (6 * n)) =>
     ([128] -> [128]) -> [n][64] -> [n+1][64]
-KW CIPHk P = C
+KWAE CIPHk P = C
   where
     ICV1 = 0xA6A6A6A6A6A6A6A6
     S = [ICV1] # P
     C = W CIPHk S
 
+/**
+ * This algorithm specifies the authenticated-decryption function for
+ * KW for a given block cipher and KEK. The wrapping function, W',
+ * specified in the algorithm above, is invoked in Step 4 with the same
+ * block cipher and KEK as prerequisites.
+ *
+ * Prerequisites: KEK, K, for an approved, 128-bit block cipher;
+ * designated cipher function, CIPHk'; definition of valid ciphertext
+ * lengths.
+ *
+ * Input: purported ciphertext C, with valid length n.
+ *
+ * Output: plaintext P or indication of inauthenticity, FAIL.
+ */
 
-
-test : [128] -> [128] -> [192]
-test k pt = join ct
+KWAD :
+    {n}
+    (fin n, n >= 3, 64 >= width (6 * (n-1))) =>
+    ([128] -> [128]) -> [n][64] -> (Bit, [n-1][64])
+KWAD CIPHk' C = (FAIL, P)
   where
-    ct = KW (\p -> AES128::aesEncrypt (p, k)) (split pt)
+    ICV1 = 0xA6A6A6A6A6A6A6A6
+    S = W' CIPHk' C
+    FAIL = ICV1 != head S
+    P = tail S
+
+/**
+ * This is a property to help show that KWAE and KWAD are inverses.
+ */
+
+property KWAEInvProp S = 
+    KWAD`{3} (\a -> a-1) (KWAE (\a -> a+1) S) == (False, S)
+
