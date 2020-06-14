@@ -1,6 +1,6 @@
 module labs::KeyWrapping::NISTSean where
 
-import specs::Primitive::Symmetric::Cipher::Block::AES128 as AES128
+import specs::Primitive::Symmetric::Cipher::Block::AES_parameterized as AES
 
 /**
  * This algorithm specifies the wrapping function, W, for KW-AE (see
@@ -149,3 +149,27 @@ KWAD CIPHk' C = (FAIL, P)
 property KWAEInvProp S = 
     KWAD`{3} (\a -> a-1) (KWAE (\a -> a+1) S) == (False, S)
 
+//KW with AES128
+KWAE128 (k : [128]) pt = join (KWAE`{2} (AES::encrypt k) (split pt))
+
+KWAD128 (k : [128]) ct = (FAIL, join pt)
+  where (FAIL, pt) = KWAD`{3} (AES::decrypt k) (split ct)
+
+property KWAE128Test = KWAD128 1234 (KWAE128 1234 5678) == (False, 5678)
+
+
+//KW with AES192
+KWAE192 (k : [192]) pt = join (KWAE`{3} (AES::encrypt k) (split pt))
+
+KWAD192 (k : [192]) ct = (FAIL, join pt)
+  where (FAIL, pt) = KWAD`{4} (AES::decrypt k) (split ct)
+
+property KWAE192Test = KWAD192 1234 (KWAE192 1234 5678) == (False, 5678)
+
+//KW with AES256
+KWAE256 (k : [256]) pt = join (KWAE`{4} (AES::encrypt k) (split pt))
+
+KWAD256 (k : [256]) ct = (FAIL, join pt)
+  where (FAIL, pt) = KWAD`{5} (AES::decrypt k) (split ct)
+
+property KWAE256Test = KWAD256 1234 (KWAE256 1234 5678) == (False, 5678)
