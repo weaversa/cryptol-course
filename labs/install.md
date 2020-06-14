@@ -1,20 +1,48 @@
 # Installing Cryptol and SAW
 
+This course currently focuses on learning to program in Cryptol. As
+such, you will greatly benefit from installing the Cryptol
+interpreter.
+
+Some challenge labs make use of SAW, a companion verification tool
+associated with Cryptol. However, SAW is not a requirement for success
+here. Also, Galois does not currently provide a Windows installer for
+SAW, and Homebrew doesn't provide SAW installers on any platform. So,
+if you want to use SAW, we recommend installing SAW via docker as it
+is platform agnostic and easy to install and use.
+
 ## Option 1: Docker
 
 [Docker](https://www.docker.com) images are available for both
 [Cryptol](https://hub.docker.com/r/galoisinc/cryptol) and
-[SAW](https://hub.docker.com/r/galoisinc/saw).  If Docker has been
+[SAW](https://hub.docker.com/r/galoisinc/saw). If Docker has been
 [installed](https://docs.docker.com/get-docker), it is easy to `pull`
-and `run` these images.  *(Note that this docker approach requires
-`sudo` privileges. Follow the steps in [Option
-2](#option-2-downloading-pre-built-cryptol-and-saw-binaries) for a
-user-mode solution.)*
+and `run` these images. *(Note that this docker approach may require
+`sudo` privileges. If so, and you don't have such privileges, follow
+the steps in [Option 2](option-2-homebrew) or [Option
+3](#option-3-downloading-pre-built-cryptol-and-saw-binaries) for
+user-mode solutions.)*
+
+```
+$ docker pull galoisinc/cryptol:2.8.0
+...
+$ docker run -it galoisinc/cryptol:2.8.0
+┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
+┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
+┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
+version 2.8.0
+
+Loading module Cryptol
+Cryptol> :sat \(x:[4]) -> (x + 1 < x)
+(\(x : [4]) -> (x + 1 < x)) 0xf = True
+(Total Elapsed Time: 0.006s, using Z3)
+Cryptol> :quit
+```
 
 ```sh
-$ sudo docker pull galoisinc/saw:0.5
+$ docker pull galoisinc/saw:0.5
 ...
-$ sudo docker run -it galoisinc/saw:0.5
+$ docker run -it galoisinc/saw:0.5
  ┏━━━┓━━━┓━┓━┓━┓
  ┃ ━━┓ ╻ ┃ ┃ ┃ ┃
  ┣━━ ┃ ╻ ┃┓ ╻ ┏┛
@@ -30,35 +58,23 @@ satisfiable (true for any input). Returns a proof result that can
 be analyzed with 'caseSatResult' to determine whether it represents
 a satisfiying assignment or an indication of unsatisfiability.
 sawscript> :quit
-
-$ sudo docker pull galoisinc/cryptol:2.8.0
-...
-$ sudo docker run -it galoisinc/cryptol:2.8.0
-┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
-┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
-┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
-version 2.8.0
-
-Loading module Cryptol
-Cryptol> :sat \(x:[4]) -> (x + 1 < x)
-(\(x : [4]) -> (x + 1 < x)) 0xf = True
-(Total Elapsed Time: 0.006s, using Z3)
-Cryptol> :quit
 ```
 
 Details:
-- `docker` can be readily installed on Ubuntu via `sudo apt install docker.io`.
+- Instructions for installing `docker` on your system can be found at
+[https://docs.docker.com/get-docker](https://docs.docker.com/get-docker).
 - `docker run -it` indicates that the commands are to be run in an interactive
 TTY.
-- Version tags `0.5` and `2.8.0` are needed because a `latest` alias has
-not been set for these images.
+- Version tags `0.5` and `2.8.0` are needed because a `latest` alias
+has not been set for these images.
 - If you are currently in the root of this repository, you can use
 `-v` and `--env` to mount the repository in the docker image and set
 the `CRYPTOLPATH` environment variable for access to this repository's
-Cryptol modules. For example:
+Cryptol modules. This environment variable is used by both Cryptol and
+SAW. For example:
 
 ```sh
-$ sudo docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it galoisinc/cryptol:2.8.0
+$ docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it galoisinc/cryptol:2.8.0
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
@@ -70,7 +86,25 @@ Loading module specs::Misc::Sudoku
 specs::Misc::Sudoku> :quit
 ```
 
-## Option 2: Downloading pre-built Cryptol and SAW binaries
+
+## Option 2: Homebrew
+
+[Homebrew](https://brew.sh) is a package manager for OSX, Linux, and
+Windows Subsystem for Linux. Instructions for installing Homebrew can
+be found on Homebrew's website [https://brew.sh](https://brew.sh), and
+consist of pasting a simple command into a shell prompt.
+
+Once Homebrew is installed, Cryptol (along with it's `z3` dependancy)
+can be installed via:
+
+```sh
+brew update && brew install cryptol
+```
+
+Unfortunately, SAW is not available via Homebrew.
+
+
+## Option 3: Downloading pre-built Cryptol and SAW binaries
 
 ### Downloading Cryptol and SAW
 
