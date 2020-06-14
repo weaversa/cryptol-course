@@ -25,17 +25,19 @@ W CIPHk S = C
 
 /**
  * This algorithm implements step 2 of W, the inner loop that
- * calculates the intermediate values At and Rt.
+ * calculates the intermediate values of A and the R sequence.
+ * See Figure 2 on page 12 for a corresponding picture.
  */
 
 WStep :
     {n}
     (fin n, n >= 3) =>
     ([128] -> [128]) -> [n][64] -> [64] -> [n][64]
-WStep CIPHk ([At] # Rt) t = [At' ^ t] # Rt'
+WStep CIPHk ([A] # Rs) t = [A'] # Rs'
   where
-    [At', Rtn] = split (CIPHk (At # head Rt))
-    Rt'        = tail Rt # [Rtn]
+    [MSB, LSB] = split (CIPHk (A # head Rs))
+    A'         = MSB ^ t
+    Rs'        = tail Rs # [LSB]
 
 /**
  * This algorithm specifies the authenticated-encryption function for
