@@ -1,0 +1,78 @@
+module labs::KeyWrapping::NIST where
+
+import specs::Primitive::Symmetric::Cipher::Block::AES_parameterized as AES
+
+//import specs::Primitive::Symmetric::Cipher::Block::TripleDES as TDEA
+
+type BlockSize = 128
+type SemiBlockSize = BlockSize / 2
+type Block = [BlockSize]
+type SemiBlock = [SemiBlockSize]
+type KEKSize = 128
+
+
+
+//
+//
+//
+// type my_n = 3 // hand-coded for now
+
+W128Step : [KEKSize] -> [64] -> (SemiBlock, [2]SemiBlock) -> (SemiBlock, [2]SemiBlock)
+W128Step KEK t (A, Ris) = (A', Ris')
+  where
+    CIPH_K P = AES::encrypt KEK P
+    C_tmp    = CIPH_K ( A #  Ris@0 )
+    MSB_64   = take`{64} C_tmp
+    LSB_64   = drop`{64} C_tmp
+    A'       = t ^ MSB_64
+    Ris'     = (drop`{1} Ris) # [LSB_64]
+
+W128 : [KEKSize] -> [3 * SemiBlockSize] -> [3 * SemiBlockSize] 
+W128 KEK S = Cs
+  where  
+    Ss = split`{3} S
+    A0 = Ss@0
+    Rs = drop`{1} Ss
+
+    States = [(A0, Rs)] # [ W128Step KEK t state | state <- States | t:[64] <- [1..12] ]
+    C1  = (last States).0
+    Cis = (last States).1
+    Cs = C1 # (join Cis)
+    
+KW128 : [KEKSize] -> [2*SemiBlockSize] -> [3*SemiBlockSize]
+KW128 KEK P = C
+  where
+    ICV1 = 0xA6A6A6A6A6A6A6A6
+    S = ICV1 # P
+    C = W128 KEK S
+    
+// Start the KWInv stuff...    
+W128InvStep : [KEKSize] -> [64] -> (SemiBlock, [2]SemiBlock) -> (SemiBlock, [2]SemiBlock)
+W128InvStep KEK t (A, Ris) = (A', Ris')
+  where
+    CIPHInv_K C = AES::decrypt KEK C
+    P_tmp       = CIPHInv_K ( (A ^ t) #  last(Ris) )
+    MSB_64      = take`{64} P_tmp
+    LSB_64      = drop`{64} P_tmp
+    A'          = MSB_64
+    Ris'        = [LSB_64] # (take`{1} Ris)  // need to drop the last 1... take the first (n-2)?
+    
+W128Inv : [KEKSize] -> [3 * SemiBlockSize] -> [3 * SemiBlockSize] 
+W128Inv KEK C = Ss
+  where  
+    Cs = split`{3} C
+    A0 = Cs@0         // They call this A_s, not sure how I want to notate this... 'As' breaks a pattern...
+    Rs = drop`{1} Cs
+
+    States = [(A0, Rs)] # [ W128InvStep KEK t state | state <- States | t:[64] <- [12, 11..1] ]
+    S1  = (last States).0
+    Sis = (last States).1
+    Ss  = S1 # (join Sis)
+    
+KWInv128 : [KEKSize] -> [3*SemiBlockSize] -> [3*SemiBlockSize]
+KWInv128 KEK C = P
+  where
+    //ICV1 = 0xA6A6A6A6A6A6A6A6
+    //S = ICV1 # P
+    P = W128Inv KEK C
+
