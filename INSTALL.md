@@ -168,15 +168,6 @@ To verify that Cryptol and SAW work, simply run their interpreters and
 see that they report no errors.
 
 ```
-$ saw
- ┏━━━┓━━━┓━┓━┓━┓
- ┃ ━━┓ ╻ ┃ ┃ ┃ ┃
- ┣━━ ┃ ╻ ┃┓ ╻ ┏┛
- ┗━━━┛━┛━┛┗━┛━┛ version 0.4.0.99 (eeef9a13)
-
-sawscript> :quit
-```
-```
 $ cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻  
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃  
@@ -186,6 +177,16 @@ https://cryptol.net  :? for help
 
 Loading module Cryptol
 Cryptol> :quit
+```
+
+```
+$ saw
+ ┏━━━┓━━━┓━┓━┓━┓
+ ┃ ━━┓ ╻ ┃ ┃ ┃ ┃
+ ┣━━ ┃ ╻ ┃┓ ╻ ┏┛
+ ┗━━━┛━┛━┛┗━┛━┛ version 0.4.0.99 (eeef9a13)
+
+sawscript> :quit
 ```
 
 ## Help
