@@ -2,8 +2,7 @@
 
 In this lab, we consider additional properties of the [Salsa20 stream
 cipher](Salsa20Spec.md) [5], which has undergone much scrutiny since
-being proposed for [eSTREAM, the ECRYPT Stream Cipher Project]
-(https://www.ecrypt.eu.org/stream).
+being proposed for [eSTREAM, the ECRYPT Stream Cipher Project](https://www.ecrypt.eu.org/stream).
 
 ```
 module labs::Salsa20::Salsa20Props where
