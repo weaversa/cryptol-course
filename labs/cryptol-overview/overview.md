@@ -78,7 +78,7 @@ Take a look through the [`saw-demos` repository](https://github.com/GaloisInc/sa
 
 This directory contains the following files
 
-```
+```sh
 .
 ├── Makefile
 ├── output
@@ -173,7 +173,7 @@ Finally the files [```xxhash32-ref.saw```](https://github.com/GaloisInc/saw-demo
 
 Running `make` at the commandline will initiate the verification for both the 32- and 64-bit implementations, producing the following output:
 
-```
+```sh
 $ make
 clang xxhash32-ref.c -o xxhash32-ref.bc -c -emit-llvm -O0 -std=c90
 clang xxhash64-ref.c -o xxhash64-ref.bc -c -emit-llvm -O0 -std=c90
@@ -264,6 +264,8 @@ False
 Cryptol> let s1 = [True, True, False, True]
 Cryptol> :t s1
 s1 : [4]
+Cryptol> s1
+0xd
 Cryptol> let s2 = [0x1f, 0x11, 0x03, 0xd5]
 Cryptol> :t s2
 s2 : [4][8]
@@ -571,6 +573,22 @@ Cryptol> ss
 Cryptol> last ss
 5050
 ```
+
+Cryptol also has support for common functional programming concepts
+such as `map`, `fold`, and `scan`. For example, a left fold (`foldl`)
+can be used to compute the sum of the first 100 integers, like so:
+
+```
+Cryptol> foldl (+) 0 [1..100]
+Showing a specific instance of polymorphic result:
+  * Using 'Integer' for type argument 'a' of 'Cryptol::fromTo'
+5050
+```
+
+`foldl` takes a function (here, `+`), an initial value (`0`), and a
+list (`[1..100]`) and applies the function incrementally to the list,
+starting with the initial value.
+
 
 # Documentation and References
 
