@@ -156,7 +156,7 @@ CRC G fill post rib ro M =
     R      = False //fill' XOR M'' modulus G XORd with post
     M'     = False //reflect the input bytes, if necessary, and then join the bytes into a bitvector
     M''    = False //extend M' with n zero bits
-    fill'  = False //extend fill with (m*8) zero bits (so that fill' matches the type of M''
+    fill'  = False //extend fill with (m*8) zero bits so that fill' matches the type of M''
 ```
 
 Here is a definition of CRC32, using the parameterized `CRC` function.
