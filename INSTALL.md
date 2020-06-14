@@ -96,7 +96,7 @@ Windows Subsystem for Linux. Instructions for installing Homebrew can
 be found on Homebrew's website [https://brew.sh](https://brew.sh), and
 consist of pasting a simple command into a shell prompt.
 
-Once Homebrew is installed, Cryptol (along with it's `z3` dependancy)
+Once Homebrew is installed, Cryptol (along with it's `z3` dependency)
 can be installed via:
 
 ```sh
