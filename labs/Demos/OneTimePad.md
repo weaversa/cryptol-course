@@ -2,7 +2,7 @@
 
 ## Installation
 
-To use Cryptol and SAW, you must first [install](../labs/install.md) 
+To use Cryptol and SAW, you must first [install](../../INSTALL.md) 
 them.
 
 ## Overview
@@ -97,7 +97,7 @@ logs, but that's too complicated; here it's all in one place.)
 We'll figure out what all this means later. First, let's make sure 
 Cryptol successfully loads the module. Start a terminal (Linux), 
 command prompt (Windows), or Cryptol image (Docker) per 
-[instructions](../labs/install.md) and load this module into a 
+[instructions](../../INSTALL.md) and load this module into a 
 Cryptol interpreter:
 
 ```sh
