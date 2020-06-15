@@ -31,9 +31,9 @@ Let's begin.
 
 This document specifies how to generate key material for
 interoperability with the [KLI20](KLI20.cry) end cryptographic
-unit. The KLI20 uses a mix of [CRC](../labs/CRC/CRC.md),
-[KW-AE](../labs/KeyWrapping/NISTSean.md), and
-[Salsa20](../labs/Salsa20/Salsa20.md) to encrypt and decrypt messages.
+unit. The KLI20 uses a mix of [CRC](../CRC/CRC.md),
+[KW-AE](../KeyWrapping/NISTSean.md), and
+[Salsa20](../Salsa20/Salsa20.md) to encrypt and decrypt messages.
 
 
 ## Abstract
@@ -334,8 +334,9 @@ specification issue only uses numbers that correspond to the ASCII
 strings between and including "000" to "999". Specifically, this key
 specification follows a special schedule that is comprised entirely of
 the three issue numbers corresponding to the Pythagorean triplet for
-which a + b + c = 1000. These numbers are scheduled to be issued in
-increasing order.
+which a + b + c = 1000 (more info available
+[here](../projecteuler/projecteuler.md)). These numbers are scheduled
+to be issued in increasing order.
 
 
 ### Security Considerations
