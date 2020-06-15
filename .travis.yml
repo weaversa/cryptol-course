@@ -55,3 +55,5 @@ script:
 # CRC lab tests
   - cryptol -e -c ":m labs::CRC::CRC"
   - cryptol -e -c ":m labs::CRC::CRCAnswers"
+# LorumIpsum tests
+  - cryptol -e -c ":m labs::LorumIpsum::secret_message" -c "nonsecret_message"
