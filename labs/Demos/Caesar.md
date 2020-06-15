@@ -75,7 +75,7 @@ property to verify its correctness:
 
 ```
 /** `index` is correct for any sequence */
-indexCorrect L x = (~ any ((==) x) L) \/ (L ! (index L x) == x)
+indexCorrect L x = elem x L ==> L ! (index L x) == x
 
 /** index is correctly identified for all characters in alphabet */
 property charIsAtIndex = indexCorrect alphabet
