@@ -1,0 +1,32 @@
+module labs::LorumIpsum::KLI20 where
+
+import labs::CRC::CRCAnswers
+import labs::KeyWrapping::NISTSean
+import labs::Salsa20::Salsa20Answers
+
+/**
+
+ * A Key Lorum-Ipsum '20 ECU emulator.
+ *
+ * Input: A 128-bit KEK, a 384-bit wrapped LIK (Lorum Ipsum Key), and
+ * an l-byte ciphertext.
+ *
+ * Output: An l-byte plaintext.
+ */
+
+KLI20 : {l} (fin l, l <= 2^^70) => [128] -> [384] -> Bytes l -> Bytes l
+KLI20 KEK LIK ct =
+    if ~CRC1Correct then error "Outter CRC check failed"
+     | ~TagCorrect  then error "Tag is incorrect"
+     | ~CRC2Correct then error "Inner CRC check failed"
+     | FAIL         then error "KWAD128 failed"
+    else pt
+  where
+    TaggedKey         = take`{352} LIK
+    CRC1Correct       = CRC32_C (split TaggedKey) == drop LIK
+    (Tag#Issue#CRCWK) = TaggedKey
+    TagCorrect        = Tag == (join "LoremIpsumKey")
+    WK                = take CRCWK
+    CRC2Correct       = CRC32_C (split WK) == drop CRCWK
+    (FAIL, k)         = KWAD128 KEK WK
+    pt                = Salsa20Encrypt (split k) (zero#(split`{3} Issue)) ct

@@ -2,14 +2,21 @@ module labs::LorumIpsum::LorumIpsumKey where
 
 import labs::CRC::CRCAnswers
 import labs::KeyWrapping::NISTSean
+import labs::Salsa20::Salsa20Answers
 
-tag : {a} (fin a) => [a] -> [128+a]
-tag x = join "LoremIpsumKeyTag" # x
+tag : [3][8] -> [224] -> [352]
+tag Issue x = join "LoremIpsumKey" # (join Issue) # x
 
-LorumIpsumKey : [128] -> [128] -> [384]
-LorumIpsumKey KEK k = CRCTK
+LorumIpsumKey : [128] -> [128] -> [3][8] -> [384]
+LorumIpsumKey KEK k Issue = CRCTK
   where
     WrappedKey = KWAE128 KEK k
     CRCWK      = WrappedKey # (CRC32_C (split WrappedKey))
-    TaggedKey  = tag CRCWK
+    TaggedKey  = tag Issue CRCWK
     CRCTK      = TaggedKey # (CRC32_C (split TaggedKey))
+
+examplekeys =
+    [ LorumIpsumKey 0x3d43108b5b243b90dda78f75736cc629 0x569b79f606aba26f4263b7147ba3c5e0 Issue
+    | Issue <- ["200", "375", "425"]
+    ]
+

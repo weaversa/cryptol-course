@@ -8,23 +8,40 @@ the algorithm. We've filled in these unhelpful portions with [lorum
 ipsum](http://www.lipsum.com/). You may happily skip over them to get
 to the important bits.
 
-**EXERCISE** We're created a skeleton and set of test vectors in
-[LorumIpsumKey.cry](LorumIpsumKey.cry). Please read through this
-document and then write the Cryptol functions that generate the key
-specified here.
+**EXERCISE** An important message has been encrypted using the
+[KLI20](KLI20.cry) end cryptographic unit, a completely made up device
+that was created specifically for use in this lab. The KLI20 takes
+LorumIpsum keys (as specified below) as input and will then operate as
+a stream cipher capable of encrypting or decrypting streams of
+bytes. Please read through the specification document below and then
+write Cryptol functions to generate the key specified here.
+
+Once complete, wrap the secret key
+`0x569b79f606aba26f4263b7147ba3c5e0` with the KEK
+`0x3d43108b5b243b90dda78f75736cc629` and all approved issue numbers to
+create a suite of LorumIpsum keys. These keys can then be fed into the
+KLI20 device to decrypt a [secret message](secret_message.cry).
 
 Let's begin.
 
 
+[0x4c6f72656d497073756d4b6579323030853371bb5c6e105766d882a9bcc86b1f93aa8162715ac0371ac9a703dd07a2fd, 0x4c6f72656d497073756d4b6579333735853371bb5c6e105766d882a9bcc86b1f93aa8162715ac0371ac9a703eb0079ed, 0x4c6f72656d497073756d4b6579343235853371bb5c6e105766d882a9bcc86b1f93aa8162715ac0371ac9a703c6ce6992]
+
 # Lorum Ipsum Key Generation Specification
+
+This document specifies how to generate key material for
+interoperability with the [KLI20](KLI20.cry) end cryptographic
+unit. The KLI20 uses a mix of [CRC](../labs/CRC/CRC.md),
+[KW-AE](../labs/KeyWrapping/NISTSean.md), and
+[Salsa20](../labs/Salsa20/Salsa20.md) to encrypt and decrypt messages.
+
+
+## Abstract
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
 convallis, nisl nec fermentum accumsan, lectus leo tristique eros, ut
 tempor mi leo rutrum tortor. Vestibulum quis tellus leo. Vivamus
 vehicula convallis bibendum.
-
-
-## Abstract
 
 Ultrices est, et vehicula arcu. Praesent in felis porta, lobortis
 velit et, pretium nibh. In dui eros, vehicula id purus sit amet,
@@ -150,6 +167,8 @@ pellentesque nisl non feugiat. Nulla eu elementum quam. Nam rhoncus
 dolor non odio dapibus interdum. Donec egestas aliquam justo id
 volutpat. Fusce vel ante non ligula placerat tristique. Fusce laoreet
 libero a mauris rutrum tempor. Duis quis convallis sapien.
+
+![Figure 1. Lorum Ipsum Key Generation Flow Diagram](LorumIpsumKey.png)
 
 Aenean rhoncus, orci eu varius iaculis, sapien magna pulvinar mauris,
 ut scelerisque sapien ipsum aliquet orci. Nulla facilisi. Duis laoreet
@@ -302,8 +321,21 @@ tempus neque mi, id ullamcorper ex eleifend sit amet.
 
 ## Specification
 
-The 16 character constant string "LorumIpsumKeyTag" will be prepended
-to the 192-bit wrapped key after the first CRC-32c is applied.
+The 13-character constant ASCII string "LorumIpsumKey" will be
+prepended to the 192-bit wrapped key after the first CRC-32c is
+applied. The 13-character ASCII string is first appended to a 24-bit
+number representing the key issue number.
+
+
+### Valid Issue Numbers
+
+The KLI20 will accept any 24-bit issue number. However, this key
+specification issue only uses numbers that correspond to the ASCII
+strings between and including "000" to "999". Specifically, this key
+specification follows a special schedule that is comprised entirely of
+the three issue numbers corresponding to the Pythagorean triplet for
+which a + b + c = 1000. These numbers are scheduled to be issued in
+increasing order.
 
 
 ### Security Considerations
