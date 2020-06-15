@@ -1,6 +1,6 @@
 # Introduction
 
-Cryptol is a domain specific language and tool suite created by Galois, Inc, with support from NSA cryptographers. The language has lots of cool programming language features that make it well suited for applications in high assurance systems and cryptographic development, including:
+Cryptol is a domain specific language and tool suite created by Galois, Inc,, with support from NSA cryptographers. The language has lots of cool programming language features that make it well suited for applications in high assurance systems and cryptographic development, including:
 
  * strong, static typing
  * type inference
