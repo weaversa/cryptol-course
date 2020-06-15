@@ -3,18 +3,6 @@ module labs::KeyWrapping::NISTSean where
 import specs::Primitive::Symmetric::Cipher::Block::AES_parameterized as AES
 import specs::Primitive::Symmetric::Cipher::Block::TripleDES as TDEA
 
-WStepT :
-    {n}
-    (fin n, n >= 3) =>
-    ([128] -> [128]) -> [n][64] -> [64] -> [n][64]
-WStepT CIPHk ([A] # Rs) t = [A'] # Rs'
-  where
-    [MSB, LSB] = split (CIPHk (FIXME_1) )
-    A'         = FIXME_2
-    Rs'        = FIXME_3
-    FIXME_1 = zero
-    FIXME_2 = zero
-    FIXME_3 = zero
 
 /**
  * This algorithm specifies the wrapping function, W, for KW-AE (see
