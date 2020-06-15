@@ -23,10 +23,6 @@ create a suite of LorumIpsum keys. These keys can then be fed into the
 KLI20 device to decrypt a [secret message](secret_message.cry).
 
 Let's begin.
-
-
-[0x4c6f72656d497073756d4b6579323030853371bb5c6e105766d882a9bcc86b1f93aa8162715ac0371ac9a703dd07a2fd, 0x4c6f72656d497073756d4b6579333735853371bb5c6e105766d882a9bcc86b1f93aa8162715ac0371ac9a703eb0079ed, 0x4c6f72656d497073756d4b6579343235853371bb5c6e105766d882a9bcc86b1f93aa8162715ac0371ac9a703c6ce6992]
-
 # Lorum Ipsum Key Generation Specification
 
 This document specifies how to generate key material for
