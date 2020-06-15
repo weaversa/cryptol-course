@@ -315,7 +315,31 @@ passcode l = [ loop l kl != 0 | kl <- keylog ] == ~0
 	     	     j <- [0..a-1],
 	   	     k <- [0..a-1] ]
 ```
-
+```shell
+Main> :sat passcode`{1}
+Unsatisfiable
+(Total Elapsed Time: 0.033s, using Z3)
+Main> :sat passcode`{2}
+Unsatisfiable
+(Total Elapsed Time: 0.048s, using Z3)
+Main> :sat passcode`{3}
+Unsatisfiable
+(Total Elapsed Time: 0.106s, using Z3)
+Main> :sat passcode`{4}
+Unsatisfiable
+(Total Elapsed Time: 0.508s, using Z3)
+Main> :sat passcode`{5}
+Unsatisfiable
+(Total Elapsed Time: 1.074s, using Z3)
+Main> :sat passcode`{6}
+Unsatisfiable
+(Total Elapsed Time: 2.066s, using Z3)
+Main> :sat passcode`{7}
+Unsatisfiable
+Main> :sat passcode`{8}
+passcode`{8} [7, 3, 1, 6, 2, 8, 9, 0] = True
+(Total Elapsed Time: 5.667s, using Z3)
+```
 ### Project Sean
 Sean Weaver (Super Genius ala Wile E Coyote) has a problem in a similar vein:
 
@@ -323,3 +347,18 @@ Sean Weaver (Super Genius ala Wile E Coyote) has a problem in a similar vein:
 >
 > EXTRA CHALLENGE:
 > What about five-digit numbers? Other numbers of digits?
+
+```
+squaredrop :
+    {a}
+    (fin a, a>=2, a%2 == 0) =>
+    Integer -> [a]Integer -> Bit
+squaredrop n l =
+    (basetenrep (n*n) l) /\
+    formnumber (drop`{back = ((a)/2)} l) == n
+```
+```shell
+Main> :sat squaredrop`{a=8} 
+squaredrop`{a = 8} 9376 [8, 7, 9, 0, 9, 3, 7, 6] = True
+(Total Elapsed Time: 21.782s, using Z3)
+```
