@@ -3,14 +3,15 @@
 During this lab you will use the results of previous labs to
 Cryptolize a *mock* key generation specification we're calling the
 LorumIpsum key. This document specifies the algorithm, but, like most
-specification documents also contains reams of text unrelated to the
-algorithm. We've filled in these unhelpful portions with [lorum
+specification documents it also contains reams of text unrelated to
+the algorithm. We've filled in these unhelpful portions with [lorum
 ipsum](http://www.lipsum.com/). You may happily skip over them to get
 to the important bits.
 
 **EXERCISE** We're created a skeleton and set of test vectors in
-[LorumIpsumKey.cry]. Please read through this document and then write
-the Cryptol functions that generate the key specified here.
+[LorumIpsumKey.cry](LorumIpsumKey.cry). Please read through this
+document and then write the Cryptol functions that generate the key
+specified here.
 
 Let's begin.
 
