@@ -1,6 +1,6 @@
 ```
 import cipher1
-
+import keylog
 
 ```
 
@@ -300,6 +300,21 @@ Main> decrypt cipher "god"
 > The text file, keylog.cry, contains fifty successful login attempts.
 >
 > Given that the three characters are always asked for in order, analyse the file so as to determine the shortest possible secret passcode of >unknown length.
+
+```
+passcode :
+    {a}
+    (fin a, a >= 1) =>
+    [a]Integer -> Bit
+passcode l = [ loop l kl != 0 | kl <- keylog ] == ~0
+    where 
+     loop ll kll = [ [ ll@i, ll@j, ll@k] == kll /\
+	             i < j                      /\
+	             j < k
+	           | i <- [0..a-1],
+	     	     j <- [0..a-1],
+	   	     k <- [0..a-1] ]
+```
 
 ### Project Sean
 Sean Weaver (Super Genius ala Wile E Coyote) has a problem in a similar vein:
