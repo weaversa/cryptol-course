@@ -19,6 +19,8 @@ More information about Cryptol is available at [http://www.cryptol.net](https://
 A grand tradition when learning a new programming language is to test the waters with a Hello World program. This file [overview.md](overview.md) is literate Cryptol which means that it can be loaded directly into the Cryptol interpreter. In this file we've defined a function `sayHello` which is specified as follows:
 
 ```
+module labs::overview::overview where
+
 sayHello : {a} (fin a) => [a][8] -> [7+a][8]
 sayHello name = greeting
   where
