@@ -69,9 +69,8 @@ under the `specs/` directory in `specs/Primitive/Symmetric/Cipher/Block`
 and we load them into our module with the following:
 
 ```
-import specs::Primitive::Symmetric::Cipher::Block::AES128 as AES128
-import specs::Primitive::Symmetric::Cipher::Block::AES192 as AES192
-import specs::Primitive::Symmetric::Cipher::Block::AES256 as AES256
+import specs::Primitive::Symmetric::Cipher::Block::AES_parameterized as AES
+import specs::Primitive::Symmetric::Cipher::Block::TripleDES as TDEA
 ```
 
 **TODO** Discuss how to call the encrypt/decrypt functions for these...
@@ -107,9 +106,59 @@ Section `4.4` introduces operators and notation for cryptographic functions and 
  * **Section 8, Conformance** -- This section has information about how implementations may claim conformance to the algorithms described in this standard.
  
  
-# Writing `KW`
+# `KW-AD` and `KW-AE` Specifications
 
-Let's 
+Let's take a look at writing a specification for the `KW-AE` and `KW-AD` algorithms which begin in **Section 6**. We will walk through `KW-AE` and leave `KW-AD` as an exercise for the reader.
+
+The document indicates that `KW-AE` depends on a *wrapping function* `W` (Algorithm 1, page 11). This algorithm has certain *prerequisites* which we will have to model in our formal specification:
+
+  * A *Key Encryption Key (KEK)*, `K` and
+  * A *designated cipher function*, `CIPHk`, which operates on 128-bit blocks
+  
+The document defines a *semiblock* to be a block with half the width of the underlying block cipher. Since we are using `AES` as the underlying block cipher, semiblocks will be 64-bit blocks. Also notice that the specification for `W` defines the *Input* to be a string `S` of `n` semiblocks and the *Output* will be a transformed string `C` of `n` semiblocks. This is enough to build a simple type signature for `W` which will contain the following components:
+
+ * `n` -- A *type parameter* which controls the number of semiblocks in our inputs and outputs 
+ * `([128] -> [128])` -- The type of our *keyed* block cipher `CIPHk`
+ * `[n][64]` -- The type of our string of input semiblocks
+ * `[n][64]` -- The type of our transformed output
+
+**TODO** Add a few words about type parameters?
+
+```
+W_prelim1 : {n} (fin n) => ([128] -> [128]) -> [n][64] -> [n][64]
+```
+
+We haven't quite captured enough about the type of `W` -- for the algorithm to operate correctly we will have to make two more assumptions about `n`. The first is easy to spot -- the document indicates that `n >= 3`, we can add this restriction to our type signature:
+
+```
+W_prelim2 : {n} (fin n, n >= 3) => ([128] -> [128]) -> [n][64] -> [n][64]
+```
+
+This *still* isn't quite fully accurate, but it is enough to get started. We can see the final restriction on `n` a bit more clearly after taking a look at implementing `W`.
+
+Taking a close look at Algorithm 1 we can see that `W` transforms our inputs over a series of rounds using the same "step function" which we will call `WStep` in each round. We will make our job easier by modeling this step function first. It may be easier to think about the algorithm by studying `Figure 2` on page 12.
+
+`WStep` will inherit the same type parameters, inputs, and outputs as `W`. We add a new input `t` of type `[64]` which will serve as the round counter.
+
+**Exercise:** Study the diagram in `Figure 2` and finish implementing `WStep` by replacing `FIXME_1`, `FIXME_2`, and `FIXME_3` below with the approprate input for `CIPHk`, and assignments for `A'` and `Rs'`:
+
+```
+WStepT :
+    {n}
+    (fin n, n >= 3) =>
+    ([128] -> [128]) -> [n][64] -> [64] -> [n][64]
+WStepT CIPHk ([A] # Rs) t = [A'] # Rs'
+  where
+    FIXME_1 = zero
+    FIXME_2 = zero
+    FIXME_3 = zero
+    [MSB, LSB] = split (CIPHk (FIXME_1) )
+    A'         = FIXME_2
+    Rs'        = FIXME_3
+```
+
+**TODO** Explain how `([A] # Rs)` automatically assigns values correctly?
+
  
 # The end
 
