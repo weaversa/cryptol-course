@@ -308,7 +308,7 @@ passcode :
     [a]Integer -> Bit
 passcode l = [ loop l kl != 0 | kl <- keylog ] == ~0
     where 
-     loop ll kll = [ [ ll@i, ll@j, ll@k] == kll /\
+     loop ll kll = [ [ ll@(i:[a]), ll@j, ll@k] == kll /\
 	             i < j                      /\
 	             j < k
 	           | i <- [0..a-1],
@@ -347,6 +347,12 @@ Sean Weaver (Super Genius ala Wile E Coyote) has a problem in a similar vein:
 >
 > EXTRA CHALLENGE:
 > What about five-digit numbers? Other numbers of digits?
+
+```shell
+Main> :sat (\(x : [32]) -> (x*x)%10000 == x /\ x > 999 )
+(\(x : [32]) -> (x * x) % 10000 == x /\ x > 999) 0x000024a0 = True
+(Total Elapsed Time: 0.195s, using Z3)
+```
 
 ```
 squaredrop :
