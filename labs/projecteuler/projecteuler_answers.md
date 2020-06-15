@@ -1,4 +1,10 @@
-### AAAA[Problem 9](https://projecteuler.net/problem=9)
+```
+import cipher1
+
+
+```
+
+### [Problem 9](https://projecteuler.net/problem=9)
 
 > A Pythagorean triplet is a set of three natural numbers, a < b < c, for which a^2 + b^2 = c^2.
 > 
@@ -199,13 +205,6 @@ Main> :sat (\(x, l) -> pandigital x l /\ x != 4130952867)
 (Total Elapsed Time: 7.419s, using Z3)
 ...
 ```
-
-### [Problem 48](https://projecteuler.net/problem=48)
-
-> The series, 1^(1) + 2^(2) + 3^(3) + ... + 10^(10) = 10405071317.
->
-> Find the last ten digits of the series, 1^(1) + 2^(2) + 3^(3) + ... + 1000^(1000).
-
 ### [Problem 52](https://projecteuler.net/problem=52)
 
 >It can be seen that the number, 125874, and its double, 251748, contain exactly the same digits, but in a different order.
@@ -222,13 +221,18 @@ twolistssamedigits l1 l2 =
 
 productdigits : {a} (fin a, a >= 1) => Integer -> [6][a]Integer -> Bit
 property productdigits n ls =
-    basetenrep n l1                                            /\
-    [ twolistssamedigits l1 l | l <- tls ] == ~0               /\
-    [ formnumber li == i * n | li <- tls | i <- [2..6] ] == ~0 /\
+    basetenrep n l1                 /\
+    alltwolists                     /\
+    allforms                        /\
     [ alldigits l | l <- ls ] == ~0
     where
      [l1, l2, l3, l4, l5, l6] = ls
      tls = tail ls
+     alltwolists = [ twolistssamedigits l1 l
+     		   | l <- tls ] == ~0
+     allforms = [ formnumber li == i * n
+     	      	| li <- tls
+		| i <- [2..6] ] == ~0
 ```
 
 ### [Problem 59](https://projecteuler.net/problem=59)
@@ -239,10 +243,55 @@ property productdigits n ls =
 >
 > For unbreakable encryption, the key is the same length as the plaintext message, and the key is made up of random bytes. The user would keep the encrypted message and the encryption key in different locations, and without both "halves", it is impossible to decrypt the message.
 >
-> Unfortunately, this method is impractical for most users, so the modified method is to use a password as a key. If the password is shorter than the message, which is likely, the key is repeated cyclically throughout the message. The balance for this method is using a sufficiently long password key for security, but short enough
-to be memorable.
+> Unfortunately, this method is impractical for most users, so the modified method is to use a password as a key. If the password is shorter than the message, which is likely, the key is repeated cyclically throughout the message. The balance for this method is using a sufficiently long password key for security, but short enough to be memorable.
 >
 > Your task has been made easy, as the encryption key consists of three lower case characters. Using cipher1.cry, a file containing the encrypted ASCII codes, and the knowledge that the plain text must contain common English words, decrypt the message and find the sum of the ASCII values in the original text.
+
+```
+containsWords :
+    {a, b}
+    (fin a, a >= 2, fin b) =>
+    [a]Char -> [b][3]Char -> Bit
+containsWords l ws = [ checkword w | w <- ws ] == ~0
+    where
+     checkword w = [ c0 == w@0 /\
+     	       	     c1 == w@1 /\
+		     c2 == w@2
+		   | c0 <- l
+		   | c1 <- tail l
+		   | c2 <- tail (tail l) ] != 0
+
+isLowercase : Char -> Bit
+isLowercase c = c >= 0x61 /\ c <= 0x7a
+
+isLowercaseStr : {a} (fin a) => [a]Char -> Bit
+isLowercaseStr s = [ isLowercase c | c <- s ] == ~0
+
+XORtowords :
+    {a}
+    (fin a, a >= 2) =>
+    [a]Char -> [3]Char -> Bit
+XORtowords ciphertext key =
+    containsWords ct [ "the", "and", "are" ] /\
+    isLowercaseStr key
+     where
+      keys = [ key ] # [ k | k <- keys ]
+      jkeys = join keys
+      ct = ciphertext ^ (take jkeys)
+
+decrypt : {a} (fin a, a >= 2) => [a]Char -> [3]Char -> [a]Char
+decrypt s key = s ^ (take ks)
+    where
+     ks = join keys
+     keys = [ key ] # [ k | k <- keys ]
+```
+```shell
+Main> :sat (XORtowords cipher)
+(XORtowords cipher) "god" = True
+(Total Elapsed Time: 1.751s, using Z3)
+Main> decrypt cipher "god"
+"(The Gospel of John, chapter 1) 1 In the beginning the Word already existed. He was with God, and he was God. 2 He was in the beginning with God. 3 He created everything there is. Nothing exists that he didn't make. 4 Life itself was in him, and this life gives light to everyone. 5 The light shines through the darkness, and the darkness can never extinguish it. 6 God sent John the Baptist 7 to tell everyone about the light so that everyone might believe because of his testimony. 8 John himself was not the light; he was only a witness to the light. 9 The one who is the true light, who gives light to everyone, was going to come into the world. 10 But although the world was made through him, the world didn't recognize him when he came. 11 Even in his own land and among his own people, he was not accepted. 12 But to all who believed him and accepted him, he gave the right to become children of God. 13 They are reborn! This is not a physical birth resulting from human passion or plan, this rebirth comes from God.14 So the Word became human and lived here on earth among us. He was full of unfailing love and faithfulness. And we have seen his glory, the glory of the only Son of the Father."
+```
 
 ### [Problem 79](https://projecteuler.net/problem=79)
 
