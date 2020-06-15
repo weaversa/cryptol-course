@@ -13,6 +13,41 @@ This lab will provide a quick overview of Cryptol, some motivating applications 
 
 More information about Cryptol is available at [http://www.cryptol.net](https://cryptol.net).
 
+
+# First Steps: Hello, Cryptol!
+
+A grand tradition when learning a new programming language is to test the waters with a Hello World program. This file [overview.md](overview.md) is literate Cryptol which means that it can be loaded directly into the Cryptol interpreter. In this file we've defined a function `sayHello` which is specified as follows:
+
+```
+sayHello : {a} (fin a) => [a][8] -> [7+a][8]
+sayHello name = greeting
+  where
+    greeting = "Hello, " # name
+```
+
+If you have Cryptol installed, you should be able to do the following from the terminal:
+
+```sh
+$ cryptol
+┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
+┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
+┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
+version 2.8.1 (e914cef)
+https://cryptol.net  :? for help
+
+Loading module Cryptol
+Cryptol> :module labs::overview::overview
+Loading module labs::overview::overview
+labs::overview::overview> sayHello "Cryptol!"
+[0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x43, 0x72, 0x79, 0x70,
+ 0x74, 0x6f, 0x6c, 0x21]
+labs::overview::overview> :set ascii=on
+labs::overview::overview> sayHello "Cryptol!"
+"Hello, Cryptol!"
+labs::overview::overview>
+```
+Congratulations, you are now officially on speaking terms!
+
 # Cryptol in the Wild
 
 Cryptol has been used in the development and evaluation of high assurance cryptographic systems that enjoy wide use. Notable examples where Cryptol has been successfully applied by industry leaders to add assurance to cryptographic implementations include Amazon s2n and Microsoft's ElectionGuard.
@@ -162,7 +197,7 @@ These scripts will check that the `C` implementations match the Cryptol specific
 
 Cryptol provides an easy interface for using powerful tools such as SMT solvers for verifying properties about algorithms we care about. Throughout this course, we will introduce examples and explain how to take advantage of these tools in your own designs and evaluations. Here is an example packaged with the Cryptol source that demonstrates a simple but important property about an encryption algorithm which only uses the (XOR) operation:
 
-```haskell
+```
 encrypt : {a}(fin a) => [8] -> [a][8] -> [a][8]
 encrypt key plaintext = [ pt ^ key | pt <- plaintext ]
 
@@ -176,8 +211,8 @@ This file defines an `encrypt` operation, a `decrypt` operation, and a property 
 
 We can see the effect of encrypting the particular input `attack at dawn` with the key `0xff`:
 
-```haskell
-Main> encrypt 0xff "attack at dawn"
+```sh
+labs::overview::overview> encrypt 0xff "attack at dawn"
 [0x9e, 0x8b, 0x8b, 0x9e, 0x9c, 0x94, 0xdf, 0x9e, 0x8b, 0xdf, 0x9b,
  0x9e, 0x88, 0x91]
 ```
@@ -186,49 +221,13 @@ Cryptol interprets the string `"attack at dawn"` as a sequence of bytes suitable
 
 Furthermore, we can prove this property holds in the interpreter using the `:prove` command and the currently configured SMT solver (Z3 by default):
 
-```haskell
-Main> :prove roundtrip : [8] -> [16][8] -> Bit
+```sh
+labs::overview::overview> :prove roundtrip : [8] -> [16][8] -> Bit
 Q.E.D.
 (Total Elapsed Time: 0.010s, using Z3)
 ```
 
 Cryptol reports `Q.E.D.`, indicating that our property is indeed true for all keys and all 16-character inputs. Cryptol currently only supports proofs of [total](https://en.wikipedia.org/wiki/Partial_function#Function) [monomorphic](https://en.wikipedia.org/wiki/Polymorphism_(computer_science)) properties with a finite domain. Here we must specify the length of the messages that we want to check this property for. This example checks the property for 16 character messages, but we could check this for at any (reasonable) length.
-
-
-# First Steps: Hello, Cryptol!
-
-A grand tradition when learning a new programming language is to test the waters with a Hello World program. In `helloworld.cry`, we define a function `sayHello` which is specified as follows:
-
-```haskell
-sayHello : {a} (fin a) => [a][8] -> [7+a][8]
-sayHello name = greeting
-  where
-    greeting = "Hello, " # name
-```
-
-If you have Cryptol installed, you should be able to do the following from the terminal:
-
-```shell
-$ cryptol
-┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
-┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
-┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
-version 2.8.1 (e914cef)
-https://cryptol.net  :? for help
-
-Loading module Cryptol
-Cryptol> :load helloworld.cry
-Loading module Cryptol
-Loading module Main
-Main> sayHello "Cryptol!"
-[0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x43, 0x72, 0x79, 0x70,
- 0x74, 0x6f, 0x6c, 0x21]
-Main> :set ascii=on
-Main> sayHello "Cryptol!"
-"Hello, Cryptol!"
-Main>
-```
-Congratulations, you are now officially on speaking terms!
 
 # Language Features
 
@@ -324,8 +323,8 @@ There are many more. A list of the currently defined symbols and operators are a
 
 An interesting feature of Cryptol's type system is that operators are typed. You can check this with the `:t` command in the interpreter just as you can for data:
 
-```haskell
-Cryptol> :t (&&)
+```sh
+labs::overview::overview> :t (&&)
 (&&) : {a} (Logic a) => a -> a -> a
 ```
 
@@ -337,37 +336,37 @@ Cryptol offers a robust set of primitives to construct more complex functions an
 
  * **List manipulation** -- `take`, `drop`
  
-```haskell
-Main> take `{1} [1, 2, 3]
+```sh
+labs::overview::overview> take `{1} [1, 2, 3]
 [1]
-Main> drop `{1} [1, 2, 3]
+labs::overview::overview> drop `{1} [1, 2, 3]
 [2, 3]
 ```
  
  * **Structural manipulation** -- `split`, `groupBy`
 
-```haskell
-Main> split `{3} [1, 2, 3, 4, 5, 6]
+```sh
+labs::overview::overview> split `{3} [1, 2, 3, 4, 5, 6]
 [[1, 2], [3, 4], [5, 6]]
-Main> groupBy `{3} [1, 2, 3, 4, 5, 6]
+labs::overview::overview> groupBy `{3} [1, 2, 3, 4, 5, 6]
 [[1, 2, 3], [4, 5, 6]]
 ```
 
  * **Arithmetic** -- `sum`, `min`, `max`
 
-```haskell
-Main> sum [1, 2, 3, 4, 5]
+```sh
+labs::overview::overview> sum [1, 2, 3, 4, 5]
 15
-Main> min 5 10
+labs::overview::overview> min 5 10
 5
-Main> max 5 10
+labs::overview::overview> max 5 10
 10
 ```
 
 In the Cryptol interpreter, you can inspect the symbols, functions, and primitives that are defined within the current context using the `:browse` (or simply `:b`) command. Doing so at the beginning of a fresh interpreter session will show you the list of built-ins and other information about the environment:
 
-```haskell
-Main> :b
+```sh
+labs::overview::overview> :b
     all : {n, a} (fin n) => (a -> Bit) -> [n]a -> Bit
     and : {n} (fin n) => [n] -> Bit
     any : {n, a} (fin n) => (a -> Bit) -> [n]a -> Bit
@@ -384,36 +383,30 @@ Like many languages, Cryptol enables users to define functions, thereby allowing
 
 Suppose that a project file `rotword.cry` contains the following code:
 
-```haskell
+```
 RotWord : [4][8] -> [4][8]
 RotWord [a0, a1, a2, a3] = [a1, a2, a3, a0]
 ```
 
 This provides a type for `RotWord` (`[4][8] -> [4][8]`) and a definition (`RotWord [a0, a1, a2, a3] = [a1, a2, a3, a0]`). Within the interpreter we can perform computations and check the type of this function as follows:
 
-```haskell
-Main> RotWord [0x01, 0x02, 0x03, 0x04]
+```sh
+labs::overview::overview> RotWord [0x01, 0x02, 0x03, 0x04]
 [0x02, 0x03, 0x04, 0x01]
-Main> :t RotWord 
+labs::overview::overview> :t RotWord 
 RotWord : [4][8] -> [4][8]
 ```
 
 To enjoy greater overall confidence in a system under development, we may want to check properties about the components we build. Suppose we wanted to check that `RotWord` was the identity on sequences where all the elements were the same. We could add the following line to `rotword.cry`:
 
-```haskell
-RotWord : [4][8] -> [4][8]
-RotWord [a0, a1, a2, a3] = [a1, a2, a3, a0]
-
+```
 property check_identity x = RotWord [x, x, x, x] == [x, x, x, x]
 ```
 
 Then from the interpreter we could check that this property was true:
 
-```haskell
-Cryptol> :load rotword.cry 
-Loading module Cryptol
-Loading module Main
-Main> :prove
+```sh
+labs::overview::overview> :prove
 :prove check_identity
 	Q.E.D.
 (Total Elapsed Time: 0.005s, using Z3)
@@ -423,10 +416,10 @@ Building up more complex properties and relationships between the components of 
 
 * **lambda expressions** / **anonymous functions** -- Cryptol lets users define functions without having to specify a name.  This can be useful in some circumstances, such as to formulate a function which will be the return value of another function. Lambda expressions have types and can be computed with just like regular functions. They are formed as follows:
 
-```haskell
-Main> \(x:[32]) -> x*x
+```sh
+labs::overview::overview> \(x:[32]) -> x*x
 <function>
-Main> :t \(x:[32]) -> x*x
+labs::overview::overview> :t \(x:[32]) -> x*x
 (\(x : [32]) -> x * x) : [32] -> [32]
 Main> (\(x:[32]) -> x*x) 3
 0x00000009
@@ -436,19 +429,19 @@ Main> (\(x:[32]) -> x*x) 3
 
 Cryptol supports compact notation for [Arithmetic Sequences](https://en.m.wikipedia.org/wiki/Arithmetic_progression) (which increase or decrease in regular intervals):
 
-```haskell
-Cryptol> [1, 2 .. 10]
+```sh
+labs::overview::overview> [1, 2 .. 10]
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-Cryptol> [1, 4 .. 12]
+labs::overview::overview> [1, 4 .. 12]
 [1, 4, 7, 10]
-Cryptol> [10, 9 .. 0]
+labs::overview::overview> [10, 9 .. 0]
 [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 ```
 
 Cryptol is kind enough to inform us that it is making an assumption about the type in the list. Here is the full output:
 
-```haskell
-Cryptol> [1, 2 .. 10]
+```sh
+labs::overview::overview> [1, 2 .. 10]
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for type argument 'a' of 'Cryptol::fromThenTo'
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
@@ -456,8 +449,8 @@ Showing a specific instance of polymorphic result:
 
 We can nudge Cryptol with the element types to control the types of the elements of the enumeration:
 
-```haskell
-Cryptol> [0 .. 15 : [32]]
+```sh
+labs::overview::overview> [0 .. 15 : [32]]
 [0x00000000, 0x00000001, 0x00000002, 0x00000003, 0x00000004,
  0x00000005, 0x00000006, 0x00000007, 0x00000008, 0x00000009,
  0x0000000a, 0x0000000b, 0x0000000c, 0x0000000d, 0x0000000e,
@@ -466,10 +459,10 @@ Cryptol> [0 .. 15 : [32]]
 
 Furthermore, Cryptol even supports *infinite* lists and accessing their members. Here is an example of creating an infinite list of odd integers and accessing the 100th element of that list:
 
-```haskell
-Cryptol> [1, 3 ... ] 
+```sh
+labs::overview::overview> [1, 3 ... ] 
 [1, 3, 5, 7, 9, ...]
-Cryptol> [1, 3 ... ] @ 100
+labs::overview::overview> [1, 3 ... ] @ 100
 201
 ```
 
@@ -479,8 +472,8 @@ Note that two dots (`..`) are used for constructing finite enumerations and thre
 
 Sequence Comprehensions are a technique for computing the elements of a new sequence out of the elements of existing ones. Here is a simple comprehension that computes the squares of the numbers from 1 to 10:
 
-```haskell
-Cryptol> [ x^^2 | x <- [1 .. 10]]
+```sh
+labs::overview::overview> [ x^^2 | x <- [1 .. 10]]
 [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
 ```
 
@@ -488,27 +481,27 @@ Comprehensions also support notions of *cartesian*, *parallel*, and *self-refere
 
 * **Cartesian** -- A new sequence is formed from all possible combinations of pairs taken from the supplied lists when they are separated by commas. The size of a Cartesian comprehension will (in general) be the product of the sizes of the supplied lists:
 
-```haskell
-Cryptol> [ (x, y) | x <- [0 .. 2], y <- [0 .. 2] ]
+```sh
+labs::overview::overview> [ (x, y) | x <- [0 .. 2], y <- [0 .. 2] ]
 [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]
-Cryptol> [ x * y | x <- [0 .. 2], y <- [0 .. 2] ]
+labs::overview::overview> [ x * y | x <- [0 .. 2], y <- [0 .. 2] ]
 [0, 0, 0, 0, 1, 2, 0, 2, 4]
 ```
 
 * **Parallel** -- Parallel definitions consume elements from multiple lists simultaneously (when separated by a vertical bar `|`) and terminate when one list is exhausted. Typically, the size of a Parallel comprehension will be the minimum of the sizes of the supplied lists:
 
-```haskell
-Cryptol> [ x + y | x <- [1 .. 10] | y <- [1 .. 10] ]
+```sh
+labs::overview::overview> [ x + y | x <- [1 .. 10] | y <- [1 .. 10] ]
 [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
-Cryptol> [ x + y | x <- [1 .. 3] | y <- [1 .. 10] ]
+labs::overview::overview> [ x + y | x <- [1 .. 3] | y <- [1 .. 10] ]
 [2, 4, 6]
 ```
 
 * **Self-Referential** -- Lists can even refer to themselves in a comprehension. This is a very powerful technique which is frequently used in cryptographic applications. Here we construct a representation of the infinite list of Fibonacci numbers. Note that here we assign a name to the list so that we can use it self-referentially in the definition:
 
-```haskell
-Cryptol> let fibs = [0, 1] # [ x + y | x <- fibs | y <- tail fibs ]
-Cryptol> fibs
+```sh
+labs::overview::overview> let fibs = [0, 1] # [ x + y | x <- fibs | y <- tail fibs ]
+labs::overview::overview> fibs
 [0, 1, 1, 2, 3, ...]
 ```
 
@@ -518,24 +511,24 @@ Building formal specifications in Cryptol requires imitating the sorts of contro
 
 * `if ... then ... else ...` -- Conditional expressions in Cryptol work similar to the ternary conditional operator (`... ? ... : ...`) in C. This structure evaluates the first field, then evaluates the second field if `True` or the third field if `False`:
 
-```haskell
-Cryptol> if True then 0x2 else 0x3
+```sh
+labs::overview::overview> if True then 0x2 else 0x3
 0x2
-Cryptol> if False then 0x2 else 0x3
+labs::overview::overview> if False then 0x2 else 0x3
 0x3
 ```
 
 Cryptol conditionals are subject to typing conditions, and the two branches must have the same type to be a valid conditional expression. The type of a conditional expression is the shared type of the two branches.
 
-```haskell
-Cryptol> :t if True then 0x2 else 0x3
+```sh
+labs::overview::overview> :t if True then 0x2 else 0x3
 (if True then 0x2 else 0x3) : [4]
 ```
 
 If the two branches are typed differently, Cryptol flags this as an error:
 
-```haskell
-Cryptol> :t if True then 2:[16] else 3:[32]
+```sh
+labs::overview::overview> :t if True then 2:[16] else 3:[32]
 
 [error] at <interactive>:1:27--1:33:
   Type mismatch:
@@ -556,10 +549,12 @@ for( i = 1; i <= 100; i++) {
 
 The following Cryptol snippet computes the same sequence of partial sums as the `for loop` above, and the result is found in the final element of this sequence:
 
-```haskell
-let ss = [0] # [ s + i | s <- ss | i <- [1 .. 100] ]
+```
+ss = [0] # [ s + i | s <- ss | i <- [1 .. 100] ]
+```
 
-Cryptol> ss
+```sh
+labs::overview::overview> ss
 [0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91, 105, 120, 136,
  153, 171, 190, 210, 231, 253, 276, 300, 325, 351, 378, 406, 435,
  465, 496, 528, 561, 595, 630, 666, 703, 741, 780, 820, 861, 903,
@@ -578,8 +573,8 @@ Cryptol also has support for common functional programming concepts
 such as `map`, `fold`, and `scan`. For example, a left fold (`foldl`)
 can be used to compute the sum of the first 100 integers, like so:
 
-```
-Cryptol> foldl (+) 0 [1..100]
+```sh
+labs::overview::overview> foldl (+) 0 [1..100]
 5050
 ```
 
