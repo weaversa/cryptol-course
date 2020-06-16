@@ -128,17 +128,6 @@ Or use all the installed solvers in a first-to-the-post race.
 labs::CryptoProofs::CryptoProofsAnswers> :s prover=any
 ```
 
-> Solution:
->
->```bash
->labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
->labs::CryptoProofs::CryptoProofsAnswers> :sat \pt -> DES.encrypt known_key pt == known_ct
->(\pt -> DES.encrypt known_key pt == known_ct)
->  0x70617373776f7264 = True
->(Total Elapsed Time: 1.870s, using "Yices")
->```
-
-
 ### Exercise 2.1.2 Breaking DES
 
 Given the following matched plaintext and ciphertext, ask the solver to find the key. Will this work? Why or why not? (*Hint: see plaintext.*) Note that you can stop the solver at any time by hitting `ctrl-c`.
@@ -149,24 +138,6 @@ matched_ct = 0x95d07f8a72707733
 ```
 
 To make this solvable, try it again with the first six bytes of key provided: `0x1234567890ab`.
-
-> Solution:
->
->```bash
->labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct
->```
-> At this point, the solver hangs, unable to find a solution in any 
-> reasonable time. This is because DES is a well-designed cryptographic 
-> algorithm and is therefore designed to resist attacks on the key.
-> DES keys have been broken using specialized algorithms 
-> and large amounts of compute power, but not by a single computer
-> running a SAT solver.
->```bash
->labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt (0x1234567890AB # key) matched_pt == matched_ct
->(\key -> DES.encrypt (0x1234567890ab # key)
->                     matched_pt == matched_ct)
->  0x1236 = True
->(Total Elapsed Time: 4.764s, using "Yices")
 
 ## 2.2 Proof of Inversion
 
@@ -201,27 +172,6 @@ Here's the breadown of this proof:
 
 Our example proof showed that `g` inverts `f` for all inputs. Does this work the other way around? Try it! Why does or doesn't this work?
 
-> Solution:
->
->```bash
->labs::CryptoProofs::CryptoProofsAnswers> :prove \x -> f (g x) == x
->(\x -> f (g x) == x) 3 = False
->(Total Elapsed Time: 0.003s, using Yices)
->```
->
->Here we see that Cryptol has found that not only is our theorem false, 
->but provides a *counterexample* that we can analyze to see why.
->Let's look a little closer.
->
->```bash
->labs::CryptoProofs::CryptoProofsAnswers> g 3
->0
->```
->
->The reason this doesn't work is because `g` is defined over the integers.
->Therefore, the division operator `(/)` computes integer division, 
->so the expected result of `1/3` is rounded down to `0`.
-
 ### Exercise 2.2.2 DES inversion
 
 Use Cryptol to prove that `DES.encrypt` and `DES.decrypt` are inverses for all possible inputs. Show both directions.
@@ -229,18 +179,6 @@ Use Cryptol to prove that `DES.encrypt` and `DES.decrypt` are inverses for all p
 *Hint*: Note that this function has more than one input. To make it work, you can either use a tuple `(,)` (tuple-style) or a chain of of `\->` (Curried-style) constructs for your lambda function input.
 
 *Hint*: For fastest results, use the `abc` prover.
-
->Solution:
->
->```bash
->labs::CryptoProofs::CryptoProofsAnswers> :s prover=abc
->labs::CryptoProofs::CryptoProofsAnswers> :prove \(key,pt) -> DES.decrypt key (DES.encrypt key pt) == pt
->Q.E.D.
->(Total Elapsed Time: 3.909s, using "ABC")
->labs::CryptoProofs::CryptoProofsAnswers> :prove \key -> \ct -> DES.encrypt key (DES.decrypt key ct) == ct
->Q.E.D.
->(Total Elapsed Time: 3.582s, using "ABC")
->```
 
 ## 2.3 Collision Detection
 
@@ -276,45 +214,17 @@ It's inevitable that there are collisions over the set of all key/plaintext pair
 
 Attempt to prove that the two keys you just found are equivalent keys. That is, prove that these two keyed DES functions are equivalent for all plaintext inputs. *Hint: Use abc*
 
-> Solution:
->```bash
->labs::CryptoProofs::CryptoProofsAnswers> :s prover=abc
->labs::CryptoProofs::CryptoProofsAnswers> :prove \pt -> DES.encrypt 0x0000000000000000 pt == DES.encrypt 0x0100000000000000 pt
->Q.E.D.
->(Total Elapsed Time: 0.521s, using ABC)
->```
-
 ### Exercise 2.4.2 DES Parity Bits
 
 Having equivalent keys is often considered a weakness in an a cipher. However, in the case of DES, it turns out that this is a result of a design choice. The lowest bit of each byte of a DES key is actually a *parity* bit that is completely ignored by the cihper itself. The value of the parity bit is such that each byte has an odd number of bits set.
 
 Write a function `DESFixParity : [64] -> [64]` that takes any 64-bit vector and returns the equivalent DES key properly computed parity bits.
 
-> Solution:
-
-```
-DESFixParity : [64] -> [64]
-DESFixParity key = join fixed_bytes
-  where
-    bytes = (split key):[8][8]
-    fixed_bytes = [ nibble # [foldl (^) True nibble]
-                      where nibble = take`{7} byte 
-                  | byte <- bytes ]
-```
-
 ### Exercise 2.4.3 Proving DES Key Equivalence
 
 Use the function `DESFixParity` that you wrote above to show that DES completely ignores parity bits. That is, prove that the DES encryption that allows all 64-bit keys is equivalent to the DES encryption function that first corrects the parity bits on those keys.
 
 Given that this proof passes, what is the actual maximum key strength of DES in terms of bits?
-
-> Solution
->```bash
->labs::CryptoProofs::CryptoProofsAnswers> :prove \(key,pt) -> DES.encrypt key pt == DES.encrypt (DESFixParity key) pt
->Q.E.D.
->(Total Elapsed Time: 0.807s, using ABC)
->```
-> Since 8 of the 64 bits are ignored, DES has a maximum key strength of 56 bits.
 
 # The end
 
