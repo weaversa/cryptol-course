@@ -59,7 +59,7 @@ Further examples are distributed with the [Cryptol software source](https://gith
 
 ## Amazon s2n Continuous Integration
 
-Amazon s2n is "a C99 implementation of the TLS/SSL protocols that is designed to be simple, small, fast, and with security as a priority". TLS/SSL is a suite of cryptographic protocols and algorithms used to provide integrity, confidentiality and other familiar security services. Amazon s2n is an implementation of this suite used to protect communications on Amazon's cloud infrastructure platforms such as Amazon Web Services (AWS) and Amazon Simple Storage Service (S3).
+[Amazon s2n](https://aws.amazon.com/blogs/security/introducing-s2n-a-new-open-source-tls-implementation/) is "a C99 implementation of the TLS/SSL protocols that is designed to be simple, small, fast, and with security as a priority". TLS/SSL is a suite of cryptographic protocols and algorithms used to provide integrity, confidentiality and other familiar security services. Amazon s2n is an implementation of this suite used to protect communications on Amazon's cloud infrastructure platforms such as Amazon Web Services (AWS) and Amazon Simple Storage Service (S3).
 
 These security property tests are performed as part of a continuous integration pipline using the [Travis Continuous Integration Service](https://travis-ci.com/). Whenever changes are made -- no matter how small -- to the C implementations, Cryptol and SAW evaluations are automatically run to ensure that no security properties of the system have been disrupted by the proposed updates.
 
@@ -336,7 +336,7 @@ In a nutshell, this indicates that the bitwise `and` operator (`&&`) operates on
 
 Cryptol offers a robust set of primitives to construct more complex functions and specifications. The built-in primitives cover a wide variety of purposes. A sampling of these built-ins include:
 
- * **List manipulation** -- `take`, `drop`
+ * **Sequence manipulation** -- `take`, `drop`
  
 ```sh
 labs::overview::overview> take `{1} [1, 2, 3]
@@ -440,7 +440,7 @@ labs::overview::overview> [10, 9 .. 0]
 [10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0]
 ```
 
-Cryptol is kind enough to inform us that it is making an assumption about the type in the list. Here is the full output:
+Cryptol is kind enough to inform us that it is making an assumption about the type in the sequence. Here is the full output:
 
 ```sh
 labs::overview::overview> [1, 2 .. 10]
@@ -459,7 +459,7 @@ labs::overview::overview> [0 .. 15 : [32]]
  0x0000000f]
 ```
 
-Furthermore, Cryptol even supports *infinite* lists and accessing their members. Here is an example of creating an infinite list of odd integers and accessing the 100th element of that list:
+Furthermore, Cryptol even supports *infinite* sequences and accessing their members. Here is an example of creating an infinite sequence of odd integers and accessing the 100th element of that sequence:
 
 ```sh
 labs::overview::overview> [1, 3 ... ] 
@@ -468,7 +468,7 @@ labs::overview::overview> [1, 3 ... ] @ 100
 201
 ```
 
-Note that two dots (`..`) are used for constructing finite enumerations and three dots (`...`) are used for constructing infinite lists.
+Note that two dots (`..`) are used for constructing finite enumerations and three dots (`...`) are used for constructing infinite sequences.
 
 ## Sequence Comprehensions
 
@@ -481,7 +481,7 @@ labs::overview::overview> [ x^^2 | x <- [1 .. 10]]
 
 Comprehensions also support notions of *cartesian*, *parallel*, and *self-referential* definitions.
 
-* **Cartesian** -- A new sequence is formed from all possible combinations of pairs taken from the supplied lists when they are separated by commas. The size of a Cartesian comprehension will (in general) be the product of the sizes of the supplied lists:
+* **Cartesian** -- A new sequence is formed from all possible combinations of pairs taken from the supplied sequences when they are separated by commas. The size of a Cartesian comprehension will (in general) be the product of the sizes of the supplied sequences:
 
 ```sh
 labs::overview::overview> [ (x, y) | x <- [0 .. 2], y <- [0 .. 2] ]
@@ -490,7 +490,7 @@ labs::overview::overview> [ x * y | x <- [0 .. 2], y <- [0 .. 2] ]
 [0, 0, 0, 0, 1, 2, 0, 2, 4]
 ```
 
-* **Parallel** -- Parallel definitions consume elements from multiple lists simultaneously (when separated by a vertical bar `|`) and terminate when one list is exhausted. Typically, the size of a Parallel comprehension will be the minimum of the sizes of the supplied lists:
+* **Parallel** -- Parallel definitions consume elements from multiple sequences simultaneously (when separated by a vertical bar `|`) and terminate when one sequence is exhausted. Typically, the size of a Parallel comprehension will be the minimum of the sizes of the supplied sequences:
 
 ```sh
 labs::overview::overview> [ x + y | x <- [1 .. 10] | y <- [1 .. 10] ]
@@ -499,7 +499,7 @@ labs::overview::overview> [ x + y | x <- [1 .. 3] | y <- [1 .. 10] ]
 [2, 4, 6]
 ```
 
-* **Self-Referential** -- Lists can even refer to themselves in a comprehension. This is a very powerful technique which is frequently used in cryptographic applications. Here we construct a representation of the infinite list of Fibonacci numbers. Note that here we assign a name to the list so that we can use it self-referentially in the definition:
+* **Self-Referential** -- Sequences can even refer to themselves in a comprehension. This is a very powerful technique which is frequently used in cryptographic applications. Here we construct a representation of the infinite sequence of Fibonacci numbers. Note that here we assign a name to the sequence so that we can use it self-referentially in the definition:
 
 ```sh
 labs::overview::overview> let fibs = [0, 1] # [ x + y | x <- fibs | y <- tail fibs ]
@@ -581,7 +581,7 @@ labs::overview::overview> foldl (+) 0 [1..100]
 ```
 
 `foldl` takes a function (`+` in this case), an initial value (`0`), and a
-list (`[1..100]`) and applies the function incrementally to the list,
+sequence (`[1..100]`) and applies the function incrementally to the sequence,
 starting with the initial value.
 
 # Documentation and References
