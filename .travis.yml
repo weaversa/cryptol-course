@@ -36,9 +36,6 @@ jobs:
 language: c
 script: 
   - export CRYPTOLPATH=$(pwd)
-# specs directory tests
-  - cryptol -e -c ":m specs::Misc::Sudoku"
-  - cryptol -e -c ":m specs::Primitive::Symmetric::Cipher::Stream::Caesar"
 # Interpreter lab tests
   - cryptol -e -c ":m labs::interpreter::test" -c ":s base=10" -c "x + 2"
   - cryptol -e -b labs/interpreter/test.sry
@@ -55,3 +52,7 @@ script:
 # CRC lab tests
   - cryptol -e -c ":m labs::CRC::CRC"
   - cryptol -e -c ":m labs::CRC::CRCAnswers"
+# Demo lab tests
+  - cryptol -e -c ":m labs::Demos::Caesar"
+  - cryptol -e -c ":m labs::Demos::NQueens"
+  - cryptol -e -c ":m labs::Demos::Sudoku"
