@@ -16,7 +16,7 @@ module definition.
 module labs::CryptoProofs::CryptoProofsAnswers where
 ```
 
-## 1. DES
+# 1. DES
 
 To start, we'll analyze the DES (Data Encryption Standard) algorithm. Let's take a moment to familiarize ourselves with how it works.
 
@@ -56,7 +56,7 @@ labs::CryptoProofs::CryptoProofs> DES.encrypt 0x752979387592cb70 0x1122334455667
 
 Now that we have DES working, let's analyze it!
 
-## 2. Four Killer Apps
+# 2. Four Killer Apps
 
 For the rest of the lab, we'll be looking at some of the types of questions you can ask (and often answer!) using Cryptol's powerful automated theorem proving capabilities. These are important questions that one might ask about a cryptographic algorithm along with a generic "one-liner" Cryptol invocation. (Don't worry if you don't understand these yet.)
 
@@ -70,7 +70,7 @@ For the rest of the lab, we'll be looking at some of the types of questions you 
 
 Each subsection below will explore one of these questions in-depth.
 
-### 2.1 Function Reversal
+## 2.1 Function Reversal
 
 It may be interesting to explore whether a particular cryptographic function can be reversed. Some examples of usage:
 
@@ -106,7 +106,7 @@ Let's take a closer look at this query, which makes use of a *lambda* (anonymous
 | "Hey SAT solver!" | "Find me an input `x`" | "such that" | "`x` squared equals `1764`" |
 |||||
 
-#### Exercise 2.1.1 Reverse DES.encrypt
+### Exercise 2.1.1 Reverse DES.encrypt
 
 Given the following key and ciphertext, find the plaintext using only the solver and the `DES.encrypt` function.
 
@@ -139,7 +139,7 @@ labs::CryptoProofs::CryptoProofsAnswers> :s prover=any
 >```
 
 
-#### Exercise 2.1.2 Breaking DES
+### Exercise 2.1.2 Breaking DES
 
 Given the following matched plaintext and ciphertext, ask the solver to find the key. Will this work? Why or why not? (*Hint: see plaintext.*) Note that you can stop the solver at any time by hitting `ctrl-c`.
 
@@ -168,7 +168,7 @@ To make this solvable, try it again with the first six bytes of key provided: `0
 >  0x1236 = True
 >(Total Elapsed Time: 4.764s, using "Yices")
 
-### 2.2 Proof of Inversion
+## 2.2 Proof of Inversion
 
 For symmetric ciphers, it is necessary that the decrypt function *inverts* the encrypt function. (That is, it restores the ciphertext to the original plaintext.) It is easy to express this property in Cryptol.
 
@@ -197,7 +197,7 @@ Here's the breadown of this proof:
 | "Prove to me" | "that for all `x`" | "it is true that" | "`g` inverts `f`" |
 |
 
-#### Exercise 2.2.1 The other direction
+### Exercise 2.2.1 The other direction
 
 Our example proof showed that `g` inverts `f` for all inputs. Does this work the other way around? Try it! Why does or doesn't this work?
 
@@ -223,7 +223,7 @@ Our example proof showed that `g` inverts `f` for all inputs. Does this work the
 >Therefore, the division operator computes integer division, resulting in a
 >loss of information for some inputs.
 
-#### Exercise 2.2.2 DES inversion
+### Exercise 2.2.2 DES inversion
 
 Use Cryptol to prove that `DES.encrypt` and `DES.decrypt` are inverses for all possible inputs. Show both directions.
 
@@ -243,11 +243,11 @@ Use Cryptol to prove that `DES.encrypt` and `DES.decrypt` are inverses for all p
 >(Total Elapsed Time: 3.582s, using "ABC")
 >```
 
-### 2.3 Collision Detection
+## 2.3 Collision Detection
 
 In cryptography, a *collision* occurs when two different inputs produce the same output. For some cryptographic functions, such as pseudo-random number generators (PRNGs), it may be desirable to demonstrate an absence of collisions. In other functions, such as cryptographic hash functions, collisions are inevitable, but should be difficult to discover. It is easy in Cryptol to ask the solver to search for collisions. (Though finding a solution may not be possible.)
 
-#### Exercise 2.3.1 DES Key Collisions
+### Exercise 2.3.1 DES Key Collisions
 
 Use the solver to find two different keys and a plaintext such that both keys encrypt that plaintext to the same ciphertext. *Hint: Try `yices`*.
 
@@ -259,7 +259,7 @@ labs::CryptoProofs::CryptoProofsAnswers> :sat \(k1,k2,pt) -> k1 != k2 /\ DES.enc
 (Total Elapsed Time: 1.662s, using Yices)
 ```
 
-#### Exercise 2.3.2 DES Equivalent Keys
+### Exercise 2.3.2 DES Equivalent Keys
 
 It's inevitable that there are collisions in DES, but it may be surprising that they're easy to find with Cryptol's solver. We now know that the two keys you just found encrypt one particular plaintext to the same ciphertext; more concerning would be if they perform the same transformation on *all* plaintexts. Such keys are called *equivalent* keys.
 
@@ -272,9 +272,9 @@ Attempt to prove that the two keys you just found are equivalent keys.
 >(Total Elapsed Time: 0.855s, using Yices)
 >```
 
-#### Exercise 2.3.3 DES Parity Bits
+### Exercise 2.3.3 DES Parity Bits
 
-Having equivalent keys is often considered a weakness in an a cipher. However, in this case, it turns out that this is a result of a design choice. The lowest bit of each byte of a DES key is actually a *parity* bit that is completely ignored by the cihper itself. The value of the parity bit is such that each byte has an odd number of bits set.
+Having equivalent keys is often considered a weakness in an a cipher. However, in the case of DES, it turns out that this is a result of a design choice. The lowest bit of each byte of a DES key is actually a *parity* bit that is completely ignored by the cihper itself. The value of the parity bit is such that each byte has an odd number of bits set.
 
 Write a function `DESFixParity : [64] -> [64]` that takes any 64-bit vector and returns the equivalent DES key with the parity bits correctly.
 
@@ -289,9 +289,22 @@ DESFixParity key = join fixed_bytes
                   | byte <- bytes ]
 ```
 
-#### Exercise 2.3.4 DES Key Strength
+## 2.4 Equivalence Checking
 
-Use the function `DESFixParity` that you wrote above to show that DES completely ignores parity bits. Given that it does so, what is the actual maximum key strength of DES in terms of bits?
+One of the most powerful uses of Cryptol's theorem proving technology is the ability to show equivalence of two different implementations for all possible inputs. One way to use this is to create two functions:
+
+1. A *specification* that is written for clarity and correctness.
+2. An *implementation* that is optimized and intended for usage.
+
+With a strong specification in hand, a user can aggressively optimize, confident that, given that the equivalence proof passes, their implementation is correct.
+
+Using the Software Analysis Workbench, a powerful framework built on Cryptol, it is even possible to carry out equivalence checks (and all of the proofs from this lab as well) on implementations in languages such as C and Java. (For an introduction to SAW, see other labs in the course.)
+
+### Exercise 2.4.1 Proving DES Key Equivalence
+
+Use the function `DESFixParity` that you wrote above to show that DES completely ignores parity bits. That is, prove that the DES encryption that allows all 64-bit keys is equivalent to the DES encryption function that first corrects the parity bits on those keys.
+
+Given that this proof passes, what is the actual maximum key strength of DES in terms of bits?
 
 > Solution
 >```bash
@@ -301,4 +314,8 @@ Use the function `DESFixParity` that you wrote above to show that DES completely
 >```
 > Since 8 of the 64 bits are ignored, DES has a maximum key strength of 56 bits.
 
-### 2.4 Equivalence Checking
+# The end
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course Github page:
+https://github.com/weaversa/cryptol-course/issues
