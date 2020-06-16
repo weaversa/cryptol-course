@@ -137,8 +137,8 @@ parameters.
       should be reversed.
 
 **EXERCISE**: Here we provide a skeleton for a fully parameterized CRC
-for you to fill in. Please use augment the `CRCSimple` function with
-the four extra parameters given above. Use the `CRC32Test` property to
+for you to fill in. Please augment the `CRCSimple` function with the
+four extra parameters given above. Use the `CRC32Test` property to
 help you get it right.
 
 Note, since there is now a parameter that possibly reflects the input
