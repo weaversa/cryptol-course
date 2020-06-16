@@ -300,7 +300,7 @@ rowround : Words 16 -> Words 16
 
 ### Definition
 
-Exercise: Here we provide a skeleton for `rowround`. Please replace
+**EXERCISE**: Here we provide a skeleton for `rowround`. Please replace
 the `zero` symbols with the appropriate logic as given in the Salsa20
 specification. You'll know you've gotten it right when it looks like
 the specification and when `:prove rowroundExamplesProp` gives
@@ -353,7 +353,7 @@ rowroundOpt ys =
 	 | (i : [2])  <- [0 .. 3] ]
 ```
 
-Exercise: Here we want to prove that for all inputs, `rowroundOpt` is
+**EXERCISE**: Here we want to prove that for all inputs, `rowroundOpt` is
 equal to `rowround`. Please replace the `False` symbol below with such
 a statement and then prove the property in the interpreter. It's not
 necessary to go through this exercise to create a complete Salsa20
@@ -376,7 +376,7 @@ columnround : Words 16 -> Words 16
 
 ### Definition
 
-Exercise: Here we provide a skeleton for `columnround`. Please replace
+**EXERCISE**: Here we provide a skeleton for `columnround`. Please replace
 the `zero` symbols with the appropriate logic as given in the Salsa20
 specification. You'll know you've gotten it right when it looks like
 the specification and when `:prove columnroundExamplesProp` gives
@@ -424,7 +424,7 @@ The comments in this section say that `columnround` is:
 matrix...The columnround function is, from this perspective, simply
 the transpose of the `rowround` function
 
-Exercise: Here is another property we can prove using Cryptol. The
+**EXERCISE**: Here is another property we can prove using Cryptol. The
 author claims that rejiggering the input and outputs of `rowround` (in
 a special way) will cause `rowround` to produce results identical to
 `columnround`. To rejigger we
@@ -460,7 +460,7 @@ doubleround : Words 16 -> Words 16
 
 ### Definition
 
-Exercise: Here we provide a skeleton for `doubleround`. Please replace
+**EXERCISE**: Here we provide a skeleton for `doubleround`. Please replace
 the `zero` symbol with the appropriate logic as given in the Salsa20
 specification. You'll know you've gotten it right when it looks like
 the specification and when `:prove doubleroundExamplesProp` gives
@@ -512,7 +512,7 @@ littleendian : Bytes 4 -> [32]
 
 ### Definition
 
-Exercise: Here we provide a skeleton for `littleendian`. Please
+**EXERCISE**: Here we provide a skeleton for `littleendian`. Please
 replace the `zero` symbol with the appropriate logic as given in
 the Salsa20 specification. You'll know you've gotten it right when
 `:prove littleendianExamplesProp` gives `Q.E.D`.
@@ -551,7 +551,7 @@ here. There's one hiccup though, the littleendian function works on
 8-byte sequences, so we've defined the type of the function to work on
 n-byte sequences.
 
-Exercise: Here we provide a skeleton for `littleendian'`, the inverse
+**EXERCISE**: Here we provide a skeleton for `littleendian'`, the inverse
 to `littleendian`. Please replace the `zero` symbol with the
 appropriate logic such that `:prove littleendianInverseProp` gives
 `Q.E.D`.
@@ -603,7 +603,7 @@ operation can be simply described in four steps:
   4. Transform the 16-word sequence from step 3 into a 64-byte
      sequence using `littleendian'`.
 
-Exercise: Here we provide a skeleton for `Salsa20Core`. Please replace
+**EXERCISE**: Here we provide a skeleton for `Salsa20Core`. Please replace
 the `zero` symbol with the appropriate logic such that `:prove
 Salsa20CoreExamplesProp` gives `Q.E.D`.
 
@@ -703,7 +703,7 @@ and t3 should be concatenated together to make a sequence of 64-bytes.
 You'll find sigma and tau defined in a kind of fancy way in the
 Comments section below.
 
-Exercise: Here we provide a skeleton for `Salsa20Expansion`. Please
+**EXERCISE**: Here we provide a skeleton for `Salsa20Expansion`. Please
 fill in the definition of the function such that `:prove
 Salsa20ExpansionExamplesProp` gives `Q.E.D`. You'll likely want to add
 a `where` clause as well.
@@ -868,7 +868,7 @@ written your Salsa20Encrypt function in a straightforward manner, all
 you'd need to do is change the type signature and add one more `join`
 in the definition. Actually, why don't you try it?
 
-Exercise: Create a new function called Salsa20EncryptBits that works
+**EXERCISE**: Create a new function called Salsa20EncryptBits that works
 just like Salsa20Encrypt except that it acts on a message which is
 some number of bits `b` (such that `b /^ 8 <= 2^^70`), rather than `l`
 bytes.
