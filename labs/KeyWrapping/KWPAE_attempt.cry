@@ -1,3 +1,7 @@
+module labs::KeyWrapping::KWPAE_attempt where
+
+import labs::KeyWrapping::NIST800_38f_Answers
+
 widen a = 0 # a
 
 KWPAE_attempt :
@@ -7,15 +11,16 @@ KWPAE_attempt :
      fin l,
      k > 0,
      k < 2^^32,
-     l == 64 + (8*k) + (8*k) %^ 64 // type of S
+     l == 32 + 32 + (8*k) + (8*k) %^ 64, // type of S
+     l/64 >= 3
     ) =>
     ([128] -> [128]) -> [8*k] -> [l]
     
 KWPAE_attempt CIPHk P = C
   where
     ICV2 = 0xA65959A6
-    PAD = zero
     PLEN = `k : [32]
+    PAD = zero : [(8*k) %^ 64]
     S = ICV2 # PLEN # P # PAD : [l]
     C = if PLEN <= 64 then
             widen (CIPHk (take S))
