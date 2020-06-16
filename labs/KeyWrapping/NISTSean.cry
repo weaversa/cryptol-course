@@ -1,6 +1,8 @@
 module labs::KeyWrapping::NISTSean where
 
 import specs::Primitive::Symmetric::Cipher::Block::AES_parameterized as AES
+import specs::Primitive::Symmetric::Cipher::Block::TripleDES as TDEA
+
 
 /**
  * This algorithm specifies the wrapping function, W, for KW-AE (see
