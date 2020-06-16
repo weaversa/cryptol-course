@@ -6,8 +6,7 @@ widen a = 0 # a
 
 KWPAE_attempt :
     {k, l}
-    (
-     fin k,
+    (fin k,
      fin l,
      k > 0,
      k < 2^^32,
