@@ -30,10 +30,10 @@ violating the N-Queens constraint.)
 
 ```
 /** whether sequence `X` comprises unique items */
-distinct: {a, n} (Cmp a, fin n, n >= 1) => [n]a -> Bit
+distinct : {a, n} (Cmp a, fin n, n >= 1) => [n]a -> Bit
 distinct X = U == zero
   where
-    M = map ((>>>) (1:[n])) [(1:[n])...]
+    M = map ((>>>) (1:[n])) [(1 : [n])...]
     U = foldl (||) zero [ (map ((==) x) X) ^ m | x <- X | m <- M ]
 ```
 
@@ -87,11 +87,11 @@ checkDiag :
     {n} (fin n, n >= 1) => Board n -> (Position n, Position n) -> Bit
 checkDiag Q (i, j) =
     (i < j) ==> (diffR != diffC)
-      where
-        qi = Q @ i
-        qj = Q @ j
-        diffR = if qi >= qj then qi - qj else qj - qi
-        diffC = j - i                   // we know i < j
+  where
+    qi = Q @ i
+    qj = Q @ j
+    diffR = if qi >= qj then qi - qj else qj - qi
+    diffC = j - i                   // we know i < j
 ```
 
 (This mostly follows [1], but swaps out eager 
@@ -106,7 +106,7 @@ board positions):
 ijs : {n} (fin n, n >= 1) => [_](Position n, Position n)
 ijs = product P P
   where
-    P = [0..(n-1) :Position n]
+    P = [0 .. (n-1) : Position n]
 ```
 
 As in [1], we define a function returning whether a `Position` within 
@@ -126,9 +126,9 @@ other:
 /** whether `Board` `Q` satisfies the N-Queens constraint */
 nQueens : {n} (fin n, n >= 1, width (n-1) > 1) => Solution n
 nQueens Q =
-    all (inRange Q) Q             // all queens are on board
-    /\ distinct Q                 // no queens are in same column
-    /\ all (checkDiag Q) ijs`{n}  // no queens are on same diagonal
+    all (inRange Q) Q /\          // all queens are on board
+    distinct Q /\                 // no queens are in same column
+    all (checkDiag Q) ijs`{n}     // no queens are on same diagonal
 ```
 
 The instructions for [1] also work here:

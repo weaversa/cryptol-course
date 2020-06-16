@@ -59,32 +59,32 @@ and concisely (provided the audience can read the language).
 
 ```
 module labs::Demos::OneTimePad where
-  /** Encrypt plaintext `pt` using pre-shared key `psk` */
-  encrypt :
+
+/** Encrypt plaintext `pt` using pre-shared key `psk` */
+encrypt :
     {k, m}
     (fin k, k >= m) =>
     (String k) -> (String m) -> (String m)
-  encrypt psk pt = ct
-    where
-      ct = (take`{m} psk) ^ pt
+encrypt psk pt = ct
+  where
+    ct = (take`{m} psk) ^ pt
 
-  /* Decrypt plaintext; same as `encrypt` */  
-  decrypt = encrypt
+/* Decrypt plaintext; same as `encrypt` */  
+decrypt = encrypt
   
-  /**
-   * Verify test vector 
-   *   "ZUGESAGT" "HELLO" -> [0x12, 0x10, 0x0B, 0x09, 0x1C]
-   */
-  property test =
-    (encrypt "ZUGESAGT" "HELLO" ==
-      [0x12, 0x10, 0x0B, 0x09, 0x1C])
+/**
+ * Verify test vector 
+ *   "ZUGESAGT" "HELLO" -> [0x12, 0x10, 0x0B, 0x09, 0x1C]
+ */
+property test =
+    (encrypt "ZUGESAGT" "HELLO" == [0x12, 0x10, 0x0B, 0x09, 0x1C])
   
-  /**
-   * Verify that for any pre-shared key `psk` and plaintext `pt` of 
-   * size 8 and 5, respectively, decrypting ciphertext encrypted 
-   * using the same pre-shared key yields the original plaintext
-   */
-  property decrypt_of_encrypt_yields_original_plaintext_8_5 (psk, pt) =
+/**
+ * Verify that for any pre-shared key `psk` and plaintext `pt` of 
+ * size 8 and 5, respectively, decrypting ciphertext encrypted 
+ * using the same pre-shared key yields the original plaintext
+ */
+property decrypt_of_encrypt_yields_original_plaintext_8_5 (psk, pt) =
     (decrypt psk (encrypt`{8, 5} psk pt)) == pt
 ```
 

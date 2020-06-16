@@ -79,7 +79,6 @@ indexCorrect L x = elem x L ==> L ! (index L x) == x
 
 /** index is correctly identified for all characters in alphabet */
 property charIsAtIndex = indexCorrect alphabet
-
 ```
 
 ```sh
@@ -91,10 +90,10 @@ Q.E.D.
 The property even holds for other sequences, repeating or not:
 
 ```sh
-labs::Demos::Caesar> :prove \(A:[64]Char) -> indexCorrect A
+labs::Demos::Caesar> :prove \(A : [64]Char) -> indexCorrect A
 Q.E.D.
 (Total Elapsed Time: 1.172s, using "Z3")
-labs::Demos::Caesar> :prove \(L:[33]Integer) -> indexCorrect L
+labs::Demos::Caesar> :prove \(L : [33]Integer) -> indexCorrect L
 Q.E.D.
 (Total Elapsed Time: 0.347s, using "Z3")
 ```
@@ -110,7 +109,7 @@ and generating a cipher alphabet, then generating cipher characters
 by matching position:
 
 ```
-encrypt: {n} Key -> String n -> String n
+encrypt : {n} Key -> String n -> String n
 encrypt key msg = map rot msg
   where
     /* cipher alphabet */
@@ -151,7 +150,7 @@ To decrypt, simply swap the plaintext and cipher alphabets in the
 search and output operations:
 
 ```
-decrypt: {n} Key -> String n -> String n
+decrypt : {n} Key -> String n -> String n
 decrypt key msg' = map rot msg'
   where
     /* cipher alphabet */
@@ -206,7 +205,7 @@ with the same key recovers the original plaintext for all messages:
 
 ```
 /** Decryption with same key recovers original message */
-recovery: {n} fin n => Key -> String n -> Bit
+recovery : {n} fin n => Key -> String n -> Bit
 recovery key msg = decrypt key (encrypt key msg) == msg
 
 /** Decrypting encrypted `msg` of length `1` returns original `msg`. */
