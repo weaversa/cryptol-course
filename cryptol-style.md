@@ -173,6 +173,53 @@ foo = ...
     horse = ...
 ```
 
+Comments
+--------
+
+### Punctuation
+
+Write proper sentences; start with a capital letter and use proper
+punctuation.
+
+### Top-Level Definitions
+
+Comment every top level function (particularly exported functions),
+and provide a type signature. The documentation should
+give enough information to
+apply the function without looking at the function's definition.
+
+When writing a cryptoalgorithm specification in Cryptol, often the
+arguments to a function have verbiage in the specification that may be
+copied into the function documentation.
+This is considered a good practice provided it does not become too verbose.
+
+### End-of-Line Comments
+
+Separate end-of-line comments from the code using 2 spaces.
+
+```haskell
+foo : [32] -> [32]
+foo n = n % p
+  where
+    p = 4294967291  -- Largest 32 bit prime.
+```
+
+Naming
+------
+
+When implementing cryptoalgorithm specifications, match identifiers to
+the case given in the specification.
+This helps make the correspondence clear (especially to those more
+steeped in cryptoalgorithm specifications).
+Should a specification's identifiers include
+characters illegal in Cryptol identifiers, underscore is often a
+reasonable substitute.
+
+When not constrained by the above it is probably best to follow Haskell's style:
+
+> Use camel case (e.g. `functionName`) when naming functions and upper
+> camel case (e.g. `DataType`) when naming data types.
+
 # STOPPED !!!
 
 Comments
