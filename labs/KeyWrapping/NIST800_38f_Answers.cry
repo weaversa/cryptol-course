@@ -1,8 +1,10 @@
-module labs::KeyWrapping::NISTSean where
+module labs::KeyWrapping::NIST800_38f_Answers where
 
 import specs::Primitive::Symmetric::Cipher::Block::AES_parameterized as AES
 import specs::Primitive::Symmetric::Cipher::Block::TripleDES as TDEA
 
+
+// Common Components: W, WStep and their inverses W', WStep'
 
 /**
  * This algorithm specifies the wrapping function, W, for KW-AE (see
@@ -175,6 +177,15 @@ KWAD256 (k : [256]) ct = (FAIL, join pt)
   where (FAIL, pt) = KWAD`{5} (AES::decrypt k) (split ct)
 
 property KWAE256Test = KWAD256 1234 (KWAE256 1234 5678) == (False, 5678)
+
+
+
+
+
+//
+// TEST VECTORS
+//
+
 
 
 Test_128_128 : [128] -> [128] -> [192]

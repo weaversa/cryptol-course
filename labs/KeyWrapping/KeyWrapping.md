@@ -205,9 +205,9 @@ Recall the lambda function notation which is used in the expression `(\x -> (\y 
 
 We will use `foldl` along with our step function `WStep` to write a definition for `W`.
 
-**Exercise:** Complete the definition of `W` below by replacing the `FIXME` function with an appropriate value to server as an update function. *Hint:* Just plugging in `WStep` won't work. Carefully consider the types at play here. Also recall that you can *partially* evaluate functions -- for an example this, consider the type that `:t (\x -> (\y -> x + y)) 1234` reports in the interpreter.
+**Exercise:** Complete the definition of `W` below by replacing the `FIXME` function with an appropriate value to server as an update function. *Hint:* Just plugging in `WStep` won't work. How many parameters does WStep take? Right now, our FIXME has two parameters (a and b)... Also recall that you can *partially* evaluate functions. For example, try checking what `:t (\x -> (\y -> x + y)) 1234` reports in the interpreter.
 
-with the approprate input 
+"Hint: Just plugging in WStep won't work. How many parameters does WStep take? Right now,  FIXME has two parameters (a and b)..."
  
 ```
 W :
@@ -225,6 +225,9 @@ W CIPHk S = C
 
 With `W` in hand there isn't much work to do to complete the `KW-AE` algorithm.
 
+**Exercise:** Finish the specification for `KW-AE` by replacing `FIXME` in the
+snippet below wiht the correct defintion for `S`.
+
 ```
 KWAE :
     {n}
@@ -232,15 +235,141 @@ KWAE :
     ([128] -> [128]) -> [n][64] -> [n+1][64]
 KWAE CIPHk P = C
   where
-    S = [ICV1] # P
+    FIXME = zero:[n+1][64]
+    S = FIXME
     C = W CIPHk S
 ```
 
-**TODO** Make a statement about checking your work by testing the test vectors in the section **Test Vectors** below.
+At this point you can check your solutions with some test vectors defined by
+properties later on in this document. Here is the the command and sample output 
+for `RFC3394_TestVector_1`. Tests `RFC3394_TestVector_1` through 
+`RFC3394_TestVector_6` should succeed.
 
-# Formal Specification of `KW-AD` 
+```shell
+Cryptol> :check RFC3394_TestVector_1
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+```
 
-**TODO** Mostly exercises, discuss choice for the authentication bit and choice of output type
+# Formal Specification of `KW-AD`
+
+It should be fairly straightforward at this point to implement the authenticated
+decryption function `KW-AD` which goes with `KW-AE`. There is one significant
+difference, though: since the algorithm *authenticates* the decryption we will
+need to add a check and slightly alter the type for `KW-AD`.
+
+**Exercise:** Review `Algorithm 2` and `Figure 3` of the document and complete 
+a definition for the inverse routines for `W` and `WStep` which we shall call
+`W'` and `WStep'` respectively. The type declarations for these functions are
+provided. 
+
+*Hint:* Notice that, except for the names, the type declarations are identical.
+The function definitions are also very similar, pay special attention
+to the order of the index variable for the main loop, the sequence of operations,
+and how the sequence of `Rs` transforms:
+
+```
+W' :
+    {n}
+    (fin n, n >= 3, 64 >= width (6 * (n - 1))) =>
+    ([128] -> [128]) -> [n][64] -> [n][64]
+  
+
+WStep' :
+    {n}
+    (fin n, n >= 3) =>
+    ([128] -> [128]) -> [n][64] -> [64] -> [n][64]
+```
+
+Once you have these completed you shoudl be able to check your work by having 
+Cryptol `:prove` the properies `WStepInvProp` and `WInvProp`. Your output should look something like the following:
+
+```shell
+Cryptol> :prove WStepInvProp 
+Q.E.D.
+(Total Elapsed Time: 0.079s, using Z3)
+Cryptol> :prove WInvProp
+Q.E.D.
+(Total Elapsed Time: 1.832s, using Z3)
+```
+
+The final step is to use these components to write the authenticated decryption
+algorithm `KW-AD`. Unlike `W'` and `WStep'` this function will have a different
+type than its related routine in the `KW-AE` family becase it needs to capture
+whether or not the ciphertext authenticates as well as computing the
+corresponding plaintext.
+
+Another difference is that `KW-AD` will have one *fewer* semiblock
+of output than `KW-AE`. 
+
+**Exercise:** Review `Algorithm 4` from the standard, and complete the 
+definition of `KWAD` below by replacing `FIXME_1`, `FIXME_2`, and `FIXME_3`
+with appropriate definition fors `S`, the correct authentication bit to assign
+to `FAIL`, and finally the appropriate plaint text. Note that `FAIL` should
+indicate a *failure* to authenticate so should be `False` for authenticated
+decryptions and `True` for failures to authenticate.
+
+*Hint:* review the Cryptol primitives `head` and `tail` after you think you have
+the appropriate definition for `S`/`FIXME_1`
+
+```
+KWAD :
+    {n}
+    (fin n, n >= 3, 64 >= width (6 * (n-1))) =>
+    ([128] -> [128]) -> [n][64] -> (Bit, [n-1][64])
+KWAD CIPHk' C = (FAIL, P)
+  where
+    FIXME_1 = zero:[n][64]
+    FIXME_2 = zero:Bit
+    FIXME_3 = zero:[n-1][64
+    ICV1 = 0xA6A6A6A6A6A6A6A6
+    S = FIXME_1
+    FAIL = FIXME_2
+    P = FIXME_3
+```
+
+When you have successfully defined this funciton, you can test your work by
+`:prove`ing that the following properties are true
+
+```
+property KWAEInvProp S = 
+    KWAD`{3} (\a -> a-1) (KWAE (\a -> a+1) S) == (False, S)
+
+//KW with AES128
+KWAE128 (k : [128]) pt = join (KWAE`{2} (AES::encrypt k) (split pt))
+
+KWAD128 (k : [128]) ct = (FAIL, join pt)
+  where (FAIL, pt) = KWAD`{3} (AES::decrypt k) (split ct)
+
+property KWAE128Test = KWAD128 1234 (KWAE128 1234 5678) == (False, 5678)
+
+
+//KW with AES192
+KWAE192 (k : [192]) pt = join (KWAE`{3} (AES::encrypt k) (split pt))
+
+KWAD192 (k : [192]) ct = (FAIL, join pt)
+  where (FAIL, pt) = KWAD`{4} (AES::decrypt k) (split ct)
+
+property KWAE192Test = KWAD192 1234 (KWAE192 1234 5678) == (False, 5678)
+
+//KW with AES256
+KWAE256 (k : [256]) pt = join (KWAE`{4} (AES::encrypt k) (split pt))
+
+KWAD256 (k : [256]) ct = (FAIL, join pt)
+  where (FAIL, pt) = KWAD`{5} (AES::decrypt k) (split ct)
+
+property KWAE256Test = KWAD256 1234 (KWAE256 1234 5678) == (False, 5678)
+```
+
+For instance running `:prove KWAE256Test` in the interpreter should result in
+output that looks like this:
+
+```shell
+Cryptol> :prove KWAE256Test
+Q.E.D.
+(Total Elapsed Time: 0.005s, using Z3)
+```
 
 # Test Vectors
 
