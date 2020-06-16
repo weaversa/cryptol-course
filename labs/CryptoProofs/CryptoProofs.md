@@ -13,7 +13,7 @@ First, since we are creating a module, the first line needs to be the
 module definition.
 
 ```
-module labs::CryptoProofs::CryptoProofsAnswers where
+module labs::CryptoProofs::CryptoProofs where
 ```
 
 # 1. DES
@@ -29,14 +29,14 @@ import specs::DES
 Now, from the command line, load this module.
 
 ```bash
-Cryptol> :m labs::CryptoProofs::CryptoProofsAnswers
-Loading module labs::CryptoProofs::CryptoProofsAnswers
+Cryptol> :m labs::CryptoProofs::CryptoProofs
+Loading module labs::CryptoProofs::CryptoProofs
 ```
 
 First, we'll take a look at the type of the DES encryption function.
 
 ```bash
-labs::CryptoProofs::CryptoProofsAnswers> :t DES.encrypt
+labs::CryptoProofs::CryptoProofs> :t DES.encrypt
 DES.encrypt : [64] -> [64] -> [64]
 ```
 
@@ -66,7 +66,6 @@ For the rest of the lab, we'll be looking at some of the types of questions you 
 | Proof of inversion | `:prove \x -> g (f x) == x` | 
 | Collision detection | `:sat \(x,y) -> f x == f y /\ x != y` |
 | Equivalence checking | `:prove \x -> f x == g x` |
-|
 
 Each subsection below will explore one of these questions in-depth.
 
@@ -118,14 +117,14 @@ known_ct = 0xf2930290ea4db580
 Note: For whatever reason, the default Z3 solver has trouble with this one. Try one of the other solvers, such as yices:
 
 ```bash
-labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
+labs::CryptoProofs::CryptoProofs> :s prover=yices
 ```
 
 Or use all the installed solvers in a first-to-the-post race.
 *Caution! May exhaust system resources.*
 
 ```bash
-labs::CryptoProofs::CryptoProofsAnswers> :s prover=any
+labs::CryptoProofs::CryptoProofs> :s prover=any
 ```
 
 ### Exercise 2.1.2 Breaking DES
@@ -155,7 +154,7 @@ g x = (x - 2) / 3
 We want to prove that function `g` inverts function `f`; that is, applying `g` to the result of `f x` gets `x` back. Here's the invocation:
 
 ```bash
-labs::CryptoProofs::CryptoProofsAnswers> :prove \x -> g (f x) == x
+labs::CryptoProofs::CryptoProofs> :prove \x -> g (f x) == x
 Q.E.D.
 (Total Elapsed Time: 0.023s, using "Z3")
 ```
@@ -170,7 +169,7 @@ Here's the breadown of this proof:
 
 ### Exercise 2.2.1 The other direction
 
-Our example proof showed that `g` inverts `f` for all inputs. Does this work the other way around? Try it! Why does or doesn't this work?
+Our example proof showed that `g` inverts `f` for all inputs. Does this work the other way around? Try it! If the proof fails, it will provide a *counterexample*. Use the counterexample to understand what went wrong.
 
 ### Exercise 2.2.2 DES inversion
 
@@ -189,8 +188,8 @@ In cryptography, a *collision* occurs when two different inputs produce the same
 Use the solver to find two different keys and a plaintext such that both keys encrypt that plaintext to the same ciphertext.
 
 ```bash
-labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
-labs::CryptoProofs::CryptoProofsAnswers> :sat \(k1,k2,pt) -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2 pt
+labs::CryptoProofs::CryptoProofs> :s prover=yices
+labs::CryptoProofs::CryptoProofs> :sat \(k1,k2,pt) -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2 pt
 (\(k1, k2, pt) -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2
                                                                pt)
   (0x0000000000000000, 0x0100000000000000, 0x0000000000000000) = True

@@ -66,7 +66,6 @@ For the rest of the lab, we'll be looking at some of the types of questions you 
 | Proof of inversion | `:prove \x -> g (f x) == x` | 
 | Collision detection | `:sat \(x,y) -> f x == f y /\ x != y` |
 | Equivalence checking | `:prove \x -> f x == g x` |
-|
 
 Each subsection below will explore one of these questions in-depth.
 
@@ -199,7 +198,7 @@ Here's the breadown of this proof:
 
 ### Exercise 2.2.1 The other direction
 
-Our example proof showed that `g` inverts `f` for all inputs. Does this work the other way around? Try it! Why does or doesn't this work?
+Our example proof showed that `g` inverts `f` for all inputs. Does this work the other way around? Try it! If the proof fails, it will provide a *counterexample*. Use the counterexample to understand what went wrong.
 
 > Solution:
 >
@@ -210,7 +209,7 @@ Our example proof showed that `g` inverts `f` for all inputs. Does this work the
 >```
 >
 >Here we see that Cryptol has found that not only is our theorem false, 
->but provides a *counterexample* that we can analyze to see why.
+>but provides a counterexample that we can analyze to see why.
 >Let's look a little closer.
 >
 >```bash
