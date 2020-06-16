@@ -2,10 +2,12 @@
 
 Cryptol and SAW allow users to rapidly and transparently deploy powerful theorem proving tools to explore their code.
 
+By the end of this lab, the student will be able to describe and demonstrate five powerful classes of proofs that can be applied to a wide variety of cryptographic algorithms.
+
 This lab is a
 [literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
 document --- that is, it can be loaded directly into the Cryptol
-interpreter. By the end of this lab, the student will be able to describe and demonstrate five powerful classes of proofs that can be applied to a wide variety of cryptographic algorithms.
+interpreter.
 
 First, since we are creating a module, the first line needs to be the
 module definition.
@@ -16,7 +18,7 @@ module labs::CryptoProofs::CryptoProofsAnswers where
 
 ## 1. DES
 
-In this lab, we'll analyze the DES (Data Encryption Standard) algorithm. Let's take a moment to familiarize ourselves with how it works.
+To start, we'll analyze the DES (Data Encryption Standard) algorithm. Let's take a moment to familiarize ourselves with how it works.
 
 First, we import it.
 
@@ -27,35 +29,44 @@ import specs::DES
 Now, from the command line, load this module.
 
 ```bash
-Cryptol> :m labs::CryptoProofs::CryptoProofs
-Loading module labs::CryptoProofs::CryptoProofs
+Cryptol> :m labs::CryptoProofs::CryptoProofsAnswers
+Loading module labs::CryptoProofs::CryptoProofsAnswers
 ```
 
- Let's encrypt something with DES.
+First, we'll take a look at the type of the DES encryption function.
 
 ```bash
-labs::CryptoProofs::CryptoProofs> DES.encrypt 0x752878397493cb70 0x1122334455667788
+labs::CryptoProofs::CryptoProofsAnswers> :t DES.encrypt
+DES.encrypt : [64] -> [64] -> [64]
+```
+
+DES takes two 64-bit values and returns a 64-bit value. (The key comes first and then the plaintext.) Let's encrypt something with DES.
+
+```bash
+labs::CryptoProofs::CryptoProofs> DES.encrypt 0x752979387592cb70 0x1122334455667788
 0xb5219ee81aa7499d
 ```
 
  Now decrypt:
 
  ```bash
- labs::CryptoProofs::CryptoProofs> DES.decrypt 0x752878397493cb70 0xb5219ee81aa7499d
+ labs::CryptoProofs::CryptoProofs> DES.decrypt 0x752979387592cb70 0xb5219ee81aa7499d
  0x1122334455667788
  ```
 
 Now that we have DES working, let's analyze it!
 
-## 2. Killer Apps
+## 2. Four Killer Apps
 
-For the rest of the lab, we'll be looking at some of the types of questions you can ask (and sometimes even answer!) using Cryptol's powerful automated theorem proving capabilities. Here are important questions that one might ask about a cryptographic algorithm along with a generic "one-liner" Cryptol invocation. (Don't worry if you don't understand these yet.)
+For the rest of the lab, we'll be looking at some of the types of questions you can ask (and often answer!) using Cryptol's powerful automated theorem proving capabilities. These are important questions that one might ask about a cryptographic algorithm along with a generic "one-liner" Cryptol invocation. (Don't worry if you don't understand these yet.)
 
-* Function reversal: `:sat \x -> f x == y`
-* Proof of inversion: `:prove \x -> g (f x) == x`
-* Collision detection: `:sat \(x,y) -> f x == f y /\ x != y`
-* Absence of collisions: `:prove \(x,y) -> x != y ==> f x != f y`
-* Equivalence checking: `:prove \x -> f x == g x`
+| Proof | Invocation |
+|-|-|
+| Function reversal | `:sat \x -> f x == y` |
+| Proof of inversion | `:prove \x -> g (f x) == x` | 
+| Collision detection | `:sat \(x,y) -> f x == f y /\ x != y` |
+| Equivalence checking | `:prove \x -> f x == g x` |
+|
 
 Each subsection below will explore one of these questions in-depth.
 
@@ -70,9 +81,14 @@ It may be interesting to explore whether a particular cryptographic function can
 We'll start with an example where we reverse the following simple function:
 
 ```
+// square - multiplies an integer by itself
+```
+
+```
 square : Integer -> Integer
 square x = x * x
 ```
+
 
 Now we can reverse it from the REPL. Let's use the solver to find a square root using only a squaring function!
 
@@ -84,18 +100,18 @@ labs::CryptoProofs::CryptoProofs> :sat \x -> square x == 1764
 
 Let's take a closer look at this query, which makes use of a *lambda* (anonymous/unnamed/on-the-fly) function. Here's the breakdown:
 
-|||||
-| --- | --- | --- | --- |
+|Function Reversal||||
+|-|-|-|-|
 | `:sat`            | `\x`                   | `->`        | `square x == 1764` |
 | "Hey SAT solver!" | "Find me an input `x`" | "such that" | "`x` squared equals `1764`" |
-| Asks the SAT solver to find an input | Lamba function input | More lambda syntax | Function body |
+|||||
 
-#### Exercise 2.1.1: Reverse DES.encrypt
+#### Exercise 2.1.1 Reverse DES.encrypt
 
 Given the following key and ciphertext, find the plaintext using only the solver and the `DES.encrypt` function.
 
 ```
-known_key = 0x752878397493cb70
+known_key = 0x752979387592cb70
 known_ct = 0xf2930290ea4db580
 ```
 
@@ -105,7 +121,8 @@ Note: For whatever reason, the default Z3 solver has trouble with this one. Try 
 labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
 ```
 
-Or use all the installed solvers in a first-to-the-post race. (Careful! May be too much for your system.)
+Or use all the installed solvers in a first-to-the-post race.
+*Caution! May exhaust system resources.*
 
 ```bash
 labs::CryptoProofs::CryptoProofsAnswers> :s prover=any
@@ -121,9 +138,39 @@ labs::CryptoProofs::CryptoProofsAnswers> :s prover=any
 >(Total Elapsed Time: 1.870s, using "Yices")
 >```
 
+
+#### Exercise 2.1.2 Breaking DES
+
+Given the following matched plaintext and ciphertext, ask the solver to find the key. Will this work? Why or why not? (*Hint: see plaintext.*) Note that you can stop the solver at any time by hitting `ctrl-c`.
+
+```
+matched_pt = join "tootough"
+matched_ct = 0x95d07f8a72707733
+```
+
+To make this solvable, try it again with the first six bytes of key provided: `0x1234567890ab`.
+
+> Solution:
+>
+>```bash
+>labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct
+>```
+> At this point, the solver hangs, unable to find a solution in any 
+> reasonable time. This is because DES is a well-designed cryptographic 
+> algorithm and is therefore designed to resist attacks on the key.
+> DES keys have been broken using specialized algorithms 
+> and large amounts of compute power, but not by a single computer
+> running a SAT solver.
+>```bash
+>labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt (0x1234567890AB # key) matched_pt == matched_ct
+>(\key -> DES.encrypt (0x1234567890ab # key)
+>                     matched_pt == matched_ct)
+>  0x1236 = True
+>(Total Elapsed Time: 4.764s, using "Yices")
+
 ### 2.2 Proof of Inversion
 
-For symmetric ciphers (and many other classes of functions), it is necessary that the encrypt and decrypt functions invert each other. It is easy to express this property in Cryptol.
+For symmetric ciphers, it is necessary that the decrypt function *inverts* the encrypt function. (That is, it restores the ciphertext to the original plaintext.) It is easy to express this property in Cryptol.
 
 Consider the following functions `f` and `g`:
 
@@ -144,13 +191,13 @@ Q.E.D.
 
 Here's the breadown of this proof:
 
-|||||
-| --- | --- | --- | --- |
+|Proof of Inversion||||
+|-|-|-|-|
 | `:prove`            | `\x`                   | `->`        | `g (f x) == x` |
-| "Prove to me" | "that for all `x`" | "it is true that" | "`f` inverts `g`" |
-| Asks the solver do a proof over all input(s) | Lamba function input | More lambda syntax | Function body |
+| "Prove to me" | "that for all `x`" | "it is true that" | "`g` inverts `f`" |
+|
 
-#### Exercise 2.2.1: The other direction
+#### Exercise 2.2.1 The other direction
 
 Our example proof showed that `g` inverts `f` for all inputs. Does this work the other way around? Try it! Why does or doesn't this work?
 
@@ -162,9 +209,21 @@ Our example proof showed that `g` inverts `f` for all inputs. Does this work the
 >(Total Elapsed Time: 0.018s, using "Z3")
 >```
 >
-> The reason this doesn't work is because `g` is defined with Integer division, resulting in a loss of information for some inputs.
+>Here we see that Cryptol has found that not only is our theorem false, 
+>but provides a *counterexample* that we can analyze to see why.
+>Let's look a little closer.
+>
+>```bash
+>labs::CryptoProofs::CryptoProofsAnswers> g 0
+>-1
+>```
+>
+>The reason this doesn't work is because `g` is defined over the integers
+>(rather than real numbers, which aren't currently supported by Cryptol.)
+>Therefore, the division operator computes integer division, resulting in a
+>loss of information for some inputs.
 
-#### Exercise 2.2.2: DES inversion
+#### Exercise 2.2.2 DES inversion
 
 Use Cryptol to prove that `DES.encrypt` and `DES.decrypt` are inverses for all possible inputs. Show both directions.
 
@@ -179,7 +238,67 @@ Use Cryptol to prove that `DES.encrypt` and `DES.decrypt` are inverses for all p
 >labs::CryptoProofs::CryptoProofsAnswers> :prove \(key,pt) -> DES.decrypt key (DES.encrypt key pt) == pt
 >Q.E.D.
 >(Total Elapsed Time: 3.909s, using "ABC")
->labs::CryptoProofs::CryptoProofsAnswers> :prove \key -> \pt -> DES.encrypt key (DES.decrypt key pt) == pt
+>labs::CryptoProofs::CryptoProofsAnswers> :prove \key -> \ct -> DES.encrypt key (DES.decrypt key ct) == ct
 >Q.E.D.
 >(Total Elapsed Time: 3.582s, using "ABC")
 >```
+
+### 2.3 Collision Detection
+
+In cryptography, a *collision* occurs when two different inputs produce the same output. For some cryptographic functions, such as pseudo-random number generators (PRNGs), it may be desirable to demonstrate an absence of collisions. In other functions, such as cryptographic hash functions, collisions are inevitable, but should be difficult to discover. It is easy in Cryptol to ask the solver to search for collisions. (Though finding a solution may not be possible.)
+
+#### Exercise 2.3.1 DES Key Collisions
+
+Use the solver to find two different keys and a plaintext such that both keys encrypt that plaintext to the same ciphertext. *Hint: Try `yices`*.
+
+```bash
+labs::CryptoProofs::CryptoProofsAnswers> :sat \(k1,k2,pt) -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2 pt
+(\(k1, k2, pt) -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2
+                                                               pt)
+  (0x0000000000000000, 0x0100000000000000, 0x0000000000000000) = True
+(Total Elapsed Time: 1.662s, using Yices)
+```
+
+#### Exercise 2.3.2 DES Equivalent Keys
+
+It's inevitable that there are collisions in DES, but it may be surprising that they're easy to find with Cryptol's solver. We now know that the two keys you just found encrypt one particular plaintext to the same ciphertext; more concerning would be if they perform the same transformation on *all* plaintexts. Such keys are called *equivalent* keys.
+
+Attempt to prove that the two keys you just found are equivalent keys.
+
+> Solution:
+>```bash
+>labs::CryptoProofs::CryptoProofsAnswers> :prove \pt -> DES.encrypt 0x0000000000000000 pt == DES.encrypt 0x0100000000000000 pt
+>Q.E.D.
+>(Total Elapsed Time: 0.855s, using Yices)
+>```
+
+#### Exercise 2.3.3 DES Parity Bits
+
+Having equivalent keys is often considered a weakness in an a cipher. However, in this case, it turns out that this is a result of a design choice. The lowest bit of each byte of a DES key is actually a *parity* bit that is completely ignored by the cihper itself. The value of the parity bit is such that each byte has an odd number of bits set.
+
+Write a function `DESFixParity : [64] -> [64]` that takes any 64-bit vector and returns the equivalent DES key with the parity bits correctly.
+
+> Solution:
+```
+DESFixParity : [64] -> [64]
+DESFixParity key = join fixed_bytes
+  where
+    bytes = (split key):[8][8]
+    fixed_bytes = [ nibble # [foldl (^) True nibble]
+                      where nibble = take`{7} byte 
+                  | byte <- bytes ]
+```
+
+#### Exercise 2.3.4 DES Key Strength
+
+Use the function `DESFixParity` that you wrote above to show that DES completely ignores parity bits. Given that it does so, what is the actual maximum key strength of DES in terms of bits?
+
+> Solution
+>```bash
+>labs::CryptoProofs::CryptoProofsAnswers> :prove \(key,pt) -> DES.encrypt key pt == DES.encrypt (DESFixParity key) pt
+>Q.E.D.
+>(Total Elapsed Time: 1.584s, using Yices)
+>```
+> Since 8 of the 64 bits are ignored, DES has a maximum key strength of 56 bits.
+
+### 2.4 Equivalence Checking
