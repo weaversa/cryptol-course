@@ -164,7 +164,8 @@ dolor non odio dapibus interdum. Donec egestas aliquam justo id
 volutpat. Fusce vel ante non ligula placerat tristique. Fusce laoreet
 libero a mauris rutrum tempor. Duis quis convallis sapien.
 
-![Figure 1. Lorum Ipsum Key Generation Flow Diagram](LorumIpsumKey.png)
+<kbd>![Figure 1. Lorum Ipsum Key Generation Flow Diagram](LorumIpsumKey.png)</kbd>
+**Figure 1. Lorum Ipsum Key Generation Flow Diagram**
 
 Aenean rhoncus, orci eu varius iaculis, sapien magna pulvinar mauris,
 ut scelerisque sapien ipsum aliquet orci. Nulla facilisi. Duis laoreet
