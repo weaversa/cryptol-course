@@ -31,7 +31,10 @@ property pythagoreantriple a b c =
 > Hints: the factorial function is usually defined recursively, but that tends to make SAT solving difficult.  Since you only need to calculate the factorial of the numbers 0-9, make your function just do a case by case calculation.  To get the digital representation of the number, create a function which takes in a number and a list of numbers and returns true exactly when the list is the base 10 representation.
 
 ```
-factorial : Integer -> Integer
+factorial :
+    {b}
+    (Arith b, Cmp b, Literal 362880 b) =>
+    b -> b
 factorial n = if n == 2 then      2 else
 	      if n == 3 then      6 else
 	      if n == 4 then     24 else
@@ -46,65 +49,86 @@ sum l = s ! 0
     where
      s = [0] # [ t + i | t <- l | i <- s ]
 
+powersoften :
+    {a}
+    (Arith a, Literal 10 a) =>
+    [inf]a
 powersoften = [1] # [ 10 * i | i <- powersoften ]
 
-alldigits : {a} (fin a) => [a]Integer -> Bit
+alldigits :
+    {a, b}
+    (fin a, Arith b, Cmp b, Literal 10 b) =>
+    [a]b -> Bit
 alldigits l = [ 0 <= i /\ i < 10 | i <- l ] == ~0
 
-basetenrep :
-    {a}
-    (fin a, a >= 1) =>
-    Integer -> [a]Integer -> Bit
-basetenrep n l = n == s /\ alldigits l /\ l @ 0 != 0
-     where
-      p = take powersoften
-      z = zip (reverse l) p
-      f = [ t.0 * t.1 | t <- z ]
-      s = sum f
+matchdigits :
+    {n, a}
+    (Arith a, Literal 10 a, fin n) =>
+    [n]a -> [n]a
+matchdigits l =
+    [ i * t
+    | i <- reverse l
+    | t <- powersoften ]
 
-sumfactorial : {a} (fin a) => [a]Integer -> Integer
+formnumber :
+    {a, b}
+    (fin a, Arith b, Literal 10 b) =>
+    [a]b -> b
+formnumber l =
+    sum (matchdigits l)
+
+basetenrep :
+    {a, b}
+    (fin a, a >= 1, Arith b, Cmp b, Literal 10 b) =>
+    b -> [a]b -> Bit
+basetenrep n l =
+    n == formnumber l       /\
+    alldigits l             /\
+    l @ 0 != 0
+
+sumfactorial :
+    {a, b}
+    (fin a, Arith b, Cmp b, Literal 362880 b) =>
+    [a]b -> b
 sumfactorial l = sum [ factorial i | i <- l ]
 
-
 factorionprop :
-    {a}
-    (fin a, a >= 1) =>
-    Integer -> [a]Integer -> Bit
+    {a, b}
+    (fin a, a >= 1, Arith b, Cmp b, Literal 362880 b) =>
+    b -> [a]b -> Bit
 property factorionprop n l =
-    basetenrep n l /\
+    basetenrep n l       /\
     sumfactorial l == n
 ```
 ```shell
-Main> :sat factorionprop`{1}
-factorionprop`{1} 2 [2] = True
-(Total Elapsed Time: 0.048s, using Z3)
-Main> :sat (\(x, l) -> factorionprop`{1} x l /\ x != 2)
-(\(x, l) -> factorionprop`{1} x l /\ x != 2) (1, [1]) = True
-(Total Elapsed Time: 0.047s, using Z3)
-Main> :sat (\(x, l) -> factorionprop`{1} x l /\ x != 2 /\ x != 1)
-Unsatisfiable
+Main> :sat factorionprop`{1, Integer}
+factorionprop`{1, Integer} 2 [2] = True
 (Total Elapsed Time: 0.046s, using Z3)
-Main> :sat factorionprop`{2}
+Main> :sat (\(x, l) -> factorionprop`{1, Integer} x l /\ x != 2)
+(\(x, l) -> factorionprop`{1, Integer} x l /\ x != 2)
+  (1, [1]) = True
+(Total Elapsed Time: 0.038s, using Z3)
+Main> :sat (\(x, l) -> factorionprop`{1, Integer} x l /\ x != 2 /\ x != 1)
 Unsatisfiable
-(Total Elapsed Time: 0.041s, using Z3)
-Main> :sat factorionprop`{3}
-factorionprop`{3} 145 [1, 4, 5] = True
+(Total Elapsed Time: 0.039s, using Z3)
+Main> :sat factorionprop`{3, Integer}
+factorionprop`{3, Integer} 145 [1, 4, 5] = True
+(Total Elapsed Time: 0.069s, using Z3)
+Main> :sat (\(x, l) -> factorionprop`{3, Integer} x l /\ x != 145)
+Unsatisfiable
 (Total Elapsed Time: 0.067s, using Z3)
-Main> :sat (\(x,l) -> factorionprop`{3} x l /\ x != 145)
+Main> :sat factorionprop`{4, Integer}
 Unsatisfiable
-(Total Elapsed Time: 0.063s, using Z3)
-Main> :sat factorionprop`{4}
+(Total Elapsed Time: 0.082s, using Z3)
+Main> :sat factorionprop`{5, Integer}
+factorionprop`{5, Integer} 40585 [4, 0, 5, 8, 5] = True
+(Total Elapsed Time: 0.076s, using Z3)
+Main> :sat (\(x, l) -> factorionprop`{5, Integer} x l /\ x != 40585)
 Unsatisfiable
-(Total Elapsed Time: 0.086s, using Z3)
-Main> :sat factorionprop`{5}
-factorionprop`{5} 40585 [4, 0, 5, 8, 5] = True
-(Total Elapsed Time: 0.096s, using Z3)
-Main> :sat (\(x,l) -> factorionprop`{5} x l /\ x != 40585)
+(Total Elapsed Time: 0.119s, using Z3)
+Main> :sat factorionprop`{6, Integer}
 Unsatisfiable
-(Total Elapsed Time: 0.141s, using Z3)
-Main> :sat factorionprop`{6}
-Unsatisfiable
-(Total Elapsed Time: 0.205s, using Z3)
+(Total Elapsed Time: 0.233s, using Z3)
 ```
 
 ### [Problem 36](https://projecteuler.net/problem=36)
@@ -116,27 +140,46 @@ Unsatisfiable
 > (Please note that the palindromic number, in either base, may not include leading zeros.)
 
 ```
+carrymult :
+    {a}
+    (fin a) =>
+    [a] -> [a] -> Bit
+carrymult m n = toInteger (m*n) != (toInteger m) * (toInteger n)
+
+carrylist :
+    {a, b}
+    (fin a, fin b) =>
+    [a][b] -> Bit
+carrylist l = [ carry s i | s <- sums | i <- l ] != 0
+    where
+     sums = [0] # [ i + j | i <- l | j <- sums ]
+
 doublepalindrome :
     {a, b}
-    (fin a, a >= 1, fin b) =>
-    [b] -> [a]Integer -> Bit
+    (fin a, a >= 1, fin b, b >= 4) =>
+    [b] -> [a][b] -> Bit
 property doublepalindrome x l =
-    basetenrep (toInteger x) l /\
-    reverse l == l             /\
-    reverse x == x             /\
+    basetenrep x l               /\
+    nocarryprods                 /\
+    ~(carrylist (matchdigits l)) /\
+    reverse l == l               /\
+    reverse x == x               /\
     x@0
+     where
+      nocarryprods = [ carrymult i p | i <- l | p <- powersoften ] == 0
 ```
 
 ```shell
-Main> :sat doublepalindrome`{1,3}
-doublepalindrome`{1, 3} 0x5 [5] = True
-(Total Elapsed Time: 0.042s, using Z3)
 Main> :sat doublepalindrome`{3,10}
-doublepalindrome`{3, 10} 0x2cd [7, 1, 7] = True
-(Total Elapsed Time: 0.060s, using Z3)
+doublepalindrome`{3, 10} 585 [5, 8, 5] = True
+(Total Elapsed Time: 0.062s, using Z3)
+Main> :sat (\(x,l) -> doublepalindrome`{3,10} x l /\ x != 585)
+(\(x, l) -> doublepalindrome`{3, 10} x l /\ x != 585)
+  (717, [7, 1, 7]) = True
+(Total Elapsed Time: 0.085s, using Z3)
 Main> :sat doublepalindrome`{3,9}
-doublepalindrome`{3, 9} 0x139 [3, 1, 3] = True
-(Total Elapsed Time: 0.073s, using Z3)
+doublepalindrome`{3, 9} 313 [3, 1, 3] = True
+(Total Elapsed Time: 0.048s, using Z3)
 ...
 ```
 
@@ -158,21 +201,17 @@ doublepalindrome`{3, 9} 0x139 [3, 1, 3] = True
 
 ```
 listhasdigit :
-    {a}
-    (fin a, a >=1) =>
-    [a]Integer -> Integer -> Bit
+    {a, b}
+    (fin a, a >=1, Cmp b) =>
+    [a]b -> b -> Bit
 listhasdigit l n = [ i == n | i <- l ] != 0
 
-hasalldigits : [10]Integer -> Bit
+hasalldigits :
+    {a}
+    (Cmp a, Literal 10 a, Literal 9 a) =>
+    [10]a -> Bit
 hasalldigits l =
     [ listhasdigit l i | i <- [0..9] ] == ~0
-
-formnumber :
-    {a}
-    (fin a) =>
-    [a]Integer -> Integer
-formnumber l =
-    sum [ i * t | i <- reverse l | t <- powersoften ]
 
 pandigital : Integer -> [10]Integer -> Bit
 pandigital n l =
@@ -213,13 +252,16 @@ Main> :sat (\(x, l) -> pandigital x l /\ x != 4130952867)
 
 ```
 twolistssamedigits :
-    {a}
-    (fin a, a >=1) =>
-    [a]Integer -> [a]Integer -> Bit
+    {a, b}
+    (fin a, a >=1, Cmp b) =>
+    [a]b -> [a]b -> Bit
 twolistssamedigits l1 l2 =
     [ listhasdigit l1 i | i <- l2 ] == ~0
 
-productdigits : {a} (fin a, a >= 1) => Integer -> [6][a]Integer -> Bit
+productdigits :
+    {a, b}
+    (fin a, a >= 1, Cmp b, Arith b, Literal 10 b) =>
+    b -> [6][a]b -> Bit
 property productdigits n ls =
     basetenrep n l1                 /\
     alltwolists                     /\
@@ -233,6 +275,14 @@ property productdigits n ls =
      allforms = [ formnumber li == i * n
      	      	| li <- tls
 		| i <- [2..6] ] == ~0
+```
+```shell
+Main> :sat productdigits`{6, [32]}
+productdigits`{6, [32]}
+  142857
+  [[1, 4, 2, 8, 5, 7], [2, 8, 5, 7, 1, 4], [4, 2, 8, 5, 7, 1],
+   [5, 7, 1, 4, 2, 8], [7, 1, 4, 2, 8, 5], [8, 5, 7, 1, 4, 2]] = True
+(Total Elapsed Time: 0.764s, using Z3)
 ```
 
 ### [Problem 59](https://projecteuler.net/problem=59)
@@ -279,7 +329,10 @@ XORtowords ciphertext key =
       jkeys = join keys
       ct = ciphertext ^ (take jkeys)
 
-decrypt : {a} (fin a, a >= 2) => [a]Char -> [3]Char -> [a]Char
+decrypt :
+    {a}
+    (fin a, a >= 2) =>
+    [a]Char -> [3]Char -> [a]Char
 decrypt s key = s ^ (take ks)
     where
      ks = join keys
@@ -309,7 +362,7 @@ passcode :
 passcode l = [ loop l kl != 0 | kl <- keylog ] == ~0
     where 
      loop ll kll = [ [ ll@(i:[a]), ll@j, ll@k] == kll /\
-	             i < j                      /\
+	             i < j                            /\
 	             j < k
 	           | i <- [0..a-1],
 	     	     j <- [0..a-1],
