@@ -54,5 +54,7 @@ script:
   - cryptol -e -c ":m labs::Demos::OneTimePad"
   - cryptol -e -c ":m labs::Demos::NQueens"
   - cryptol -e -c ":m labs::Demos::Sudoku"
+# Overview lab tests
+  - cryptol -e -c ":m labs::Overview::Overview"
 
 
