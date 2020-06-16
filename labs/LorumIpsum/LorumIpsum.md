@@ -240,7 +240,7 @@ ullamcorper.
 
 # Key Wrap Specification
 
-The Lorum Ipsum key is wrapped using the KWAE-128 Algorithm described
+The Lorum Ipsum key is wrapped using the KW-AE 128 Algorithm described
 in [NIST Special Publication
 800-38F](https://csrc.nist.gov/publications/detail/sp/800-38f/final)
 "Recommendation for Block Cipher Modes of Operation: Methods for Key
@@ -254,7 +254,7 @@ KEK = [0x0001020304050607, 0x08090A0B0C0D0E0F]
 
 k = [0x0011223344556677, 0x8899AABBCCDDEEFF]
 
-KWAE-128 (KEK, k) = [0x1fa68b0a8112b447, 0xaef34bd8fb5a7b82, 0x9d3e862371d2cfe5]
+KW-AE-128 (KEK, k) = [0x1fa68b0a8112b447, 0xaef34bd8fb5a7b82, 0x9d3e862371d2cfe5]
 
 
 # Providing Notice of Expected Changes
