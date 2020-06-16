@@ -116,7 +116,7 @@ defined in terms of simple, reusable helpers as:
 
 ```
 /** whether finite sequence `G` contains element `x` */
-contains':
+contains' :
     {a, n}
     (Cmp a, fin n) =>
     [n]a -> a -> Bit
@@ -127,7 +127,7 @@ contains' G x =
  * whether finite sequence `G` contains all items in finite 
  * sequence `H`
  */
-supset':
+supset' :
     {a, n}
     (Cmp a, fin n) =>
     [n]a -> [n]a -> Bit
@@ -135,7 +135,7 @@ supset' G H =
     all (contains' G) H
 
 /** whether `SudokuGroup` `G` contains one of each number 1-9 */
-check':
+check' :
     SudokuGroup -> Bit
 check' G =
     supset' G [1..9]
@@ -155,8 +155,16 @@ As a sanity check, we can confirm these are equivalent:
 
 ```
 /** `check` and `check'` are equivalent. */
-check_equiv: SudokuGroup -> Bit
+check_equiv : SudokuGroup -> Bit
 property check_equiv = check === check'
+```
+
+Cryptol also provides it's own `contains'` variant called `elem`.
+
+```
+/** `contains'` and `elem` are equivalent */
+contains_equiv : SudokuGroup -> SudokuNum -> Bit
+property contains_equiv G x = contains' G x == elem x G
 ```
 
 For functions `f` and `g` of one argument, `f === g` is `True` iff 
@@ -195,7 +203,7 @@ valid rows = [ check grp | grp <- rows # columns # squares ] == ~zero
 We can use `all` again here to simplify `valid`:
 
 ```
-valid': SudokuBoard -> Bit
+valid' : SudokuBoard -> Bit
 valid' rows = all check (rows # columns # squares)
   where
     columns = transpose rows
@@ -291,7 +299,7 @@ Unsatisfiable
 
 ```
 /** This puzzle from the Cryptol blog has a solution. */
-puzzle:
+puzzle :
     [_]SudokuNum -> Bit
 puzzle
      [a1,     a3,     a5, a6,         a9,
@@ -359,7 +367,7 @@ is unique:
 
 ```
 /** a solution to the easy puzzle */
-puzzle_solution:
+puzzle_solution :
     SudokuBoard
 puzzle_solution =
     [[2, 9, 5, 7, 4, 3, 8, 6, 1],
@@ -373,13 +381,13 @@ puzzle_solution =
      [1, 5, 4, 9, 3, 8, 6, 7, 2]]
 
 /** The easy puzzle's solution is valid. */
-puzzle_solution_valid:
+puzzle_solution_valid :
     Bit
 property puzzle_solution_valid =
     valid puzzle_solution
 
 /** The easy puzzle's solution is unique. */
-puzzle_unique:
+puzzle_unique :
     [_]SudokuNum -> Bit
 property puzzle_unique
            [a1,     a3,     a5, a6,         a9,
@@ -429,7 +437,7 @@ particular, fares...
  * https://www.conceptispuzzles.com/index.aspx?uri=info/article/424)
  * has a solution.
  */
-hard_puzzle:
+hard_puzzle :
     [_]SudokuNum -> Bit
 hard_puzzle
        [    a2, a3, a4, a5, a6, a7, a8, a9,
@@ -470,7 +478,7 @@ Not bad.  Finally, we should prove that this is unique as well...
 
 ```
 /** a solution to the "World's Hardest Sudoku" */
-hard_solution:
+hard_solution :
     SudokuBoard
 hard_solution =
     [[8, 1, 2, 7, 5, 3, 6, 4, 9],
@@ -490,7 +498,7 @@ property hard_solution_valid =
     valid hard_solution
 
 /** The "World's Hardest Sudoku" has a unique solution. */
-hard_unique:
+hard_unique :
     [_]SudokuNum -> Bit
 property hard_unique
            [    a2, a3, a4, a5, a6, a7, a8, a9,

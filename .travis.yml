@@ -54,5 +54,6 @@ script:
   - cryptol -e -c ":m labs::CRC::CRCAnswers"
 # Demo lab tests
   - cryptol -e -c ":m labs::Demos::Caesar"
+  - cryptol -e -c ":m labs::Demos::OneTimePad"
   - cryptol -e -c ":m labs::Demos::NQueens"
   - cryptol -e -c ":m labs::Demos::Sudoku"
