@@ -5,6 +5,7 @@ import labs::KeyWrapping::NIST800_38f_Answers
 import specs::Primitive::Symmetric::Cipher::Block::AES_parameterized as AES
 
 widen a = 0 # a
+shrink a = drop a
 
 KWPAE_attempt :
     {k, l, n}
@@ -14,8 +15,8 @@ KWPAE_attempt :
      k < 2^^32,
      l == 32 + 32 + (8*k) + (8*k) %^ 64,  // type of S
      fin n,                               // n is the type of the input to W
-     n >= 3,                              // Constraint levied from W
-     64 >= width (6 * (n - 1)),           // Constraint levied from W
+     n >= 3,                              // Lowerbound on n, from W
+     64 >= width (6 * (n - 1)),           // Uppwerbound on n, from W
      64 * n == max 192 l                  // Relate n and l
     ) =>
     ([128] -> [128]) -> [8*k] -> [l]
@@ -27,7 +28,14 @@ KWPAE_attempt CIPHk P = C
     PAD = zero : [(8*k) %^ 64]
     S = ICV2 # PLEN # P # PAD : [l]
     C = if PLEN <= 64 then
-            widen (CIPHk (take S))
+            widen (CIPHk (shrink S))
           else
-            take (join (W`{n} CIPHk (split (S # 0))))
+            shrink (join (W`{n} CIPHk (split (widen S))))
 
+testme P = KWPAE_attempt (\x -> x + 1) (join P)
+
+test1 = testme (zero : String 1)
+test7 = testme (zero : String 7)
+test8 = testme (zero : String 8)
+test16 = testme (zero : String 16)
+test100 = testme (zero : String 100)
