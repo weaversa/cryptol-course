@@ -21,10 +21,10 @@ KWPAE_attempt :
 KWPAE_attempt CIPHk P = C
   where
     ICV2 = 0xA65959A6
-    PBytes = `k : [32]
+    PBYTES = `k : [32]
     PAD = zero
-    S = ICV2 # PBytes # P # PAD : [l]
-    C = if PBytes <= 8 then
+    S = ICV2 # PBYTES # P # PAD : [l]
+    C = if PBYTES <= 8 then
             widen (CIPHk (shrink S))
           else
             shrink (join (W`{n} CIPHk (split (widen S))))
