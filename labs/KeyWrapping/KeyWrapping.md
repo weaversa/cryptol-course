@@ -134,7 +134,7 @@ The document defines a *semiblock* to be a block with half the width of the unde
 
 Putting these together we have our preliminary type signature:
 
-```
+```ignore
 W_prelim : 
   {n} 
   (fin n) => 
@@ -146,7 +146,7 @@ We haven't quite captured enough about the type of `W` -- for the algorithm to o
  * First, `n >= 3`, we can add this restriction to our type signature:
  * Second, `64 >= width (6 * (n - 1))`, we will say more about this later, but it has to do with the data size restrictions found in **Section 5**.
  
-```shell
+```ignore
 W : 
   {n} 
   (fin n, n >= 3, 64 >= width (6 * (n - 1))) => 
@@ -291,12 +291,13 @@ W' :
     {n}
     (fin n, n >= 3, 64 >= width (6 * (n - 1))) =>
     ([128] -> [128]) -> [n][64] -> [n][64]
-  
+W' CIPHk' C = zero
 
 WStep' :
     {n}
     (fin n, n >= 3) =>
     ([128] -> [128]) -> [n][64] -> [64] -> [n][64]
+WStep' CIPHk ([A] # Rs) t = zero
 ```
 
 Once you have these completed you shoudl be able to check your work by having 

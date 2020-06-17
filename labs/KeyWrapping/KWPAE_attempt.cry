@@ -28,11 +28,3 @@ KWPAE_attempt CIPHk P = C
             widen (CIPHk (shrink S))
           else
             shrink (join (W`{n} CIPHk (split (widen S))))
-
-testme P = KWPAE_attempt (\x -> x + 1) (join P)
-
-test1 = testme (zero : String 1)
-test7 = testme (zero : String 7)
-test8 = testme (zero : String 8)
-test16 = testme (zero : String 16)
-test100 = testme (zero : String 100)
