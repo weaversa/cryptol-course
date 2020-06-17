@@ -179,6 +179,72 @@ KWAD256 (k : [256]) ct = (FAIL, join pt)
 property KWAE256Test = KWAD256 1234 (KWAE256 1234 5678) == (False, 5678)
 
 
+//
+// TKW
+//
+//
+
+TW :
+    {n}
+    (fin n, n >= 3, 32 >= width (6 * (n - 1))) =>
+    ([64] -> [64]) -> [n][32] -> [n][32]
+TW CIPHk S = C
+  where
+    type s = 6*(n-1)
+    t = [ 1 .. s ]
+    C = foldl (TWStep CIPHk) S t
+    
+TWStep :
+    {n}
+    (fin n, n >= 3) =>
+    ([64] -> [64]) -> [n][32] -> [32] -> [n][32]
+TWStep CIPHk ([A] # Rs) t = [A'] # Rs'
+  where
+    [MSB, LSB] = split (CIPHk (A # head Rs))
+    A'         = MSB ^ t
+    Rs'        = tail Rs # [LSB]
+    
+TKWAE :
+    {n}
+    (fin n, n >= 2, 32 >= width (6 * n)) =>
+    ([64] -> [64]) -> [n][32] -> [n+1][32]
+TKWAE CIPHk P = C
+  where
+    ICV3 = 0xA6A6A6A6
+    S = [ICV3] # P
+    C = TW CIPHk S
+
+///////////////////////////////////////////////////////////////////////////////
+// KWPAE
+//
+// This portion of the file has functions related to KWPAE
+///////////////////////////////////////////////////////////////////////////////
+
+widen a = 0 # a
+
+KWPAE_attempt :
+    {k, l}
+    (fin k,
+     fin l,
+     k > 0,
+     k < 2^^32,
+     l == 32 + 32 + (8*k) + (8*k) %^ 64, // type of S
+     l/64 >= 3
+    ) =>
+    ([128] -> [128]) -> [8*k] -> [l]
+    
+KWPAE_attempt CIPHk P = C
+  where
+    ICV2 = 0xA65959A6
+    PLEN = `k : [32]
+    PAD = zero : [(8*k) %^ 64]
+    S = ICV2 # PLEN # P # PAD : [l]
+    C = if PLEN <= 64 then
+            widen (CIPHk (take S))
+          else
+            join (W CIPHk (split`{l/64} S))
+
+
 
 
 

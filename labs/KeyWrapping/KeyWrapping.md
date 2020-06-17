@@ -371,6 +371,45 @@ Q.E.D.
 (Total Elapsed Time: 0.005s, using Z3)
 ```
 
+# Formal Specification of `TKW-AE` and `TKW-AD`
+
+**Exercise:** Try your hand at writing the specification for `TKW-AE` and 
+`TKW-AD`. These functions are very similar to `KW-AE` and `KW-AD` but they use
+the 64-bit block cipher `TDEA` (also known as 
+[Triple-DES](https://en.wikipedia.org/wiki/Triple_DES).
+
+There are some minor modifications to be made, but things should go more easily
+using `KW-AE` and `KW-AD` as a reference. This is a good opportunity
+to go back through and take a close look at the type parameters and conditions
+and be sure you understand what they mean and how to use them.
+
+You will need to use the Triple-DES algorithm that's implemented in the TDEA 
+module we imported earlier. Check it's type with `:t TDEA::blockEncrypt`, this
+has a slightly different interface than the block cipher we used from the
+`AES` module earlier.
+
+You can define a keyed TDEA instance as follows:
+
+```
+[K1, K2, K3] = [0x0123456789ABCDEF, 0x23456789ABCDEF01, 0x456789ABCDEF0123]
+TDEA_keyed = (\p -> TDEA::blockEncrypt (K1, K2, K3, p))
+```
+
+Furthermore, we can check that this cipher was loaded correctly by checking the 
+property `TDEA::testsPass` defined in `TripleDES.cry` as follows:
+
+```shell
+:prove TDEA::testsPass
+Q.E.D.
+(Total Elapsed Time: 0.006s, using Z3)
+```
+
+It is worth taking a look through the `TripleDES.cry` and learn about the story
+of a particularly famous NIST test vector.
+
+Good luck!
+
+
 # Test Vectors
 
 Test vectors were not included in NIST-SP-800-38F; however, the `KW-AE`, `KW-AD`
