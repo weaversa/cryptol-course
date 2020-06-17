@@ -59,7 +59,7 @@ labs::Demos::Caesar>
 
 ### Docker (Linux)
 ```sh
-.../cryptol-course> docker run --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it galoisinc/cryptol:2.8.0
+.../cryptol-course> docker run --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
 Loading module Cryptol
 Cryptol> :m labs::Demos::Caesar
 Loading module labs::Demos::Caesar
@@ -68,7 +68,7 @@ labs::Demos::Caesar>
 
 ### Docker (Windows)
 ```sh
-...\cryptol-course> docker run --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it galoisinc/cryptol:2.8.0
+...\cryptol-course> docker run --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
 Loading module Cryptol
 Cryptol> :m labs::Demos::Caesar
 Loading module labs::Demos::Caesar
