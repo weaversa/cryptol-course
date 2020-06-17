@@ -22,7 +22,7 @@ KWPAE_attempt CIPHk P = C
   where
     ICV2 = 0xA65959A6
     PLEN = `k : [32]
-    PAD = zero : [(8*k) %^ 64]
+    PAD = zero
     S = ICV2 # PLEN # P # PAD : [l]
     C = if PLEN <= 64 then
             widen (CIPHk (shrink S))
