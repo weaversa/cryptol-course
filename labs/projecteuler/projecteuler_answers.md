@@ -10,7 +10,7 @@ import cipher2
 > 
 > For example, 3^2 + 4^2 = 9 + 16 = 25 = 5^2.  There exists exactly one Pythagorean triplet for which a + b + c = 1000.  Find this triple.
 
-```
+```haskell
 pythagoreantriple : Integer -> Integer -> Integer -> Bit
 property pythagoreantriple a b c =
     a^^2 + b^^2 == c^^2 /\
@@ -30,7 +30,7 @@ property pythagoreantriple a b c =
 >
 > Hints: the factorial function is usually defined recursively, but that tends to make SAT solving difficult.  Since you only need to calculate the factorial of the numbers 0-9, make your factorial function do a case by case calculation.  To get the digital representation of the number, create a function which takes in a number and a list of numbers and returns true exactly when the list is the base 10 representation.  Finally, it can be shown that the most number of digits a factorion can have is 6.
 
-```
+```haskell
 factorial :
     {b}
     (Arith b, Cmp b, Literal 362880 b) =>
@@ -133,13 +133,13 @@ Unsatisfiable
 
 ### [Problem 36](https://projecteuler.net/problem=36)
 
-> The decimal number, 585 = 1001001001_(2) (binary), is palindromic in both bases.
+> The decimal number, 585 = 1001001001_(2) (binary), is [palindromic](https://www.dictionary.com/browse/palindromic) in both bases.
 >
-> Find some numbers which are palindromic in base 10 and base 2.
+> Find at least three numbers which are palindromic in base 10 and base 2.
 >
 > (Please note that the palindromic number, in either base, may not include leading zeros.)
 
-```
+```haskell
 carrymult :
     {a}
     (fin a) =>
@@ -197,9 +197,9 @@ doublepalindrome`{3, 9} 313 [3, 1, 3] = True
 >    * d_(7)d_(8)d_(9)=728 is divisible by 13
 >    * d_(8)d_(9)d_(10)=289 is divisible by 17
 >
-> Find the sum of all 0 to 9 pandigital numbers with this property.  
+> Find at least two 0 to 9 pandigital numbers with this property.  
 
-```
+```haskell
 listhasdigit :
     {a, b}
     (fin a, a >=1, Cmp b) =>
@@ -250,7 +250,7 @@ Main> :sat (\(x, l) -> pandigital x l /\ x != 4130952867)
 >
 > Find the smallest positive integer, x, such that 2x, 3x, 4x, 5x, and 6x, contain the same digits.
 
-```
+```haskell
 twolistssamedigits :
     {a, b}
     (fin a, a >=1, Cmp b) =>
@@ -299,7 +299,7 @@ productdigits`{6, [32]}
 >
 > Note: cipher1.cry contains a different cipher encrypted under a different key from the original.  The original Project Euler problem can be found in cipher2.cry.
 
-```
+```haskell
 containsWords :
     {a, b}
     (fin a, a >= 2, fin b) =>
@@ -356,7 +356,7 @@ Main> decrypt cipher1 "abe"
 >
 > Given that the three characters are always asked for in order, analyse the file so as to determine the shortest possible secret passcode of >unknown length.
 
-```
+```haskell
 passcode :
     {a}
     (fin a, a >= 1) =>
@@ -409,7 +409,7 @@ Main> :sat (\(x : [32]) -> (x*x)%10000 == x /\ x > 999 )
 (Total Elapsed Time: 0.195s, using Z3)
 ```
 
-```
+```haskell
 squaredrop :
     {a}
     (fin a, a>=2, a%2 == 0) =>
