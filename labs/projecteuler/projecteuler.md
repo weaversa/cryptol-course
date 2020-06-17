@@ -2,7 +2,7 @@
 
 You have learned in the other labs that you can use Cryptol to find answers to problems you coded using the `:sat` command.  As a refresher, let's look at a simple example.  Suppose we want to find the integer that is one less than 1001 (as we said, it's very simple).  We do this by creating a function and a `property`:
 
-```
+```haskell
 inc : Integer -> Integer
 inc x = x + 1
 
@@ -18,7 +18,7 @@ inc1001 1000 = True
 ```
 Let's do a more complicated example: use Cryptol to factor 3,000,013.
 
-```
+```haskell
 factor3000013 : Integer -> Integer -> Bit
 factor3000013 x y =
     x * y == 3000013 /\
@@ -105,6 +105,8 @@ ONE IMPORTANT NOTE: we have reworded the questions to make them more Cryptol-fri
 to be memorable.
 >
 > Your task has been made easy, as the encryption key consists of three lower case characters. Using cipher1.cry, a file containing the encrypted ASCII codes, and the knowledge that the plain text must contain common English words, decrypt the message and find the sum of the ASCII values in the original text.
+>
+> Note: cipher1.cry contains a different cipher encrypted under a different key from the original.  The original Project Euler problem can be found in cipher2.cry.
 
 ### [Problem 79](https://projecteuler.net/problem=79)
 
