@@ -9,12 +9,9 @@ shrink a = drop a
 
 KWPAE_attempt :
     {k, l, n}
-    (fin k,
-     fin l,
-     k > 0,
+    (k > 0,
      k < 2^^32,
      l == 32 + 32 + (8*k) + (8*k) %^ 64,  // type of S
-     fin n,                               // n is the type of the input to W
      n >= 3,                              // Lowerbound on n, from W
      64 >= width (6 * (n - 1)),           // Uppwerbound on n, from W
      64 * n == max 192 l                  // Relate n and l
