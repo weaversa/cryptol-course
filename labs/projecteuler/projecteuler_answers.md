@@ -8,8 +8,7 @@ import keylog
 
 > A Pythagorean triplet is a set of three natural numbers, a < b < c, for which a^2 + b^2 = c^2.
 > 
-> For example, 3^2 + 4^2 = 9 + 16 = 25 = 5^2.  There exists exactly one Pythagorean triplet for which a + b + c = 1000.  Find the product abc.
-
+> For example, 3^2 + 4^2 = 9 + 16 = 25 = 5^2.  There exists exactly one Pythagorean triplet for which a + b + c = 1000.  Find this triple.
 ```
 pythagoreantriple : Integer -> Integer -> Integer -> Bit
 property pythagoreantriple a b c =
@@ -22,13 +21,13 @@ property pythagoreantriple a b c =
 
 > 145 is a curious number, as 1! + 4! + 5! = 1 + 24 + 120 = 145.
 >
-> Find the sum of all numbers which are equal to the sum of the factorial of their digits.
+> Find all numbers which are equal to the sum of the factorial of their digits.
 > 
 > Note: as 1! = 1 and 2! = 2 are not sums they are not included.
 >
-> (Aside: these numbers are called [factorions](https://en.wikipedia.org/wiki/Factorion).  It is unclear why Project Euler does not include 1 and 2.  Finally, it is known that the most number of digits a factorion can have is 6).
+> (Aside: these numbers are called [factorions](https://en.wikipedia.org/wiki/Factorion).  It is unclear why Project Euler does not include 1 and 2).
 >
-> Hints: the factorial function is usually defined recursively, but that tends to make SAT solving difficult.  Since you only need to calculate the factorial of the numbers 0-9, make your function just do a case by case calculation.  To get the digital representation of the number, create a function which takes in a number and a list of numbers and returns true exactly when the list is the base 10 representation.
+> Hints: the factorial function is usually defined recursively, but that tends to make SAT solving difficult.  Since you only need to calculate the factorial of the numbers 0-9, make your factorial function do a case by case calculation.  To get the digital representation of the number, create a function which takes in a number and a list of numbers and returns true exactly when the list is the base 10 representation.  Finally, it can be shown that the most number of digits a factorion can have is 6.
 
 ```
 factorial :
@@ -135,7 +134,7 @@ Unsatisfiable
 
 > The decimal number, 585 = 1001001001_(2) (binary), is palindromic in both bases.
 >
-> Find the sum of all numbers, less than one million, which are palindromic in base 10 and base 2.
+> Find some numbers which are palindromic in base 10 and base 2.
 >
 > (Please note that the palindromic number, in either base, may not include leading zeros.)
 
