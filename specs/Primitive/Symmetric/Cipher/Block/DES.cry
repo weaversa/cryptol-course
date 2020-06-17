@@ -15,14 +15,18 @@ DES =
     }
 
 // Encryption
-des : {n, m} (fin m) => [m][48] -> [n] -> [64]
+des : {n, m, kw} (fin m, m > 0, kw == width m) => [m][48] -> [n] -> [64]
 des keys pt = (swap (split lst)) @@ FPz
   where
         pt' = pt @@ IPz
         iv  = [ round (k, split lr)
               | k  <- keys
               | lr <- [pt'] # iv ]
-        lst = iv @ (length keys - 1)
+//        idx : [kw]    
+//        idx = length keys - 1
+//        lst = iv @ idx
+        lst = iv @ ((length keys - 1) : [kw])
+//        lst = iv @ (length keys - 1)
 
 round : ([48],[2][32]) -> [64]
 round (k, [l, r]) = r # (l ^ f (r, k))
