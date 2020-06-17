@@ -2,16 +2,21 @@ module labs::KeyWrapping::KWPAE_attempt where
 
 import labs::KeyWrapping::NIST800_38f_Answers
 
+import specs::Primitive::Symmetric::Cipher::Block::AES_parameterized as AES
+
 widen a = 0 # a
 
 KWPAE_attempt :
-    {k, l}
+    {k, l, n}
     (fin k,
      fin l,
      k > 0,
      k < 2^^32,
-     l == 32 + 32 + (8*k) + (8*k) %^ 64, // type of S
-     l/64 >= 3
+     l == 32 + 32 + (8*k) + (8*k) %^ 64,  // type of S
+     fin n,                               // n is the type of the input to W
+     n >= 3,                              // Constraint levied from W
+     64 >= width (6 * (n - 1)),           // Constraint levied from W
+     64 * n == max 192 l                  // Relate n and l
     ) =>
     ([128] -> [128]) -> [8*k] -> [l]
     
@@ -24,5 +29,5 @@ KWPAE_attempt CIPHk P = C
     C = if PLEN <= 64 then
             widen (CIPHk (take S))
           else
-            join (W CIPHk (split`{l/64} S))
+            take (join (W`{n} CIPHk (split (S # 0))))
 
