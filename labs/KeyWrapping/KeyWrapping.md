@@ -183,7 +183,7 @@ remaining semiblocks to `Rs`. Since we have the type parameter condition `n >= 3
 We know that there are at least three such blocks to assign, and at least two
 will be assigned to `Rs`.
 
-Given `WStep` it is a simple matter to complete our definition for `W` we started above. But fist we take a quick aside to recall the `foldl` operator which will come in very handy.
+Given `WStep` it is a simple matter to complete our definition for `W` we started above. But first we take a quick aside to recall the `foldl` operator which will come in very handy.
 
 *But first...*
 
@@ -352,8 +352,8 @@ KWAD CIPHk' C = (FAIL, P)
     P = FIXME_3
 ```
 
-When you have successfully defined this funciton, you can test your work by
-`:prove`ing that the following properties are true.
+When you have successfully defined this function, you can test your work by
+`:prove`ing that the following properties are true for 128, 192 and 256 bit key sizes."
 
 ```
 property KWAEInvProp S = 
