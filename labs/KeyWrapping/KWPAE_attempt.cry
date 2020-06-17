@@ -10,21 +10,21 @@ shrink a = drop a
 KWPAE_attempt :
     {k, l, n}
     (k > 0,
-     k < 2^^32,
-     l == 32 + 32 + (8*k) + (8*k) %^ 64,  // type of S
+     32 >= width (k*8),
+     l == 32 + 32 + (k*8) + (k*8) %^ 64,  // type of S
      n >= 3,                              // Lowerbound on n, from W
-     64 >= width (6 * (n - 1)),           // Uppwerbound on n, from W
-     64 * n == max 192 l                  // Relate n and l
+     64 >= width (6*(n-1)),               // Uppwerbound on n, from W
+     64*n == max 192 l                    // Relate n and l
     ) =>
-    ([128] -> [128]) -> [8*k] -> [l]
+    ([128] -> [128]) -> [k*8] -> [l]
     
 KWPAE_attempt CIPHk P = C
   where
     ICV2 = 0xA65959A6
-    PLEN = `k : [32]
+    PLEN = `(k*8) : [32]
     PAD = zero
     S = ICV2 # PLEN # P # PAD : [l]
-    C = if PLEN <= 8 then
+    C = if PLEN <= 64 then
             widen (CIPHk (shrink S))
           else
             shrink (join (W`{n} CIPHk (split (widen S))))
