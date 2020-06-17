@@ -1,5 +1,82 @@
 # Caesar Cipher
 
+## Installation and Loading
+
+To use Cryptol, you must first [install](../../INSTALL.md) it. To 
+load this document into Cryptol, change to your `cryptol-course` 
+directory in a terminal (Linux) or command prompt (Windows), then 
+run Cryptol via a locally installed binary or Docker image:
+
+### Linux
+
+```sh
+.../cryptol-course> cryptol labs/Demos/Caesar.md
+...
+
+Loading module Cryptol
+Loading module labs::Demos::Caesar
+labs::Demos::Caesar> 
+```
+
+Alternatively, you can use the `:m` or `:l` command from within 
+Cryptol to load this document. (To avoid errors, make sure Cryptol 
+was started in the `cryptol-course` directory). 
+
+```sh
+.../cryptol-course> cryptol
+...
+
+Loading module Cryptol
+Cryptol> :m labs::Demos::Caesar
+Loading module labs::Demos::Caesar
+labs::Demos::Caesar> 
+```
+
+### Windows
+
+```sh
+.../cryptol-course> cryptol labs/Demos/Caesar.md
+...
+
+Loading module Cryptol
+Loading module labs::Demos::Caesar
+labs::Demos::Caesar> 
+```
+
+Alternatively, you can use the `:m` or `:l` command from within 
+Cryptol to load this document. (To avoid errors, make sure Cryptol 
+was started in the `cryptol-course` directory). 
+
+```sh
+...\cryptol-course> cryptol
+...
+
+Loading module Cryptol
+Cryptol> :m labs::Demos::Caesar
+Loading module labs::Demos::Caesar
+labs::Demos::Caesar> 
+```
+
+### Docker (Linux)
+```sh
+.../cryptol-course> docker run --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it galoisinc/cryptol:2.8.0
+Loading module Cryptol
+Cryptol> :m labs::Demos::Caesar
+Loading module labs::Demos::Caesar
+labs::Demos::Caesar> 
+```
+
+### Docker (Windows)
+```sh
+...\cryptol-course> docker run --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it galoisinc/cryptol:2.8.0
+Loading module Cryptol
+Cryptol> :m labs::Demos::Caesar
+Loading module labs::Demos::Caesar
+labs::Demos::Caesar> 
+```
+
+## Overview
+
 The [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher) is a 
 simple shift cipher named after Julius Caesar. This cipher was...
 evidently effective against illiterate adversaries of ancient Rome, 

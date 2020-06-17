@@ -1,5 +1,82 @@
 # Introduction
 
+## Installation and Loading
+
+To use Cryptol, you must first [install](../../INSTALL.md) it. To 
+load this document into Cryptol, change to your `cryptol-course` 
+directory in a terminal (Linux) or command prompt (Windows), then 
+run Cryptol via a locally installed binary or Docker image:
+
+### Linux
+
+```sh
+.../cryptol-course> cryptol labs/Demos/Sudoku.md
+...
+
+Loading module Cryptol
+Loading module labs::Demos::Sudoku
+labs::Demos::Sudoku> 
+```
+
+Alternatively, you can use the `:m` or `:l` command from within 
+Cryptol to load this document. (To avoid errors, make sure Cryptol 
+was started in the `cryptol-course` directory). 
+
+```sh
+.../cryptol-course> cryptol
+...
+
+Loading module Cryptol
+Cryptol> :m labs::Demos::Sudoku
+Loading module labs::Demos::Sudoku
+labs::Demos::Sudoku> 
+```
+
+### Windows
+
+```sh
+.../cryptol-course> cryptol labs/Demos/Sudoku.md
+...
+
+Loading module Cryptol
+Loading module labs::Demos::Sudoku
+labs::Demos::Sudoku> 
+```
+
+Alternatively, you can use the `:m` or `:l` command from within 
+Cryptol to load this document. (To avoid errors, make sure Cryptol 
+was started in the `cryptol-course` directory). 
+
+```sh
+...\cryptol-course> cryptol
+...
+
+Loading module Cryptol
+Cryptol> :m labs::Demos::Sudoku
+Loading module labs::Demos::Sudoku
+labs::Demos::Sudoku> 
+```
+
+### Docker (Linux)
+```sh
+.../cryptol-course> docker run --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it galoisinc/cryptol:2.8.0
+Loading module Cryptol
+Cryptol> :m labs::Demos::Sudoku
+Loading module labs::Demos::Sudoku
+labs::Demos::Sudoku> 
+```
+
+### Docker (Windows)
+```sh
+...\cryptol-course> docker run --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it galoisinc/cryptol:2.8.0
+Loading module Cryptol
+Cryptol> :m labs::Demos::Sudoku
+Loading module labs::Demos::Sudoku
+labs::Demos::Sudoku> 
+```
+
+## Overview
+
 On 18 Mar 2009, Galois, Inc. 
 [blogged](https://galois.com/blog/2009/03/solving-sudoku-using-cryptol/) 
 about how to apply Cryptol to solve 

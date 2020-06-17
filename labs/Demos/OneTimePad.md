@@ -1,9 +1,79 @@
 # One-Time Pad
 
-## Installation
+## Installation and Loading
 
-To use Cryptol and SAW, you must first [install](../../INSTALL.md) 
-them.
+To use Cryptol, you must first [install](../../INSTALL.md) it. To 
+load this document into Cryptol, change to your `cryptol-course` 
+directory in a terminal (Linux) or command prompt (Windows), then 
+run Cryptol via a locally installed binary or Docker image:
+
+### Linux
+
+```sh
+.../cryptol-course> cryptol labs/Demos/OneTimePad.md
+...
+
+Loading module Cryptol
+Loading module labs::Demos::OneTimePad
+labs::Demos::OneTimePad> 
+```
+
+Alternatively, you can use the `:m` or `:l` command from within 
+Cryptol to load this document. (To avoid errors, make sure Cryptol 
+was started in the `cryptol-course` directory). 
+
+```sh
+.../cryptol-course> cryptol
+...
+
+Loading module Cryptol
+Cryptol> :m labs::Demos::OneTimePad
+Loading module labs::Demos::OneTimePad
+labs::Demos::OneTimePad> 
+```
+
+### Windows
+
+```sh
+.../cryptol-course> cryptol labs/Demos/OneTimePad.md
+...
+
+Loading module Cryptol
+Loading module labs::Demos::OneTimePad
+labs::Demos::OneTimePad> 
+```
+
+Alternatively, you can use the `:m` or `:l` command from within 
+Cryptol to load this document. (To avoid errors, make sure Cryptol 
+was started in the `cryptol-course` directory). 
+
+```sh
+...\cryptol-course> cryptol
+...
+
+Loading module Cryptol
+Cryptol> :m labs::Demos::OneTimePad
+Loading module labs::Demos::OneTimePad
+labs::Demos::OneTimePad> 
+```
+
+### Docker (Linux)
+```sh
+.../cryptol-course> docker run --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it galoisinc/cryptol:2.8.0
+Loading module Cryptol
+Cryptol> :m labs::Demos::OneTimePad
+Loading module labs::Demos::OneTimePad
+labs::Demos::OneTimePad> 
+```
+
+### Docker (Windows)
+```sh
+...\cryptol-course> docker run --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it galoisinc/cryptol:2.8.0
+Loading module Cryptol
+Cryptol> :m labs::Demos::OneTimePad
+Loading module labs::Demos::OneTimePad
+labs::Demos::OneTimePad> 
+```
 
 ## Overview
 
