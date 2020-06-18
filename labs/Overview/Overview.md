@@ -34,19 +34,18 @@ $ cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
-version 2.8.1 (e914cef)
-https://cryptol.net  :? for help
+version 2.8.1 (ce0365f)
 
 Loading module Cryptol
-Cryptol> :module labs::overview::overview
-Loading module labs::overview::overview
-labs::overview::overview> sayHello "Cryptol!"
+Cryptol> :module labs::Overview::Overview
+Loading module labs::Overview::Overview
+labs::Overview::Overview> sayHello "Cryptol!"
 [0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x43, 0x72, 0x79, 0x70,
  0x74, 0x6f, 0x6c, 0x21]
-labs::overview::overview> :set ascii=on
-labs::overview::overview> sayHello "Cryptol!"
+labs::Overview::Overview> :set ascii=on
+labs::Overview::Overview> sayHello "Cryptol!"
 "Hello, Cryptol!"
-labs::overview::overview>
+labs::Overview::Overview> 
 ```
 Congratulations, you are now officially on speaking terms!
 
