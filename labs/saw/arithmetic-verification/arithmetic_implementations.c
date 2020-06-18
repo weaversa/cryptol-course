@@ -31,6 +31,7 @@ uint32_t add_standard(uint16_t a, uint16_t b) {
 //                                       + [ b_1 ] [ b_0 ]
 //                                   =====================
 //                                 [ O_2 ] [ O_1 ] [ O_0 ]
+//
 uint32_t add_textbook(uint16_t a, uint16_t b) {
   uint8_t a_1 = (0xff00 & a) >> 8;
   uint8_t a_0 = (0x00ff & a) >> 0;
@@ -84,7 +85,8 @@ uint32_t multiply_standard(uint16_t a, uint16_t b) {
 //               =========================================
 // [    O_3    ] [    O_2    ] [    O_1    ] [    O_0    ]
 //
-// Where the outputs are the sums ofhe columns
+// Where the outputs are the sums of the columns
+//
 uint32_t multiply_textbook(uint16_t a, uint16_t b) {
   uint16_t a_1 = (0xff00 & a) >> 8;
   uint16_t a_0 = (0x00ff & a) >> 0;
@@ -114,10 +116,26 @@ uint32_t multiply_textbook(uint16_t a, uint16_t b) {
 //     a = [ a_1 ] [ a_0 ] 
 //     b = [ b_1 ] [ b_0 ]
 //
-// TODO Then we compute a * b as:
-//                                   
+// Then we compute a * b as follows:
 //
-// Where the outputs are the sums ofhe columns
+// [ O_2 ] [ O_1 ] [ O_0 ]  where
+//   [ O_2 ] = [ a_1 ] * [ b_1 ]
+//   [ O_0 ] = [ a_0 ] * [ b_0 ]
+//   [ O_1 ] = ([ a_1 ] + [ a_0] ) * ([ b_1 ]  + [ b_0 ]) - [ z0 ] - [ z2 ]
+//
+//   Note that if we reduce the expression defining [ O_1 ] we arrive at:
+//
+//     [ a_1 ] * [ b_0 ] + [ a_0 ] * [ b_1 ] 
+//
+//   which has _two_ multiplications, while the expression defining [ O_1 ] only
+//   uses _one_multiplication.
+//
+// The generalized Karatsuba algorithm for wider inputs takes advantage of this
+// feature and the assumption that multiplication is a slower computation than
+// addition to recursively compute the product of two numbers. Whenever a
+// product appears in the computation above, one could -- in theory -- replace
+// that with a Karatsuba product of its own.
+//
 uint32_t multiply_karatsuba(uint16_t a, uint16_t b) {
   uint16_t a_1 = (0xff00 & a) >> 8;
   uint16_t a_0 = (0x00ff & a) >>  0;
@@ -136,13 +154,18 @@ uint32_t multiply_karatsuba(uint16_t a, uint16_t b) {
   return result;
 }
 
+
+//
+// The main routine, verifies that the algorithms above match for the collection
+//  of arithmetic algorithms above.
+//
 int main() {
   #define NUM_TESTS 3
   uint16_t tests[NUM_TESTS] = {0x0005, 0xbeef, 0xffff};
   int i, j, num_tests = NUM_TESTS;
 
   printf("[INFO] ------------------\n"  );
-  printf("[INFO]   Addition Tests\n"   );
+  printf("[INFO]   Addition Tests  \n"   );
   printf("[INFO] ------------------\n\n");
   for(i = 0; i < num_tests; i++) {
     for(j = 0; j < num_tests; j++) {
@@ -157,7 +180,7 @@ int main() {
   }  
 
   printf("[INFO] ------------------------\n"  );
-  printf("[INFO]   Multiplication Tests\n"   );
+  printf("[INFO]   Multiplication Tests  \n"   );
   printf("[INFO] ------------------------\n\n");
   for(i = 0; i < num_tests; i++) {
     for(j = 0; j < num_tests; j++) {
