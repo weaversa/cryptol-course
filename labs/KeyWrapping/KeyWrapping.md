@@ -203,13 +203,13 @@ algorithm to operate correctly, and according to the standard, we will
 have to make two more assumptions about `n`.
 
  * First, `n >= 3`, we can add this restriction to our type signature:
-* Second, `2^^54 >= n`, this will become clear later, but it has to do
+* Second, `n <= 2^^54`, this will become clear later, but it has to do
   with limits imposed by Table 1 (Section 5.3.1, page 10).
  
 ```ignore
 W : 
   {n} 
-  (fin n, n >= 3, 2^^54 >= n) =>
+  (fin n, 3 <= n, n <= 2^^54) =>
   ([128] -> [128]) -> [n][64] -> [n][64]
 ```
 
@@ -305,13 +305,13 @@ definition for `W`.
 ```
 W :
     {n}
-    (fin n, n >= 3, 2^^54 >= n) =>
+    (fin n, 3 <= n, n <= 2^^54) =>
     ([128] -> [128]) -> [n][64] -> [n][64]
 W CIPHk S = C
   where
     type s = 6*(n-1)
-    t = [ 1 .. s ]
-    C = foldl (WStep CIPHk) S t
+    ts     = [ 1 .. s ]
+    C      = foldl (WStep CIPHk) S ts
 ```
 
 With `W` in hand there it isn't much more work to complete the `KW-AE`
@@ -326,7 +326,7 @@ algorithm.
 ```
 KWAE :
     {n}
-    (fin n, n >= 2, 2^^54 - 1 >= n) =>
+    (fin n, 2 <= n, n < 2^^54) =>
     ([128] -> [128]) -> [n][64] -> [n+1][64]
 KWAE CIPHk P = C
   where
@@ -377,13 +377,13 @@ WStep' CIPHk' ([A] # Rs) t = [A'] # Rs'
 
 W' :
     {n}
-    (fin n, n >= 3, 2^^54 >= n) =>
+    (fin n, 3 <= n, n <= 2^^54) =>
     ([128] -> [128]) -> [n][64] -> [n][64]
 W' CIPHk' C = S
   where
     type s = 6*(n-1)
-    t = [ s, s-1 .. 1 ]
-    S = foldl (WStep' CIPHk') C t
+    ts     = [ s, s-1 .. 1 ]
+    S      = foldl (WStep' CIPHk') C ts
 ```
 
 Once you have these completed you should be able to check your work by
@@ -432,7 +432,7 @@ authenticate.
 ```
 KWAD :
     {n}
-    (fin n, n >= 2, 2^^54 - 1 >= n) =>
+    (fin n, 2 <= n, n < 2^^54) =>
     ([128] -> [128]) -> [n+1][64] -> (Bit, [n][64])
 KWAD CIPHk' C = (FAIL, P)
   where
@@ -457,20 +457,21 @@ property KWAEInvProp S =
 widen a = 0 # a
 shrink a = drop a
 
+//i < j = j >= i + 1
+
+
 KWPAE :
     {k, l, n}
-    (k >= 1, k <= 2^^32 - 1,
-     l == 32 + 32 + (k*8) + (k*8) %^ 64,  // type of S
-     n >= 3,                              // Lowerbound on n, from W
-     64 >= width (6*(n-1)),               // Uppwerbound on n, from W
-     64*n == max 192 l                    // Relate n and l
+    ( 1 <= k, k < 2^^32  // Bounds on k (number of octets of P), from Table 1
+    , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C
+    , 3 <= n, n <= 2^^54              // Bounds on n, from W
+    , 64*n == max 192 l               // Relate n and l
     ) =>
     ([128] -> [128]) -> [k*8] -> [l]
-    
 KWPAE CIPHk P = C
   where
     PBYTES = `k : [32]
-    PAD = zero
+    PAD = zero : [k*8 %^ 64]
     S = ICV2 # PBYTES # P # PAD : [l]
     C = if PBYTES <= 8 then
             widen (CIPHk (shrink S))
