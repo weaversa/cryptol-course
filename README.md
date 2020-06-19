@@ -5,7 +5,48 @@
 Purpose: The purpose of the course is to provide an overview of the
 capabilities of [Cryptol](https://github.com/GaloisInc/cryptol) and the [Software Analysis Workbench](https://github.com/GaloisInc/saw-script) (SAW).
 
-## Potential Flow
+Many of the labs in this course will be taught using [literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol documents --- that is, they can be loaded directly
+into the Cryptol interpreter. This README.md is no exception!
+
+Labs will have exercises that look like this:
+
+**Sample Exercise:" Literate Cryptol documents are meant to be opened up along
+side and edited while you work through the labs. For instance, you might be
+asked to fill in a portion of a Cryptol snippet:
+
+```
+algebra_fact : Integer -> Integer -> Bit
+algebra_fact x y =
+  (x + y) * (x + y) == zero  // Use the distributive law to write an equivalent statement
+```
+
+A student might solve this problem by changing this snippet in their editor as follows:
+
+> algebra_fact : Integer -> Integer -> Bit
+> algebra_fact x y =
+>   (x + y) * (x + y) = x^^2 + 2*x*y + y^^2 
+
+Exercises will often have checks that follow along with instructions how to verify 
+their work. Check your anwer with the following command, your output should look
+similar to the following:
+
+> $ cryptol
+> ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
+> ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
+> ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
+> version 2.8.1 (ce0365f)
+> 
+> Loading module Cryptol
+> Cryptol> :l README.md
+> Loading module Cryptol
+> Loading module Main
+> Main> :prove algebra_fact 
+> Q.E.D.
+> (Total Elapsed Time: 0.056s, using Z3)
+
+Don't worry -- we'll walk you through accessing and / installing Cryptol.
+
+## Course Outline
 
 1. Description of Cryptol and SAW
 2. Demonstrate example of a cryptographic primitive with Cryptol (and SAW?)
@@ -46,10 +87,25 @@ capabilities of [Cryptol](https://github.com/GaloisInc/cryptol) and the [Softwar
    - [crux](https://github.com/GaloisInc/crucible)
    - [argo](https://github.com/GaloisInc/argo)
 
+## Extra Labs and Demonstrations
+
+Some labs or examples go beyond the scope of the course outline, but may prove 
+interesting or useful for students with wider interests or different 
+backgrounds. Here are some of the 
+
+1. Arithmetic Verifications -- Demonstrates using SAW to prove facts about
+various arithmetic implementations. Some simple reference examples are included
+as well as an illustration of a barrier one may experience using these
+techniques.
+
 ## Supporting Materials
 
-  * All worked examples from class
-  * Additional examples of applications of Cryptol and/or SAW
-  * Websites that are relevant for accessing the software
-  * Pointers to reference materials & manuals
-  * Any other tutorials that can be used to continue learning
+You will find references and supporting materials linked throughout the course
+but here are manuals and important documents for easy reference:
+
+* [Programming Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf) -- A good overview and reference for the Cryptol language. Contains many examples and references for programming language features.
+
+* [Cryptol Version 2 Syntax](https://github.com/GaloisInc/cryptol/blob/master/docs/Syntax.pdf) -- A comprehensive guide to Cryptol Syntax
+
+* [Cryptol Semantics](https://github.com/GaloisInc/cryptol/blob/master/docs/Semantics.pdf) -- A guide to Cryptol language semantics and overview of the underlying representations of Cryptol's type system
+
