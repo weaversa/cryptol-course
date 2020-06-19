@@ -425,7 +425,7 @@ family because it needs to capture whether or not the ciphertext
 authenticates *as well as* compute the corresponding plaintext.
 
 **EXERCISE**: Study `Algorithm 4` from the standard and complete the
-  definition of `KWAD` below by by filling in the function skeleton
+  definition of `KWAD` below by filling in the function skeleton
   provided. This function needs both an appropriate definition for
   `S`, a computation of the authentication bit to assign to `FAIL`,
   and finally the appropriate plaintext.
@@ -504,13 +504,16 @@ little bit about a particularly famous NIST test vector.
 
 Good luck!
 
+
 # A Formal Specification of `KWP-AE`
 
 `KWP-AE` is the authenticated-encryption function and makes use of our
 previously defined `W`. There are two new concepts to introduce with
-this specification, so we'll break `KWP-AE` into two parts. The first concept is that of **padding**.
+this specification, so we'll break `KWP-AE` into two parts. The first
+concept is that of **padding**.
 
-## Padding
+
+## Concept 1: Padding
 
 Many cryptographic specifications (especially hash functions) accept
 some arbitrary number of bits as input but operate over some number of
@@ -603,11 +606,13 @@ In general,
 and since Cryptol supports the more concise shortage operator, we'll
 use that instead.
 
-
+**EXERCISE**: Study the first four lines of `Algorithm 5` from the
+  standard and complete the definition of `KWPAEPad` below by filling
+  in the function skeleton provided with appropriate logic.
 
 ```
 KWPAEPad :
-    {k, l}
+    {k, l}               // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
     , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S
     ) =>
@@ -615,30 +620,216 @@ KWPAEPad :
 KWPAEPad P = ICV2 # (`k : [32]) # (join P) # zero
 ```
 
+## Concept 2: Oddly Typed `if-then-else` Statements
+
+Sometimes, though not often, cryptographic algorithms will contain if
+statements where the `then` and `else` branches return different
+types. You were exposed to this a bit already in the [Salsa20
+lab](../Salsa20/Salsa20.md)). First off, this is always frustrating to
+deal with in Cryptol, and we want you to know that we feel your pain
+and we're sorry. Cryptol _can_ handle these types of situations, but
+coming up with a solution requires experience with the type system
+that is likely only learned through trial and error.
+
+To dig into this a bit, let's consider the type of a generic
+`if-then-else` statement
+
+```sh
+labs::KeyWrapping::KeyWrapping> :t \(c, t, e) -> if c then t else e
+(\(c, t, e) -> if c then t else e) : {a} (Bit, a, a) -> a
+```
+
+Here we see that the condition `c` has to be of type `Bit`. This makes
+perfect sense given that `c` is a condition. Next, notice that the
+types of `t` and `e`, the values returned by the `then` and `else`
+cases, both have to have the same type. Here we see that Cryptol
+doesn't support `if-then-else` statements that return different
+types. So, when we see a specification that purports to do such a
+thing, we can either give up, or try and unify the two cases.
+
+Here is a silly example that closely models the behaviour we'll see in
+`KWP-AE` and `KWP-AD`:
 
 ```
-KWPAE :
-    {k, l, n}
-    ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
-    , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C
-    , 3 <= n, n <= 2^^54              // Bounds on n, from W
-    , 64*n == max 192 l               // Relate n and l
-    ) =>
-    ([128] -> [128]) -> [k][8] -> [l]
-KWPAE CIPHk P = C
-  where
-    S          = KWPAEPad P
-    C          = if (`k : [32]) <= 8 then
-                   widen (CIPHk (shrink S))
-                 else
-                   shrink (join (W`{n} CIPHk (split (widen S))))
+g : [32] -> [32]
+g x = x + 1
 
+h : [64] -> [64]
+h x = x - 1
+```
+
+```ignore
+f : {a} (fin a, 32 <= a, a <= 64) => [a] -> [48]
+f x = if `a <= 0x30 then
+          g x
+        else
+          h x
+```
+
+Here we have a function `f` that takes an `a`-bit bitvector as input
+where `a` is some length between `32` and `64` bits. `f` always
+returns `48` bits. Here's the strange part - if `a <= 0x30` (`0x30` is
+`48`), `f` returns `g x`, where `g` takes and returns only 64-bit
+values. If `a > 0x30`, `f` returns `h x` where `h` takes and returns
+only 48-bit values. If we try to load this function into Cryptol we see:
+
+```sh
+[error] at labs/KeyWrapping/KeyWrapping.md:663:1--666:14:
+  Failed to validate user-specified signature.
+    in the definition of 'f', at labs/KeyWrapping/KeyWrapping.md:663:1--663:2,
+    we need to show that
+      for any type a
+      assuming
+        • fin a
+        • 32 <= a
+        • a <= 64
+      the following constraints hold:
+        • a == 64
+            arising from
+            matching types
+            at labs/KeyWrapping/KeyWrapping.md:666:13--666:14
+        • a == 32
+            arising from
+            matching types
+            at labs/KeyWrapping/KeyWrapping.md:664:13--664:14
+[error] at labs/KeyWrapping/KeyWrapping.md:664:11--664:12:
+  Type mismatch:
+    Expected type: 48
+    Inferred type: 32
+[error] at labs/KeyWrapping/KeyWrapping.md:666:11--666:12:
+  Type mismatch:
+    Expected type: 48
+    Inferred type: 64
+```
+
+This message tells us that `a`, the length of our input, has to
+simultaneously be both `64` and `32` and (looking at the line numbers)
+that these constraints come from the types of `g` and `h`.
+
+In support of fixing the function, notice that since since `g` always
+takes and returns 32-bit values, we have to shrink `x` from `a` bits
+to `32` bits, and widen the result up to `48` bits. And, since `h`
+always takes and returns 64-bit values, we have to widen `x` from `a`
+bits to `64` bits, and shrink the result back down to `48` bits To
+help us do this resizing work, we'll introduce `shrink` and `widen`
+functions.
+
+```
 widen : {a, b} (fin a, fin b) => [b] -> [a + b]
 widen a = 0 # a
 
 shrink : {a, b} (fin a, fin b) => [a + b] -> [b]
 shrink a = drop a
 ```
+
+`widen` takes any sized input and prepends any number of zeroes (even
+`0`) onto the front. `shrink` takes any sized input and removes some
+number of bits (again, even `0`) from the front. Using these two
+functions, we can fix our `f` from above:
+
+```
+f : {a} (fin a, 32 <= a, a <= 64) => [a] -> [48]
+f x = if `a <= 0x30 then
+        widen (g (shrink x))
+      else
+        shrink (h (widen x))
+```
+
+And here we test that `f` correctly calls `g` and `h` (which increment
+and decrement by 1, respectively).
+
+```sh
+labs::KeyWrapping::KeyWrapping> f (10 : [37])
+11
+labs::KeyWrapping::KeyWrapping> f (10 : [53])
+9
+```
+
+
+## KWP-AE Top Level Function
+
+With those two considerations firmly under our belt, we can now tackle
+`KWP-AE`.
+
+**EXERCISE**: Study `Algorithm 5` from the standard and complete the
+  definition of `KWPAE` below by filling in the function skeleton
+  provided with appropriate logic. Use the `KWPAEPad` function from
+  above to create `S`. Use the `shrink` and `widen` functions to
+  assist in resizing `S` and the function outputs on the `then` and
+  `else` branches of line 5.
+  
+*Hint:* You'll notice that we needed to pull in the type variable `n`
+and type constraints from `W` and relate `n` and `l` (the type of both
+`S` and `C`). It may also be necessary to tell `W` that our type
+variable `n` is the same type variable that it uses. This can be
+achieved by calling `W` like so: ```W`{n=n}```.
+
+```
+KWPAE :
+    {k, l, n}            // k is [len(P)/8], Algorithm 5
+    ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
+    , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C
+    , 3 <= n, n <= 2^^54              // Bounds on n, from W
+    , 64*n == max 192 l               // Here we relate n and l
+    ) =>
+    ([128] -> [128]) -> [k][8] -> [l]
+KWPAE CIPHk P = C
+  where
+    S = KWPAEPad P
+    C = if (`k : [32]) <= 8 then
+          widen (CIPHk (shrink S))
+        else
+          shrink (join (W`{n} CIPHk (split (widen S))))
+```
+
+**TODO** - provide a test
+
+
+# A Formal Specification of `KWP-AD`
+
+`KWP-AD` is the authenticated-decryption function and makes use of our
+previously defined `W'`.
+
+**EXERCISE**: Study `Algorithm 6` from the standard and complete the
+  definition of `KWPAD` below by filling in the function skeleton
+  provided with appropriate logic. We suggest splitting the algorithm
+  into two again, so we're provding a skeleton for `KWPADUnpad` (which
+  is roughly the inverse of `KWPAEPad`) and `KWPAD`.
+
+```
+KWPADUnpad :
+    {k, l}               // k is [len(P)/8], Algorithm 5
+    ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
+    , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C
+    ) =>
+    [l] -> (Bit, [k][8])
+KWPADUnpad S = (FAIL, split P)
+  where
+    FAIL = MSB32 != ICV2
+        \/ k != (`k : [32])
+        \/ PAD != (0 : [(k*8) %^ 64])
+    MSB32 # k # P # PAD = S
+```
+
+```
+KWPAD : 
+    {k, l, n}            // k is [len(P)/8], Algorithm 5
+    ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
+    , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C
+    , 3 <= n, n <= 2^^54              // Bounds on n, from W
+    , 64*n == max 192 l               // Here we relate n and l
+    ) =>
+    ([128] -> [128]) -> [l] -> (Bit, [k][8])
+KWPAD CIPHk' C = (FAIL, P)
+  where
+    (FAIL, P) = KWPADUnpad S
+    S = if (`k : [32]) <= 8 then
+          widen (CIPHk' (shrink C))
+        else
+          shrink (join (W'`{n} CIPHk' (split (widen C))))
+```
+
+*TODO*: Tests
 
 # Test Vectors
 
