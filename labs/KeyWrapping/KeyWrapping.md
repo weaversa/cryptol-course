@@ -137,8 +137,9 @@ to us in some fashion or another.
  * **Section 5, Preliminaries** -- This section covers usage and
      information about data size restrictions. The most pertinent
      parts are those defining what a semiblock is (which, as it turns
-     out, is simply a 64-bit word) and Table 1 that provides limits on
-     the size of the input and outputs.
+     out, is simply a 64-bit word when used in conjunction with AES,
+     and a 32-bit word when used in conjunction with TDEA) and Table 1
+     that provides limits on the size of the input and outputs.
  
  * **Section 6, Specifications of KW and KWP** -- This section
      specifies the two families of algorithms `KW` and `KWP`. This
@@ -222,7 +223,7 @@ understand this step function by studying `Figure 2` on page 12.
 `W`. We add a new input `t` of type `[64]` which serves as the round
 counter found in step 2 of `Algorithm 1`.
 
-**Exercise:** Study `Algorithm 1` and `Figure 2`. Implement WStep
+**EXERCISE**: Study `Algorithm 1` and `Figure 2`. Implement WStep
   below assuming the appropriate input for `CIPHk` and assignments for
   `A'` and `Rs'` found in the body of the function.
 
@@ -295,7 +296,7 @@ Cryptol> foldl (+) 0 [1..10]
 We will use `foldl` along with our step function `WStep` to write a
 definition for `W`.
 
-**Exercise:** Complete the definition of `W` below by filling in the
+**EXERCISE**: Complete the definition of `W` below by filling in the
   function skeleton provided. *Hint:* Folding over vanilla `WStep`
   won't work -- really consider the type of the first argument to
   `foldl` and you'll see you need to partially evaluate WStep on CIPHk
@@ -316,7 +317,7 @@ W CIPHk S = C
 With `W` in hand there it isn't much more work to complete the `KW-AE`
 algorithm.
 
-**Exercise:** Study `Algorithm 3` and complete the specification for
+**EXERCISE**: Study `Algorithm 3` and complete the specification for
   `KW-AE` by filling in the snippet below with the correct definition
   for `S`. Remember that `ICV1` has already been defined in this
   module. Also, notice that the bounds from Table 1 (Section 5.3.1,
@@ -352,28 +353,18 @@ in the `KW` family. There is one significant difference, though: since
 the algorithm *authenticates* the decryption we will need to add an
 authentication check and slightly alter the type for `KW-AD`.
 
-**Exercise:** Review `Algorithm 2` and `Figure 3` of the document and
+**EXERCISE**: Review `Algorithm 2` and `Figure 3` of the document and
 complete the definitions for the inverse routines to `W` and `WStep`
 which we shall call `W'` and `WStep'` respectively. The type
 declarations for these functions are provided.
 
 *Hint:* Notice that, except for the names, the type declarations are
-identical.  The function definitions are also very similar. Pay
+identical. The function definitions are also very similar. Pay
 special attention to the order of the index variable for the main
 loop, the sequence of operations, and how the sequence of `Rs`
 transforms:
 
 ```
-W' :
-    {n}
-    (fin n, n >= 3, 2^^54 >= n) =>
-    ([128] -> [128]) -> [n][64] -> [n][64]
-W' CIPHk' C = S
-  where
-    type s = 6*(n-1)
-    t = [ s, s-1 .. 1 ]
-    S = foldl (WStep' CIPHk') C t
-
 WStep' :
     {n}
     (fin n, n >= 3) =>
@@ -383,6 +374,16 @@ WStep' CIPHk' ([A] # Rs) t = [A'] # Rs'
     [MSB, LSB] = split (CIPHk' ((A ^ t) # last Rs))
     A'         = MSB
     Rs'        = [LSB] # take Rs
+
+W' :
+    {n}
+    (fin n, n >= 3, 2^^54 >= n) =>
+    ([128] -> [128]) -> [n][64] -> [n][64]
+W' CIPHk' C = S
+  where
+    type s = 6*(n-1)
+    t = [ s, s-1 .. 1 ]
+    S = foldl (WStep' CIPHk') C t
 ```
 
 Once you have these completed you should be able to check your work by
@@ -390,23 +391,23 @@ having Cryptol `:prove` the properties `WStepInvProp` and
 `WInvProp`. Your output should look something like the following:
 
 ```shell
-Cryptol> :prove WStepInvProp 
+Cryptol> :prove WStep'Prop 
 Q.E.D.
 (Total Elapsed Time: 0.079s, using Z3)
-Cryptol> :prove WInvProp
+Cryptol> :prove W'Prop
 Q.E.D.
 (Total Elapsed Time: 1.832s, using Z3)
 ```
 
 These two properties state that for a fixed, dummy CIPHk and S of
-length 3 semiblocks, `WStep` and `WStep'` are inverses, and also `W`
-and `W'` are inverses. Here are the definitions of these properties:
+length 3 semiblocks, `WStep` and `WStep'` are inverses and `W` and
+`W'` are inverses. Here are the definitions of these properties:
 
 ```
-property WStepInvProp ARs t =
+property WStep'Prop ARs t =
     WStep'`{3} (\a -> a-1) (WStep (\a -> a+1) ARs t) t == ARs
 
-property WInvProp S =
+property W'Prop S =
     W'`{3} (\a -> a-1) (W (\a -> a+1) S) == S
 ```
 
@@ -414,140 +415,119 @@ The final step is to use these components to write the authenticated
 decryption algorithm `KW-AD`. Unlike `W'` and `WStep'` this function
 will have a different type than its related routine in the `KW-AE`
 family because it needs to capture whether or not the ciphertext
-authenticates *as well as* computing the corresponding plaintext.
+authenticates *as well as* compute the corresponding plaintext.
 
-**Exercise:** Study `Algorithm 4` from the standard, and complete the
-definition of `KWAD` below by replacing `FIXME_1`, `FIXME_2`, and
-`FIXME_3` with appropriate definition for `S`, a computation of the
-authentication bit to assign to `FAIL`, and finally the appropriate
-plaintext.
+**EXERCISE**: Study `Algorithm 4` from the standard and complete the
+  definition of `KWAD` below by by filling in the function skeleton
+  provided. This function needs both an appropriate definition for
+  `S`, a computation of the authentication bit to assign to `FAIL`,
+  and finally the appropriate plaintext.
 
-Notice that `FAIL` indicates a *failure* to authenticate so should be `False` for authenticated decryptions and `True` for failures to authenticate.
+Notice that `FAIL` indicates a *failure* to authenticate so should be
+`False` for authenticated decryptions and `True` for failures to
+authenticate.
 
-*Hint:* Review the Cryptol primitives `head` and `tail` after you think you have
-the appropriate definition for `S`/`FIXME_1`
+*Hint:* Review the Cryptol primitives `head` and `tail`.
 
 ```
 KWAD :
     {n}
-    (fin n, n >= 3, 64 >= width (6 * (n-1))) =>
-    ([128] -> [128]) -> [n][64] -> (Bit, [n-1][64])
+    (fin n, n >= 2, 2^^54 - 1 >= n) =>
+    ([128] -> [128]) -> [n+1][64] -> (Bit, [n][64])
 KWAD CIPHk' C = (FAIL, P)
   where
-    FIXME_1 = zero:[n][64]
-    FIXME_2 = zero:Bit
-    FIXME_3 = zero:[n-1][64]
-    S = FIXME_1
-    FAIL = FIXME_2
-    P = FIXME_3
+    S = W' CIPHk' C
+    FAIL = head S != ICV1
+    P = tail S
 ```
 
-When you have successfully defined this function, you can test your work by
-`:prove`ing that the following properties are true for 128, 192 and 256 bit key sizes."
+When you have successfully defined this function, you can test your
+work by `:prove`ing that `KWAE` and `KWAD` are inverses (well, at
+least for a dummy CIPHk and P of length 3 semiblocks).
+
 
 ```
 property KWAEInvProp S = 
     KWAD`{3} (\a -> a-1) (KWAE (\a -> a+1) S) == (False, S)
-
-//KW with AES128
-KWAE128 (k : [128]) pt = join (KWAE`{2} (AES::encrypt k) (split pt))
-
-KWAD128 (k : [128]) ct = (FAIL, join pt)
-  where (FAIL, pt) = KWAD`{3} (AES::decrypt k) (split ct)
-
-property KWAE128Test = KWAD128 1234 (KWAE128 1234 5678) == (False, 5678)
-
-
-//KW with AES192
-KWAE192 (k : [192]) pt = join (KWAE`{3} (AES::encrypt k) (split pt))
-
-KWAD192 (k : [192]) ct = (FAIL, join pt)
-  where (FAIL, pt) = KWAD`{4} (AES::decrypt k) (split ct)
-
-property KWAE192Test = KWAD192 1234 (KWAE192 1234 5678) == (False, 5678)
-
-//KW with AES256
-KWAE256 (k : [256]) pt = join (KWAE`{4} (AES::encrypt k) (split pt))
-
-KWAD256 (k : [256]) ct = (FAIL, join pt)
-  where (FAIL, pt) = KWAD`{5} (AES::decrypt k) (split ct)
-
-property KWAE256Test = KWAD256 1234 (KWAE256 1234 5678) == (False, 5678)
 ```
 
-For instance running `:prove KWAE256Test` in the interpreter should result in
-output that looks like this:
+# A Formal Specification of `KWP-AE`
 
-```shell
-Cryptol> :prove KWAE256Test
-Q.E.D.
-(Total Elapsed Time: 0.005s, using Z3)
+```
+widen a = 0 # a
+shrink a = drop a
+
+KWPAE :
+    {k, l, n}
+    (k >= 1, k <= 2^^32 - 1,
+     l == 32 + 32 + (k*8) + (k*8) %^ 64,  // type of S
+     n >= 3,                              // Lowerbound on n, from W
+     64 >= width (6*(n-1)),               // Uppwerbound on n, from W
+     64*n == max 192 l                    // Relate n and l
+    ) =>
+    ([128] -> [128]) -> [k*8] -> [l]
+    
+KWPAE CIPHk P = C
+  where
+    PBYTES = `k : [32]
+    PAD = zero
+    S = ICV2 # PBYTES # P # PAD : [l]
+    C = if PBYTES <= 8 then
+            widen (CIPHk (shrink S))
+          else
+            shrink (join (W`{n} CIPHk (split (widen S))))
 ```
 
-# Formal Specification of `TKW-AE` and `TKW-AD`
+# Formal Specifications of `TKW-AE` and `TKW-AD`
 
-**Exercise:** Try your hand at writing the specification for `TKW-AE` and 
-`TKW-AD`. These functions are very similar to `KW-AE` and `KW-AD` but they use
-the 64-bit block cipher `TDEA` (also known as 
-[Triple-DES](https://en.wikipedia.org/wiki/Triple_DES)). We recommend following
-the pattern above and defining the helper functions `TWStep`, `TWStep'`, `TW`, and
-`TW'` before you attempt `TKW-AE` and `TKW-AD`.
+**EXERCISE**: Try your hand at writing the specification for `TKW-AE`
+  and `TKW-AD`. These functions are very similar to `KW-AE` and
+  `KW-AD` but they use the 64-bit block cipher `TDEA` (also known as
+  [Triple-DES](https://en.wikipedia.org/wiki/Triple_DES)). We
+  recommend follwing the same steps from above and defining the helper
+  functions `TWStep`, `TWStep'`, `TW`, and `TW'` before you attempt
+  `TKW-AE` and `TKW-AD`. Test vectors are available in the
+  [kwtestvectors directory](kwtestvectors).
 
-There are some minor modifications to be made, but things should go easily
-using `KW-AE` and `KW-AD` as a reference. This is a good opportunity
-to go back through and take a close look at the type parameters and conditions
-and be sure you understand what they mean and how to use them.
+There are some minor modifications to be made, but things should go
+easily using `KW-AE` and `KW-AD` as a reference. This is a good
+opportunity to go back through and take a close look at the type
+parameters and conditions and be sure you understand what they mean
+and how to use them. One important thing to note is that had we
+defined our functions above using a `semigroup` type parameter (rather
+than hard-code 64), our work defining the TKW family of functions
+would already be done!
 
-One important difference in the `TKW` family is you will use the Triple-DES algorithm that's implemented in the TDEA module we imported earlier. Check it's type with `:t TDEA::blockEncrypt`, this
-has a slightly different interface than the block cipher we used from the
-`AES` module earlier. 
+One important difference in the TKW family is you will use the
+Triple-DES algorithm that's implemented in the `TDEA` module we imported
+earlier. You can check the type of `TDEA` in the interpreter via `:t
+TDEA::blockEncrypt`. This has a slightly different interface than the
+block cipher we used from the `AES` module earlier.
 
-You can define a keyed TDEA instance as follows:
+You can define a keyed `TDEA` instance as follows:
 
 ```
 [K1, K2, K3] = [0x0123456789ABCDEF, 0x23456789ABCDEF01, 0x456789ABCDEF0123]
 TDEA_keyed = (\p -> TDEA::blockEncrypt (K1, K2, K3, p))
 ```
 
-Furthermore, we can check that this cipher was loaded correctly by checking the 
-property `TDEA::testsPass` defined in `TripleDES.cry` as follows:
-
-```shell
-:prove TDEA::testsPass
-Q.E.D.
-(Total Elapsed Time: 0.006s, using Z3)
-```
-
-It is worth taking a look through the `TripleDES.cry` and learn about the story
-of a particularly famous NIST test vector.
+It is worth taking a quick look through the `TripleDES.cry` to learn a
+little bit about a particularly famous NIST test vector.
 
 Good luck!
 
 
 # Test Vectors
 
-Test vectors were not included in NIST-SP-800-38F; however, the `KW-AE`, `KW-AD`
-family of key-wrapping algorithm enjoy common usage and are described and
-referenced in other standards material. The test vectors in this section
-were drawn from [RFC 3394](https://tools.ietf.org/html/rfc3394). 
+Test vectors were not included in NIST-SP-800-38F; however, the
+`KW-AE`, `KW-AD` family of key-wrapping algorithm enjoy common usage
+and are described and referenced in other standards material. The test
+vectors in this section were drawn from [RFC
+3394](https://tools.ietf.org/html/rfc3394).
 
-Recall that you can check individual properties with the `:check` command in the 
-interpreter. The properties in this section can be successfully checked and
-should report as follows:
-
-```shell
-Cryptol> :check RFC3394_TestVector_1
-Using exhaustive testing.
-Passed 1 tests.
-Q.E.D.
-```
-
-**Exercise:** Look at the test vectors provided by NIST which are included in the `kwtestvectors`. Use these to create a set of test vectors and properties for various input and key sizes to further test the algorithms we've developed in 
-this lab. You will also find vectors for `TKW` there which you can use to check
-your implementations in the exercise above.
-
-Feel free to model your properties after the pattern for the `RFC3394` test 
-vectors we include here:
+Recall that you can check individual properties with the `:check`
+command in the interpreter.  Here are some test vectors from [RFC
+3394](rfc3394.pdf) that are useful for testing `KW-AE` and `KW-AD`.
 
 ```
 Test_KWAE :
@@ -586,14 +566,62 @@ property KWAE_RFC3394_Tests =
             0x3f5786e2d80ed326, 0xcbc7f0e71a99f43b,
             0xfb988b9b7a02dd21 ])
 ```
+
+```
+Test_KWAD :
+   {a, n}
+   (fin a, a >= 2, 4 >= a, n >= 2, 2^^54-1 >= n) =>
+   [a*64] -> [(n+1)*64] -> (Bit, [n*64])
+Test_KWAD k ct = (FAIL, join pt)
+  where
+    (FAIL, pt) = KWAD (\c -> AES::decrypt k c) (split ct)
+
+property KWAD_RFC3394_Tests =
+    (Test_KWAD (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F ])
+               (join [ 0x1fa68b0a8112b447, 0xaef34bd8fb5a7b82, 0x9d3e862371d2cfe5 ]) ==
+     (False, join [ 0x0011223344556677, 0x8899AABBCCDDEEFF ])) /\
+    (Test_KWAD (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F, 0x1011121314151617 ])
+               (join [ 0x96778b25ae6ca435, 0xf92b5b97c050aed2, 0x468ab8a17ad84e5d ]) ==
+     (False, join [ 0x0011223344556677, 0x8899AABBCCDDEEFF ])) /\
+    (Test_KWAD (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F,
+                       0x1011121314151617, 0x18191A1B1C1D1E1F ])
+               (join [ 0x64e8c3f9ce0f5ba2, 0x63e9777905818a2a, 0x93c8191e7d6e8ae7 ]) ==
+     (False, join [ 0x0011223344556677, 0x8899AABBCCDDEEFF ])) /\
+    (Test_KWAD (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F, 0x1011121314151617 ])
+               (join [ 0x031d33264e15d332, 0x68f24ec260743edc,
+                       0xe1c6c7ddee725a93, 0x6ba814915c6762d2 ]) ==
+     (False, join [ 0x0011223344556677, 0x8899AABBCCDDEEFF, 0x0001020304050607 ])) /\
+    (Test_KWAD (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F,
+                       0x1011121314151617, 0x18191A1B1C1D1E1F ])
+               (join [ 0xa8f9bc1612c68b3f, 0xf6e6f4fbe30e71e4,
+                       0x769c8b80a32cb895, 0x8cd5d17d6b254da1 ]) ==
+     (False, join [ 0x0011223344556677, 0x8899AABBCCDDEEFF, 0x0001020304050607 ])) /\
+    (Test_KWAD (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F,
+                       0x1011121314151617, 0x18191A1B1C1D1E10 ])
+               (join [ 0x28c9f404c4b810f4, 0xcbccb35cfb87f826,
+                       0x3f5786e2d80ed326, 0xcbc7f0e71a99f43b,
+                       0xfb988b9b7a02dd21 ]) ==
+     (True, join [ 0x20ca3cba6f93747e, 0x456c666158ed83da,
+                   0x3a6d614e94ba1ac5, 0xfe957c5963100091]))
+```
  
 # The end
 
-How was your experience with this lab? Suggestions are welcome in the form of a 
-ticket on the course Github page: [https://github.com/weaversa/cryptol-course/issues](https://github.com/weaversa/cryptol-course/issues)
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course Github page:
+[https://github.com/weaversa/cryptol-course/issues](https://github.com/weaversa/cryptol-course/issues)
 
 # References
 
-* [NIST Special Publication 800-38F](https://csrc.nist.gov/publications/detail/sp/800-38f/final) -- "Recommendation for Block Cipher Modes of Operation: Methods for Key Wrapping". This document is the primary source material for this lab. It contains the original specifications from NIST that we develop in this lesson.
+* [NIST Special Publication
+  800-38F](https://csrc.nist.gov/publications/detail/sp/800-38f/final)
+  -- "Recommendation for Block Cipher Modes of Operation: Methods for
+  Key Wrapping". This document is the primary source material for this
+  lab. It contains the original specifications from NIST that we
+  develop in this lesson.
 
-* [RFC 3394](https://tools.ietf.org/html/rfc3394) -- "Advanced Encryption Standard (AES) Key Wrap Algorithm". This RFC contains information on the same set of algorithms and includes test vectors which we use in this lab to verify that our algorithms were implemented correctly.
+* [RFC 3394](https://tools.ietf.org/html/rfc3394) -- "Advanced
+  Encryption Standard (AES) Key Wrap Algorithm". This RFC contains
+  information on the same set of algorithms and includes test vectors
+  which we use in this lab to verify that our algorithms were
+  implemented correctly.
