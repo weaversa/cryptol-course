@@ -76,11 +76,11 @@ indicates:
 
 That is, `KW` (and `KWP`) are defined to operate with
 [`AES`](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
-for its three key sizes: 128, 192, and 256 bits.
+for its three key sizes: 128, 192, and 256-bits.
 
 The standard does not indicate a specific key size for
 [`TDEA`](https://en.wikipedia.org/wiki/Triple_DES), but
-`TDEA`/Triple-DES is typically used with a 192 bit key and that is
+`TDEA`/Triple-DES is typically used with a 192-bit key and that is
 what we will develop later in this lab.
 
 Also, we will not develop `AES` or `TDEA` in this lab. Instead we will
@@ -203,8 +203,15 @@ algorithm to operate correctly, and according to the standard, we will
 have to make two more assumptions about `n`.
 
  * First, `n >= 3`, we can add this restriction to our type signature:
-* Second, `n <= 2^^54`, this will become clear later, but it has to do
-  with limits imposed by Table 1 (Section 5.3.1, page 10).
+ * Second, `n <= 2^^54`, this comes directly limits imposed by Table 1
+   (Section 5.3.1, page 10). As an aside, if this constraint is left
+   off, Cryptol's type checker will point out that `64 >= width
+   (6*(n-1))` (which can be reexpressed as `6*(n-1) < 2^^64`). This
+   constraint comes from the fact that the value `t` (which iterates
+   over `[1..6*(n-1)]`) has to fit into a 64-bit word when passed to
+   `WStep`. Of course, `2^^54` is less than `6 * (2^^54 - 1)` which is
+   less than `2^^64`, so the tighter lower bound from Table 1 is
+   acceptable.
  
 ```ignore
 W : 
@@ -334,8 +341,8 @@ KWAE CIPHk P = C
     C = W CIPHk S
 ```
 
-At this point you can check your solutions with six test vectors
-defined by properties later on in this document. Here is the the
+At this point you can check your work against six test vectors given
+in a property defined later on in this document. Here is the the
 command and sample output for `KWAE_RFC3394_Tests`.
 
 ```shell
@@ -443,47 +450,27 @@ KWAD CIPHk' C = (FAIL, P)
 
 When you have successfully defined this function, you can test your
 work by `:prove`ing that `KWAE` and `KWAD` are inverses (well, at
-least for a dummy CIPHk and P of length 3 semiblocks).
-
+least for a dummy CIPHk and P of length 3 semiblocks) using the
+`KWAEInvProp`. You can also check your work against six test vectors
+by using the property `KWAD_RFC3394_Tests` (this is defined later on
+in this document).
 
 ```
 property KWAEInvProp S = 
     KWAD`{3} (\a -> a-1) (KWAE (\a -> a+1) S) == (False, S)
 ```
 
-# A Formal Specification of `KWP-AE`
-
-```
-widen a = 0 # a
-shrink a = drop a
-
-//i < j = j >= i + 1
-
-
-KWPAE :
-    {k, l, n}
-    ( 1 <= k, k < 2^^32  // Bounds on k (number of octets of P), from Table 1
-    , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C
-    , 3 <= n, n <= 2^^54              // Bounds on n, from W
-    , 64*n == max 192 l               // Relate n and l
-    ) =>
-    ([128] -> [128]) -> [k*8] -> [l]
-KWPAE CIPHk P = C
-  where
-    PBYTES = `k : [32]
-    PAD = zero : [k*8 %^ 64]
-    S = ICV2 # PBYTES # P # PAD : [l]
-    C = if PBYTES <= 8 then
-            widen (CIPHk (shrink S))
-          else
-            shrink (join (W`{n} CIPHk (split (widen S))))
-```
-
 # Formal Specifications of `TKW-AE` and `TKW-AD`
 
+We're briefly skipping over the definitions of `KWP-AE` and `KWP-AD`
+in Section 6.3 because the definitions of `TWK-AE` and `TWK-AD` in
+Section 7 are very similar to `KW-AE` and `KW-AD`. We'll come back to
+`KWP` a little later.
+
 **EXERCISE**: Try your hand at writing the specification for `TKW-AE`
-  and `TKW-AD`. These functions are very similar to `KW-AE` and
-  `KW-AD` but they use the 64-bit block cipher `TDEA` (also known as
+  and `TKW-AD` from Section 7. These functions are very similar to
+  `KW-AE` and `KW-AD` but they use the 64-bit block cipher `TDEA`
+  (also known as
   [Triple-DES](https://en.wikipedia.org/wiki/Triple_DES)). We
   recommend follwing the same steps from above and defining the helper
   functions `TWStep`, `TWStep'`, `TW`, and `TW'` before you attempt
@@ -517,6 +504,141 @@ little bit about a particularly famous NIST test vector.
 
 Good luck!
 
+# A Formal Specification of `KWP-AE`
+
+`KWP-AE` is the authenticated-encryption function and makes use of our
+previously defined `W`. There are two new concepts to introduce with
+this specification, so we'll break `KWP-AE` into two parts. The first concept is that of **padding**.
+
+## Padding
+
+Many cryptographic specifications (especially hash functions) accept
+some arbitrary number of bits as input but operate over some number of
+words internally. Hence, it's common to see a bitvector **padded**
+with zeros (or sometimes a constant and zeroes) to inflate the
+bitvector until its size is a multiple of a word (usually 32- or
+64-bits). For example, say we have a bitvector of `37` bits and we
+want to pad it to fit into some number of 32-bit words. Well, the next
+largest multiple of `32` is `64`, and `64 - 37` is `27`, so we'll need
+to pad with `27` zeros. We can demonstrate this using Cryptol:
+
+```
+bits = 0b1001100101110011111010000001110011011 : [37]
+bits_padded = bits # (0 : [27]) : [64]
+```
+
+However, what if we need to create a function that pads any size input
+into a bitvector with a size that is a multiple of 32? In general, the
+pad is what’s needed to make something a multiple of a
+word. Mathematically, this is identical to the **ceiling
+modulus**. Backing up a second -- `a % b` gives the amount of `a`
+remains after dividing by `b` (`%` is Cryptol's [remainder (or modulo)
+operator](https://en.wikipedia.org/wiki/Modulo_operation)). Consider
+we have `10` apples divided amongst `3` friends, after giving everyone
+three apples, we'll have `10 % 3 = 1` apple remaining. What we desire
+with padding isn't what's remaining, but rather the amount needed to
+get to the next multiple, that is, how many **more** apples do we need
+if we had another friend? --- To which the answer here is, `2`. Or,
+said another way, we are **short** `2` apples.
+
+As it turns out, Cryptol has such a shortage operator (the ceiling
+modulus), namely, `%^`
+
+```sh
+labs::KeyWrapping::KeyWrapping> :h (%^)
+
+    primitive type (%^) : # -> # -> #
+
+    `m %^ n` requires:
+      • fin m
+      • fin n
+      • n >= 1
+
+Precedence 90, associates to the left.
+
+How much we need to add to make a proper multiple of the second argument.
+```
+
+So, to revisit our padding example above, if we have a bitvector of
+length `37` and it needs to be padded to a multiple of `32`, we're
+short `27`, as demonstrated here using Cryptol:
+
+```sh
+labs::KeyWrapping::KeyWrapping> `(37 %^ 32)
+27
+```
+
+Now we can revisit creating a function that pads any size input
+into a bitvector with a size that is a multiple of 32.
+
+```
+pad32 : {a} (fin a) => [a] -> [a + a %^ 32]
+pad32 x = x # 0
+```
+
+Here we take in a bitvector `x` of length `a` bits and produce a
+bitvector of length `a + a %^ 32` bits by concatenating `a %^ 32` zero
+bits onto `x`.
+
+
+## KWP-AE Padding
+
+The first 4 steps of `KWP-AE` describe how to create `S` from `P`.
+Here we introduce the type variable `k` to be the number of octets (or
+bytes) of `P`, and `l` to be the number of bits of `S`. You'll notice
+we constrain `k` to be between `1` and `2^^32-1`, as per Table 1.
+Since `S` is comprised of two 32-bit numbers concatenated with input
+`P` and then padded to a multiple of `64`, `l` is constrained to be
+`32 + 32 + k*8 + k*8 %^ 64`, that is, 32-bits for `ICV2` plus 32-bits
+for the number of octets of `P` plus `P` itself plus the shortage of
+`P` as a multiple of `64` bits.
+
+You may notice that the specification document gives the number of
+octets to pad as
+
+> ![](https://render.githubusercontent.com/render/math?math=8\cdot\lceil%20len(P)/64\rceil%20-len(P)/8)
+
+In general,
+![](https://render.githubusercontent.com/render/math?math=b\cdot\lceil%20a/b\rceil%20-a=a\%25\hat{}b),
+and since Cryptol supports the more concise shortage operator, we'll
+use that instead.
+
+
+
+```
+KWPAEPad :
+    {k, l}
+    ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
+    , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S
+    ) =>
+    [k][8] -> [l]
+KWPAEPad P = ICV2 # (`k : [32]) # (join P) # zero
+```
+
+
+```
+KWPAE :
+    {k, l, n}
+    ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
+    , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C
+    , 3 <= n, n <= 2^^54              // Bounds on n, from W
+    , 64*n == max 192 l               // Relate n and l
+    ) =>
+    ([128] -> [128]) -> [k][8] -> [l]
+KWPAE CIPHk P = C
+  where
+    S          = KWPAEPad P
+    C          = if (`k : [32]) <= 8 then
+                   widen (CIPHk (shrink S))
+                 else
+                   shrink (join (W`{n} CIPHk (split (widen S))))
+
+widen : {a, b} (fin a, fin b) => [b] -> [a + b]
+widen a = 0 # a
+
+shrink : {a, b} (fin a, fin b) => [a + b] -> [b]
+shrink a = drop a
+```
 
 # Test Vectors
 
