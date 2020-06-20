@@ -35,7 +35,7 @@ Since we are creating a new module, the first line needs to be the
 module definition:
 
 ```
-module labs::KeyWrapping::KeyWrapping where
+module labs::KeyWrapping::KeyWrappingAnswers where
 ```
 
 # Preliminaries
