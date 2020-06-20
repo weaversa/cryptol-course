@@ -14,18 +14,18 @@ Labs will have exercises that look like this:
 side and edited while you work through the labs. For instance, you might be
 asked to fill in a portion of a Cryptol snippet:
 
-```
+```ignore
 algebra_fact : Integer -> Integer -> Bit
-algebra_fact x y =
-  (x + y) * (x + y) == zero  // Use the distributive law to write an equivalent statement
+property algebra_fact x y =
+    (x + y) * (x + y) == zero  // Use the distributive law to write an equivalent statement
 ```
 
 A student might solve this problem by changing this snippet in their editor as follows:
 
-```bash
- algebra_fact : Integer -> Integer -> Bit
- algebra_fact x y =
-   (x + y) * (x + y) == x^^2 + 2*x*y + y^^2 
+```
+algebra_fact : Integer -> Integer -> Bit
+property algebra_fact x y =
+    (x + y) * (x + y) == x^^2 + 2*x*y + y^^2 
 ```
 
 Exercises will often have checks that follow along with instructions how to verify 
