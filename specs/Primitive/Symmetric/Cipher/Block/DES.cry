@@ -22,17 +22,11 @@ des keys pt = (swap (split lst)) @@ FPz
         iv  = [ round (k, split lr)
               | k  <- keys
               | lr <- [pt'] # iv ]
-//        idx : [kw]    
-//        idx = length keys - 1
-//        lst = iv @ idx
         lst = iv @ ((length keys - 1) : [kw])
-//        lst = iv @ (length keys - 1)
 
 round : ([48],[2][32]) -> [64]
 round (k, [l, r]) = r # (l ^ f (r, k))
 
-// f : {a} (a >= 6) => ([2^^(a-1)],[48]) -> [32]
-// f : {b} (b >= 1, 6 == lg2 b) => ([b - 1], [48]) -> [32]
 f (r, k) = (SBox(k ^ (r @@ EPz))) @@ PPz
 
 swap [a, b] = b # a
