@@ -15,7 +15,7 @@ First, since we are creating a module, the first line needs to be the
 module definition.
 
 ```
-module labs::CryptoProofs::CryptoProofsAnswers where
+module labs::CryptoProofs::CryptoProofs where
 ```
 
 # 1. DES
