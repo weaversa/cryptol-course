@@ -99,8 +99,8 @@ in. Using descriptive names as we do here is a good way to organize
 related algorithms by type, function, or whatever works for your
 system.
 
-Now is a good time to scan through the document and get a sense of the
-overall organization:
+Now is a good time to scan through the specification document and get
+a sense of the overall organization:
 
  * **Sections 1 - 3, Purpose, Authority, and Introduction** -- These
      sections provide background, usage, and cryptographic function of
@@ -158,15 +158,14 @@ to us in some fashion or another.
  
 # Formal Specification of `KW`
 
-`KW` is a family of algorithms comprised of `KW-AE` and `KW-AD` we
+`KW` is a family of algorithms comprised of `KW-AE` and `KW-AD`. We
 start with `KW-AE`.
 
 ## Building a Formal Specification for `KW-AE`
 
 Let's take a look at writing a specification for the `KW-AE` which is
-presented in **Section 6**. We will walk through designing a formal
-specification for `KW-AE` (which we will call `KWAE` in Cryptol
-because we cannot use the dash/minus sign when naming functions).
+presented in **Section 6**. We'll call our function `KWAE` in Cryptol
+because we cannot use the dash/minus sign when naming functions.
 
 The document indicates that `KW-AE` depends on a *wrapping function*
 `W` (Algorithm 1, page 11). This algorithm has certain *prerequisites*
@@ -176,12 +175,12 @@ which we will have to model in our formal specification:
   * A **designated cipher function** `CIPHk`, which operates on 128-bit blocks
   
 The document defines a *semiblock* to be a block with half the width
-of the underlying block cipher. Since we are using `AES` as the
-underlying block cipher, semiblocks will be 64-bit blocks. Also notice
-that the specification for `W` defines the *Input* to be a string `S`
-of `n` semiblocks and the *Output* will be a transformed string `C` of
-`n` semiblocks. This is enough to build a simple type signature for
-`W` which will contain the following components:
+of the underlying block cipher, `CIPHk`. Since `KW-AE` uses `AES` as
+its `CIPHk`, semiblocks will be 64-bit blocks. Also notice that the
+specification for `W` defines the *Input* to be a string `S` of `n`
+semiblocks and the *Output* will be a transformed string `C` of `n`
+semiblocks. This is enough to build a simple type signature for `W`
+which will contain the following components:
 
  * `n` -- A *type parameter* which controls the number of semiblocks
    in our inputs and outputs
@@ -232,7 +231,8 @@ counter found in step 2 of `Algorithm 1`.
 
 **EXERCISE**: Study `Algorithm 1` and `Figure 2`. Implement `WStep`
   below assuming the appropriate input for `CIPHk` and assignments for
-  `A'` and `Rs'` found in the body of the function.
+  `A'` and `Rs'` found in the body of the function. *Hint*: R2 mentioned
+  in the spec is actually the first (`head`) semi-block from Rs.
 
 ```
 WStep:
@@ -241,9 +241,9 @@ WStep:
     ([128] -> [128]) -> [n][64] -> [64] -> [n][64]
 WStep CIPHk ([A] # Rs) t = [A'] # Rs'
   where
-    [MSB, LSB] = zero : [2][64]
-    A'         = zero
-    Rs'        = zero
+    [MSB, LSB] = undefined : [2][64]
+    A'         = undefined
+    Rs'        = undefined
 ```
 
 *Note:* Pattern matching (a kind of shorthand) is used for one of the
@@ -304,10 +304,7 @@ We will use `foldl` along with our step function `WStep` to write a
 definition for `W`.
 
 **EXERCISE**: Complete the definition of `W` below by filling in the
-  function skeleton provided. *Hint:* Folding over vanilla `WStep`
-  won't work -- really consider the type of the first argument to
-  `foldl` and you'll see you need to partially evaluate WStep on CIPHk
-  first.
+  function skeleton provided.
  
 ```
 W :
@@ -317,8 +314,8 @@ W :
 W CIPHk S = C
   where
     type s = 0
-    ts     = zero : [s][64]
-    C      = zero
+    ts     = undefined : [s][64]
+    C      = foldl (WStep CIPHk) undefined undefined
 ```
 
 With `W` in hand there it isn't much more work to complete the `KW-AE`
@@ -337,8 +334,8 @@ KWAE :
     ([128] -> [128]) -> [n][64] -> [n+1][64]
 KWAE CIPHk P = C
   where
-    S = zero : [n+1][64]
-    C = zero
+    S = undefined : [n+1][64]
+    C = undefined
 ```
 
 At this point you can check your work against six test vectors given
@@ -378,9 +375,9 @@ WStep' :
     ([128] -> [128]) -> [n][64] -> [64] -> [n][64]
 WStep' CIPHk' ([A] # Rs) t = [A'] # Rs'
   where
-    [MSB, LSB] = zero : [2][64]
-    A'         = zero
-    Rs'        = zero
+    [MSB, LSB] = undefined : [2][64]
+    A'         = undefined
+    Rs'        = undefined
 
 W' :
     {n}
@@ -389,8 +386,8 @@ W' :
 W' CIPHk' C = S
   where
     type s = 0
-    ts     = zero : [s][64]
-    S      = zero
+    ts     = undefined : [s][64]
+    S      = undefined
 ```
 
 Once you have these completed you should be able to check your work by
@@ -422,7 +419,7 @@ The final step is to use these components to write the authenticated
 decryption algorithm `KW-AD`. Unlike `W'` and `WStep'` this function
 will have a different type than its related routine in the `KW-AE`
 family because it needs to capture whether or not the ciphertext
-authenticates *as well as* compute the corresponding plaintext.
+authenticates *as well as* computes the corresponding plaintext.
 
 **EXERCISE**: Study `Algorithm 4` from the standard and complete the
   definition of `KWAD` below by filling in the function skeleton
@@ -443,9 +440,9 @@ KWAD :
     ([128] -> [128]) -> [n+1][64] -> (Bit, [n][64])
 KWAD CIPHk' C = (FAIL, P)
   where
-    S = zero : [n+1][64]
-    FAIL = False
-    P = zero
+    S = undefined : [n+1][64]
+    FAIL = undefined
+    P = undefined
 ```
 
 When you have successfully defined this function, you can test your
@@ -601,8 +598,11 @@ octets to pad as
 
 > ![](https://render.githubusercontent.com/render/math?math=8\cdot\lceil%20len(P)/64\rceil%20-len(P)/8)
 
+where `len(P)` is the number of bits in P per the definition in
+Section 4.1.
+
 In general,
-![](https://render.githubusercontent.com/render/math?math=b\cdot\lceil%20a/b\rceil%20-a=a\%25\hat{}b),
+![](https://render.githubusercontent.com/render/math?math=b\cdot\lceil%20a/b\rceil%20-a=a%5C%25\hat{}b),
 and since Cryptol supports the more concise shortage operator, we'll
 use that instead.
 
@@ -617,7 +617,7 @@ KWPAEPad :
     , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S
     ) =>
     [k][8] -> [l]
-KWPAEPad P = zero
+KWPAEPad P = undefined
 ```
 
 ## Concept 2: Oddly Typed `if-then-else` Statements
@@ -668,10 +668,11 @@ f x = if `a <= 0x30 then
 
 Here we have a function `f` that takes an `a`-bit bitvector as input
 where `a` is some length between `32` and `64` bits. `f` always
-returns `48` bits. Here's the strange part - if `a <= 0x30` (`0x30` is
-`48`), `f` returns `g x`, where `g` takes and returns only 64-bit
+returns `48` bits. Here's the strange part --- if `a <= 0x30` (`0x30`
+is `48`), `f` returns `g x`, where `g` takes and returns only 32-bit
 values. If `a > 0x30`, `f` returns `h x` where `h` takes and returns
-only 48-bit values. If we try to load this function into Cryptol we see:
+only 64-bit values. If we try to load this function into Cryptol we
+see:
 
 ```sh
 [error] at labs/KeyWrapping/KeyWrapping.md:663:1--666:14:
@@ -722,10 +723,9 @@ shrink : {a, b} (fin a, fin b) => [a + b] -> [b]
 shrink a = drop a
 ```
 
-`widen` takes any sized input and prepends any number of zeroes (even
-`0`) onto the front. `shrink` takes any sized input and removes some
-number of bits (again, even `0`) from the front. Using these two
-functions, we can fix our `f` from above:
+`widen` takes any sized input and prepends `0` or more `False`
+bits. `shrink` takes any sized input and removes `0` or more bits from
+the front. Using these two functions, we can fix our `f` from above:
 
 ```
 f : {a} (32 <= a, a <= 64) => [a] -> [48]
@@ -769,17 +769,16 @@ KWPAE :
     {k, l, n}            // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
     , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C
-    , 3 <= n, n <= 2^^54              // Bounds on n, from W
     , 64*n == max 192 l               // Here we relate n and l
     ) =>
     ([128] -> [128]) -> [k][8] -> [l]
 KWPAE CIPHk P = C
   where
-    S = zero : [l]
+    S = undefined : [l]
     C = if (`k : [32]) <= 8 then
-          zero : [l]
+          undefined : [l]
         else
-          zero : [l]
+          undefined : [l]
 ```
 
 Feel free to use the provided `KWPAETests` property to check your
@@ -806,12 +805,12 @@ KWPADUnpad :
     [l] -> (Bit, [k][8])
 KWPADUnpad S = (FAIL, split P)
   where
-    FAIL = False
     MSB32 : [32]
-    k : [32]
-    P : [k*8]
-    PAD : [k*8 %^ 64]
-    MSB32 # k # P # PAD = zero
+    k     : [32]
+    P     : [k*8]
+    PAD   : [k*8 %^ 64]
+    MSB32 # k # P # PAD = undefined
+    FAIL = undefined
 ```
 
 ```
@@ -819,17 +818,16 @@ KWPAD :
     {k, l, n}            // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
     , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C
-    , 3 <= n, n <= 2^^54              // Bounds on n, from W
     , 64*n == max 192 l               // Here we relate n and l
     ) =>
     ([128] -> [128]) -> [l] -> (Bit, [k][8])
 KWPAD CIPHk' C = (FAIL, P)
   where
-    (FAIL, P) = zero
+    (FAIL, P) = undefined
     S = if (`k : [32]) <= 8 then
-          zero : [l]
+          undefined : [l]
         else
-	  zero : [l]
+          undefined : [l]
 ```
 
 Feel free to use the provided `KWPADTests` property to check your
@@ -931,7 +929,6 @@ TestKWPAE :
    ( a >= 2, 4 >= a
    , 1 <= k, k < 2^^32
    , l == 32 + 32 + k*8 + k*8 %^ 64
-   , 3 <= n, n <= 2^^54
    , 64*n == max 192 l
    ) =>
    [a*64] -> [k*8] -> [l]
@@ -964,7 +961,6 @@ TestKWPAD :
    ( a >= 2, 4 >= a
    , 1 <= k, k < 2^^32
    , l == 32 + 32 + k*8 + k*8 %^ 64
-   , 3 <= n, n <= 2^^54
    , 64*n == max 192 l
    ) =>
    [a*64] -> [l] -> (Bit, [k*8])
