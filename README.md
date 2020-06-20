@@ -25,11 +25,11 @@ A student might solve this problem by changing this snippet in their editor as f
 ```bash
  algebra_fact : Integer -> Integer -> Bit
  algebra_fact x y =
-   (x + y) * (x + y) = x^^2 + 2*x*y + y^^2 
+   (x + y) * (x + y) == x^^2 + 2*x*y + y^^2 
 ```
 
 Exercises will often have checks that follow along with instructions how to verify 
-their work. Check your anwer with the following command, your output should look
+their work. Check your answer with the following command; your output should look
 similar to the following:
 
 ```bash
@@ -48,7 +48,7 @@ similar to the following:
  (Total Elapsed Time: 0.056s, using Z3)
 ```
 
-Don't worry -- we'll walk you through accessing and / installing Cryptol.
+Don't worry -- we'll walk you through [accessing and installing Cryptol](INSTALL.md).
 
 ## Course Outline
 
@@ -95,7 +95,7 @@ Don't worry -- we'll walk you through accessing and / installing Cryptol.
 
 Some labs or examples go beyond the scope of the course outline, but may prove 
 interesting or useful for students with wider interests or different 
-backgrounds. Here are some of the 
+backgrounds. Here are some of them: 
 
 1. Arithmetic Verifications -- Demonstrates using SAW to prove facts about
 various arithmetic implementations. Some simple reference examples are included
