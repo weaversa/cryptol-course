@@ -31,8 +31,8 @@ import specs::DES
 Now, from the command line, load this module.
 
 ```bash
-Cryptol> :m labs::CryptoProofs::CryptoProofsAnswers
-Loading module labs::CryptoProofs::CryptoProofsAnswers
+Cryptol> :m labs::CryptoProofs::CryptoProofs
+Loading module labs::CryptoProofs::CryptoProofs
 ```
 
 First, we'll take a look at the type of the DES encryption function.
