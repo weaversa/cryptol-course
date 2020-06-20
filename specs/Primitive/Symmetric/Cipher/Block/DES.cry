@@ -15,7 +15,7 @@ DES =
     }
 
 // Encryption
-
+des : {n, m, kw} (fin m, m > 0, kw == width m) => [m][48] -> [n] -> [64]
 des keys pt = (swap (split lst)) @@ FPz
   where
         pt' = pt @@ IPz
