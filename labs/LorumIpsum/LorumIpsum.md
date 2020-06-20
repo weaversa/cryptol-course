@@ -16,13 +16,13 @@ a stream cipher capable of encrypting or decrypting streams of
 bytes. Please read through the specification document below and then
 write Cryptol functions to generate the key specified here.
 
-Once complete, wrap the secret key
-`0x569b79f606aba26f4263b7147ba3c5e0` with the KEK
-`0x3d43108b5b243b90dda78f75736cc629` and all approved issue numbers to
-create a suite of LorumIpsum keys. These keys can then be fed into the
-KLI20 device to decrypt a [secret message](secret_message.cry).
+Also, we found some test vectors (in a separate document, of
+course). Rather than recreate that document here, we've scraped them
+out and placed them at the bottom of this document.
 
 Let's begin.
+
+
 # Lorum Ipsum Key Generation Specification
 
 This document specifies how to generate key material for
@@ -374,3 +374,29 @@ eu. Vivamus ac iaculis mauris. Aliquam consequat dolor sit amet nibh
 molestie convallis. Aliquam ut nunc porttitor, imperdiet ligula eu,
 consectetur diam. Phasellus euismod velit elementum fermentum
 semper. Suspendisse porta vestibulum diam non fringilla.
+
+
+# Test Vectors
+
+Some test vectors are provided here to help you test your Lorum Ipsum
+key generation specification. First, wrap the `secretKey` with the
+`KEK`, both found below, using all approved issue numbers to create a
+suite of LorumIpsum keys.
+
+```
+KEK = 0x3d43108b5b243b90dda78f75736cc629
+
+secretKey = 0x569b79f606aba26f4263b7147ba3c5e0
+```
+
+Then, feed the keys you create into the [KLI20](KLI20.cry) device
+(provided in this same repository) to decrypt the following secret
+messages:
+
+```
+secretMessageIssue0 = 0x0d84af8336884da53714f6eafa2bf80f38e5028d208ce39c8d78a1f768738413aa577598816241adf3077e2587ffbd7456e8583a2155e6411dc64a15e414bafc2556184488a353c54d5f274c2b54eef4ef7ebd8d9a7f13137e6bacf1b7ff605dd55443d7a980e7ba298919fd432be0082699ece1d8c1f8e0849bcc1beb07a2c005c622ae1e5fe79e43ae31f0a1c13b9baa045ceeb9a43ee47a7d09702187c8f8ab51309c308f1b7d22ac2bc2da49487c88ebd527127a709da2418c35
+
+secretMessageIssue1 = 0x7f0f165e95c728ab1d1c07aa3c12cc10d5a975394c37eb5870be8b5495334ff472c5192b9f97faea063540b5f11d51fdbbdb4117ea9612cc0c6b42c3b70dab7615cd
+
+secretMessageIssue2 = 0x4ba6d9eb8489faed2223bd5e3bbf5bf313708c38b369b0fea673c76843cf5312252984b024c2f4263ef318dfbade320920558cb7e475c54811f955a612ab9e18128e1adb056e5775
+```

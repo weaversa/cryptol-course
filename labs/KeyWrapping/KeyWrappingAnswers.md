@@ -35,7 +35,7 @@ Since we are creating a new module, the first line needs to be the
 module definition:
 
 ```
-module labs::KeyWrapping::KeyWrapping where
+module labs::KeyWrapping::KeyWrappingAnswers where
 ```
 
 # Preliminaries
@@ -241,9 +241,9 @@ WStep:
     ([128] -> [128]) -> [n][64] -> [64] -> [n][64]
 WStep CIPHk ([A] # Rs) t = [A'] # Rs'
   where
-    [MSB, LSB] = undefined : [2][64]
-    A'         = undefined
-    Rs'        = undefined
+    [MSB, LSB] = split (CIPHk (A # head Rs))
+    A'         = MSB ^ t
+    Rs'        = tail Rs # [LSB]
 ```
 
 *Note:* Pattern matching (a kind of shorthand) is used for one of the
@@ -313,9 +313,9 @@ W :
     ([128] -> [128]) -> [n][64] -> [n][64]
 W CIPHk S = C
   where
-    type s = 0
-    ts     = undefined : [s][64]
-    C      = foldl (WStep CIPHk) undefined undefined
+    type s = 6*(n-1)
+    ts     = [ 1 .. s ]
+    C      = foldl (WStep CIPHk) S ts
 ```
 
 With `W` in hand there it isn't much more work to complete the `KW-AE`
@@ -334,8 +334,8 @@ KWAE :
     ([128] -> [128]) -> [n][64] -> [n+1][64]
 KWAE CIPHk P = C
   where
-    S = undefined : [n+1][64]
-    C = undefined
+    S = [ICV1] # P
+    C = W CIPHk S
 ```
 
 At this point you can check your work against six test vectors given
@@ -375,9 +375,9 @@ WStep' :
     ([128] -> [128]) -> [n][64] -> [64] -> [n][64]
 WStep' CIPHk' ([A] # Rs) t = [A'] # Rs'
   where
-    [MSB, LSB] = undefined : [2][64]
-    A'         = undefined
-    Rs'        = undefined
+    [MSB, LSB] = split (CIPHk' ((A ^ t) # last Rs))
+    A'         = MSB
+    Rs'        = [LSB] # take Rs
 
 W' :
     {n}
@@ -385,9 +385,9 @@ W' :
     ([128] -> [128]) -> [n][64] -> [n][64]
 W' CIPHk' C = S
   where
-    type s = 0
-    ts     = undefined : [s][64]
-    S      = undefined
+    type s = 6*(n-1)
+    ts     = [ s, s-1 .. 1 ]
+    S      = foldl (WStep' CIPHk') C ts
 ```
 
 Once you have these completed you should be able to check your work by
@@ -440,9 +440,9 @@ KWAD :
     ([128] -> [128]) -> [n+1][64] -> (Bit, [n][64])
 KWAD CIPHk' C = (FAIL, P)
   where
-    S = undefined : [n+1][64]
-    FAIL = undefined
-    P = undefined
+    S = W' CIPHk' C
+    FAIL = head S != ICV1
+    P = tail S
 ```
 
 When you have successfully defined this function, you can test your
@@ -498,17 +498,64 @@ properties. Though, if you want to use them, you'll have to uncomment
 them after finishing your work here. Good luck!
 
 ```
-TWStep CIPHk ([A] # Rs) t = undefined
+TWStep:
+    {n}
+    (fin n, n >= 3) =>
+    ([64] -> [64]) -> [n][32] -> [32] -> [n][32]
+TWStep CIPHk ([A] # Rs) t = [A'] # Rs'
+  where
+    [MSB, LSB] = split (CIPHk (A # head Rs))
+    A'         = MSB ^ t
+    Rs'        = tail Rs # [LSB]
     
-TW CIPHk S = undefined
+TW :
+    {n}
+    (fin n, 3 <= n, n <= 2^^28) =>
+    ([64] -> [64]) -> [n][32] -> [n][32]
+TW CIPHk S = C
+  where
+    type s = 6*(n-1)
+    ts     = [ 1 .. s ]
+    C      = foldl (TWStep CIPHk) S ts
 
-TKWAE CIPHk P = undefined
+TKWAE :
+    {n}
+    (fin n, 2 <= n, n < 2^^28) =>
+    ([64] -> [64]) -> [n][32] -> [n+1][32]
+TKWAE CIPHk P = C
+  where
+    S = [ICV3] # P
+    C = TW CIPHk S
 
-TWStep' CIPHk' ([A] # Rs) t = undefined
+TWStep' :
+    {n}
+    (fin n, n >= 3) =>
+    ([64] -> [64]) -> [n][32] -> [32] -> [n][32]
+TWStep' CIPHk' ([A] # Rs) t = [A'] # Rs'
+  where
+    [MSB, LSB] = split (CIPHk' ((A ^ t) # last Rs))
+    A'         = MSB
+    Rs'        = [LSB] # take Rs
 
-TW' CIPHk' C = undefined
+TW' :
+    {n}
+    (fin n, 3 <= n, n <= 2^^28) =>
+    ([64] -> [64]) -> [n][32] -> [n][32]
+TW' CIPHk' C = S
+  where
+    type s = 6*(n-1)
+    ts     = [ s, s-1 .. 1 ]
+    S      = foldl (TWStep' CIPHk') C ts
 
-TKWAD CIPHk' C = undefined
+TKWAD :
+    {n}
+    (fin n, 2 <= n, n < 2^^28) =>
+    ([64] -> [64]) -> [n+1][32] -> (Bit, [n][32])
+TKWAD CIPHk' C = (FAIL, P)
+  where
+    S = TW' CIPHk' C
+    FAIL = head S != ICV3
+    P = tail S
 ```
 
 
@@ -627,7 +674,7 @@ KWPAEPad :
     , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S
     ) =>
     [k][8] -> [l]
-KWPAEPad P = undefined
+KWPAEPad P = ICV2 # (`k : [32]) # (join P) # zero
 ```
 
 ## Concept 2: Oddly Typed `if-then-else` Statements
@@ -784,11 +831,11 @@ KWPAE :
     ([128] -> [128]) -> [k][8] -> [l]
 KWPAE CIPHk P = C
   where
-    S = undefined : [l]
+    S = KWPAEPad P
     C = if (`k : [32]) <= 8 then
-          undefined : [l]
+          widen (CIPHk (shrink S))
         else
-          undefined : [l]
+          shrink (join (W`{n} CIPHk (split (widen S))))
 ```
 
 Feel free to use the provided `KWPAETests` property to check your
@@ -819,8 +866,10 @@ KWPADUnpad S = (FAIL, split P)
     k     : [32]
     P     : [k*8]
     PAD   : [k*8 %^ 64]
-    MSB32 # k # P # PAD = undefined
-    FAIL = undefined
+    MSB32 # k # P # PAD = S
+    FAIL = MSB32 != ICV2 \/
+           k     != `k   \/
+           PAD   != 0
 ```
 
 ```
@@ -833,11 +882,11 @@ KWPAD :
     ([128] -> [128]) -> [l] -> (Bit, [k][8])
 KWPAD CIPHk' C = (FAIL, P)
   where
-    (FAIL, P) = undefined
+    (FAIL, P) = KWPADUnpad S
     S = if (`k : [32]) <= 8 then
-          undefined : [l]
+          widen (CIPHk' (shrink C))
         else
-          undefined : [l]
+          shrink (join (W'`{n} CIPHk' (split (widen C))))
 ```
 
 Feel free to use the provided `KWPADTests` property to check your
@@ -992,7 +1041,7 @@ property KWADTests =
                    0x3a6d614e94ba1ac5, 0xfe957c5963100091]))
 ```
 
-```comment
+```
 TestTKWAE :
    {n}
    (n >= 2, 2^^28-1 >= n) =>
@@ -1010,7 +1059,7 @@ property TKWAETests =
             == 0x61a9e9ec40462f6915179fef341b41cfcebe70f4539cc8babb6d6083905ead8f62f1e1cebf8045a7930812acd93227c09be10758dccd1afdb997931adeeb5e39749aaec607bc8c0346c0d864e65f61a4d7de4c3aea6cbcd9ff5c7664e705b441d8bce4b44ffbfb796a81e491eab7b817382ff87c8f6ce855ab80e234432ed7cf3d7bfddc15406d4b07fd0455c23669306634fccefb0cef69f693ec6c075912ec23342116d28453f7e1d2df05585d9a03e6e8ed3b8e2e0a95394b19779e26f845245c0806f7f619c618889caa9167f8908c0325923a1118cdd2c0a48b8b2b224c5faec7beb7d6a7d54e4212783f01661fb570ab1aa2589a6e922c9c3accc308b8088b601e)
 ```
 
-```comment
+```
 TestTKWAD :
    {n}
    (n >= 2, 2^^28-1 >= n) =>

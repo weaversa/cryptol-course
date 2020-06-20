@@ -1,11 +1,10 @@
 module labs::LorumIpsum::KLI20 where
 
 import labs::CRC::CRCAnswers
-import labs::KeyWrapping::NISTSean
+import labs::KeyWrapping::KeyWrappingAnswers
 import labs::Salsa20::Salsa20Answers
 
 /**
-
  * A Key Lorum-Ipsum '20 ECU emulator.
  *
  * Input: A 128-bit KEK, a 384-bit wrapped LIK (Lorum Ipsum Key), and
@@ -26,7 +25,7 @@ KLI20 KEK LIK ct =
     CRC1Correct       = CRC32_C (split TaggedKey) == drop LIK
     (Tag#Issue#CRCWK) = TaggedKey
     TagCorrect        = Tag == (join "LoremIpsumKey")
-    WK                = take CRCWK
+    WK                = take CRCWK : [192]
     CRC2Correct       = CRC32_C (split WK) == drop CRCWK
-    (FAIL, k)         = KWAD128 KEK WK
+    (FAIL, k)         = TestKWAD KEK WK
     pt                = Salsa20Encrypt (split k) (zero#(split`{3} Issue)) ct

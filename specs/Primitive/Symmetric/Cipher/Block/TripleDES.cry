@@ -12,6 +12,12 @@ blockEncrypt (k1,k2,k3,data) = result where
     ex     = DES.encrypt k1 data
     dx     = DES.decrypt k2 ex
     result = DES.encrypt k3 dx
+    
+blockDecrypt : ([64],[64],[64],[64]) -> [64]
+blockDecrypt (k1,k2,k3,result) = data where
+    dx     = DES.decrypt k3 result
+    ex     = DES.encrypt k2 dx
+    data   = DES.decrypt k1 ex
 
 // Test vectors from NIST 800-67
 
