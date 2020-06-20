@@ -1,7 +1,9 @@
 ```
-import cipher1
-import keylog
-import cipher2
+module labs::ProjectEuler::ProjectEulerAnswers where
+
+import labs::ProjectEuler::cipher1
+import labs::ProjectEuler::keylog
+import labs::ProjectEuler::cipher2
 ```
 
 ### [Problem 9](https://projecteuler.net/problem=9)
@@ -10,7 +12,7 @@ import cipher2
 > 
 > For example, 3^2 + 4^2 = 9 + 16 = 25 = 5^2.  There exists exactly one Pythagorean triplet for which a + b + c = 1000.  Find this triple.
 
-```haskell
+```
 pythagoreantriple : Integer -> Integer -> Integer -> Bit
 property pythagoreantriple a b c =
     a^^2 + b^^2 == c^^2 /\
@@ -30,7 +32,7 @@ property pythagoreantriple a b c =
 >
 > Hints: the factorial function is usually defined recursively, but that tends to make SAT solving difficult.  Since you only need to calculate the factorial of the numbers 0-9, make your factorial function do a case by case calculation.  To get the digital representation of the number, create a function which takes in a number and a list of numbers and returns true exactly when the list is the base 10 representation.  Finally, it can be shown that the most number of digits a factorion can have is 6.
 
-```haskell
+```
 factorial :
     {b}
     (Arith b, Cmp b, Literal 362880 b) =>
@@ -100,7 +102,8 @@ property factorionprop n l =
     basetenrep n l       /\
     sumfactorial l == n
 ```
-```shell
+
+```sh
 Main> :sat factorionprop`{1, Integer}
 factorionprop`{1, Integer} 2 [2] = True
 (Total Elapsed Time: 0.046s, using Z3)
@@ -139,7 +142,7 @@ Unsatisfiable
 >
 > (Please note that the palindromic number, in either base, may not include leading zeros.)
 
-```haskell
+```
 carrymult :
     {a}
     (fin a) =>
@@ -169,7 +172,7 @@ property doublepalindrome x l =
       nocarryprods = [ carrymult i p | i <- l | p <- powersoften ] == 0
 ```
 
-```shell
+```sh
 Main> :sat doublepalindrome`{3,10}
 doublepalindrome`{3, 10} 585 [5, 8, 5] = True
 (Total Elapsed Time: 0.062s, using Z3)
@@ -199,7 +202,7 @@ doublepalindrome`{3, 9} 313 [3, 1, 3] = True
 >
 > Find at least two 0 to 9 pandigital numbers with this property.  
 
-```haskell
+```
 listhasdigit :
     {a, b}
     (fin a, a >=1, Cmp b) =>
@@ -234,7 +237,7 @@ pandigital n l =
       n890 = formnumber (l @@ ([7,8,9] : [3][16]))
 ```
 
-```shell
+```sh
 Main> :sat pandigital 
 pandigital 4130952867 [4, 1, 3, 0, 9, 5, 2, 8, 6, 7] = True
 (Total Elapsed Time: 1.001s, using Z3)
@@ -250,7 +253,7 @@ Main> :sat (\(x, l) -> pandigital x l /\ x != 4130952867)
 >
 > Find the smallest positive integer, x, such that 2x, 3x, 4x, 5x, and 6x, contain the same digits.
 
-```haskell
+```
 twolistssamedigits :
     {a, b}
     (fin a, a >=1, Cmp b) =>
@@ -276,7 +279,7 @@ property productdigits n ls =
      	      	| li <- tls
 		| i <- [2..6] ] == ~0
 ```
-```shell
+```sh
 Main> :sat productdigits`{6, [32]}
 productdigits`{6, [32]}
   142857
@@ -299,7 +302,7 @@ productdigits`{6, [32]}
 >
 > Note: cipher1.cry contains a different cipher encrypted under a different key from the original.  The original Project Euler problem can be found in cipher2.cry.
 
-```haskell
+```
 containsWords :
     {a, b}
     (fin a, a >= 2, fin b) =>
@@ -340,7 +343,8 @@ decrypt s key = s ^ (take ks)
      ks = join keys
      keys = [ key ] # [ k | k <- keys ]
 ```
-```shell
+
+```sh
 Main> :sat (XORtowords cipher1)
 (XORtowords cipher1) "abe" = True
 (Total Elapsed Time: 3.711s, using Z3)
@@ -356,7 +360,7 @@ Main> decrypt cipher1 "abe"
 >
 > Given that the three characters are always asked for in order, analyse the file so as to determine the shortest possible secret passcode of >unknown length.
 
-```haskell
+```
 passcode :
     {a}
     (fin a, a >= 1) =>
@@ -370,7 +374,8 @@ passcode l = [ loop l kl != 0 | kl <- keylog ] == ~0
 	     	     j <- [0..a-1],
 	   	     k <- [0..a-1] ]
 ```
-```shell
+
+```sh
 Main> :sat passcode`{1}
 Unsatisfiable
 (Total Elapsed Time: 0.033s, using Z3)
@@ -395,6 +400,7 @@ Main> :sat passcode`{8}
 passcode`{8} [7, 3, 1, 6, 2, 8, 9, 0] = True
 (Total Elapsed Time: 5.667s, using Z3)
 ```
+
 ### Project Sean
 Sean Weaver (Super Genius ala Wile E Coyote) has a problem in a similar vein:
 
@@ -403,13 +409,13 @@ Sean Weaver (Super Genius ala Wile E Coyote) has a problem in a similar vein:
 > EXTRA CHALLENGE:
 > What about five-digit numbers? Other numbers of digits?
 
-```shell
+```sh
 Main> :sat (\(x : [32]) -> (x*x)%10000 == x /\ x > 999 )
 (\(x : [32]) -> (x * x) % 10000 == x /\ x > 999) 0x000024a0 = True
 (Total Elapsed Time: 0.195s, using Z3)
 ```
 
-```haskell
+```
 squaredrop :
     {a}
     (fin a, a>=2, a%2 == 0) =>
@@ -418,7 +424,8 @@ squaredrop n l =
     (basetenrep (n*n) l) /\
     formnumber (drop`{back = ((a)/2)} l) == n
 ```
-```shell
+
+```sh
 Main> :sat squaredrop`{a=8} 
 squaredrop`{a = 8} 9376 [8, 7, 9, 0, 9, 3, 7, 6] = True
 (Total Elapsed Time: 21.782s, using Z3)

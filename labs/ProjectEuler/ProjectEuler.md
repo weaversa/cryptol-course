@@ -1,8 +1,16 @@
+```
+module labs::ProjectEuler::ProjectEuler where
+
+import labs::ProjectEuler::cipher1
+import labs::ProjectEuler::keylog
+import labs::ProjectEuler::cipher2
+```
+
 # Properties in Cryptol, or How I Learned to Stop Worrying and Love SAT Solvers
 
 You have learned in the other labs that you can use Cryptol to find answers to problems you coded using the `:sat` command.  As a refresher, let's look at a simple example.  Suppose we want to find the integer that is one less than 1001 (as we said, it's very simple).  We do this by creating a function and a `property`:
 
-```haskell
+```
 inc : Integer -> Integer
 inc x = x + 1
 
@@ -11,14 +19,14 @@ property inc1001 x = inc x == 1001
 ```
 
 Now that we have our function and a property about our function, we can load it into Cryptol and find an answer!  You should get a response like this:
-```shell
+```sh
 Main> :sat inc1001 
 inc1001 1000 = True
 (Total Elapsed Time: 0.039s, using Z3)
 ```
 Let's do a more complicated example: use Cryptol to factor 3,000,013.
 
-```haskell
+```
 factor3000013 : Integer -> Integer -> Bit
 factor3000013 x y =
     x * y == 3000013 /\
@@ -26,7 +34,7 @@ factor3000013 x y =
     y > 1
 ```
 Note that if we don't include the `x > 1 /\ y > 1` clauses we get a trivial factorization.  Now we can use SAT to factor our number:
-```shell
+```sh
 Main> :sat mult3000013 
 mult3000013 773 3881 = True
 (Total Elapsed Time: 0.684s, using Z3)
