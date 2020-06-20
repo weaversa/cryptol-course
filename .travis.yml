@@ -53,7 +53,8 @@ script:
   - cryptol -e -c ":m labs::CRC::CRC"
   - cryptol -e -c ":m labs::CRC::CRCAnswers"
 # LorumIpsum tests
-  - cryptol -e -c ":m labs::LorumIpsum::secret_message" -c "nonsecret_message"
+  - cryptol -e -c ":m labs::LorumIpsum::LorumIpsum.md"
+  - cryptol -e -c ":m labs::LorumIpsum::KLI20"
 # Demo lab tests
   - cryptol -e -c ":m labs::Demos::Caesar"
   - cryptol -e -c ":m labs::Demos::OneTimePad"
