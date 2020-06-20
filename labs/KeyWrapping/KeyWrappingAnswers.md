@@ -241,9 +241,9 @@ WStep:
     ([128] -> [128]) -> [n][64] -> [64] -> [n][64]
 WStep CIPHk ([A] # Rs) t = [A'] # Rs'
   where
-    [MSB, LSB] = zero : [2][64]
-    A'         = zero
-    Rs'        = zero
+    [MSB, LSB] = split (CIPHk (A # head Rs))
+    A'         = MSB ^ t
+    Rs'        = tail Rs # [LSB]
 ```
 
 *Note:* Pattern matching (a kind of shorthand) is used for one of the
@@ -316,9 +316,9 @@ W :
     ([128] -> [128]) -> [n][64] -> [n][64]
 W CIPHk S = C
   where
-    type s = 0
-    ts     = zero : [s][64]
-    C      = zero
+    type s = 6*(n-1)
+    ts     = [ 1 .. s ]
+    C      = foldl (WStep CIPHk) S ts
 ```
 
 With `W` in hand there it isn't much more work to complete the `KW-AE`
@@ -337,8 +337,8 @@ KWAE :
     ([128] -> [128]) -> [n][64] -> [n+1][64]
 KWAE CIPHk P = C
   where
-    S = zero : [n+1][64]
-    C = zero
+    S = [ICV1] # P
+    C = W CIPHk S
 ```
 
 At this point you can check your work against six test vectors given
@@ -378,9 +378,9 @@ WStep' :
     ([128] -> [128]) -> [n][64] -> [64] -> [n][64]
 WStep' CIPHk' ([A] # Rs) t = [A'] # Rs'
   where
-    [MSB, LSB] = zero : [2][64]
-    A'         = zero
-    Rs'        = zero
+    [MSB, LSB] = split (CIPHk' ((A ^ t) # last Rs))
+    A'         = MSB
+    Rs'        = [LSB] # take Rs
 
 W' :
     {n}
@@ -388,9 +388,9 @@ W' :
     ([128] -> [128]) -> [n][64] -> [n][64]
 W' CIPHk' C = S
   where
-    type s = 0
-    ts     = zero : [s][64]
-    S      = zero
+    type s = 6*(n-1)
+    ts     = [ s, s-1 .. 1 ]
+    S      = foldl (WStep' CIPHk') C ts
 ```
 
 Once you have these completed you should be able to check your work by
@@ -443,9 +443,9 @@ KWAD :
     ([128] -> [128]) -> [n+1][64] -> (Bit, [n][64])
 KWAD CIPHk' C = (FAIL, P)
   where
-    S = zero : [n+1][64]
-    FAIL = False
-    P = zero
+    S = W' CIPHk' C
+    FAIL = head S != ICV1
+    P = tail S
 ```
 
 When you have successfully defined this function, you can test your
@@ -617,7 +617,7 @@ KWPAEPad :
     , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S
     ) =>
     [k][8] -> [l]
-KWPAEPad P = zero
+KWPAEPad P = ICV2 # (`k : [32]) # (join P) # zero
 ```
 
 ## Concept 2: Oddly Typed `if-then-else` Statements
@@ -775,11 +775,11 @@ KWPAE :
     ([128] -> [128]) -> [k][8] -> [l]
 KWPAE CIPHk P = C
   where
-    S = zero : [l]
+    S = KWPAEPad P
     C = if (`k : [32]) <= 8 then
-          zero : [l]
+          widen (CIPHk (shrink S))
         else
-          zero : [l]
+          shrink (join (W`{n} CIPHk (split (widen S))))
 ```
 
 Feel free to use the provided `KWPAETests` property to check your
@@ -806,12 +806,10 @@ KWPADUnpad :
     [l] -> (Bit, [k][8])
 KWPADUnpad S = (FAIL, split P)
   where
-    FAIL = False
-    MSB32 : [32]
-    k : [32]
-    P : [k*8]
-    PAD : [k*8 %^ 64]
-    MSB32 # k # P # PAD = zero
+    FAIL = MSB32 != ICV2
+        \/ k != (`k : [32])
+        \/ PAD != (0 : [(k*8) %^ 64])
+    MSB32 # k # P # PAD = S
 ```
 
 ```
@@ -825,11 +823,11 @@ KWPAD :
     ([128] -> [128]) -> [l] -> (Bit, [k][8])
 KWPAD CIPHk' C = (FAIL, P)
   where
-    (FAIL, P) = zero
+    (FAIL, P) = KWPADUnpad S
     S = if (`k : [32]) <= 8 then
-          zero : [l]
+          widen (CIPHk' (shrink C))
         else
-	  zero : [l]
+          shrink (join (W'`{n} CIPHk' (split (widen C))))
 ```
 
 Feel free to use the provided `KWPADTests` property to check your
