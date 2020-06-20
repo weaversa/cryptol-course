@@ -25,36 +25,38 @@ To start, we'll analyze the DES (Data Encryption Standard) algorithm. Let's take
 First, we import it.
 
 ```
-import specs::DES
+import specs::Primitive::Symmetric::Cipher::Block::DES
 ```
 
 Now, from the command line, load this module.
 
-```bash
+```sh
 Cryptol> :m labs::CryptoProofs::CryptoProofs
+Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
+Loading module specs::Primitive::Symmetric::Cipher::Block::DES
 Loading module labs::CryptoProofs::CryptoProofs
 ```
 
 First, we'll take a look at the type of the DES encryption function.
 
-```bash
+```sh
 labs::CryptoProofs::CryptoProofsAnswers> :t DES.encrypt
 DES.encrypt : [64] -> [64] -> [64]
 ```
 
 DES takes two 64-bit values and returns a 64-bit value. (The key comes first and then the plaintext.) Let's encrypt something with DES.
 
-```bash
+```sh
 labs::CryptoProofs::CryptoProofs> DES.encrypt 0x752979387592cb70 0x1122334455667788
 0xb5219ee81aa7499d
 ```
 
- Now decrypt:
+Now decrypt:
 
- ```bash
- labs::CryptoProofs::CryptoProofs> DES.decrypt 0x752979387592cb70 0xb5219ee81aa7499d
- 0x1122334455667788
- ```
+```sh
+labs::CryptoProofs::CryptoProofs> DES.decrypt 0x752979387592cb70 0xb5219ee81aa7499d
+0x1122334455667788
+```
 
 Now that we have DES working, let's analyze it!
 
@@ -94,7 +96,7 @@ square x = x * x
 
 Now we can reverse it from the REPL. Let's use the solver to find a square root using only a squaring function!
 
-```bash
+```sh
 labs::CryptoProofs::CryptoProofs> :sat \x -> square x == 1764
 (\x -> square x == 1764) 42 = True
 (Total Elapsed Time: 0.021s, using "Z3")
@@ -119,14 +121,14 @@ known_ct = 0xf2930290ea4db580
 
 Note: For whatever reason, the default Z3 solver has trouble with this one. Try one of the other solvers, such as yices:
 
-```bash
+```sh
 labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
 ```
 
 Or use all the installed solvers in a first-to-the-post race.
 *Caution! May exhaust system resources.*
 
-```bash
+```sh
 labs::CryptoProofs::CryptoProofsAnswers> :s prover=any
 ```
 
@@ -158,7 +160,7 @@ g x = (x - 2) / 3
 
 We want to prove that function `g` inverts function `f`; that is, applying `g` to the result of `f x` gets `x` back. Here's the invocation:
 
-```bash
+```sh
 labs::CryptoProofs::CryptoProofsAnswers> :prove \x -> g (f x) == x
 Q.E.D.
 (Total Elapsed Time: 0.023s, using "Z3")
@@ -194,7 +196,7 @@ In cryptography, a *collision* occurs when two different inputs produce the same
 
 Use the solver to find two different keys and a plaintext such that both keys encrypt that plaintext to the same ciphertext.
 
-```bash
+```sh
 labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
 labs::CryptoProofs::CryptoProofsAnswers> :sat \k1 k2 pt  -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2 pt
 (\k1 k2 pt -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2 pt)
