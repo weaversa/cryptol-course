@@ -65,3 +65,6 @@ script:
 # Crypto Proofs lab tests
   - cryptol -e -c ":m labs::CryptoProofs::CryptoProofs"
   - cryptol -e -c ":m labs::CryptoProofs::CryptoProofsAnswers"
+# Key Wrapping lab tests
+  - cryptol -e -c ":m labs::KeyWrapping::KeyWrapping"
+  - cryptol -e -c ":m labs::KeyWrapping::KeyWrappingAnswers"
