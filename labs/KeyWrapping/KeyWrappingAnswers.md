@@ -892,7 +892,7 @@ number of semiblocks of `C` should be `2^^29`.
 Asking Cryptol for the type of `KWPAE` after plugging in `2^^32-1` for
 `k` gives an `l` of `34359738432`:
 
-```
+```sh
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1}
 KWPAE`{k = 2 ^^ 32 -
            1} : ([128] -> [128]) -> [4294967295][8] -> [34359738432]
@@ -901,14 +901,14 @@ KWPAE`{k = 2 ^^ 32 -
 Well, what's `34359738432`? Is it `2^^29` 64-bit words? Let's first
 check how many 64-bit words it is. Here's one way:
 
-```
+```sh
 labs::KeyWrapping::KeyWrappingAnswers> :t \(a : [34359738432]) -> groupBy`{64} a
 (\(a : [34359738432]) -> groupBy`{64} a) : [34359738432] -> [536870913][64]
 ```
 
 Great...now what's `536870913`? Is it `2^^29`?
 
-```
+```sh
 labs::KeyWrapping::KeyWrappingAnswers> 2^^29 : Integer
 536870912
 ```
@@ -916,7 +916,7 @@ labs::KeyWrapping::KeyWrappingAnswers> 2^^29 : Integer
 Woh! Its not. `536870913` is `2^^29 + 1`. Let's double check this ---
 here is a command that tests the `2^^29` upper bound from Table 1:
 
-```
+```sh
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29)}
 
 [error] at <interactive>:1:1--1:6:
@@ -925,7 +925,7 @@ labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29)
 
 And here is a command that tests the bound we just found, `2^^29 + 1`.
 
-```
+```sh
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29 + 1)}
 KWPAE`{k = 2 ^^ 32 - 1,
        l = 64 *
@@ -933,8 +933,9 @@ KWPAE`{k = 2 ^^ 32 - 1,
             1)} : ([128] -> [128]) -> [4294967295][8] -> [34359738432]
 ```
 
-Well folks, it seems that we just found a bug (albeit a small one) in
-one of NIST's most well read crypto specs. Thanks sticklers!
+Well folks, it appears we (...well, Cryptol) just found a bug (albeit
+a small one) in one of NIST's most well read crypto specs. Thanks
+sticklers!
 
 
 # Test Vectors
