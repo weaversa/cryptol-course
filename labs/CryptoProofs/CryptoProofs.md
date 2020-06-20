@@ -200,7 +200,7 @@ Use the solver to find two different keys and a plaintext such that both keys en
 
 The flipside of collision detection is proving an absence of collisions. That is, proving that every input generates a distinct output. A function with this property is referred to in mathematics as *injective* or *one-to-one*.
 
-**EXERCISE** 2.4.1
+**EXERCISE** 2.4.1 DES Injectivity
 
 Show that, for any given key, `DES.encrypt` is injective (collision-free) with respect to plaintext.
 
