@@ -800,7 +800,7 @@ previously defined `W'`.
 KWPADUnpad :
     {k, l}               // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
-    , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C
+    , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S
     ) =>
     [l] -> (Bit, [k][8])
 KWPADUnpad S = (FAIL, split P)

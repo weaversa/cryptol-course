@@ -842,7 +842,7 @@ previously defined `W'`.
 KWPADUnpad :
     {k, l}               // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
-    , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C
+    , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S
     ) =>
     [l] -> (Bit, [k][8])
 KWPADUnpad S = (FAIL, split P)
@@ -876,6 +876,65 @@ KWPAD CIPHk' C = (FAIL, P)
 
 Feel free to use the provided `KWPADTests` property to check your
 work.
+
+
+## But what the ciphertext limits?
+
+I'm sure the sticklers in the class noticed that we reused the same
+type constraints from `KWP-AE` which don't overtly mention the
+ciphertext bounds from Table 1, namely, that the length of `C` must be
+between `2` to `2^^29`, inclusively. Fortunately, those bounds
+_should_ be inferred by the plaintext bounds. And, now that you
+mention it, we can check! Table 1 tells us that, for `KWP`, if the
+number of octets of `P` is the upper limit of `2^^32-1`, that the
+number of semiblocks of `C` should be `2^^29`.
+
+Asking Cryptol for the type of `KWPAE` after plugging in `2^^32-1` for
+`k` gives an `l` of `34359738432`:
+
+```
+labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1}
+KWPAE`{k = 2 ^^ 32 -
+           1} : ([128] -> [128]) -> [4294967295][8] -> [34359738432]
+```
+
+Well, what's `34359738432`? Is it `2^^29` 64-bit words? Let's first
+check how many 64-bit words it is. Here's one way:
+
+```
+labs::KeyWrapping::KeyWrappingAnswers> :t \(a : [34359738432]) -> groupBy`{64} a
+(\(a : [34359738432]) -> groupBy`{64} a) : [34359738432] -> [536870913][64]
+```
+
+Great...now what's `536870913`? Is it `2^^29`?
+
+```
+labs::KeyWrapping::KeyWrappingAnswers> 2^^29 : Integer
+536870912
+```
+
+Woh! Its not. `536870913` is `2^^29 + 1`. Let's double check this ---
+here is a command that tests the `2^^29` upper bound from Table 1:
+
+```
+labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29)}
+
+[error] at <interactive>:1:1--1:6:
+  Unsolvable constraint: 34359738368 == 34359738432
+```
+
+And here is a command that tests the bound we just found, `2^^29 + 1`.
+
+```
+labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29 + 1)}
+KWPAE`{k = 2 ^^ 32 - 1,
+       l = 64 *
+           (2 ^^ 29 +
+            1)} : ([128] -> [128]) -> [4294967295][8] -> [34359738432]
+```
+
+Well folks, it seems that we just found a bug (albeit a small one) in
+one of NIST's most well read crypto specs. Thanks sticklers!
 
 
 # Test Vectors
