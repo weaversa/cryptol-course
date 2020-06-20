@@ -484,22 +484,18 @@ than hard-code 64), our work defining the TKW family of functions
 would already be done!
 
 One important difference in the TKW family is you will use the
-Triple-DES algorithm that's implemented in the `TDEA` module we imported
-earlier. You can check the type of `TDEA` in the interpreter via `:t
-TDEA::blockEncrypt`. This has a slightly different interface than the
-block cipher we used from the `AES` module earlier.
+Triple-DES algorithm that's implemented in the `TDEA` module we
+imported earlier. You can check the type of `TDEA` in the interpreter
+via `:t TDEA::blockEncrypt` and `:t TDEA::blockDecrypt`. This has a
+slightly different interface than the block cipher we used from the
+`AES` module earlier. You can view how we use it here by looking at
+`TestTKWAE` and `TestTKWAD`. It is worth taking a quick look through
+the `TripleDES.cry` to learn a little bit about a particularly famous
+NIST test vector.
 
-You can define a keyed `TDEA` instance as follows:
-
-```
-[K1, K2, K3] = [0x0123456789ABCDEF, 0x23456789ABCDEF01, 0x456789ABCDEF0123]
-TDEA_keyed = (\p -> TDEA::blockEncrypt (K1, K2, K3, p))
-```
-
-It is worth taking a quick look through the `TripleDES.cry` to learn a
-little bit about a particularly famous NIST test vector.
-
-Good luck!
+You can test your work with the `KWAETests` and `KWADTests`
+properties. Though, if you want to use them, you'll have to uncomment
+them after finishing your work here. Good luck!
 
 ```
 TWStep:
@@ -521,7 +517,16 @@ TW CIPHk S = C
     type s = 6*(n-1)
     ts     = [ 1 .. s ]
     C      = foldl (TWStep CIPHk) S ts
-    
+
+TKWAE :
+    {n}
+    (fin n, 2 <= n, n < 2^^28) =>
+    ([64] -> [64]) -> [n][32] -> [n+1][32]
+TKWAE CIPHk P = C
+  where
+    S = [ICV3] # P
+    C = TW CIPHk S
+
 TWStep' :
     {n}
     (fin n, n >= 3) =>
@@ -541,6 +546,16 @@ TW' CIPHk' C = S
     type s = 6*(n-1)
     ts     = [ s, s-1 .. 1 ]
     S      = foldl (TWStep' CIPHk') C ts
+
+TKWAD :
+    {n}
+    (fin n, 2 <= n, n < 2^^28) =>
+    ([64] -> [64]) -> [n+1][32] -> (Bit, [n][32])
+TKWAD CIPHk' C = (FAIL, P)
+  where
+    S = TW' CIPHk' C
+    FAIL = head S != ICV3
+    P = tail S
 ```
 
 
@@ -1026,6 +1041,44 @@ property KWADTests =
                    0x3a6d614e94ba1ac5, 0xfe957c5963100091]))
 ```
 
+```
+TestTKWAE :
+   {n}
+   (n >= 2, 2^^28-1 >= n) =>
+   [192] -> [n*32] -> [(n+1)*32]
+TestTKWAE (k0#k1#k2) pt = join ct
+  where
+    ct = TKWAE (\p -> TDEA::blockEncrypt (k0, k1, k2, p)) (split pt)
+
+property TKWAETests =
+    (TestTKWAE 0x12b84c663120c196f8fc17428bc86a110d92cc7c4d3cb695
+               0xef7da3da918d0679
+            == 0x7a72bbca3aa323aa1ac231ba) /\
+    (TestTKWAE 0xee9e19d319e4669d46fafc47f266277788017de0e38a4eaf
+               0xd96075b0ee4525fe0bbe2abbd49d4d68e15a37c2bb11bd79a491e13ed3d32a48aef0d1fbcd9a65c7e0bf3cbba92366cb23b4b0876d509539df8f6dd8edb5eb9d8487ec42497b579b8a660a95455063bb7703ea6d57717c7d3625c86e3162c78b13068605e9e1c6ebed9d8f8b2b72784de432bb1ae596d4210538d4ca8577878ec42fa25694bd12a0a27423c62dd0e35a2781b8fecab7066871f4f4d506d41fceb63b669558c1df622259eaefd33bbd6af871798ca98d469a6c5a8bef284318b9692263b7c84c1d352bea16c3ee40b86061aa99d7e60013d618f579111f1e03685ede51b9fe7cde04416718db5f7d322a6f8547c354c8ee9a8f176de5f090e08e
+            == 0x61a9e9ec40462f6915179fef341b41cfcebe70f4539cc8babb6d6083905ead8f62f1e1cebf8045a7930812acd93227c09be10758dccd1afdb997931adeeb5e39749aaec607bc8c0346c0d864e65f61a4d7de4c3aea6cbcd9ff5c7664e705b441d8bce4b44ffbfb796a81e491eab7b817382ff87c8f6ce855ab80e234432ed7cf3d7bfddc15406d4b07fd0455c23669306634fccefb0cef69f693ec6c075912ec23342116d28453f7e1d2df05585d9a03e6e8ed3b8e2e0a95394b19779e26f845245c0806f7f619c618889caa9167f8908c0325923a1118cdd2c0a48b8b2b224c5faec7beb7d6a7d54e4212783f01661fb570ab1aa2589a6e922c9c3accc308b8088b601e)
+```
+
+```
+TestTKWAD :
+   {n}
+   (n >= 2, 2^^28-1 >= n) =>
+   [192] -> [(n+1)*32] -> (Bit, [n*32])
+TestTKWAD (k0#k1#k2) pt = (FAIL, join ct)
+  where
+    (FAIL, ct) = TKWAD (\p -> TDEA::blockDecrypt (k0, k1, k2, p)) (split pt)
+
+property TKWADTests =
+    (TestTKWAD 0xe273cd9d7210a973b4113c5772474938d353b54e265dd944
+               0x10a38310b604b48f94357d67
+            == (False, 0x2ffd56320f1dff99)) /\
+    ((TestTKWAD 0x8476d056582e322d93ab9919086798ba48d03eddf77803e5
+               0x2c9bf0131cf486402422b8ef).0
+            == True) /\
+    (TestTKWAD 0xee9e19d319e4669d46fafc47f266277788017de0e38a4eaf
+               0x61a9e9ec40462f6915179fef341b41cfcebe70f4539cc8babb6d6083905ead8f62f1e1cebf8045a7930812acd93227c09be10758dccd1afdb997931adeeb5e39749aaec607bc8c0346c0d864e65f61a4d7de4c3aea6cbcd9ff5c7664e705b441d8bce4b44ffbfb796a81e491eab7b817382ff87c8f6ce855ab80e234432ed7cf3d7bfddc15406d4b07fd0455c23669306634fccefb0cef69f693ec6c075912ec23342116d28453f7e1d2df05585d9a03e6e8ed3b8e2e0a95394b19779e26f845245c0806f7f619c618889caa9167f8908c0325923a1118cdd2c0a48b8b2b224c5faec7beb7d6a7d54e4212783f01661fb570ab1aa2589a6e922c9c3accc308b8088b601e
+            == (False, 0xd96075b0ee4525fe0bbe2abbd49d4d68e15a37c2bb11bd79a491e13ed3d32a48aef0d1fbcd9a65c7e0bf3cbba92366cb23b4b0876d509539df8f6dd8edb5eb9d8487ec42497b579b8a660a95455063bb7703ea6d57717c7d3625c86e3162c78b13068605e9e1c6ebed9d8f8b2b72784de432bb1ae596d4210538d4ca8577878ec42fa25694bd12a0a27423c62dd0e35a2781b8fecab7066871f4f4d506d41fceb63b669558c1df622259eaefd33bbd6af871798ca98d469a6c5a8bef284318b9692263b7c84c1d352bea16c3ee40b86061aa99d7e60013d618f579111f1e03685ede51b9fe7cde04416718db5f7d322a6f8547c354c8ee9a8f176de5f090e08e))
+```
 
 ```
 TestKWPAE :
