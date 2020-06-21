@@ -22,9 +22,9 @@ admittedly, we're a little light on SAW material right now.
    here.
 5. [Demos](labs/Demos/Demos.md): Lightweight walkthroughs with no
    exercises that demonstrate common concepts.
-6. [Cyclic Redundancy Checks](labs/CRC/CRC.md): Create your second
+6. [Cyclic Redundancy Checks](labs/CRC/CRC.md): Create your first
    specification!
-7. [Salsa20](labs/Salsa20/Salsa20.md): Create your first
+7. [Salsa20](labs/Salsa20/Salsa20.md): Create your second
    specification!
 8. [Salsa20 Properties](labs/Salsa20/Salsa20Props.md): Learn how to
    prove some properties about your Salsa20 specification.
