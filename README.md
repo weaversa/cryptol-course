@@ -37,7 +37,7 @@ admittedly, we're a little light on SAW material right now.
       complicated computational puzzles.
 10. [Methods for Key Wrapping](labs/KeyWrapping/KeyWrapping.md):
    Create a Cryptol specification of NIST's [SP800-38F key wrap
-   standard]((https://csrc.nist.gov/publications/detail/sp/800-38f/final)).
+   standard](https://csrc.nist.gov/publications/detail/sp/800-38f/final).
 11. [Capstone: Putting it all
    together](labs/LorumIpsum/LorumIpsum.md): Decrypt a series of
    secret messages by feeding wrapping keys into the anomalus KLI20
