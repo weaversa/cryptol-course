@@ -31,8 +31,15 @@ unit. The KLI20 uses a mix of [CRC](../CRC/CRC.md),
 [KW-AE](../KeyWrapping/KeyWrapping.md), and
 [Salsa20](../Salsa20/Salsa20.md) to encrypt and decrypt messages.
 
+> Here we define the module name and import required modules.
+
 ```
-module labs::LorumIpsum::LorumIpsum where
+module labs::LorumIpsum::LorumIpsumAnswers where
+
+import labs::CRC::CRCAnswers
+import labs::KeyWrapping::KeyWrappingAnswers
+import labs::Salsa20::Salsa20Answers
+import labs::LorumIpsum::KLI20
 ```
 
 ## Abstract
@@ -211,6 +218,7 @@ polynomial is given as,
 x^32 + x^28 + x^27 + x^26 + x^25 + x^23 + x^22 + x^20 + x^19 + x^18 +
 x^14 + x^13 + x^11 + x^10 + x^9 + x^8 + x^6 + 1
 
+> We've already defined `CRC32_C` in the CRC lab.
 
 # Computational Requirements
 
@@ -260,6 +268,12 @@ k = [0x0011223344556677, 0x8899AABBCCDDEEFF]
 
 KW-AE 128 (KEK, k) = [0x1fa68b0a8112b447, 0xaef34bd8fb5a7b82, 0x9d3e862371d2cfe5]
 
+> We've already defined `KWAE` in the KeyWrapping lab. Let's test it.
+
+```sh
+labs::LorumIpsum::LorumIpsumAnswers> split`{3} (TestKWAE (join [0x0001020304050607, 0x08090A0B0C0D0E0F]) (join [0x0011223344556677, 0x8899AABBCCDDEEFF]))
+[0x1fa68b0a8112b447, 0xaef34bd8fb5a7b82, 0x9d3e862371d2cfe5]
+```
 
 # Providing Notice of Expected Changes
 
@@ -331,6 +345,26 @@ The 13-character constant ASCII string "LorumIpsumKey" followed by a
 given 3-ASCII-digit key issue number will be prepended to the 192-bit
 wrapped key after the first CRC-32c has been applied.
 
+> Like most key specs, this is _mostly_ clear after thinking hard
+  about what it says and looking at Figure 1.
+
+```
+tag : [3][8] -> [224] -> [352]
+tag Issue x = join "LoremIpsumKey" # (join Issue) # x
+```
+
+> Now that we have all the helper function (wrapping, tagging, and
+  CRC), we can look at Figure 1 and tie the whole thing together.
+
+```
+LorumIpsumKey : [128] -> [128] -> [3][8] -> [384]
+LorumIpsumKey KEK k Issue = CRCTK
+  where
+    WrappedKey = TestKWAE KEK k
+    CRCWK      = WrappedKey # (CRC32_C (split WrappedKey))
+    TaggedKey  = tag Issue CRCWK
+    CRCTK      = TaggedKey # (CRC32_C (split TaggedKey))
+```
 
 ### Valid Issue Numbers
 
@@ -342,6 +376,12 @@ the three issue numbers corresponding to the Pythagorean triplet for
 which a + b + c = 1000 (more info available
 [here](../projecteuler/projecteuler.md)). These numbers are scheduled
 to be issued in increasing order.
+
+> From a previous lab we have:
+
+```
+Issues = ["200", "375", "425"]
+```
 
 
 ### Security Considerations
@@ -391,6 +431,12 @@ TestKEK = 0x3d43108b5b243b90dda78f75736cc629
 secretKey = 0x569b79f606aba26f4263b7147ba3c5e0
 ```
 
+> We now create the LorumIpsumKeys
+
+```
+LorumIpsumTestKeys = map (LorumIpsumKey TestKEK secretKey) Issues
+```
+
 Then, feed the keys you create into the [KLI20](KLI20.cry) device
 (provided in this same repository) to decrypt the following secret
 messages:
@@ -402,3 +448,6 @@ secretMessageIssue1 = 0x7f0f165e95c728ab1d1c07aa3c12cc10d5a975394c37eb5870be8b54
 
 secretMessageIssue2 = 0x4ba6d9eb8489faed2223bd5e3bbf5bf313708c38b369b0fea673c76843cf5312252984b024c2f4263ef318dfbade320920558cb7e475c54811f955a612ab9e18128e1adb056e5775
 ```
+
+> We leave this exercise to the student. Don't forget to set `:s
+  ascii=on`.
