@@ -24,8 +24,26 @@ admittedly, we're a little light on `SAW` material right now.
 5. [Demos](labs/Demos/Demos.md)
    Lightweight walkthroughs with no exercises that demonstrate common
    concepts.
-5. [Salsa20](labs/Salsa20/Salsa20.md)
-   Pass an encrypted stream.
+7. [Cyclic Redundancy Checks](labs/CRC/CRC.md)
+   Create your first specification!
+6. [Salsa20](labs/Salsa20/Salsa20.md)
+   Create your second specification!
+6. [Salsa20 Properties](labs/Salsa20/Salsa20Props.md)
+   Learn how to prove some properties about your Salsa20 specification.
+8. [Prove Cryptographic Properties](labs/CryptoProofs/CryptoProofs.md)
+   Learn about common cryptographic properties and how to prove them
+   with Cryptol.
+    * [Project Euler](labs/ProjectEuler/ProjectEuler.md) If you
+      enjoyed the last lab, why not try you hand at using Cryptol's
+      connection to automated provers (SMT solvers) to solve some
+      complicated computational puzzles.
+10. [Methods for Key Wrapping](labs/KeyWrapping/KeyWrapping.md)
+   Create a Cryptol specification of NIST's `SP800-38F` key wrap
+   standard.
+11. [Capstone: Putting it all together](labs/LorumIpsum/LorumIpsum.md)
+   Decrypt a series of secret messages by feeding wrapping keys into
+   the _un_famous `KLI20` cryptographic engine. Success here requires
+   modules and concepts from many of the previous labs.
 
 
 ## Extra Labs and Demonstrations
@@ -34,12 +52,20 @@ Some labs or examples go beyond the scope of the course outline, but
 may prove interesting or useful for students with wider interests or
 different backgrounds. Here are some of them:
 
-1. Arithmetic Verifications -- Demonstrates using SAW to prove facts
-about various arithmetic implementations. Some simple reference
-examples are included as well as an illustration of a barrier one may
-experience using these techniques.
+1. [Arithmetic Verifications](saw/arithmetic-verification/README.md)
+   This lab demonstrates using SAW to prove facts about various
+   arithmetic implementations. Some simple reference examples are
+   included as well as an illustration of a barrier one may experience
+   using these techniques.
 
-# How To Take This Course
+2. [Bittwiddling](labs/saw/bittwiddling.md)
+   This lab contains a collection of famous, yet hard to understand
+   algorithms which perform relatively simple calculations. This is a
+   good introduction to how one can use Cryptol and SAW to prove that
+   an implementation matches it's specification.
+
+
+## How To Take This Course
 
 Many of the labs in this course will be taught using
 [literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
@@ -90,6 +116,7 @@ command; your output should look similar to the following:
 
 Don't worry -- the first lab walks you through [installing and running
 Cryptol](INSTALL.md).
+
 
 ## Supporting Materials
 
