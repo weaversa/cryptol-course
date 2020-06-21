@@ -60,8 +60,6 @@ factorial n = if n == 2 then      2 else
 	      if n == 9 then 362880 else
 	      1
 
-sum l = foldl (+) 0 l
-
 powersoften :
     {a}
     (Arith a, Literal 10 a) =>
