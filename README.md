@@ -5,7 +5,8 @@
 **Purpose:** The purpose of the course is to provide an overview of
 the capabilities of [Cryptol](https://github.com/GaloisInc/cryptol)
 and the [Software Analysis
-Workbench](https://github.com/GaloisInc/saw-script) (SAW).
+Workbench](https://github.com/GaloisInc/saw-script) (SAW). Though,
+admittedly, we're a little light on `SAW` material right now.
 
 Many of the labs in this course will be taught using
 [literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
