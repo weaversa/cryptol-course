@@ -40,9 +40,9 @@ admittedly, we're a little light on SAW material right now.
    standard.
 11. [Capstone: Putting it all
    together](labs/LorumIpsum/LorumIpsum.md): Decrypt a series of
-   secret messages by feeding wrapping keys into the _un_famous
-   `KLI20` cryptographic engine. Success here requires modules and
-   concepts from many of the previous labs.
+   secret messages by feeding wrapping keys into the anomalus `KLI20`
+   cryptographic engine. Success here requires modules and concepts
+   from many of the previous labs.
 
 
 ## Extra Labs and Demonstrations
