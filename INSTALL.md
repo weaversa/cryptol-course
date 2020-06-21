@@ -196,3 +196,81 @@ documentation provided in their respective repositories, found here:
 
 * Cryptol: https://github.com/GaloisInc/cryptol
 * SAW: https://github.com/GaloisInc/saw-script
+
+-----
+
+# Running Cryptol
+
+To load a literate document into Cryptol, change to your
+`cryptol-course` directory in a terminal (Linux) or command prompt
+(Windows), then run Cryptol via a locally installed binary or Docker
+image. We'll use the
+[labs/Demos/OneTimePad.md](labs/Demos/OneTimePad.md) as an example.
+
+### Linux
+
+```sh
+.../cryptol-course> cryptol labs/Demos/OneTimePad.md
+...
+
+Loading module Cryptol
+Loading module labs::Demos::OneTimePad
+labs::Demos::OneTimePad> 
+```
+
+Alternatively, you can use the `:m` or `:l` command from within 
+Cryptol to load this document. (To avoid errors, make sure Cryptol 
+was started in the `cryptol-course` directory). 
+
+```sh
+.../cryptol-course> cryptol
+...
+
+Loading module Cryptol
+Cryptol> :m labs::Demos::OneTimePad
+Loading module labs::Demos::OneTimePad
+labs::Demos::OneTimePad> 
+```
+
+### Windows
+
+```sh
+.../cryptol-course> cryptol labs/Demos/OneTimePad.md
+...
+
+Loading module Cryptol
+Loading module labs::Demos::OneTimePad
+labs::Demos::OneTimePad> 
+```
+
+Alternatively, you can use the `:m` or `:l` command from within 
+Cryptol to load this document. (To avoid errors, make sure Cryptol 
+was started in the `cryptol-course` directory). 
+
+```sh
+...\cryptol-course> cryptol
+...
+
+Loading module Cryptol
+Cryptol> :m labs::Demos::OneTimePad
+Loading module labs::Demos::OneTimePad
+labs::Demos::OneTimePad> 
+```
+
+### Docker (Linux)
+```sh
+.../cryptol-course> docker run --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
+Loading module Cryptol
+Cryptol> :m labs::Demos::OneTimePad
+Loading module labs::Demos::OneTimePad
+labs::Demos::OneTimePad> 
+```
+
+### Docker (Windows)
+```sh
+...\cryptol-course> docker run --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
+Loading module Cryptol
+Cryptol> :m labs::Demos::OneTimePad
+Loading module labs::Demos::OneTimePad
+labs::Demos::OneTimePad> 
+```
