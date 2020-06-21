@@ -1,3 +1,6 @@
+```
+module labs::LanguageBasics::LanguageBasics where
+```
 
 # Basic Use of the Cryptol Language
 
