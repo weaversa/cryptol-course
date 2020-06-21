@@ -37,8 +37,8 @@ language: c
 script: 
   - export CRYPTOLPATH=$(pwd)
 # Interpreter lab tests
-  - cryptol -e -c ":m labs::interpreter::test" -c ":s base=10" -c "x + 2"
-  - cryptol -e -b labs/interpreter/test.sry
+  - cryptol -e -c ":m labs::Interpreter::test" -c ":s base=10" -c "x + 2"
+  - cryptol -e -b labs/Interpreter/test.sry
 # Bittwiddling lab tests
   - cryptol -e -c ":l labs/saw/bittwiddling/bittwiddling.md"
   - clang -emit-llvm -c labs/saw/bittwiddling/bittwiddling.c -o labs/saw/bittwiddling/bittwiddling.bc

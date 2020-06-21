@@ -8,6 +8,39 @@ and the [Software Analysis
 Workbench](https://github.com/GaloisInc/saw-script) (SAW). Though,
 admittedly, we're a little light on `SAW` material right now.
 
+-----
+
+## Suggested Lab Order
+
+1. [Installation](labs/install.md)
+   Get up and running.
+2. [Cryptol and SAW Overview](labs/Overview/Overview.md)
+   Learn about how Cryptol and SAW are used.
+3. [Cryptol Interpreter](labs/Interpreter/Interpreter.md)
+   Learn how to use the Cryptol Interpreter.
+3. [Language Features](labs/LanguageLab/LanguageLab.md)
+   A resource for (most) of the language features you'll need to be
+   successful here.
+4. [Demos](labs/Demos/Demos.md)
+   Lightweight walkthroughs with no exercises that demonstrate common
+   concepts.
+5. [Salsa20](labs/Salsa20/Salsa20.md)
+   Pass an encrypted stream.
+
+
+## Extra Labs and Demonstrations
+
+Some labs or examples go beyond the scope of the course outline, but
+may prove interesting or useful for students with wider interests or
+different backgrounds. Here are some of them:
+
+1. Arithmetic Verifications -- Demonstrates using SAW to prove facts
+about various arithmetic implementations. Some simple reference
+examples are included as well as an illustration of a barrier one may
+experience using these techniques.
+
+# How To Take This Course
+
 Many of the labs in this course will be taught using
 [literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
 documents --- that is, they can be loaded directly into the Cryptol
@@ -57,33 +90,6 @@ command; your output should look similar to the following:
 
 Don't worry -- the first lab walks you through [installing and running
 Cryptol](INSTALL.md).
-
------
-
-## Suggested Lab Order
-
-1. [Installation](labs/install.md)
-   Get up and running.
-2. [Introduction](intro.md)
-   Learn about Cryptol and SAW.
-3. [Demos](labs/Demos/Demos.md)
-   Behold the possibilities.
-4. [Basics](labs/interpreter/interpreter.md)
-   Cut your teeth on the easy stuff.
-5. [Salsa20](labs/Salsa20/Salsa20.md)
-   Pass an encrypted stream.
-
-
-## Extra Labs and Demonstrations
-
-Some labs or examples go beyond the scope of the course outline, but
-may prove interesting or useful for students with wider interests or
-different backgrounds. Here are some of them:
-
-1. Arithmetic Verifications -- Demonstrates using SAW to prove facts
-about various arithmetic implementations. Some simple reference
-examples are included as well as an illustration of a barrier one may
-experience using these techniques.
 
 ## Supporting Materials
 
