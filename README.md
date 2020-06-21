@@ -22,12 +22,12 @@ admittedly, we're a little light on SAW material right now.
    here.
 5. [Demos](labs/Demos/Demos.md): Lightweight walkthroughs with no
    exercises that demonstrate common concepts.
-6. [Salsa20](labs/Salsa20/Salsa20.md): Create your first
+6. [Cyclic Redundancy Checks](labs/CRC/CRC.md): Create your second
    specification!
-7. [Salsa20 Properties](labs/Salsa20/Salsa20Props.md): Learn how to
+7. [Salsa20](labs/Salsa20/Salsa20.md): Create your first
+   specification!
+8. [Salsa20 Properties](labs/Salsa20/Salsa20Props.md): Learn how to
    prove some properties about your Salsa20 specification.
-8. [Cyclic Redundancy Checks](labs/CRC/CRC.md): Create your second
-   specification!
 9. [Prove Cryptographic
    Properties](labs/CryptoProofs/CryptoProofs.md): Learn about common
    cryptographic properties and how to prove them with Cryptol.
