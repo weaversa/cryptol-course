@@ -54,7 +54,7 @@ command; your output should look similar to the following:
  (Total Elapsed Time: 0.056s, using Z3)
 ```
 
-Don't worry -- we also walk you through [accessing and installing
+Don't worry -- the first lab walks you through [installing and running
 Cryptol](INSTALL.md).
 
 -----
