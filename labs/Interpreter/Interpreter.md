@@ -1,22 +1,10 @@
 # Using the Cryptol interpreter
 
-
-## Running the interpreter
-
-To use Cryptol, from the linux command line type `cryptol` to get
-this:
-
-```sh
-$ cryptol
-┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻  
-┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃  
-┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
-version 2.8.1 (e914cef)
-https://cryptol.net  :? for help
-
-Loading module Cryptol
-Cryptol>
-```
+The first thing you should do is start up the Cryptol
+interpreter. Instructions on installing and running the interpreter
+can be found in this repo's [INSTALL.md](../../INSTALL.md) file. Once
+you've got the interpreter started, follow along with this lab by
+entering the commands finf here into the interpreter.
 
 
 ## Interpreter State
