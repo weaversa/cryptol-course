@@ -59,3 +59,9 @@ script:
   - cryptol -e -c ":m labs::Demos::Sudoku"
 # Overview lab tests
   - cryptol -e -c ":m labs::Overview::Overview"
+# Project Euler lab tests
+  - cryptol -e -c ":m labs::ProjectEuler::ProjectEuler"
+  - cryptol -e -c ":m labs::ProjectEuler::ProjectEulerAnswers"
+# Crypto Proofs lab tests
+  - cryptol -e -c ":m labs::CryptoProofs::CryptoProofs"
+  - cryptol -e -c ":m labs::CryptoProofs::CryptoProofsAnswers"
