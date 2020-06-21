@@ -15,11 +15,11 @@ Cryptol> :set warnDefaulting = off
 
 ## Functions are often written in the [curried] (https://en.wikipedia.org/wiki/Currying) style:
 
-```haskell
+```
 gcd: Integer -> Integer -> Integer
 ```
 rather than:
-```haskell
+```
 gcd2: (Integer, Integer) -> Integer
 ```
 
@@ -49,7 +49,7 @@ These two styles are equivalent at some level. The former is slightly preffered 
 
 ### Examples
 
-```haskell
+```
 abs : Integer -> Integer
 abs n = if n >= 0 then n else -n
 
@@ -72,8 +72,7 @@ property abs_nonnegative x = abs x >= 0
 
 A little more involved example:
 
-```haskell
-gcd : Integer -> Integer -> Integer
+```
 gcd m n = gcd' (abs m) (abs n)
   where
     gcd': Integer -> Integer -> Integer
@@ -106,7 +105,7 @@ property gcd_common_divisor' x y = x % (gcd x y) == 0 /\ y % (gcd x y) == 0
 
 Let's patch up that property. (You surely noticed the prime in the property name which is a giveaway that something's amiss.)
 
-```haskell
+```
 gcd_common_divisor : Integer -> Integer -> Bit
 property gcd_common_divisor x y = if z == 0
                                   then True
@@ -167,7 +166,7 @@ Main> [n^^3 | n <- [0 .. 10]]
 
 ### Simple Block Encryption Example
 
-```haskell
+```
 keyexpand : [32] -> [10][32]
 keyexpand key = take roundkeys
   where
