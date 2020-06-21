@@ -18,10 +18,10 @@ admittedly, we're a little light on `SAW` material right now.
    Learn about how Cryptol and SAW are used.
 3. [Cryptol Interpreter](labs/Interpreter/Interpreter.md)
    Learn how to use the Cryptol Interpreter.
-3. [Language Features](labs/LanguageLab/LanguageLab.md)
+4. [Language Features](labs/LanguageLab/LanguageLab.md)
    A resource for (most) of the language features you'll need to be
    successful here.
-4. [Demos](labs/Demos/Demos.md)
+5. [Demos](labs/Demos/Demos.md)
    Lightweight walkthroughs with no exercises that demonstrate common
    concepts.
 5. [Salsa20](labs/Salsa20/Salsa20.md)

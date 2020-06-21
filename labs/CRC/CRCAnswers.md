@@ -2,7 +2,6 @@
 module labs::CRC::CRCAnswers where
 ```
 
-
 # Cyclic Redundancy Checks
 
 From [1],
