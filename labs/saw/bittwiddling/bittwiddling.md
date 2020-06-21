@@ -53,7 +53,7 @@ function works correctly.
 
 ```
 parity : {n} (fin n) => [n] -> Bit
-parity w = zero
+parity w = undefined
 ```
 
 ```
@@ -88,7 +88,7 @@ below to verify that your function works correctly.
 
 ```
 reverseByte : [8] -> [8]
-reverseByte b = zero
+reverseByte b = undefined
 ```
 
 ```
@@ -108,7 +108,7 @@ help you verify that your function works correctly.
 
 ```
 anyZeroByte : {n} (fin n) => [n*8] -> Bit
-anyZeroByte w = zero
+anyZeroByte w = undefined
 ```
 
 ```
