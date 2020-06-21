@@ -1,0 +1,47 @@
+abs : Integer -> Integer
+abs n = if n >= 0 then n else -n
+
+abs_nonnegative : Integer -> Bit
+property abs_nonnegative x = abs x >= 0
+
+
+
+gcd : Integer -> Integer -> Integer
+gcd m n = gcd' (abs m) (abs n)
+  where
+    gcd': Integer -> Integer -> Integer
+    gcd' x y = if y == 0 then x else gcd' y (x % y)
+    
+gcd_common_divisor' : Integer -> Integer -> Bit
+property gcd_common_divisor' x y = x % (gcd x y) == 0 /\ y % (gcd x y) == 0
+
+gcd_common_divisor : Integer -> Integer -> Bit
+property gcd_common_divisor x y = if z == 0
+                                  then True
+                                  else x % z == 0 /\ y % z == 0
+  where
+    z = gcd x y
+
+
+keyexpand : [32] -> [10][32]
+keyexpand key = take roundkeys
+  where
+    roundkeys = [key] # [roundkey <<< 1 | roundkey <- roundkeys]
+
+encrypt : [32] -> [32] -> [32]
+encrypt key plaintext = ciphertext
+  where
+    roundkeys = keyexpand key
+    rounds = [plaintext] # [ round ^ roundkey
+                           | round <- rounds
+                           | roundkey <- roundkeys
+                           ]
+    ciphertext = last rounds
+
+
+
+min': Integer -> Integer -> Integer
+min' n x = if n == 0 then 0 else x
+
+
+
