@@ -204,7 +204,7 @@ documentation provided in their respective repositories, found here:
 To load a literate document into Cryptol, change to your
 `cryptol-course` directory in a terminal (Linux) or command prompt
 (Windows), then run Cryptol via a locally installed binary or Docker
-image. We'll use the
+image. We'll use
 [labs/Demos/OneTimePad.md](labs/Demos/OneTimePad.md) as an example.
 
 ### Linux
