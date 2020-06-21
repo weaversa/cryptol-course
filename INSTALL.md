@@ -16,8 +16,12 @@ platform agnostic and easy to install and use.
 ## Option 1: Docker
 
 [Docker](https://www.docker.com) images are available for both
-[Cryptol](https://hub.docker.com/r/galoisinc/cryptol) and
-[SAW](https://hub.docker.com/r/galoisinc/saw). If Docker has been
+[Cryptol](https://hub.docker.com/repository/docker/cryptolcourse/cryptol)
+and
+[SAW](https://hub.docker.com/repository/docker/cryptolcourse/saw). Mind,
+Galois's own Cryptol and SAW docker containers. However, the ones we
+suggest here are suggested for this class because we have add with
+more theorem provers to the containers.  If Docker has been
 [installed](https://docs.docker.com/get-docker), it is easy to `pull`
 and `run` these images. *(Note that this docker approach may require
 `sudo` privileges. If so, and you don't have such privileges, follow
@@ -26,9 +30,9 @@ the steps in [Option 2](#option-2-homebrew) or [Option
 user-mode solutions.)*
 
 ```
-$ docker pull galoisinc/cryptol:2.8.0
+$ docker pull cryptolcourse/cryptol
 ...
-$ docker run -it galoisinc/cryptol:2.8.0
+$ docker run -it cryptolcourse/cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
@@ -42,9 +46,9 @@ Cryptol> :quit
 ```
 
 ```sh
-$ docker pull galoisinc/saw:0.5
+$ docker pull cryptolcourse/saw
 ...
-$ docker run -it galoisinc/saw:0.5
+$ docker run -it cryptolcourse/saw
  ┏━━━┓━━━┓━┓━┓━┓
  ┃ ━━┓ ╻ ┃ ┃ ┃ ┃
  ┣━━ ┃ ╻ ┃┓ ╻ ┏┛
@@ -76,7 +80,7 @@ Cryptol modules. This environment variable is used by both Cryptol and
 SAW. For example:
 
 ```sh
-$ docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it galoisinc/cryptol:2.8.0
+$ docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
