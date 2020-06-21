@@ -36,7 +36,7 @@ admittedly, we're a little light on SAW material right now.
       connection to automated provers (SMT solvers) to solve some
       complicated computational puzzles.
 10. [Methods for Key Wrapping](labs/KeyWrapping/KeyWrapping.md):
-   Create a Cryptol specification of NIST's `SP800-38F` key wrap
+   Create a Cryptol specification of NIST's SP800-38F key wrap
    standard.
 11. [Capstone: Putting it all
    together](labs/LorumIpsum/LorumIpsum.md): Decrypt a series of
