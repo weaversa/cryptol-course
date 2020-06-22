@@ -1,40 +1,25 @@
 digraph G {
 
-  // Preliminary Material
-  edge [color=red];
-  Readme -> Installation;
+  // The Suggested Flow with Red Arrows
   edge [color=red];
   Installation -> Overview;
-
-
-  // Intro Material
-  edge [color=red];
-  Overview -> LanguageBasics;
-  edge [color=red];
-  LanguageBasics->Demos;  
-  
-  // Can do these in any order, but probably CRC -> Salsa20 -> KeyWrapping
-  edge [color=red];
-  Demos -> CRC;
-  edge [color=black];
-  Demos -> Salsa20;
-  edge [color=black];
-  Demos -> KeyWrapping
-  edge [color=red];
+  Overview -> Interpreter;
+  Interpreter -> LanguageFeatures;  
+  LanguageFeatures -> Demos;
+  Demos -> CRC; 
   CRC -> Salsa20;
-  edge [color=red];
-  Salsa20 -> KeyWrapping;
-
-  // Salsa20Properties 
-  edge [color=black];
   Salsa20 -> Salsa20Properties;
-
-  // Everything comes back together in the Capstone
+  Salsa20Properties -> CryptographicProperties; 
+  CryptographicProperties -> KeyWrapping; 
+  KeyWrapping -> Capstone; 
+    
+  // Logical Dependencies with Black Arrows
   edge [color=black];
+  CryptographicProperties -> ProjectEuler;
   CRC -> Capstone;
-  edge [color=black];
-  Salsa20 -> Capstone;
-  edge [color=red];
-  KeyWrapping -> Capstone;
+  LanguageFeatures -> CRC;
+  LanguageFeatures -> Salsa20;
+  LanguageFeatures -> KeyWrapping;
+  Salsa20 -> Capstone; 
 }
 

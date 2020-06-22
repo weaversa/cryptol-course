@@ -44,6 +44,7 @@ admittedly, we're a little light on SAW material right now.
    cryptographic engine. Success here requires modules and concepts
    from many of the previous labs.
 
+![alt text](https://github.com/weaversa/cryptol-course/blob/flow-tweaks/misc/deps.png "Dependencies and Suggested Course Flow")
 
 ## Extra Labs and Demonstrations
 
