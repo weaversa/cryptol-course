@@ -202,15 +202,15 @@ algorithm to operate correctly, and according to the standard, we will
 have to make two more assumptions about `n`.
 
  * First, `n >= 3`, we can add this restriction to our type signature:
- * Second, `n <= 2^^54`, this comes directly limits imposed by Table 1
-   (Section 5.3.1, page 10). As an aside, if this constraint is left
-   off, Cryptol's type checker will point out that `64 >= width
-   (6*(n-1))` (which can be reexpressed as `6*(n-1) < 2^^64`). This
-   constraint comes from the fact that the value `t` (which iterates
-   over `[1..6*(n-1)]`) has to fit into a 64-bit word when passed to
-   `WStep`. Of course, `2^^54` is less than `6 * (2^^54 - 1)` which is
-   less than `2^^64`, so the tighter lower bound from Table 1 is
-   acceptable.
+ * Second, `n <= 2^^54`, this comes directly from the limits imposed
+   by Table 1 (Section 5.3.1, page 10). As an aside, if this
+   constraint is left off, Cryptol's type checker will point out that
+   `64 >= width (6*(n-1))` (which can be reexpressed as `6*(n-1) <
+   2^^64`). This constraint comes from the fact that the value `t`
+   (which iterates over `[1..6*(n-1)]`) has to fit into a 64-bit word
+   when passed to `WStep`. Of course, `2^^54` is less than `6 *
+   (2^^54 - 1)` which is less than `2^^64`, so the tighter lower bound
+   from Table 1 is acceptable.
  
 ```ignore
 W : 
@@ -674,7 +674,8 @@ KWPAEPad :
     , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S
     ) =>
     [k][8] -> [l]
-KWPAEPad P = ICV2 # (`k : [32]) # (join P) # zero
+KWPAEPad P = S
+  where S = ICV2 # (`k : [32]) # (join P) # zero
 ```
 
 ## Concept 2: Oddly Typed `if-then-else` Statements
@@ -893,7 +894,7 @@ Feel free to use the provided `KWPADTests` property to check your
 work.
 
 
-## But what the ciphertext limits?
+## But what about the ciphertext limits?
 
 I'm sure the sticklers in the class noticed that we reused the same
 type constraints from `KWP-AE` which don't overtly mention the
