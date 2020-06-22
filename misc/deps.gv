@@ -1,5 +1,15 @@
 digraph G {
+  rankdir="LR";
 
+  // Fixing up node labels for ones that need a space
+  LanguageFeatures        [label="Language\nFeatures"];
+  Salsa20Properties       [label="Salsa20\nProperties"];
+  CryptographicProperties [label="Cryptographic\nProperties"];
+  KeyWrapping             [label="Key Wrapping"];
+  ProjectEuler            [label="Project\nEuler"];
+  BitTwiddling            [label="Bit Twiddling"];
+  ArithmeticVerifications [label="Arithmetic\nVerifications"]
+  
   // The Suggested Flow with Red Arrows
   edge [color=red];
   Installation -> Overview;
@@ -20,6 +30,8 @@ digraph G {
   LanguageFeatures -> CRC;
   LanguageFeatures -> Salsa20;
   LanguageFeatures -> KeyWrapping;
-  Salsa20 -> Capstone; 
+  Salsa20 -> Capstone;
+  Overview -> BitTwiddling;
+  Overview -> ArithmeticVerifications;
 }
 
