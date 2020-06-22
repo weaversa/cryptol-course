@@ -190,7 +190,7 @@ which will contain the following components:
 
 Putting these together we have our preliminary type signature:
 
-```ignore
+```comment
 W_prelim : 
   {n} 
   (fin n) => 
@@ -212,7 +212,7 @@ have to make two more assumptions about `n`.
    (2^^54 - 1)` which is less than `2^^64`, so the tighter lower bound
    from Table 1 is acceptable.
  
-```ignore
+```comment
 W : 
   {n} 
   (fin n, 3 <= n, n <= 2^^54) =>
@@ -716,7 +716,7 @@ h : [64] -> [64]
 h x = x - 1
 ```
 
-```ignore
+```comment
 f : {a} (fin a, 32 <= a, a <= 64) => [a] -> [48]
 f x = if `a <= 0x30 then
           g x
