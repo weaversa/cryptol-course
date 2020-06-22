@@ -68,8 +68,8 @@ For the rest of the lab, we'll be looking at some of the types of questions you 
 |-|-|
 | Function reversal | `:sat \x -> f x == y` |
 | Proof of inversion | `:prove \x -> g (f x) == x` | 
-| Collision detection | `:sat \(x,y) -> f x == f y /\ x != y` |
-| Proof of injectivity | `:prove \(x,y) -> x != y ==> f x != f y
+| Collision detection | `:sat \x y -> f x == f y /\ x != y` |
+| Proof of injectivity | `:prove \x y -> x != y ==> f x != f y` |
 | Equivalence checking | `:prove \x -> f x == g x` |
 
 Each subsection below will explore one of these questions in-depth.
