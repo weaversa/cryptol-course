@@ -59,7 +59,7 @@ Some labs or examples go beyond the scope of the course outline, but
 may prove interesting or useful for students with wider interests or
 different backgrounds. Here are some of them:
 
-1. [Arithmetic Verifications](saw/ArithmeticVerifications/ArithmeticVerifications.md):
+1. [Arithmetic Verifications](labs/saw/ArithmeticVerifications/ArithmeticVerifications.md):
    This lab demonstrates using SAW to prove facts about various
    arithmetic implementations. Some simple reference examples are
    included as well as an illustration of a barrier one may experience
