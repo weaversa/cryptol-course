@@ -1,5 +1,14 @@
 # Salsa20 Security Properties
 
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+Cryptol document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter running
+in the `cryptol-course` directory with:
+
+```shell
+cryptol> :m labs::Salsa20::Salsa20Props
+```
+
 In this lab, we consider additional properties of the [Salsa20 stream
 cipher](Salsa20Spec.md) [5], which has undergone much scrutiny since
 being proposed for [eSTREAM, the ECRYPT Stream Cipher Project](https://www.ecrypt.eu.org/stream).
@@ -28,14 +37,14 @@ property for each that attempts to prove invertibility.
 ### rowround
 
 ```
-property rowroundIsInvertibleProp y y' = False
+property rowroundIsInvertibleProp y y' = undefined
 ```
 
 
 ### columnround
 
 ```
-property columnroundIsInvertibleProp x x' = False
+property columnroundIsInvertibleProp x x' = undefined
 ```
 
 
@@ -47,7 +56,7 @@ but please keep in mind that the solver is searching over a space of
 about `2^^1024` possibilities.
 
 ```
-property doubleroundIsInvertibleProp xs xs' = False
+property doubleroundIsInvertibleProp xs xs' = undefined
 ```
 
 
@@ -141,7 +150,7 @@ line with `doubleround`, `iterate`, and basic Cryptol operators.)
 ```
 /** `Salsa20Core` equivalent over `Words 16` */
 Salsa20Core' : Words 16 -> Words 16
-Salsa20Core' x = zero
+Salsa20Core' x = undefined
 ```
 
 **EXERCISE**: Verify that `Salsa20Core'` agrees with `Salsa20Core`:
@@ -150,7 +159,7 @@ Salsa20Core' x = zero
 property Salsa20CoreEquivProp w =
     Salsa20Core' (rejigger w) == rejigger (Salsa20Core w)
   where
-    rejigger x = zero
+    rejigger x = undefined
 ```
 
 Theorem 6 states that collisions should happen for any number of
@@ -165,9 +174,9 @@ Salsa20CoreCollidesProp : [32] -> Bit
 property Salsa20CoreCollidesProp Z =
     h == h'
   where
-    Z' = zero : [32]
-    M  = zero
-    M' = zero
+    Z' = undefined : [32]
+    M  = undefined
+    M' = undefined
     h  = Salsa20Core' M
     h' = Salsa20Core' M'
 ```
@@ -192,7 +201,7 @@ Salsa20EncryptInvolutionProp :
     {a, l}
     (a >= 1, 2 >= a, l <= 2^^70) =>
     Bytes (16*a) -> Bytes 8 -> Bytes l -> Bit
-Salsa20EncryptInvolutionProp k v m = zero
+Salsa20EncryptInvolutionProp k v m = undefined
 ```
 
 
@@ -211,22 +220,17 @@ property Salsa20EncryptInvolutionProp_2_128 = Salsa20EncryptInvolutionProp`{2,12
 
 # References
 
-[1] [The Salsa20 core]
-    (http://cr.yp.to/salsa20.html)
+[1] [The Salsa20 core](http://cr.yp.to/salsa20.html)
     D. Bernstein
 
-[2] [Response to "On the Salsa20 Core Function"]
-    (https://cr.yp.to/snuffle/reoncore-20080224.pdf)
+[2] [Response to "On the Salsa20 Core Function"](https://cr.yp.to/snuffle/reoncore-20080224.pdf)
     D. Bernstein
 
-[3] [On the Salsa20 Core Function]
-    (https://www.iacr.org/archive/fse2008/50860470/50860470.pdf)
+[3] [On the Salsa20 Core Function](https://www.iacr.org/archive/fse2008/50860470/50860470.pdf)
     J.C. Hernandez-Castro, et. al.
 
-[4] [Re-rolled Salsa20 function]
-    (https://groups.google.com/d/msg/sci.crypt/AkQnSoO40BA/o4eG96rjkgYJ)
+[4] [Re-rolled Salsa20 function](https://groups.google.com/d/msg/sci.crypt/AkQnSoO40BA/o4eG96rjkgYJ)
     P. Rubin, D. Wagner, et. al.
 
-[5] [Salsa20 specification]
-    (https://cr.yp.to/snuffle/spec.pdf)
+[5] [Salsa20 specification](https://cr.yp.to/snuffle/spec.pdf)
     D. Bernstein
