@@ -26,7 +26,7 @@ digraph G {
   Salsa20Properties [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Salsa20/Salsa20Properties.md"];
   CryptographicProperties [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/CryptographicProperties/CryptographicProperties.md"];
   KeyWrapping [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/KeyWrapping/KeyWrapping.md"];
-  Capstone [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Capstone/Capstone.md"];
+  Capstone [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/LoremIpsum/LoremIpsum.md"];
   ProjectEuler [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/ProjectEuler/ProjectEuler.md"];
   BitTwiddling [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/saw/bittwiddling/bittwiddling.md"];
   ArithmeticVerifications [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/saw/ArithmeticVerifications/ArithmeticVerifications.md"];
