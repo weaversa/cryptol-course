@@ -50,7 +50,7 @@ admittedly, we're a little light on SAW material right now.
 Our suggested flow would be to follow the red line. Dependencies are
 given by black lines.
 
-<img class="center" src="https://raw.githubusercontent.com/weaversa/cryptol-course/flow-tweaks/misc/deps.svg" alt="Dependencies and Suggested Course Flow">
+<img class="center" src="https://raw.githubusercontent.com/weaversa/cryptol-course/master/misc/deps.svg" alt="Dependencies and Suggested Course Flow">
 
 
 ## Extra Labs and Demonstrations
