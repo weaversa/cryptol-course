@@ -12,7 +12,7 @@ admittedly, we're a little light on SAW material right now.
 
 ## Suggested Lab Order
 
-1. [Installation](labs/install.md): Get up and running.
+1. [Installation](INSTALL.md): Get up and running.
 2. [Cryptol and SAW Overview](labs/Overview/Overview.md): Learn about
    how Cryptol and SAW are used.
 3. [Cryptol Interpreter](labs/Interpreter/Interpreter.md): Learn how
