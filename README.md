@@ -17,7 +17,7 @@ admittedly, we're a little light on SAW material right now.
    how Cryptol and SAW are used.
 3. [Cryptol Interpreter](labs/Interpreter/Interpreter.md): Learn how
    to use the Cryptol Interpreter.
-4. [Language Features](labs/LanguageLab/LanguageLab.md): A resource
+4. [Language Features](labs/LanguageBasics/LanguageBasics.md): A resource
    for (most) of the language features you'll need to be successful
    here.
     * [Demos](labs/Demos/Demos.md): Lightweight walkthroughs with no
@@ -59,13 +59,13 @@ Some labs or examples go beyond the scope of the course outline, but
 may prove interesting or useful for students with wider interests or
 different backgrounds. Here are some of them:
 
-1. [Arithmetic Verifications](saw/arithmetic-verification/README.md):
+1. [Arithmetic Verifications](saw/ArithmeticVerifications/ArithmeticVerifications.md):
    This lab demonstrates using SAW to prove facts about various
    arithmetic implementations. Some simple reference examples are
    included as well as an illustration of a barrier one may experience
    using these techniques.
 
-2. [Bittwiddling](labs/saw/bittwiddling.md): This lab contains a
+2. [Bit-twiddling](labs/saw/bittwiddling/bittwiddling.md): This lab contains a
    collection of famous, yet hard to understand algorithms which
    perform relatively simple calculations. This is a good introduction
    to how one can use Cryptol and SAW to prove that an implementation

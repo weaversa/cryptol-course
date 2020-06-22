@@ -12,19 +12,19 @@ digraph G {
     Installation;
     Overview;
     Interpreter;
-    LanguageFeatures;
+    LanguageBasics;
 //    Demos;
   }
 
   Installation [URL="https://github.com/weaversa/cryptol-course/blob/master/INSTALL.md"];
   Overview [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Overview/Overview.md"];
   Interpreter [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Interpreter/Interpreter.md"];
-  LanguageFeatures [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/LanguageFeatures/LanguageFeatures.md"];
+  LanguageBasics [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/LanguageBasics/LanguageBasics.md"];
   Demos [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Demos/Demos.md"];
   CRC [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/CRC/CRC.md"];
   Salsa20 [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Salsa20/Salsa20.md"];
-  Salsa20Properties [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Salsa20/Salsa20Properties.md"];
-  CryptographicProperties [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/CryptographicProperties/CryptographicProperties.md"];
+  Salsa20Properties [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Salsa20/Salsa20Props.md"];
+  CryptographicProperties [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/CryptoProofs/CryptoProofs.md"];
   KeyWrapping [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/KeyWrapping/KeyWrapping.md"];
   Capstone [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/LoremIpsum/LoremIpsum.md"];
   ProjectEuler [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/ProjectEuler/ProjectEuler.md"];
@@ -32,7 +32,7 @@ digraph G {
   ArithmeticVerifications [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/saw/ArithmeticVerifications/ArithmeticVerifications.md"];
 
   // Fixing up node labels for ones that need a space
-  LanguageFeatures        [label="Language\nFeatures"];
+  LanguageBasics        [label="Language\nBasics"];
   Salsa20Properties       [label="Salsa20\nProperties"];
   CryptographicProperties [label="Cryptographic\nProperties"];
   KeyWrapping             [label="Key Wrapping"];
@@ -44,8 +44,8 @@ digraph G {
   edge [color=red];
   Installation -> Overview;
   Overview -> Interpreter;
-  Interpreter -> LanguageFeatures;  
-  LanguageFeatures -> CRC;
+  Interpreter -> LanguageBasics;  
+  LanguageBasics -> CRC;
   CRC -> Salsa20;
   Salsa20 -> Salsa20Properties;
   Salsa20Properties -> CryptographicProperties; 
@@ -56,12 +56,12 @@ digraph G {
   edge [color=black];
   CryptographicProperties -> ProjectEuler;
   CRC -> Capstone;
-  LanguageFeatures -> Salsa20;
-  LanguageFeatures -> KeyWrapping;
-  LanguageFeatures -> Demos;
+  LanguageBasics -> Salsa20;
+  LanguageBasics -> KeyWrapping;
+  LanguageBasics -> Demos;
   Salsa20 -> Capstone;
-  LanguageFeatures -> BitTwiddling;
-  LanguageFeatures -> ArithmeticVerifications;
+  LanguageBasics -> BitTwiddling;
+  LanguageBasics -> ArithmeticVerifications;
 
 //  ArithmeticVerifications -> Demos;
 //  Demos -> ArithmeticVerifications;
