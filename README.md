@@ -22,23 +22,23 @@ admittedly, we're a little light on SAW material right now.
    here.
     * [Demos](labs/Demos/Demos.md): Lightweight walkthroughs with no
       exercises that demonstrate common concepts.
-6. [Cyclic Redundancy Checks](labs/CRC/CRC.md): Create your first
+5. [Cyclic Redundancy Checks](labs/CRC/CRC.md): Create your first
    specification!
-7. [Salsa20](labs/Salsa20/Salsa20.md): Create your second
+6. [Salsa20](labs/Salsa20/Salsa20.md): Create your second
    specification!
-8. [Salsa20 Properties](labs/Salsa20/Salsa20Props.md): Learn how to
+7. [Salsa20 Properties](labs/Salsa20/Salsa20Props.md): Learn how to
    prove some properties about your Salsa20 specification.
-9. [Prove Cryptographic
+8. [Prove Cryptographic
    Properties](labs/CryptoProofs/CryptoProofs.md): Learn about common
    cryptographic properties and how to prove them with Cryptol.
     * [Project Euler](labs/ProjectEuler/ProjectEuler.md): If you
       enjoyed the last lab, why not try you hand at using Cryptol's
       connection to automated provers (SMT solvers) to solve some
       complicated computational puzzles.
-10. [Methods for Key Wrapping](labs/KeyWrapping/KeyWrapping.md):
+9. [Methods for Key Wrapping](labs/KeyWrapping/KeyWrapping.md):
    Create a Cryptol specification of NIST's [SP800-38F key wrap
    standard](https://csrc.nist.gov/publications/detail/sp/800-38f/final).
-11. [Capstone: Putting it all
+10. [Capstone: Putting it all
    together](labs/LorumIpsum/LorumIpsum.md): Decrypt a series of
    secret messages by feeding wrapping keys into the anomalus KLI20
    cryptographic engine. Success here requires modules and concepts
