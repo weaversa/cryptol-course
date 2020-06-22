@@ -851,8 +851,10 @@ previously defined `W'`.
 **EXERCISE**: Study `Algorithm 6` from the standard and complete the
   definition of `KWPAD` below by filling in the function skeleton
   provided with appropriate logic. We suggest splitting the algorithm
-  into two again, so we're providing a skeleton for `KWPADUnpad` (which
-  is roughly the inverse of `KWPAEPad`) and `KWPAD`.
+  into two again, so we're providing a skeleton for `KWPADUnpad`
+  (which is roughly the inverse of `KWPAEPad`) and `KWPAD`. *Hint*:
+  FAIL can be a Boolean expression, that is, it does not need to be an
+  `if-then-else` statement.
 
 ```
 KWPADUnpad :
