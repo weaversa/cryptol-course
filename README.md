@@ -20,8 +20,8 @@ admittedly, we're a little light on SAW material right now.
 4. [Language Features](labs/LanguageLab/LanguageLab.md): A resource
    for (most) of the language features you'll need to be successful
    here.
-5. [Demos](labs/Demos/Demos.md): Lightweight walkthroughs with no
-   exercises that demonstrate common concepts.
+    * [Demos](labs/Demos/Demos.md): Lightweight walkthroughs with no
+      exercises that demonstrate common concepts.
 6. [Cyclic Redundancy Checks](labs/CRC/CRC.md): Create your first
    specification!
 7. [Salsa20](labs/Salsa20/Salsa20.md): Create your second
