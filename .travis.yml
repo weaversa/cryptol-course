@@ -52,10 +52,10 @@ script:
 # CRC lab tests
   - cryptol -e -c ":m labs::CRC::CRC"
   - cryptol -e -c ":m labs::CRC::CRCAnswers"
-# LorumIpsum tests
-  - cryptol -e -c ":m labs::LorumIpsum::LorumIpsum"
-  - cryptol -e -c ":m labs::LorumIpsum::LorumIpsumAnswers"
-  - cryptol -e -c ":m labs::LorumIpsum::KLI20"
+# LoremIpsum tests
+  - cryptol -e -c ":m labs::LoremIpsum::LoremIpsum"
+  - cryptol -e -c ":m labs::LoremIpsum::LoremIpsumAnswers"
+  - cryptol -e -c ":m labs::LoremIpsum::KLI20"
 # Demo lab tests
   - cryptol -e -c ":m labs::Demos::Caesar"
   - cryptol -e -c ":m labs::Demos::OneTimePad"
