@@ -44,6 +44,12 @@ admittedly, we're a little light on SAW material right now.
    cryptographic engine. Success here requires modules and concepts
    from many of the previous labs.
 
+
+## Graphical View of the Course
+
+Our suggested flow would be to follow the red line. Dependencies are
+given by black lines.
+
 <img class="center" src="https://raw.githubusercontent.com/weaversa/cryptol-course/flow-tweaks/misc/deps.svg" alt="Dependencies and Suggested Course Flow">
 
 
