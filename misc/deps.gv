@@ -1,11 +1,40 @@
 digraph G {
-  README -> INSTALL;
-  INSTALL -> Demos;
-  INSTALL -> Overview;
-  Demos -> Basics;
-  Overview -> Basics;
-  Basics -> Salsa20;
-  Basics -> KeyWrapping;
+
+  // Preliminary Material
+  edge [color=red];
+  Readme -> Installation;
+  edge [color=red];
+  Installation -> Overview;
+
+
+  // Intro Material
+  edge [color=red];
+  Overview -> LanguageBasics;
+  edge [color=red];
+  LanguageBasics->Demos;  
+  
+  // Can do these in any order, but probably CRC -> Salsa20 -> KeyWrapping
+  edge [color=red];
+  Demos -> CRC;
+  edge [color=black];
+  Demos -> Salsa20;
+  edge [color=black];
+  Demos -> KeyWrapping
+  edge [color=red];
+  CRC -> Salsa20;
+  edge [color=red];
+  Salsa20 -> KeyWrapping;
+
+  // Salsa20Properties 
+  edge [color=black];
+  Salsa20 -> Salsa20Properties;
+
+  // Everything comes back together in the Capstone
+  edge [color=black];
+  CRC -> Capstone;
+  edge [color=black];
   Salsa20 -> Capstone;
+  edge [color=red];
   KeyWrapping -> Capstone;
-}  
+}
+

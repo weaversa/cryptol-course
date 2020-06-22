@@ -1,0 +1,14 @@
+digraph G {
+  Readme -> Installation;
+  Installation -> Overview;
+  Overview -> Demos;
+  Overview -> LanguageBasics;
+  LanguageBasics -> CRC;
+  LanguageBasics -> Salsa20;
+  Salsa20 -> Salsa20Properties;
+  LanguageBasics -> KeyWrapping;
+  CRC -> Capstone;
+  Salsa20 -> Capstone;
+  KeyWrapping -> Capstone;
+}
+
