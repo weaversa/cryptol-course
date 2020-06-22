@@ -220,22 +220,17 @@ property Salsa20EncryptInvolutionProp_2_128 = Salsa20EncryptInvolutionProp`{2,12
 
 # References
 
-[1] [The Salsa20 core]
-    (http://cr.yp.to/salsa20.html)
+[1] [The Salsa20 core](http://cr.yp.to/salsa20.html)
     D. Bernstein
 
-[2] [Response to "On the Salsa20 Core Function"]
-    (https://cr.yp.to/snuffle/reoncore-20080224.pdf)
+[2] [Response to "On the Salsa20 Core Function"](https://cr.yp.to/snuffle/reoncore-20080224.pdf)
     D. Bernstein
 
-[3] [On the Salsa20 Core Function]
-    (https://www.iacr.org/archive/fse2008/50860470/50860470.pdf)
+[3] [On the Salsa20 Core Function](https://www.iacr.org/archive/fse2008/50860470/50860470.pdf)
     J.C. Hernandez-Castro, et. al.
 
-[4] [Re-rolled Salsa20 function]
-    (https://groups.google.com/d/msg/sci.crypt/AkQnSoO40BA/o4eG96rjkgYJ)
+[4] [Re-rolled Salsa20 function](https://groups.google.com/d/msg/sci.crypt/AkQnSoO40BA/o4eG96rjkgYJ)
     P. Rubin, D. Wagner, et. al.
 
-[5] [Salsa20 specification]
-    (https://cr.yp.to/snuffle/spec.pdf)
+[5] [Salsa20 specification](https://cr.yp.to/snuffle/spec.pdf)
     D. Bernstein
