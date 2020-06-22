@@ -127,8 +127,11 @@
 <!-- BitTwiddling -->
 <g id="node13" class="node">
 <title>BitTwiddling</title>
+<g id="a_node13"><a xlink:href="https://github.com/weaversa/cryptol-course/blob/master/labs/saw/bittwiddling/bittwiddling.md" xlink:title="Bit Twiddling">
 <path fill="none" stroke="black" stroke-width="2" d="M194,-92C194,-92 125,-92 125,-92 119,-92 113,-86 113,-80 113,-80 113,-68 113,-68 113,-62 119,-56 125,-56 125,-56 194,-56 194,-56 200,-56 206,-62 206,-68 206,-68 206,-80 206,-80 206,-86 200,-92 194,-92"/>
 <text text-anchor="middle" x="159.5" y="-70.3" font-family="Times,serif" font-size="14.00">Bit Twiddling</text>
+</a>
+</g>
 </g>
 <!-- LanguageFeatures&#45;&gt;BitTwiddling -->
 <g id="edge16" class="edge">
@@ -139,9 +142,12 @@
 <!-- ArithmeticVerifications -->
 <g id="node14" class="node">
 <title>ArithmeticVerifications</title>
+<g id="a_node14"><a xlink:href="https://github.com/weaversa/cryptol-course/blob/master/labs/saw/ArithmeticVerifications/ArithmeticVerifications.md" xlink:title="Arithmetic\nVerifications">
 <path fill="none" stroke="black" stroke-width="2" d="M190,-38C190,-38 129,-38 129,-38 123,-38 117,-32 117,-26 117,-26 117,-12 117,-12 117,-6 123,0 129,0 129,0 190,0 190,0 196,0 202,-6 202,-12 202,-12 202,-26 202,-26 202,-32 196,-38 190,-38"/>
 <text text-anchor="middle" x="159.5" y="-22.8" font-family="Times,serif" font-size="14.00">Arithmetic</text>
 <text text-anchor="middle" x="159.5" y="-7.8" font-family="Times,serif" font-size="14.00">Verifications</text>
+</a>
+</g>
 </g>
 <!-- LanguageFeatures&#45;&gt;ArithmeticVerifications -->
 <g id="edge17" class="edge">
