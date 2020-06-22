@@ -1,17 +1,17 @@
-# LorumIpsum Key
+# LoremIpsum Key
 
 During this lab you will use the results of previous labs to
 Cryptolize a *mock* key generation specification we're calling the
-LorumIpsum key. This document specifies the algorithm, but, like most
+LoremIpsum key. This document specifies the algorithm, but, like most
 specification documents it also contains reams of text unrelated to
-the algorithm. We've filled in these unhelpful portions with [lorum
+the algorithm. We've filled in these unhelpful portions with [lorem
 ipsum](http://www.lipsum.com/). You may happily skip over them to get
 to the important bits.
 
 **EXERCISE** An important message has been encrypted using the
 [KLI20](KLI20.cry) end cryptographic unit, a completely made up device
 that was created specifically for use in this lab. The KLI20 takes
-LorumIpsum keys (as specified below) as input and will then operate as
+LoremIpsum keys (as specified below) as input and will then operate as
 a stream cipher capable of encrypting or decrypting streams of
 bytes. Please read through the specification document below and then
 write Cryptol functions to generate the key specified here.
@@ -23,7 +23,7 @@ out and placed them at the bottom of this document.
 Let's begin.
 
 
-# Lorum Ipsum Key Generation Specification
+# Lorem Ipsum Key Generation Specification
 
 This document specifies how to generate key material for
 interoperability with the [KLI20](KLI20.cry) end cryptographic
@@ -32,7 +32,7 @@ unit. The KLI20 uses a mix of [CRC](../CRC/CRC.md),
 [Salsa20](../Salsa20/Salsa20.md) to encrypt and decrypt messages.
 
 ```
-module labs::LorumIpsum::LorumIpsum where
+module labs::LoremIpsum::LoremIpsum where
 ```
 
 ## Abstract
@@ -167,8 +167,8 @@ dolor non odio dapibus interdum. Donec egestas aliquam justo id
 volutpat. Fusce vel ante non ligula placerat tristique. Fusce laoreet
 libero a mauris rutrum tempor. Duis quis convallis sapien.
 
-<kbd>![Figure 1. Lorum Ipsum Key Generation Flow Diagram](LorumIpsumKey.png)</kbd>
-**Figure 1. Lorum Ipsum Key Generation Flow Diagram**
+<kbd>![Figure 1. Lorem Ipsum Key Generation Flow Diagram](LoremIpsumKey.png)</kbd>
+**Figure 1. Lorem Ipsum Key Generation Flow Diagram**
 
 Aenean rhoncus, orci eu varius iaculis, sapien magna pulvinar mauris,
 ut scelerisque sapien ipsum aliquet orci. Nulla facilisi. Duis laoreet
@@ -197,7 +197,7 @@ facilisis tristique.
 
 # Specification of the Cyclic Redundancy Check
 
-Cyclic Redundancy Checks (CRC) are used to add integrity to the Lorum
+Cyclic Redundancy Checks (CRC) are used to add integrity to the Lorem
 Ipsum key at two stages of generation, namely, after key wrapping and
 after tagging.
 
@@ -244,7 +244,7 @@ ullamcorper.
 
 # Key Wrap Specification
 
-The Lorum Ipsum key is wrapped using the KW-AE 128 Algorithm described
+The Lorem Ipsum key is wrapped using the KW-AE 128 Algorithm described
 in [NIST Special Publication
 800-38F](https://csrc.nist.gov/publications/detail/sp/800-38f/final)
 "Recommendation for Block Cipher Modes of Operation: Methods for Key
@@ -327,7 +327,7 @@ tempus neque mi, id ullamcorper ex eleifend sit amet.
 
 ## Specification
 
-The 13-character constant ASCII string "LorumIpsumKey" followed by a
+The 13-character constant ASCII string "LoremIpsumKey" followed by a
 given 3-ASCII-digit key issue number will be prepended to the 192-bit
 wrapped key after the first CRC-32c has been applied.
 
@@ -380,10 +380,10 @@ semper. Suspendisse porta vestibulum diam non fringilla.
 
 # Test Vectors
 
-Some test vectors are provided here to help you test your Lorum Ipsum
+Some test vectors are provided here to help you test your Lorem Ipsum
 key generation specification. First, wrap the `secretKey` with the
 `KEK`, both found below, using all approved issue numbers to create a
-suite of LorumIpsum keys.
+suite of LoremIpsum keys.
 
 ```
 TestKEK = 0x3d43108b5b243b90dda78f75736cc629
