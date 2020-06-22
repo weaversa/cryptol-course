@@ -28,6 +28,8 @@ digraph G {
   KeyWrapping [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/KeyWrapping/KeyWrapping.md"]
   Capstone [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Capstone/Capstone.md"]
   ProjectEuler [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/ProjectEuler/ProjectEuler.md"]
+  BitTwiddling [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/saw/bittwiddling/bittwiddling.md"]
+  ArithmeticVerifications [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/saw/ArithmeticVerifications/ArithmeticVerifications.md"]
 
   // Fixing up node labels for ones that need a space
   LanguageFeatures        [label="Language\nFeatures"];
