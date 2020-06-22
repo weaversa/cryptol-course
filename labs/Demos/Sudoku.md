@@ -343,8 +343,8 @@ labs::Demos::Sudoku> :sat (\x -> f x && (x != 4))
 (Total Elapsed Time: 0.034s, using "Z3")
 ```
 
-> Cryptol tells us 3 is a solution as well! Since this is a quadratic 
-> equation, there can be at most two solutions; let’s verify:
+> Cryptol tells us 3 is a solution as well! There happen to only be two 
+> solutions to this equation; let’s verify:
 
 ```sh
 labs::Demos::Sudoku> :sat (\x -> f x && (x != 4) && (x != 3))
@@ -352,7 +352,7 @@ Unsatisfiable
 (Total Elapsed Time: 0.034s, using "Z3")
 ```
 
-> As expected, Cryptol confirms that 3 and 4 are the only 8-bit 
+> Indeed, Cryptol confirms that 3 and 4 are the only 8-bit 
 > values that satisfy the equation `x^2 – 7x + 12 = 0`. (I should 
 > mention that the `:sat` command is available only in the `symbolic` 
 > and `sbv` backends of Cryptol; the two main backends of Cryptol 
