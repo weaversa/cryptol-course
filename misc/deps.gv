@@ -1,0 +1,72 @@
+digraph G {
+  //splines = ortho;
+  //concentrate = true;
+
+  rankdir="LR";
+
+  node [shape="box", style="rounded", penwidth = 2];
+  edge [penwidth = 1];
+
+  {
+    rank = same;
+    Installation;
+    Overview;
+    Interpreter;
+    LanguageFeatures;
+//    Demos;
+  }
+
+  Installation [URL="https://github.com/weaversa/cryptol-course/blob/master/INSTALL.md"];
+  Overview [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Overview/Overview.md"];
+  Interpreter [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Interpreter/Interpreter.md"];
+  LanguageFeatures [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/LanguageFeatures/LanguageFeatures.md"];
+  Demos [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Demos/Demos.md"];
+  CRC [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/CRC/CRC.md"];
+  Salsa20 [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Salsa20/Salsa20.md"];
+  Salsa20Properties [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Salsa20/Salsa20Properties.md"];
+  CryptographicProperties [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/CryptographicProperties/CryptographicProperties.md"];
+  KeyWrapping [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/KeyWrapping/KeyWrapping.md"];
+  Capstone [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Capstone/Capstone.md"];
+  ProjectEuler [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/ProjectEuler/ProjectEuler.md"];
+  BitTwiddling [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/saw/bittwiddling/bittwiddling.md"];
+  ArithmeticVerifications [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/saw/ArithmeticVerifications/ArithmeticVerifications.md"];
+
+  // Fixing up node labels for ones that need a space
+  LanguageFeatures        [label="Language\nFeatures"];
+  Salsa20Properties       [label="Salsa20\nProperties"];
+  CryptographicProperties [label="Cryptographic\nProperties"];
+  KeyWrapping             [label="Key Wrapping"];
+  ProjectEuler            [label="Project\nEuler"];
+  BitTwiddling            [label="Bit Twiddling"];
+  ArithmeticVerifications [label="Arithmetic\nVerifications"]
+  
+  // The Suggested Flow with Red Arrows
+  edge [color=red];
+  Installation -> Overview;
+  Overview -> Interpreter;
+  Interpreter -> LanguageFeatures;  
+  LanguageFeatures -> CRC;
+  CRC -> Salsa20;
+  Salsa20 -> Salsa20Properties;
+  Salsa20Properties -> CryptographicProperties; 
+  CryptographicProperties -> KeyWrapping; 
+  KeyWrapping -> Capstone; 
+    
+  // Logical Dependencies with Black Arrows
+  edge [color=black];
+  CryptographicProperties -> ProjectEuler;
+  CRC -> Capstone;
+  LanguageFeatures -> Salsa20;
+  LanguageFeatures -> KeyWrapping;
+  LanguageFeatures -> Demos;
+  Salsa20 -> Capstone;
+  LanguageFeatures -> BitTwiddling;
+  LanguageFeatures -> ArithmeticVerifications;
+
+//  ArithmeticVerifications -> Demos;
+//  Demos -> ArithmeticVerifications;
+
+//  BitTwiddling -> Demos;
+//  Demos -> BitTwiddling;
+}
+

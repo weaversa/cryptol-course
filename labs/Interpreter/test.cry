@@ -1,4 +1,4 @@
-module labs::interpreter::test where
+module labs::Interpreter::test where
 
 type uint32_t = [32]
 
