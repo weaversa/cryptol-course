@@ -26,7 +26,7 @@ The file *arithmetic.c* contains definitions for the following functions:
   > __Declaration__: `uint32_t multiply_karatsuba( uint16_t a, uint16_t b)`  
   > __Description__: Multiplies two 16-bit integers, but uses the Karatsuba multiplication technique as though it was binned on 8-bit bins  
 
-This set of exmples demonstrates how two use Cryptol and Saw to verify that the implementations of these familiar functions are correct and equivalent to one another.
+This set of exmples demonstrates how to use Cryptol and Saw to verify that the implementations of these familiar functions are correct and equivalent to one another.
 
 
 Software Requirements
@@ -52,13 +52,13 @@ This builds the binary `arithmetic_unit_tests` as well as generates the LLVM byt
 
 * `make add_tests`
 
-This runs the command `saw add_llvm.saw` which loads `add_standard` and `add_textbook` from the generated LLVM bytecode file `arithmetic_llvm.bc` and which also builds the additional Cryptol function `add_cryptol` which has type `[16] -> [16] -> [32]` and checks the following facts:
+This runs the command `saw add_llvm.saw` which loads `add_standard` and `add_textbook` from the generated LLVM bytecode file `arithmetic_llvm.bc` as well as the additional Cryptol implementation `add_cryptol`. The the script then asks `saw` to prove the following facts:
 
   - `add_standard` is equivalent to `add_textbook` for all inputs
   - `add_standard` is equivalent to `add_cryptol` for all inputs
   - `add_textbook` is equivalent to `add_cryptol` for all inputs
 
-Note that only two of these facts are necessary to check to demonstrate that all three facts are equivalent.
+Note that only two of these facts are necessary to check to demonstrate that all three facts are equivalent. All three are performed for the sake of example. Such redundant checks might be desired to build additional confidence in a system.
 
 * `make multiply_tests`
 
@@ -92,4 +92,4 @@ This cleans up the workspace and unnecessary generated files.
 References
 ==========
 
-[1] Bryant, Randall E. "On the Complexity of VLSI Implementations and Graph Representations of Boolean Functions with Application to Integer Multiplication". Carnegie Mellon University, July 1998.
+[[1](https://ieeexplore.ieee.org/document/73590)] Bryant, Randall E. "On the Complexity of VLSI Implementations and Graph Representations of Boolean Functions with Application to Integer Multiplication". Carnegie Mellon University, July 1998.

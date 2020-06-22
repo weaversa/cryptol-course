@@ -4,7 +4,7 @@
 
 // addition_standard
 //
-// Add two 16-bit integers in a standard way, cast each to a local 32 bit
+// Add two 16-bit integers in a standard way, cast each to a local 32-bit
 // number and then add and return the result.
 uint32_t add_standard(uint16_t a, uint16_t b) {
   uint32_t local_a = (uint32_t) a;
@@ -21,7 +21,7 @@ uint32_t add_standard(uint16_t a, uint16_t b) {
 // Add two 16-bit numbers by treating each as two 8-bit parts and using
 // the "textbook" addition algorithm.
 //
-// Suppose we break up 16-bit integers a and be as follows: 
+// Suppose we break up 16-bit integers a and b as follows: 
 //     a = [ a_1 ] [ a_0 ] 
 //     b = [ b_1 ] [ b_0 ]
 //
@@ -55,7 +55,7 @@ uint32_t add_textbook(uint16_t a, uint16_t b) {
 
 // multiply_standard
 //
-// Multiply two 32-bit integers in a standard way, cast each to a local 32 bit
+// Multiply two 32-bit integers in a standard way, cast each to a local 32-bit
 // number and then multiply and return the result.
 uint32_t multiply_standard(uint16_t a, uint16_t b) {
   uint32_t local_a = (uint32_t) a;
@@ -72,7 +72,7 @@ uint32_t multiply_standard(uint16_t a, uint16_t b) {
 // Multiply two 16-bit numbers by treating each as two 8-bit parts and using
 // the "textbook" multiplication algorithm.
 //
-// Suppose we break up 32-bit integers a and be as follows: 
+// Suppose we break up 32-bit integers a and b as follows: 
 //     a = [ a_1 ] [ a_0 ] 
 //     b = [ b_1 ] [ b_0 ]
 //
@@ -81,28 +81,26 @@ uint32_t multiply_standard(uint16_t a, uint16_t b) {
 //                                       x [ b_1 ] [ b_0 ]
 //                                   =====================
 //                             [ a_1 * b_0 ] [ a_0 * b_0 ]
-//               [ a_1 * b_1 ] [ a_0 * b_1 ]       0
-//               =========================================
+//             + [ a_1 * b_1 ] [ a_0 * b_1 ]       0
+//             ===========================================
 // [    O_3    ] [    O_2    ] [    O_1    ] [    O_0    ]
 //
-// Where the outputs are the sums of the columns
-//
 uint32_t multiply_textbook(uint16_t a, uint16_t b) {
-  uint16_t a_1 = (0xff00 & a) >> 8;
-  uint16_t a_0 = (0x00ff & a) >> 0;
-  uint16_t b_1 = (0xff00 & b) >> 8;
-  uint16_t b_0 = (0x00ff & b) >> 0;
+  uint8_t a_1 = (uint8_t)( (0xff00 & a) >> 8 );
+  uint8_t a_0 = (uint8_t)( (0x00ff & a) >> 0 );
+  uint8_t b_1 = (uint8_t)( (0xff00 & b) >> 8 );
+  uint8_t b_0 = (uint8_t)( (0x00ff & b) >> 0 );
   
-  uint32_t z0 = a_0 * b_0;
-  uint32_t z1 = a_1 * b_0;
-  uint32_t z2 = a_0 * b_1;
-  uint32_t z3 = a_1 * b_1;
+  uint16_t z0 = (uint16_t)a_0 * (uint16_t)b_0;
+  uint16_t z1 = (uint16_t)a_1 * (uint16_t)b_0;
+  uint16_t z2 = (uint16_t)a_0 * (uint16_t)b_1;
+  uint16_t z3 = (uint16_t)a_1 * (uint16_t)b_1;
   
   uint32_t result = 0;
-  result += z0;
-  result += z1 << 8;
-  result += z2 << 8;
-  result += z3 << 16;
+  result += (uint32_t)z0;
+  result += (uint32_t)z1 << 8;
+  result += (uint32_t)z2 << 8;
+  result += (uint32_t)z3 << 16;
   
   return result;
 }
@@ -112,23 +110,25 @@ uint32_t multiply_textbook(uint16_t a, uint16_t b) {
 // Multiply two 32-bit numbers by treating each as two 16-bit parts and using
 // the (one-step) Karatsuba multiplication algorithm.
 //
-// Suppose we break up 32-bit integers a and be as follows: 
+// Suppose we break up 32-bit integers a and b as follows: 
 //     a = [ a_1 ] [ a_0 ] 
 //     b = [ b_1 ] [ b_0 ]
 //
 // Then we compute a * b as follows:
 //
 // [ O_2 ] [ O_1 ] [ O_0 ]  where
-//   [ O_2 ] = [ a_1 ] * [ b_1 ]
 //   [ O_0 ] = [ a_0 ] * [ b_0 ]
-//   [ O_1 ] = ([ a_1 ] + [ a_0] ) * ([ b_1 ]  + [ b_0 ]) - [ z0 ] - [ z2 ]
+//   [ O_1 ] = ([ a_1 ] + [ a_0] ) * ([ b_1 ]  + [ b_0 ]) - [ O_0 ] - [ O_2 ]
+//   [ O_2 ] = [ a_1 ] * [ b_1 ]
 //
-//   Note that if we reduce the expression defining [ O_1 ] we arrive at:
+//   Note that [ O_1 ] only depends on the inputs and the calculations for
+//   [ O_0 ] and [ O_2 ]. If we algebraically reduce the expression defining
+//   [ O_1 ] we arrive with:
 //
 //     [ a_1 ] * [ b_0 ] + [ a_0 ] * [ b_1 ] 
 //
 //   which has _two_ multiplications, while the expression defining [ O_1 ] only
-//   uses _one_multiplication.
+//   uses _one_ multiplication.
 //
 // The generalized Karatsuba algorithm for wider inputs takes advantage of this
 // feature and the assumption that multiplication is a slower computation than
@@ -142,22 +142,22 @@ uint32_t multiply_karatsuba(uint16_t a, uint16_t b) {
   uint16_t b_1 = (0xff00 & b) >> 8;
   uint16_t b_0 = (0x00ff & b) >>  0;
   
-  uint32_t z0 = a_0 * b_0;
-  uint32_t z2 = a_1 * b_1;
-  uint32_t z1 = (a_1 + a_0) * (b_1 + b_0) - z0 - z2;
+  uint32_t O_0 = a_0 * b_0;
+  uint32_t O_2 = a_1 * b_1;
+  uint32_t O_1 = (a_1 + a_0) * (b_1 + b_0) - O_0 - O_2;
   
   uint32_t result = 0;
-  result += z0;
-  result += z1 << 8;
-  result += z2 << 16;
+  result += O_0;
+  result += O_1 << 8;
+  result += O_2 << 16;
   
   return result;
 }
 
 
 //
-// The main routine, verifies that the algorithms above match for the collection
-//  of arithmetic algorithms above.
+// The main routine, allows user to visually confirm that the algorithms above 
+// agree on a small collection of test vectors.
 //
 int main() {
   #define NUM_TESTS 3

@@ -2,7 +2,7 @@ BINARY_NAME=arithmetic_unit_tests
 CC=clang
 
 
-all: add_tests
+all: $(BINARY_NAME)
 
 $(BINARY_NAME): arithmetic_implementations.c
 	$(CC) -o $(BINARY_NAME) arithmetic_implementations.c
