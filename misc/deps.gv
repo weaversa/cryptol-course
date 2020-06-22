@@ -1,4 +1,30 @@
 digraph G {
+  splines = ortho;
+  //concentrate = true;
+
+  node [shape="box", style="rounded", penwidth = 2];
+  edge [penwidth = 1];
+
+  {
+    rank = same;
+    Installation;
+    Overview;
+    Interpreter;
+    LanguageFeatures;
+  }
+
+  Installation [URL="https://github.com/weaversa/cryptol-course/blob/master/INSTALL.md"]
+  Overview [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Overview/Overview.md"]
+  Interpreter [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Interpreter/Interpreter.md"]
+  LanguageFeatures [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/LanguageFeatures/LanguageFeatures.md"]
+  Demos [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Demos/Demos.md"]
+  CRC [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/CRC/CRC.md"]
+  Salsa20 [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Salsa20/Salsa20.md"]
+  Salsa20Properties [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Salsa20/Salsa20Properties.md"]
+  CryptographicProperties [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/CryptographicProperties/CryptographicProperties.md"]
+  KeyWrapping [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/KeyWrapping/KeyWrapping.md"]
+  Capstone [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Capstone/Capstone.md"]
+  ProjectEuler [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/ProjectEuler/ProjectEuler.md"]
 
   // The Suggested Flow with Red Arrows
   edge [color=red];
