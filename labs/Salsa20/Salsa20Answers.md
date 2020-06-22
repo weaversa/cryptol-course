@@ -9,10 +9,16 @@ specification document describes Salsa20 as well as how to use it as a
 [counter
 mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Counter_(CTR)).
 
-This lab is a
-[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
-document --- that is, it can be loaded directly into the Cryptol
-interpreter. It goes through the [Salsa20 specification
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+Cryptol document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter running
+in the `cryptol-course` directory with:
+
+```shell
+cryptol> :m labs::Salsa20::Salsa20Answers
+```
+
+This lab goes through the [Salsa20 specification
 document](Salsa20Spec.pdf) section by section, showing how to write a
 fairly pedantic Cryptol specification of Salsa20. We recommend you
 have this lab and the specification document open side-by-side.

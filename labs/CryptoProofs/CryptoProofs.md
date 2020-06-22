@@ -4,10 +4,14 @@ Cryptol and SAW allow users to rapidly and transparently deploy powerful theorem
 
 By the end of this lab, the student will be able to describe and demonstrate five powerful classes of proofs that can be applied to a wide variety of cryptographic algorithms.
 
-This lab is a
-[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
-document --- that is, it can be loaded directly into the Cryptol
-interpreter.
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+Cryptol document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter running
+in the `cryptol-course` directory with:
+
+```shell
+cryptol> :m labs::CryptoProofs::CryptoProofs
+```
 
 The proofs in this lab require an array of different theorem provers supported by Cryptol. In order to solve them, we recommend using the Cryptol Docker container described in the README.md for this course.
 
