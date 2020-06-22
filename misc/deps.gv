@@ -1,6 +1,8 @@
 digraph G {
-  splines = ortho;
+  //splines = ortho;
   //concentrate = true;
+
+  rankdir="LR";
 
   node [shape="box", style="rounded", penwidth = 2];
   edge [penwidth = 1];
@@ -11,6 +13,7 @@ digraph G {
     Overview;
     Interpreter;
     LanguageFeatures;
+    Demos;
   }
 
   Installation [URL="https://github.com/weaversa/cryptol-course/blob/master/INSTALL.md"]
@@ -26,13 +29,21 @@ digraph G {
   Capstone [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Capstone/Capstone.md"]
   ProjectEuler [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/ProjectEuler/ProjectEuler.md"]
 
+  // Fixing up node labels for ones that need a space
+  LanguageFeatures        [label="Language\nFeatures"];
+  Salsa20Properties       [label="Salsa20\nProperties"];
+  CryptographicProperties [label="Cryptographic\nProperties"];
+  KeyWrapping             [label="Key Wrapping"];
+  ProjectEuler            [label="Project\nEuler"];
+  BitTwiddling            [label="Bit Twiddling"];
+  ArithmeticVerifications [label="Arithmetic\nVerifications"]
+  
   // The Suggested Flow with Red Arrows
   edge [color=red];
   Installation -> Overview;
   Overview -> Interpreter;
   Interpreter -> LanguageFeatures;  
-  LanguageFeatures -> Demos;
-  Demos -> CRC; 
+  LanguageFeatures -> CRC;
   CRC -> Salsa20;
   Salsa20 -> Salsa20Properties;
   Salsa20Properties -> CryptographicProperties; 
@@ -43,9 +54,11 @@ digraph G {
   edge [color=black];
   CryptographicProperties -> ProjectEuler;
   CRC -> Capstone;
-  LanguageFeatures -> CRC;
   LanguageFeatures -> Salsa20;
   LanguageFeatures -> KeyWrapping;
-  Salsa20 -> Capstone; 
+  LanguageFeatures -> Demos;
+  Salsa20 -> Capstone;
+  Overview -> BitTwiddling;
+  Overview -> ArithmeticVerifications;
 }
 
