@@ -1,3 +1,14 @@
+# Introduction
+
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+Cryptol document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter running
+in the `cryptol-course` directory with:
+
+```shell
+cryptol> :m labs::LoremIpsum::LoremIpsumAnswers
+```
+
 # LoremIpsum Key
 
 During this lab you will use the results of previous labs to

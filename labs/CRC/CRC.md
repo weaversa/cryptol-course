@@ -1,3 +1,16 @@
+# Introduction
+
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+Cryptol document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter running
+in the `cryptol-course` directory with:
+
+```shell
+cryptol> :m labs::CRC::CRC
+```
+
+We start by defining a new module for this lab:
+
 ```
 module labs::CRC::CRC where
 ```
