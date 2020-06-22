@@ -300,20 +300,20 @@ rowround : Words 16 -> Words 16
 
 ### Definition
 
-**EXERCISE**: Here we provide a skeleton for `rowround`. Please replace
-the `zero` symbols with the appropriate logic as given in the Salsa20
-specification. You'll know you've gotten it right when it looks like
-the specification and when `:prove rowroundExamplesProp` gives
-`Q.E.D`.
+**EXERCISE**: Here we provide a skeleton for `rowround`. Please
+replace the `undefined` symbols with the appropriate logic as given in
+the Salsa20 specification. You'll know you've gotten it right when it
+looks like the specification and when `:prove rowroundExamplesProp`
+gives `Q.E.D`.
 
 ```
 rowround [y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14, y15] =
     [z0, z1, z2, z3, z4, z5, z6, z7, z8, z9, z10, z11, z12, z13, z14, z15]
   where
-    [ z0,  z1,  z2,  z3] = zero
-    [ z5,  z6,  z7,  z4] = zero
-    [z10, z11,  z8,  z9] = zero
-    [z15, z12, z13, z14] = zero
+    [ z0,  z1,  z2,  z3] = undefined
+    [ z5,  z6,  z7,  z4] = undefined
+    [z10, z11,  z8,  z9] = undefined
+    [z15, z12, z13, z14] = undefined
 ```
 
 
@@ -376,20 +376,20 @@ columnround : Words 16 -> Words 16
 
 ### Definition
 
-**EXERCISE**: Here we provide a skeleton for `columnround`. Please replace
-the `zero` symbols with the appropriate logic as given in the Salsa20
-specification. You'll know you've gotten it right when it looks like
-the specification and when `:prove columnroundExamplesProp` gives
-`Q.E.D`.
+**EXERCISE**: Here we provide a skeleton for `columnround`. Please
+replace the `undefined` symbols with the appropriate logic as given in
+the Salsa20 specification. You'll know you've gotten it right when it
+looks like the specification and when `:prove columnroundExamplesProp`
+gives `Q.E.D`.
 
 ```
 columnround [x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15] =
     [y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14, y15]
   where
-    [ y0,  y4,  y8, y12] = zero
-    [ y5,  y9, y13,  y1] = zero
-    [y10, y14,  y2,  y6] = zero
-    [y15,  y3,  y7, y11] = zero
+    [ y0,  y4,  y8, y12] = undefined
+    [ y5,  y9, y13,  y1] = undefined
+    [y10, y14,  y2,  y6] = undefined
+    [y15,  y3,  y7, y11] = undefined
 ```
 
 
@@ -436,15 +436,15 @@ sequence,
 sequence.
 
 Luckily Cryptol provides `split`, `transpose`, and `join` to perform
-these three operations. Please replace the `zero` symbol below with an
-appropriate rejigger function and use it to prove that `columnround`
-is the transpose of `rowround`.
+these three operations. Please replace the `undefined` symbol below
+with an appropriate rejigger function and use it to prove that
+`columnround` is the transpose of `rowround`.
 
 ```
 property columnroundIsTransposeOfRowround ys =
     columnround ys == rejigger (rowround (rejigger ys))
   where
-    rejigger a = zero
+    rejigger a = undefined
 ```
 
 
@@ -460,14 +460,14 @@ doubleround : Words 16 -> Words 16
 
 ### Definition
 
-**EXERCISE**: Here we provide a skeleton for `doubleround`. Please replace
-the `zero` symbol with the appropriate logic as given in the Salsa20
-specification. You'll know you've gotten it right when it looks like
-the specification and when `:prove doubleroundExamplesProp` gives
-`Q.E.D`.
+**EXERCISE**: Here we provide a skeleton for `doubleround`. Please
+replace the `undefined` symbol with the appropriate logic as given in
+the Salsa20 specification. You'll know you've gotten it right when it
+looks like the specification and when `:prove doubleroundExamplesProp`
+gives `Q.E.D`.
 
 ```
-doubleround xs = zero
+doubleround xs = undefined
 ```
 
 
@@ -513,7 +513,7 @@ littleendian : Bytes 4 -> [32]
 ### Definition
 
 **EXERCISE**: Here we provide a skeleton for `littleendian`. Please
-replace the `zero` symbol with the appropriate logic as given in
+replace the `undefined` symbol with the appropriate logic as given in
 the Salsa20 specification. You'll know you've gotten it right when
 `:prove littleendianExamplesProp` gives `Q.E.D`.
 
@@ -527,7 +527,7 @@ with 24 zeroes, and then do the arithmetic in the
 specification. However, there is a much simpler solution. Good luck!
 
 ```
-littleendian [b0, b1, b2, b3] = zero
+littleendian [b0, b1, b2, b3] = undefined
 ```
 
 
@@ -551,14 +551,14 @@ here. There's one hiccup though, the littleendian function works on
 8-byte sequences, so we've defined the type of the function to work on
 n-byte sequences.
 
-**EXERCISE**: Here we provide a skeleton for `littleendian'`, the inverse
-to `littleendian`. Please replace the `zero` symbol with the
-appropriate logic such that `:prove littleendianInverseProp` gives
+**EXERCISE**: Here we provide a skeleton for `littleendian'`, the
+inverse to `littleendian`. Please replace the `undefined` symbol with
+the appropriate logic such that `:prove littleendianInverseProp` gives
 `Q.E.D`.
 
 ```
 littleendian' : {n} (fin n) => [n*8] -> Bytes n
-littleendian' w = zero
+littleendian' w = undefined
 ```
 
 ```
@@ -567,7 +567,6 @@ property littleendianInverseProp b = littleendian' (littleendian b) == b
 
 
 ## The Salsa20 hash function
-
 
 From [The Salsa20 core](http://cr.yp.to/salsa20.html) (Bernstein):
 
@@ -591,33 +590,32 @@ Salsa20Core : Bytes 64 -> Bytes 64
 
 ### Definition
 
-
 This function is more complicated than ones we've seen so far, but
 operation can be simply described in four steps:
 
-  1. Transform the 64-byte sequence `x` into a 16-word sequence using
-     `littleendian`.
-  2. Iterate doubleround 10 times, starting with the 16 words from
+  1. `map littleendian` over chunks of the 64-byte sequence `x`,
+     creating a 16-word sequence `xs`.
+  2. `iterate` doubleround 10 times, starting with the 16 words from
      step 1.
   3. Add together the values produced in step 1 to step 2.
-  4. Transform the 16-word sequence from step 3 into a 64-byte
-     sequence using `littleendian'`.
+  4. `map littelendian'` over 16-word sequence from step 3,
+     creating a 64-byte sequence `x'`.
 
-**EXERCISE**: Here we provide a skeleton for `Salsa20Core`. Please replace
-the `zero` symbol with the appropriate logic such that `:prove
-Salsa20CoreExamplesProp` gives `Q.E.D`.
+**EXERCISE**: Here we provide a skeleton for `Salsa20Core`. Please
+replace the `undefined` symbol with the appropriate logic such that
+`:prove Salsa20CoreExamplesProp` gives `Q.E.D`.
 
 ```
 Salsa20Core x = x'
   where
     //Step 1
-    xs    = zero : [inf]
+    xs    = undefined : [16][32]
     //Step 2
-    zs    = zero : [inf]
+    zs    = undefined : [16][32]
     //Step 3
-    xspzs = zero : [inf]
+    xspzs = undefined : [16][32]
     //Step 4
-    x'    = zero
+    x'    = undefined
 ```
 
 
@@ -683,7 +681,6 @@ Salsa20Expansion :
 
 ### Definition
 
-
 This definition is even trickier than the last because we have to
 account for the two different sizes of `k`. If `a` is two then we have
 to call Salsa20(s0, k0, s1, n, s2, k1, s3) where k0 are the low 16
@@ -709,7 +706,7 @@ Salsa20ExpansionExamplesProp` gives `Q.E.D`. You'll likely want to add
 a `where` clause as well.
 
 ```
-Salsa20Expansion k n = zero
+Salsa20Expansion k n = undefined
 
 ```
 
@@ -755,7 +752,6 @@ section.
 
 
 ### Inputs and outputs
-
 
 Again we have a polymorphic function on `k`. Also notice the type
 constraint levied on `l`. This really shows Cryptol's strength as a
