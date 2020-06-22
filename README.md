@@ -85,7 +85,7 @@ Labs have exercises that look like this:
 along side and edited while you work through the labs. For instance,
 you might be asked to fill in a portion of a Cryptol snippet:
 
-```ignore
+```comment
 algebra_fact : Integer -> Integer -> Bit
 property algebra_fact x y =
     //  Use the distributive law to write an equivalent statement
