@@ -13,7 +13,7 @@ digraph G {
     Overview;
     Interpreter;
     LanguageFeatures;
-    Demos;
+//    Demos;
   }
 
   Installation [URL="https://github.com/weaversa/cryptol-course/blob/master/INSTALL.md"]
@@ -58,7 +58,13 @@ digraph G {
   LanguageFeatures -> KeyWrapping;
   LanguageFeatures -> Demos;
   Salsa20 -> Capstone;
-  Overview -> BitTwiddling;
-  Overview -> ArithmeticVerifications;
+  LanguageFeatures -> BitTwiddling;
+  LanguageFeatures -> ArithmeticVerifications;
+
+//  ArithmeticVerifications -> Demos;
+//  Demos -> ArithmeticVerifications;
+
+//  BitTwiddling -> Demos;
+//  Demos -> BitTwiddling;
 }
 
