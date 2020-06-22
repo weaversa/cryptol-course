@@ -15,7 +15,7 @@ import labs::Salsa20::Salsa20Answers
 
 KLI20 : {l} (fin l, l <= 2^^70) => [128] -> [384] -> Bytes l -> Bytes l
 KLI20 KEK LIK ct =
-    if ~CRC1Correct then error "Outter CRC check failed"
+    if ~CRC1Correct then error "Outer CRC check failed"
      | ~TagCorrect  then error "Tag is incorrect"
      | ~CRC2Correct then error "Inner CRC check failed"
      | FAIL         then error "KWAD128 failed"
