@@ -249,7 +249,7 @@ in [NIST Special Publication
 800-38F](https://csrc.nist.gov/publications/detail/sp/800-38f/final)
 "Recommendation for Block Cipher Modes of Operation: Methods for Key
 Wrapping". This algorithm takes a 128-bit KEK and 128-bit key and
-produces 192-bits of wrapped key.
+produces 192 bits of wrapped key.
 
 
 ## Example:
@@ -337,7 +337,7 @@ wrapped key after the first CRC-32c has been applied.
 The KLI20 will accept any 24-bit issue number. However, this key
 specification issue only uses numbers that correspond to the ASCII
 strings between and including "000" to "999". Specifically, this key
-specification follows a special schedule that is comprised entirely of
+specification follows a special schedule that is composed entirely of
 the three issue numbers corresponding to the Pythagorean triplet for
 which a + b + c = 1000 (more info available
 [here](../projecteuler/projecteuler.md)). These numbers are scheduled

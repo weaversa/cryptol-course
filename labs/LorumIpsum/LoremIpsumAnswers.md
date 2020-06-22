@@ -353,7 +353,7 @@ tag : [3][8] -> [224] -> [352]
 tag Issue x = join "LoremIpsumKey" # (join Issue) # x
 ```
 
-> Now that we have all the helper function (wrapping, tagging, and
+> Now that we have all the helper functions (wrapping, tagging, and
   CRC), we can look at Figure 1 and tie the whole thing together.
 
 ```
@@ -449,5 +449,5 @@ secretMessageIssue1 = 0x7f0f165e95c728ab1d1c07aa3c12cc10d5a975394c37eb5870be8b54
 secretMessageIssue2 = 0x4ba6d9eb8489faed2223bd5e3bbf5bf313708c38b369b0fea673c76843cf5312252984b024c2f4263ef318dfbade320920558cb7e475c54811f955a612ab9e18128e1adb056e5775
 ```
 
-> We leave this exercise to the student. Don't forget to set `:s
+> We leave this exercise to the student. Don't forget to set `:set
   ascii=on`.
