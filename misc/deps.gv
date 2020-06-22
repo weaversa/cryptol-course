@@ -1,0 +1,11 @@
+digraph G {
+  README -> INSTALL;
+  INSTALL -> Demos;
+  INSTALL -> Overview;
+  Demos -> Basics;
+  Overview -> Basics;
+  Basics -> Salsa20;
+  Basics -> KeyWrapping;
+  Salsa20 -> Capstone;
+  KeyWrapping -> Capstone;
+}  
