@@ -43,8 +43,14 @@ labs::LanguageBasics::LanguageBasics> gcdCurried 20 28
 labs::LanguageBasics::LanguageBasics> gcdUncurried (20, 28)
 4
 ```
-These two styles are equivalent at some level. The former is preferred as it affords [partial application] (https://en.wikipedia.org/wiki/Partial_application), but the latter is useful for explicating the correspondence to functions from other languages or documents. 
+These two styles are equivalent at some level. The former is preferred
+as it affords [partial application]
+(https://en.wikipedia.org/wiki/Partial_application), but the latter
+can be useful for explicating the correspondence to functions from other languages or documents. 
 
+* If he helps you, mentally read curried functions as input argument types
+  are all the types prior to the last arrow and the type of the result
+  is the type after the last arrow. 
 * Partial application lets one form a new function from an old one where an argument is fixed.  For instance, `gcdCurried 10` is a function itself! 
     ```sh
     labs::LanguageBasics::LanguageBasics> :t gcdCurried 10
@@ -93,11 +99,13 @@ gcd m n = gcd' (abs m) (abs n)
   where
     gcd' : Integer -> Integer -> Integer
     gcd' x y = if y == 0 then x else gcd' y (x % y)
-    
+
+/* This property states that gcd x y is a divisor of both x and y */
 gcd_common_divisor' : Integer -> Integer -> Bit
 property gcd_common_divisor' x y = x % (gcd x y) == 0 /\ y % (gcd x y) == 0
 ```
-
+* `where` introduces locally scoped definitions. (Mathematicaians use
+  the word "where" in a similar fashion.)
 * function `gcd'` is scoped within `gcd`
 * function `gcd'` is recursive
 * ```sh
