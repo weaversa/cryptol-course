@@ -2,10 +2,12 @@
 
 All of the Cryptol course material (presentations, labs, supporting
 data files) is available on [GitHub](https://github.com).  You can
-acquire a copy by ensuring you're in a writable working directory and
-issuing `git clone https://github.com/weaversa/cryptol-course.git`
-*(no password or keys required)*, or if you don't have `git` installed,
-`curl -L -ocryptol-course.zip
+clone or download the files using the `clone` button on the GitHub
+page, or you can use the command line to acquire a copy by ensuring
+you're in a writable working directory and issuing `git clone
+https://github.com/weaversa/cryptol-course.git` *(no password or keys
+required)*, or if you don't have `git` installed, `curl -L
+-ocryptol-course.zip
 https://github.com/weaversa/cryptol-course/archive/master.zip && unzip
 cryptol-course.zip`.
 
@@ -224,71 +226,47 @@ documentation provided in their respective repositories, found here:
 To load a literate document into Cryptol, change to your
 `cryptol-course` directory in a terminal (Linux) or command prompt
 (Windows), then run Cryptol via a locally installed binary or Docker
-image. We'll use
-[labs/Demos/OneTimePad.md](labs/Demos/OneTimePad.md) as an example.
-
-### Linux
+image. We'll use [labs/Demos/OneTimePad.md](labs/Demos/OneTimePad.md)
+as an example. The literate document can be provided as a parameter
+when starting the Cryptol intepreter:
 
 ```sh
 .../cryptol-course$ cryptol labs/Demos/OneTimePad.md
-...
-
+    ...
 Loading module Cryptol
 Loading module labs::Demos::OneTimePad
 labs::Demos::OneTimePad> 
 ```
 
-Alternatively, you can use the `:module` or `:load` command from within 
-Cryptol to load this document. (To avoid errors, make sure Cryptol 
-was started in the `cryptol-course` directory). 
+Alternatively, you can use the `:module` or `:load` command from
+within Cryptol to load the document. (Either ensure the cryptol
+intepreter is started in the `cryptol-course` directory, or set the
+environment variable CRYPTOLPATH to point to that directory.)
 
 ```sh
 .../cryptol-course$ cryptol
-...
-
+    ...
 Loading module Cryptol
 Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad
 labs::Demos::OneTimePad> 
 ```
 
-### Windows
+### Using Docker on Linux
 
-```sh
-.../cryptol-course> cryptol labs/Demos/OneTimePad.md
-...
-
-Loading module Cryptol
-Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad> 
-```
-
-Alternatively, you can use the `:module` or `:load` command from within 
-Cryptol to load this document. (To avoid errors, make sure Cryptol 
-was started in the `cryptol-course` directory). 
-
-```sh
-...\cryptol-course> cryptol
-...
-
-Loading module Cryptol
-Cryptol> :module labs::Demos::OneTimePad
-Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad> 
-```
-
-### Docker (Linux)
 ```sh
 .../cryptol-course$ docker run --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
+    ...
 Loading module Cryptol
 Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad
 labs::Demos::OneTimePad> 
 ```
 
-### Docker (Windows)
+### Using Docker on Windows
 ```sh
 ...\cryptol-course> docker run --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
+    ...
 Loading module Cryptol
 Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad
