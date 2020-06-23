@@ -136,9 +136,10 @@ Let's patch up that property. (You surely noticed the prime in the property name
 
 ```
 gcd_common_divisor : Integer -> Integer -> Bit
-property gcd_common_divisor x y = if z == 0
-                                  then True
-                                  else x % z == 0 /\ y % z == 0
+property gcd_common_divisor x y =
+    if z == 0
+    then True
+    else x % z == 0 /\ y % z == 0
   where
     z = gcd x y
 ```
