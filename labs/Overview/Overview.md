@@ -6,7 +6,7 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::Overview::Overview
+cryptol> :module labs::Overview::Overview
 ```
 
 Cryptol is a domain specific language and tool suite created by Galois, Inc., 
@@ -74,9 +74,9 @@ Further examples are distributed with the [Cryptol software source](https://gith
 
 [Amazon s2n](https://aws.amazon.com/blogs/security/introducing-s2n-a-new-open-source-tls-implementation/) is "a C99 implementation of the TLS/SSL protocols that is designed to be simple, small, fast, and with security as a priority". TLS/SSL is a suite of cryptographic protocols and algorithms used to provide integrity, confidentiality and other familiar security services. Amazon s2n is an implementation of this suite used to protect communications on Amazon's cloud infrastructure platforms such as Amazon Web Services (AWS) and Amazon Simple Storage Service (S3).
 
-These security property tests are performed as part of a continuous integration pipline using the [Travis Continuous Integration Service](https://travis-ci.com/). Whenever changes are made -- no matter how small -- to the C implementations, Cryptol and SAW evaluations are automatically run to ensure that no security properties of the system have been disrupted by the proposed updates.
+These security property tests are performed as part of a continuous integration pipline using the [Travis Continuous Integration Service](https://travis-ci.com/). Whenever changes are made to the C implementations (no matter how small), Cryptol and SAW evaluations are automatically run to ensure that no security properties of the system have been disrupted by the proposed updates.
 
-A thorough description of the research, design decisions, and application of Cryptol to evaluating cryptographic implementations in Amazon's s2n system can be found in the paper [Contiuous Formal Verificationof Amazon s2n](https://link.springer.com/chapter/10.1007/978-3-319-96142-2_26). This paper was selected by NSA's Science of Security group for honorable mention in the [7th Annual Best Scientific Cybersecurity Paper Competition](https://cps-vo.org/group/sos/papercompetition/pastcompetitions).
+A thorough description of the research, design decisions, and application of Cryptol to evaluating cryptographic implementations in Amazon's s2n system can be found in the paper [Contiuous Formal Verification of Amazon s2n](https://link.springer.com/chapter/10.1007/978-3-319-96142-2_26). This paper was selected by NSA's [Science of Security](https://www.nsa.gov/what-we-do/research/science-of-security/) group for honorable mention in the [7th Annual Best Scientific Cybersecurity Paper Competition](https://cps-vo.org/group/sos/papercompetition/pastcompetitions).
 
 You can review the code for yourself on [Amazon's s2n Github Repository](https://github.com/awslabs/s2n). The code relevant to the specification and evaluation of the HMAC routines can be found in the `tests/saw/` directory.
 
@@ -87,9 +87,9 @@ Further exposition on the development of these integration tests can be found in
 
 ## Verifying Cryptographic Implementations: The `xxhash` Algorithm
 
-The tools that Cryptol provides access to allows users to bring together cryptographic implementations from other languages like *Java* or *C* and prove that they are equivalent to "gold standard" specifications one can create in Cryptol. This allows users to iteratively optimize code in performance-centric or system languages while maintaining a single trusted specification in Cryptol.
+The tools that Cryptol provides allows users to bring together cryptographic implementations from other languages like *Java* or *C* and prove that they are equivalent to "gold standard" specifications one can create in Cryptol. This allows users to iteratively optimize code in performance-centric or system languages while maintaining a single trusted specification in Cryptol.
 
-Take a look through the [`saw-demos` repository](https://github.com/GaloisInc/saw-demos) by GaloisInc hosted on GitHub which highlights several of these applications. We will do a brief survey of the `xxhash` example which you can find in the `demos/xxhash` directory of this repository. This is a demo of using Cryptol algorithm specifications (along with SAW). 
+Take a look through the [saw-demos repository](https://github.com/GaloisInc/saw-demos) by Galois which highlights several of these applications. We will do a brief survey of the `xxhash` example which you can find in the `demos/xxhash` directory of this repository. This is an example of using Cryptol algorithm specifications (along with SAW). *(You can clone this repository and perform the exercises yourself if you like.)*
 
 This directory contains the following files:
 
@@ -186,7 +186,7 @@ uint32_t XXH32(void const *const input, size_t const length, uint32_t const seed
 ```
 Finally the files [```xxhash32-ref.saw```](https://github.com/GaloisInc/saw-demos/blob/master/demos/xxhash/xxhash32-ref.saw) and [```xxhash64-ref.saw```](https://github.com/GaloisInc/saw-demos/blob/master/demos/xxhash/xxhash64-ref.saw) contain SAW scripts which drive the verification that this `C` code is equivalent to the specification found in this Cryptol specification of `xxhash`.
 
-Running `make` at the commandline will initiate the verification for both the 32- and 64-bit implementations, producing the following output:
+If you have installed the `saw-demos` repo, running `make` at the command line will initiate the verification for both the 32- and 64-bit implementations, producing the following output:
 
 ```sh
 $ make
@@ -200,7 +200,7 @@ saw xxhash32-ref.saw
 [17:48:43.617] Checking proof obligations XXH_rotl32 ...
 [17:48:43.778] Proof succeeded! XXH_rotl32
 
-... output ommitted ...
+... output omitted ...
 
 [17:48:54.220] Checking proof obligations XXH64 ...
 [17:48:54.311] Proof succeeded! XXH64
@@ -210,7 +210,7 @@ These scripts will check that the `C` implementations match the Cryptol specific
 
 ## Verifying Properties about Algorithms
 
-Cryptol provides an easy interface for using powerful tools such as SMT solvers for verifying properties about algorithms we care about. Throughout this course, we will introduce examples and explain how to take advantage of these tools in your own designs and evaluations. Here is an example packaged with the Cryptol source that demonstrates a simple but important property about an encryption algorithm which only uses the (XOR) operation:
+Cryptol provides an easy interface for using powerful tools such as SMT solvers for verifying properties about algorithms we care about. Throughout this course, we will introduce examples and explain how to take advantage of these tools in your own designs and evaluations. Here is an example packaged with the Cryptol source that demonstrates a simple but important property about an encryption algorithm which only uses the `XOR` operation:
 
 ```
 encrypt : {a}(fin a) => [8] -> [a][8] -> [a][8]
@@ -256,12 +256,12 @@ We will introduce some of these features below and discuss how they support buil
 
 ## Basic Data Types
 
-Cryptol was designed to provide easy access to the sorts of data and operations that appear in Cryptographic algorithms and specifications. There are five basic data types provided by Cryptol: bits, sequences, integers, tuples, and records. Cryptol also supports the ability to create user-defined types built up from the basic types. In this section, we present some basic examples demonstrating these types; note that commands using `:t` are a request to Cryptol to report the type of argument.
+Cryptol was designed to provide easy access to the sorts of data and operations that appear in Cryptographic algorithms and specifications. There are five basic data types provided by Cryptol: bits, sequences, integers, tuples, and records. Cryptol also supports the ability to create user-defined types built up from the basic types. In this section, we present some basic examples demonstrating these types; note that commands using `:type` are a request to Cryptol to report the type of argument.
 
  * **Bits** - The simplest data type, bits can take on two values: `True` and `False`. Single-bit operations like `and` (`/\`), `or` (`\/`), and `not` (`~`) are available.
 
 ```haskell
-Cryptol> :t True
+Cryptol> :type True
 True : Bit
 Cryptol> True /\ False
 False
@@ -275,15 +275,15 @@ False
 
 ```haskell
 Cryptol> let s1 = [True, True, False, True]
-Cryptol> :t s1
+Cryptol> :type s1
 s1 : [4]
 Cryptol> s1
 0xd
 Cryptol> let s2 = [0x1f, 0x11, 0x03, 0xd5]
-Cryptol> :t s2
+Cryptol> :type s2
 s2 : [4][8]
 Cryptol> let s3 = [[0x1, 0x2], [0x3, 0x4], [0x5, 0x6]]
-Cryptol> :t s3
+Cryptol> :type s3
 s3 : [3][2][4]
 ```
  
@@ -302,7 +302,7 @@ Cryptol> 123456789234567890+234567890123456789 : Integer
  
 ```haskell
 Cryptol> let tup = (1 : Integer, 0x02, [0x31, 0x32])
-Cryptol> :t tup
+Cryptol> :type tup
 tup : (Integer, [8], [2][8])
 Cryptol> tup.0
 1
@@ -336,10 +336,10 @@ Cryptol provides a collection of built-in operators to build expressions and per
 
 There are many more. A list of the currently defined symbols and operators are available by typing the `:browse` command in the interpreter.
 
-An interesting feature of Cryptol's type system is that operators are typed. You can check this with the `:t` command in the interpreter just as you can for data:
+An interesting feature of Cryptol's type system is that operators are typed. You can check this with the `:type` command in the interpreter just as you can for data:
 
 ```sh
-labs::overview::overview> :t (&&)
+labs::overview::overview> :type (&&)
 (&&) : {a} (Logic a) => a -> a -> a
 ```
 
@@ -408,7 +408,7 @@ This provides a type for `RotWord` (`[4][8] -> [4][8]`) and a definition (`RotWo
 ```sh
 labs::overview::overview> RotWord [0x01, 0x02, 0x03, 0x04]
 [0x02, 0x03, 0x04, 0x01]
-labs::overview::overview> :t RotWord 
+labs::overview::overview> :type RotWord 
 RotWord : [4][8] -> [4][8]
 ```
 
@@ -434,7 +434,7 @@ Building up more complex properties and relationships between the components of 
 ```sh
 labs::overview::overview> \(x:[32]) -> x*x
 <function>
-labs::overview::overview> :t \(x:[32]) -> x*x
+labs::overview::overview> :type \(x:[32]) -> x*x
 (\(x : [32]) -> x * x) : [32] -> [32]
 Main> (\(x:[32]) -> x*x) 3
 0x00000009
@@ -536,14 +536,14 @@ labs::overview::overview> if False then 0x2 else 0x3
 Cryptol conditionals are subject to typing conditions, and the two branches must have the same type to be a valid conditional expression. The type of a conditional expression is the shared type of the two branches.
 
 ```sh
-labs::overview::overview> :t if True then 0x2 else 0x3
+labs::overview::overview> :type if True then 0x2 else 0x3
 (if True then 0x2 else 0x3) : [4]
 ```
 
 If the two branches are typed differently, Cryptol flags this as an error:
 
 ```sh
-labs::overview::overview> :t if True then 2:[16] else 3:[32]
+labs::overview::overview> if True then 2:[16] else 3:[32]
 
 [error] at <interactive>:1:27--1:33:
   Type mismatch:
@@ -605,3 +605,4 @@ starting with the initial value.
 
 * [Cryptol Semantics](https://github.com/GaloisInc/cryptol/blob/master/docs/Semantics.pdf) -- A guide to Cryptol language semantics and overview of the underlying representations of Cryptol's type system
 
+* [Cryptol Style Guide](cryptol-style.md) -- A set of guidelines for naming and formatting to enhance consistency and comprehensibility within Cryptol specificiations
