@@ -1,5 +1,14 @@
 # Salsa20 Security Properties
 
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+Cryptol document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter running
+in the `cryptol-course` directory with:
+
+```shell
+cryptol> :m labs::Salsa20::Salsa20Props
+```
+
 In this lab, we consider additional properties of the [Salsa20 stream
 cipher](Salsa20Spec.md) [5], which has undergone much scrutiny since
 being proposed for [eSTREAM, the ECRYPT Stream Cipher Project](https://www.ecrypt.eu.org/stream).
@@ -211,22 +220,17 @@ property Salsa20EncryptInvolutionProp_2_128 = Salsa20EncryptInvolutionProp`{2,12
 
 # References
 
-[1] [The Salsa20 core]
-    (http://cr.yp.to/salsa20.html)
+[1] [The Salsa20 core](http://cr.yp.to/salsa20.html)
     D. Bernstein
 
-[2] [Response to "On the Salsa20 Core Function"]
-    (https://cr.yp.to/snuffle/reoncore-20080224.pdf)
+[2] [Response to "On the Salsa20 Core Function"](https://cr.yp.to/snuffle/reoncore-20080224.pdf)
     D. Bernstein
 
-[3] [On the Salsa20 Core Function]
-    (https://www.iacr.org/archive/fse2008/50860470/50860470.pdf)
+[3] [On the Salsa20 Core Function](https://www.iacr.org/archive/fse2008/50860470/50860470.pdf)
     J.C. Hernandez-Castro, et. al.
 
-[4] [Re-rolled Salsa20 function]
-    (https://groups.google.com/d/msg/sci.crypt/AkQnSoO40BA/o4eG96rjkgYJ)
+[4] [Re-rolled Salsa20 function](https://groups.google.com/d/msg/sci.crypt/AkQnSoO40BA/o4eG96rjkgYJ)
     P. Rubin, D. Wagner, et. al.
 
-[5] [Salsa20 specification]
-    (https://cr.yp.to/snuffle/spec.pdf)
+[5] [Salsa20 specification](https://cr.yp.to/snuffle/spec.pdf)
     D. Bernstein
