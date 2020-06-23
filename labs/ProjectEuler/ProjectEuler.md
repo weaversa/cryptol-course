@@ -1,3 +1,17 @@
+# Introduction
+
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+Cryptol document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter running
+in the `cryptol-course` directory with:
+
+```shell
+cryptol> :m labs::ProjectEuler::ProjectEuler
+```
+
+We start by defining a new module for this lab and importing some accessory
+modules that we will use:
+
 ```
 module labs::ProjectEuler::ProjectEuler where
 

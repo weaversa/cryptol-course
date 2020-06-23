@@ -1,7 +1,19 @@
+# Introduction
+
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+Cryptol document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter running
+in the `cryptol-course` directory with:
+
+```shell
+cryptol> :m labs::CRC::CRC
+```
+
+We start by defining a new module for this lab:
+
 ```
 module labs::CRC::CRC where
 ```
-
 
 # Cyclic Redundancy Checks
 
@@ -59,8 +71,8 @@ CRCSimple :
     {n, m}
     (fin n, fin m) =>
     [n+1] -> [m] -> [n]
-CRCSimple G M = zero
-  where M' = False //Concatenate M with n zero bits
+CRCSimple G M = undefined
+  where M' = undefined //Concatenate M with n zero bits
 ```
 
 This test-case is from [1].
@@ -120,19 +132,19 @@ property CRCSimple_XFERTest = CRCSimple G (join testM) == 0x140493e5
 To support the full suite of CRC32's from [3], we need to add four
 parameters.
 
-* Initial Fill
+* Initial Fill (`fill`)
    * Refers to the initial fill of a CRC when implemented by a linear
      feedback shift register. Since we're implementing CRC here with
      polynomial arithmetic, we can add this parameter by XORing the
      initial fill into the high-order bits of the zero-expanded
      message before calculating the modulus.
-* Post-XOR
+* Post-XOR (`post`)
     * A sequence of bits that are XOR'd into the modulus to create the
       final output.
-* Reflect Input Bytes
+* Reflect Input Bytes (`rib`)
     * Denotes whether or not the input (when viewed as a sequence of
       bytes) should have the bits inside each byte reversed.
-* Reverse Output
+* Reverse Output (`ro`)
     * Denotes whether or not the output (when viewed as a bitvector)
       should be reversed.
 
@@ -151,12 +163,12 @@ CRC :
     (fin n, fin m) =>
     [n+1] -> [n] -> [n] -> Bit -> Bit -> [m][8] -> [n]
 CRC G fill post rib ro M =
-    zero //if R should be reversed, then reverse R, else return R
+    undefined //if R should be reversed, then reverse R, else return R
   where
-    R      = False //fill' XOR M'' modulus G XORd with post
-    M'     = False //reflect the input bytes, if necessary, and then join the bytes into a bitvector
-    M''    = False //extend M' with n zero bits
-    fill'  = False //extend fill with (m*8) zero bits so that fill' matches the type of M''
+    R      = undefined //fill' XOR M'' modulus G XOR post
+    M'     = undefined //reflect the input bytes, if necessary, and then join the bytes into a bitvector
+    M''    = undefined //extend M' with n zero bits
+    fill'  = undefined //extend fill with (m*8) zero bits so that fill' matches the type of M''
 ```
 
 Here is a definition of CRC32, using the parameterized `CRC` function.
@@ -179,19 +191,18 @@ simulator](http://www.sunshine2k.de/coding/javascript/crc/crc_js.html)
 ### BZIP2
 
 ```
-CRC32_BZIP2 = CRC G 0 0 False False
+CRC32_BZIP2 = CRC G undefined undefined undefined undefined
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
 property CRC32_BZIP2Test =
     CRC32_BZIP2 testM == 0x459DEE61
-
 ```
 
 
 ### C
 
 ```
-CRC32_C = CRC G 0 0 False False
+CRC32_C = CRC G undefined undefined undefined undefined
   where G = <| x^^32 + x^^28 + x^^27 + x^^26 + x^^25 + x^^23 + x^^22 + x^^20 + x^^19 + x^^18 + x^^14 + x^^13 + x^^11 + x^^10 + x^^9 + x^^8 + x^^6 + 1 |>
 
 property CRC32_CTest =
@@ -203,7 +214,7 @@ property CRC32_CTest =
 ### D
 
 ```
-CRC32_D = CRC G 0 0 False False
+CRC32_D = CRC G undefined undefined undefined undefined
   where G = <| x^^32 + x^^31 + x^^29 + x^^27 + x^^21 + x^^20 + x^^17 + x^^16 + x^^15 + x^^12 + x^^11 + x^^5 + x^^3 + x + 1 |>
 
 property CRC32_DTest =
@@ -214,7 +225,7 @@ property CRC32_DTest =
 ### MPEG2
 
 ```
-CRC32_MPEG2 = CRC G 0 0 False False
+CRC32_MPEG2 = CRC G undefined undefined undefined undefined
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
 property CRC32_MPEG2Test =
@@ -225,7 +236,7 @@ property CRC32_MPEG2Test =
 ### POSIX
 
 ```
-CRC32_POSIX = CRC G 0 0 False False
+CRC32_POSIX = CRC G undefined undefined undefined undefined
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
 property CRC_POSIXTest =
@@ -236,7 +247,7 @@ property CRC_POSIXTest =
 ### Q
 
 ```
-CRC32_Q = CRC G 0 0 False False
+CRC32_Q = CRC G undefined undefined undefined undefined
   where G = <| x^^32 + x^^31 + x^^24 + x^^22 + x^^16 + x^^14 + x^^8 + x^^7 + x^^5 + x^^3 + x + 1 |>
 
 property CRC32_QTest = 
@@ -247,7 +258,7 @@ property CRC32_QTest =
 ### JAMCRC
 
 ```
-CRC32_JAMCRC = CRC G 0 0 False False
+CRC32_JAMCRC = CRC G undefined undefined undefined undefined
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
 property CRC32_JAMCRCTest =
@@ -258,7 +269,7 @@ property CRC32_JAMCRCTest =
 ### XFER
 
 ```
-CRC32_XFER = CRC G 0 0 False False
+CRC32_XFER = CRC G undefined undefined undefined undefined
   where G = <| x^^32 + x^^7 + x^^5 + x^^3 + x^^2 + x + 1 |>
 
 property CRC32_XFERTest =

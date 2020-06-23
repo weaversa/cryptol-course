@@ -37,8 +37,10 @@ language: c
 script: 
   - export CRYPTOLPATH=$(pwd)
 # Interpreter lab tests
-  - cryptol -e -c ":m labs::interpreter::test" -c ":s base=10" -c "x + 2"
-  - cryptol -e -b labs/interpreter/test.sry
+  - cryptol -e -c ":m labs::Interpreter::test" -c ":s base=10" -c "x + 2"
+  - cryptol -e -b labs/Interpreter/test.sry
+# Arithmetic verification tests
+  - "! command -v saw >/dev/null 2>&1 || make -C labs/saw/arithmetic-verification"
 # Bittwiddling lab tests
   - cryptol -e -c ":l labs/saw/bittwiddling/bittwiddling.md"
   - clang -emit-llvm -c labs/saw/bittwiddling/bittwiddling.c -o labs/saw/bittwiddling/bittwiddling.bc
@@ -52,6 +54,10 @@ script:
 # CRC lab tests
   - cryptol -e -c ":m labs::CRC::CRC"
   - cryptol -e -c ":m labs::CRC::CRCAnswers"
+# LoremIpsum tests
+  - cryptol -e -c ":m labs::LoremIpsum::LoremIpsum"
+  - cryptol -e -c ":m labs::LoremIpsum::LoremIpsumAnswers"
+  - cryptol -e -c ":m labs::LoremIpsum::KLI20"
 # Demo lab tests
   - cryptol -e -c ":m labs::Demos::Caesar"
   - cryptol -e -c ":m labs::Demos::OneTimePad"
@@ -67,3 +73,6 @@ script:
 # Crypto Proofs lab tests
   - cryptol -e -c ":m labs::CryptoProofs::CryptoProofs"
   - cryptol -e -c ":m labs::CryptoProofs::CryptoProofsAnswers"
+# Key Wrapping lab tests
+  - cryptol -e -c ":m labs::KeyWrapping::KeyWrapping"
+  - cryptol -e -c ":m labs::KeyWrapping::KeyWrappingAnswers"

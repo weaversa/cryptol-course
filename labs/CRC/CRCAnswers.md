@@ -1,7 +1,19 @@
+# Introduction
+
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+Cryptol document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter running
+in the `cryptol-course` directory with:
+
+```shell
+cryptol> :m labs::CRC::CRCAnswers
+```
+
+We start by defining a new module for this lab:
+
 ```
 module labs::CRC::CRCAnswers where
 ```
-
 
 # Cyclic Redundancy Checks
 
@@ -122,19 +134,19 @@ property CRCSimple_XFERTest = CRCSimple G (join testM) == 0x140493e5
 To support the full suite of CRC32's from [3], we need to add four
 parameters.
 
-* Initial Fill
+* Initial Fill (`fill`)
    * Refers to the initial fill of a CRC when implemented by a linear
      feedback shift register. Since we're implementing CRC here with
      polynomial arithmetic, we can add this parameter by XORing the
      initial fill into the high-order bits of the zero-expanded
      message before calculating the modulus.
-* Post-XOR
+* Post-XOR (`post`)
     * A sequence of bits that are XOR'd into the modulus to create the
       final output.
-* Reflect Input Bytes
+* Reflect Input Bytes (`rib`)
     * Denotes whether or not the input (when viewed as a sequence of
       bytes) should have the bits inside each byte reversed.
-* Reverse Output
+* Reverse Output (`ro`)
     * Denotes whether or not the output (when viewed as a bitvector)
       should be reversed.
 

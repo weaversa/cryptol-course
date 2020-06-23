@@ -1,22 +1,36 @@
 # Introduction
 
-Cryptol is a domain specific language and tool suite created by Galois, Inc,, with support from NSA cryptographers. The language has lots of cool programming language features that make it well suited for applications in high assurance systems and cryptographic development, including:
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+Cryptol document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter running
+in the `cryptol-course` directory with:
+
+```shell
+cryptol> :m labs::Overview::Overview
+```
+
+Cryptol is a domain specific language and tool suite created by Galois, Inc., 
+with support from NSA cryptographers. The language has lots of cool programming
+language features that make it well suited for applications in high assurance 
+systems and cryptographic development, including:
 
  * strong, static typing
  * type inference
  * parametric size-polymorphism
  * higher-order functions
 
-Cryptol is used to create gold-standard algorithm specifications and provides access to tools that facilitate their exploration and evalution.
+Cryptol is used to create gold-standard algorithm specifications and provides 
+access to tools that facilitate their exploration and evalution.
 
-This lab will provide a quick overview of Cryptol, some motivating applications where the language and technology have been deployed, and to the language features which make Cryptol an excellent choice for these applications.
+This lab will provide a quick overview of Cryptol, some motivating applications 
+where the language and technology have been deployed, and to the language 
+features which make Cryptol an excellent choice for these applications.
 
 More information about Cryptol is available at [http://www.cryptol.net](https://cryptol.net).
 
-
 # First Steps: Hello, Cryptol!
 
-A grand tradition when learning a new programming language is to test the waters with a Hello World program. This file [overview.md](overview.md) is literate Cryptol which means that it can be loaded directly into the Cryptol interpreter. In this file we've defined a function `sayHello` which is specified as follows:
+A grand tradition when learning a new programming language is to test the waters with a Hello World program. In this file we've defined a function `sayHello` which is specified as follows:
 
 ```
 module labs::Overview::Overview where
