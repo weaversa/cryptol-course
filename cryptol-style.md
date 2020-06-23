@@ -220,6 +220,18 @@ When not constrained by the above it is probably best to follow Haskell's style:
 > Use camel case (e.g. `functionName`) when naming functions and upper
 > camel case (e.g. `DataType`) when naming data types.
 
+Curried vs. Uncurried Functions
+------------------
+
+[Curried functions] (https://en.wikipedia.org/wiki/Currying) are
+preferred as they afford [partial application] (https://en.wikipedia.org/wiki/Partial_application) 
+and tend to reduce the number of parentheses. However, when writing
+Cryptol against a specification document, individual functions should follow
+the style of the functions from the document (which will usually be uncurried).
+
+
+
+
 # STOPPED !!!
 
 Comments
