@@ -1,3 +1,21 @@
+# Acquiring the Cryptol course material
+
+All of the Cryptol course material (presentations, labs, supporting
+data files) is available on [GitHub](https://github.com).  You can
+clone or download the files using the `clone` button on the GitHub
+page, or you can use the command line to acquire a copy by ensuring
+you're in a writable working directory and issuing `git clone
+https://github.com/weaversa/cryptol-course.git` *(no password or keys
+required)*, or if you don't have `git` installed, `curl -L
+-ocryptol-course.zip
+https://github.com/weaversa/cryptol-course/archive/master.zip && unzip
+cryptol-course.zip`.
+
+The presentation material is formatted in Markdown (.md) files.  These
+can be viewed directly in most browsers by installing a Markdown
+viewer extension *(an exercise left to the reader)*, or by accessing the
+material directly from the GitHub website.
+
 # Installing Cryptol and SAW
 
 This course currently focuses on learning to program in Cryptol. As
@@ -7,9 +25,9 @@ interpreter.
 Some challenge labs make use of SAW, a companion verification tool
 associated with Cryptol. However, SAW is not a requirement for success
 here. Also, [Galois](https://galois.com) (the maintainer of Cryptol
-and SAW) does not currently provide a Windows installer for SAW and
+and SAW) does not currently provide a Windows installer for SAW, and
 Homebrew ([Option 2](#option-2-homebrew)) doesn't provide SAW
-installers on any platform. So, if you want to use SAW, we recommend
+installers for any platform. So if you want to use SAW, we recommend
 installing SAW via docker ([Option 1](#option-1-docker)) as it is
 platform agnostic and easy to install and use.
 
@@ -18,10 +36,10 @@ platform agnostic and easy to install and use.
 [Docker](https://www.docker.com) images are available for both
 [Cryptol](https://hub.docker.com/repository/docker/cryptolcourse/cryptol)
 and
-[SAW](https://hub.docker.com/repository/docker/cryptolcourse/saw). Mind,
-Galois's own Cryptol and SAW docker containers. However, the ones we
-suggest here are suggested for this class because we have add with
-more theorem provers to the containers.  If Docker has been
+[SAW](https://hub.docker.com/repository/docker/cryptolcourse/saw). These
+are not Galois's own Cryptol and SAW docker containers; the ones we
+suggest here are recommended for this class because as they have more
+theorem provers installed in the containers.  If Docker has been
 [installed](https://docs.docker.com/get-docker), it is easy to `pull`
 and `run` these images. *(Note that this docker approach may require
 `sudo` privileges. If so, and you don't have such privileges, follow
@@ -97,10 +115,10 @@ specs::Misc::Sudoku> :quit
 
 [Homebrew](https://brew.sh) is a package manager for OSX, Linux, and
 Windows Subsystem for Linux. Instructions for installing Homebrew can
-be found on Homebrew's website [https://brew.sh](https://brew.sh), and
-consist of pasting a simple command into a shell prompt.
+be found on [Homebrew's website](https://brew.sh), and consist of
+pasting a simple command into a shell prompt.
 
-Once Homebrew is installed, Cryptol (along with it's `z3` dependency)
+Once Homebrew is installed, Cryptol (along with its `z3` dependency)
 can be installed via:
 
 ```sh
@@ -208,73 +226,49 @@ documentation provided in their respective repositories, found here:
 To load a literate document into Cryptol, change to your
 `cryptol-course` directory in a terminal (Linux) or command prompt
 (Windows), then run Cryptol via a locally installed binary or Docker
-image. We'll use
-[labs/Demos/OneTimePad.md](labs/Demos/OneTimePad.md) as an example.
-
-### Linux
+image. We'll use [labs/Demos/OneTimePad.md](labs/Demos/OneTimePad.md)
+as an example. The literate document can be provided as a parameter
+when starting the Cryptol intepreter:
 
 ```sh
-.../cryptol-course> cryptol labs/Demos/OneTimePad.md
-...
-
+.../cryptol-course$ cryptol labs/Demos/OneTimePad.md
+    ...
 Loading module Cryptol
 Loading module labs::Demos::OneTimePad
 labs::Demos::OneTimePad> 
 ```
 
-Alternatively, you can use the `:m` or `:l` command from within 
-Cryptol to load this document. (To avoid errors, make sure Cryptol 
-was started in the `cryptol-course` directory). 
+Alternatively, you can use the `:module` or `:load` command from
+within Cryptol to load the document. (Either ensure the cryptol
+intepreter is started in the `cryptol-course` directory, or set the
+environment variable CRYPTOLPATH to point to that directory.)
 
 ```sh
-.../cryptol-course> cryptol
-...
-
+.../cryptol-course$ cryptol
+    ...
 Loading module Cryptol
-Cryptol> :m labs::Demos::OneTimePad
+Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad
 labs::Demos::OneTimePad> 
 ```
 
-### Windows
+### Using Docker on Linux
 
 ```sh
-.../cryptol-course> cryptol labs/Demos/OneTimePad.md
-...
-
+.../cryptol-course$ docker run --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
+    ...
 Loading module Cryptol
+Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad
 labs::Demos::OneTimePad> 
 ```
 
-Alternatively, you can use the `:m` or `:l` command from within 
-Cryptol to load this document. (To avoid errors, make sure Cryptol 
-was started in the `cryptol-course` directory). 
-
-```sh
-...\cryptol-course> cryptol
-...
-
-Loading module Cryptol
-Cryptol> :m labs::Demos::OneTimePad
-Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad> 
-```
-
-### Docker (Linux)
-```sh
-.../cryptol-course> docker run --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
-Loading module Cryptol
-Cryptol> :m labs::Demos::OneTimePad
-Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad> 
-```
-
-### Docker (Windows)
+### Using Docker on Windows
 ```sh
 ...\cryptol-course> docker run --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
+    ...
 Loading module Cryptol
-Cryptol> :m labs::Demos::OneTimePad
+Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad
 labs::Demos::OneTimePad> 
 ```
