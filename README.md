@@ -10,6 +10,61 @@ admittedly, we're a little light on SAW material right now.
 
 -----
 
+## How To Take This Course
+
+Many of the labs in this course are taught using
+[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
+documents --- that is, they can be loaded directly into the Cryptol
+interpreter. This README.md is no exception!
+
+Labs have exercises that look like this:
+
+**EXERCISE:** Literate Cryptol documents are meant to be opened up
+along side and edited while you work through the labs. For instance,
+you might be asked to fill in a portion of a Cryptol snippet:
+
+```comment
+algebra_fact : Integer -> Integer -> Bit
+property algebra_fact x y =
+    //  Use the distributive law to write an equivalent statement
+    (x + y) * (x + y) == undefined
+```
+
+A student might solve this problem by changing this snippet in their
+editor to the following:
+
+```
+algebra_fact : Integer -> Integer -> Bit
+property algebra_fact x y =
+    (x + y) * (x + y) == x^^2 + 2*x*y + y^^2 
+```
+
+and then reloading the module using `:reload` (`:r` for short).
+
+Exercises will often have checks that follow along with instructions
+for how to verify their work. Check your answer with the following
+command; your output should look similar to the following:
+
+```sh
+ $ cryptol
+ ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
+ ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
+ ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
+ version 2.8.1 (ce0365f)
+ 
+ Loading module Cryptol
+ Cryptol> :load README.md
+ Loading module Cryptol
+ Loading module Main
+ Main> :prove algebra_fact 
+ Q.E.D.
+ (Total Elapsed Time: 0.056s, using Z3)
+```
+
+Don't worry -- the first lab walks you through [installing and running
+Cryptol](INSTALL.md).
+
+
 ## Suggested Lab Order
 
 1. [Installation](INSTALL.md): Get up and running.
@@ -70,61 +125,6 @@ different backgrounds. Here are some of them:
    perform relatively simple calculations. This is a good introduction
    to how one can use Cryptol and SAW to prove that an implementation
    matches it's specification.
-
-
-## How To Take This Course
-
-Many of the labs in this course will be taught using
-[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
-documents --- that is, they can be loaded directly into the Cryptol
-interpreter. This README.md is no exception!
-
-Labs have exercises that look like this:
-
-**EXERCISE:** Literate Cryptol documents are meant to be opened up
-along side and edited while you work through the labs. For instance,
-you might be asked to fill in a portion of a Cryptol snippet:
-
-```comment
-algebra_fact : Integer -> Integer -> Bit
-property algebra_fact x y =
-    //  Use the distributive law to write an equivalent statement
-    (x + y) * (x + y) == undefined
-```
-
-A student might solve this problem by changing this snippet in their
-editor to the following:
-
-```
-algebra_fact : Integer -> Integer -> Bit
-property algebra_fact x y =
-    (x + y) * (x + y) == x^^2 + 2*x*y + y^^2 
-```
-
-and then reloading the module using `:reload` (`:r` for short).
-
-Exercises will often have checks that follow along with instructions
-for how to verify their work. Check your answer with the following
-command; your output should look similar to the following:
-
-```sh
- $ cryptol
- ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
- ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
- ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
- version 2.8.1 (ce0365f)
- 
- Loading module Cryptol
- Cryptol> :load README.md
- Loading module Cryptol
- Loading module Main
- Main> :prove algebra_fact 
- Q.E.D.
- (Total Elapsed Time: 0.056s, using Z3)
-```
-
-Don't worry -- the first lab walks you through [installing and running
-Cryptol](INSTALL.md).
 
 
 ## Supporting Materials
