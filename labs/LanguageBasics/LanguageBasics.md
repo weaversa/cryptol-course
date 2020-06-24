@@ -23,9 +23,22 @@ characters so I use:
 labs::LanguageBasics::LanguageBasics> :set ascii = on
 ```
 
-That makes any sequence of 8 bit numbers be displayed as the
-corresponding ASCII string. (This is mostly useful as a pedagogical
-aid.)
+That makes any sequence of octets be displayed as the corresponding
+ASCII string in double quotes (`"`) and an octet outside a sequence be
+displayed as the corresponding ASCII character in single quotes
+(`'`). (This is mostly useful as a pedagogical aid.)
+
+```sh
+labs::LanguageBasics::LanguageBasics> [0x63, 0x61, 0x74]
+"cat"
+labs::LanguageBasics::LanguageBasics> 0x78
+'x'
+```
+
+The Cryptol interpreter parses `"abc"` and `[0x61, 0x62, 0x63]` into
+the exact same internal representation. `:set ascii = on` just causes
+the display of output to be more easily read, not unlike using `:set
+base = 10` to see numbers in base 10.
 
 
 Comments
@@ -35,8 +48,45 @@ Comments
 * `/*` ... `*/` block comment
 
 
+Identifiers
+-----------
+
+Cryptol idenfiers consist of alphanumeric characters plus `'`
+(apostrophe, but read "prime") and `_` (underscore). They must begin
+with an alphabetic character or an underscore. The notational
+convention for `'` is to indicate a related definition, while
+underscore is mostly used to separate words or as a catch all for
+characters we'd like to use but are
+forbidden. [Camel case](https://en.wikipedia.org/wiki/Camel_case) is
+often used when other naming constraints aren't mandated.
+
+```
+mask = 7
+fooBar = 15
+fooBar' = fooBar && mask
+```
+
+Technically, Cryptol supports
+[Unicode](https://en.wikipedia.org/wiki/Unicode), but for simplicity I
+am pretending that it doesn't.
+
+
 Operators
 ---------
+
+Cryptol's `:help` command will provide a brief description of the
+operators in this section by issuing `:help ` followed
+by the name of the operator in parenetheses. For example:
+```sh
+labs::LanguageBasics::LanguageBasics> :help (@)
+
+    (@) : {n, a, ix} (fin ix) => [n]a -> [ix] -> a
+
+Precedence 100, associates to the left.
+
+Index operator.  The first argument is a sequence.  The second argument is
+the zero-based index of the element to select from the sequence.
+```
 
 Many languages differentiate signed and unsigned numbers at the type
 level (e.g. C's `uint32` and `int32`). Cryptol has separate operators
@@ -48,7 +98,7 @@ Following are some really quick examples of operators to remind you
 and show some tricks of Cryptol.
 
 ### Arithmetic: `+`, `-`, `*`, `/`, `%` and `^^`
-#### Signed versions: `/$`and `%$`
+#### Signed versions: `/$` and `%$`
 
 ```sh
 labs::LanguageBasics::LanguageBasics> 1 + 1
@@ -86,7 +136,7 @@ The `0b0100` in the second example needs four bits, so both sides have
 type `[2][4]`. In this case `[~1, 1] == [14, 1]` while `[6, 4 + 5] ==
 [6, 9]` so equality fails.
 
-It is important to be precise about the widths of things!
+**It is important to be precise about the widths of things!**
 
 Comparisons are lexicographic on sequences of numbers.
 
@@ -97,7 +147,7 @@ labs::LanguageBasics::LanguageBasics> [1, 2] < [1, 2]
 False
 ```
 
-### Shifts: `<<`, `>>`, `<<<`, `>>>`
+### Shifts: `<<`, `>>`, `<<<` and `>>>`
 #### Signed version: `>>$`
 
 ```sh
@@ -109,7 +159,7 @@ labs::LanguageBasics::LanguageBasics> 0xa5a <<< 16
 0x5aa
 ```
 
-### Indexing and slicing: `@`, `!`, `@@`, `!!`
+### Indexing and slicing: `@`, `!`, `@@` and `!!`
 
 ```sh
 labs::LanguageBasics::LanguageBasics> "cat" @ 0
@@ -127,10 +177,10 @@ labs::LanguageBasics::LanguageBasics> "dog" # "cow" // Moof!
 "dogcow"
 ```
 
-### Single bit logical:: `/\`, `\/`, `==>`
+### Shortcutting logical:: `/\`, `\/` and `==>`
 
-These are most often used in property statements. `/\` is and `\/` is
-or and `==>` is implies. They have very low precedence.
+These are most often used in property statements. `/\` is "and", `\/` is
+"or" and `==>` is "implies". They have very low precedence.
 
 ```sh
 labs::LanguageBasics::LanguageBasics> 1 == 5 \/ 5 == 5
@@ -138,6 +188,69 @@ True
 labs::LanguageBasics::LanguageBasics> False ==> 1 == 5 /\ 1 != 5
 True
 ```
+
+
+Common Primitives
+-----------------
+
+Cryptol's `:help` command will provide a brief description of the
+primitives in the section by issuing `:help ` followed
+by the name of the primitive.
+
+### Collections of all `False` or all `True` bits
+
+* `0` is a sequence of `False` bits whose type is determinted by the
+context.
+* `zero` is an arbitrary collection of `False` bits whose type
+is determinted by the context.
+  ```sh
+  labs::LanguageBasics::LanguageBasics> zero: ([8], [4])
+  (0x00, 0x0)
+
+  ```
+  Here we produce an order pair of a 0 octext and a 0 nibble.
+* `~0` and `~zero` produce all `True` bits correspondingly.
+
+
+### List manipulation: `take`, `drop`, `tail`, `last` and `reverse`
+```
+labs::LanguageBasics::LanguageBasics> take "dogcow" : [3][8]
+"dog"
+labs::LanguageBasics::LanguageBasics> drop`{2} [2, 3, 5, 7, 11]
+[5, 7, 11]
+labs::LanguageBasics::LanguageBasics> tail [0, 1, 1]
+[1, 1]
+labs::LanguageBasics::LanguageBasics> last [2, 3, 5, 7, 11]
+11
+labs::LanguageBasics::LanguageBasics> reverse [0, 0, 1]
+[1, 0, 0]
+```
+
+Of course the sizes of lists have to be big enough. Also, notice that
+last (which is equivalent to `!0`) returns an element while the others
+return lists.
+
+Often in a Cryptol program, the context will determine the shapes of
+sequences, so that the type annonations (`: [3][8]` and ``{2}` above)
+will be unnecesarry.
+
+### List shape manipulation: `split`, `join`, `transpose`
+#### Variation: `groupBy` 
+```sh
+labs::LanguageBasics::LanguageBasics> split 0xdeadbeef : [8][4]
+[0xd, 0xe, 0xa, 0xd, 0xb, 0xe, 0xe, 0xf]
+labs::LanguageBasics::LanguageBasics> join [0xca, 0xfe]
+0xcafe
+labs::LanguageBasics::LanguageBasics> transpose [[1, 2], [3, 4]]
+[[1, 3], [2, 4]]
+labs::LanguageBasics::LanguageBasics> groupBy`{12} 0x5c00b1 // group into 12 bit chunks 
+[0x5c0, 0x0b1]
+```
+
+In most Cryptol programs, the context will enforce the size of things,
+so the type annotations shown in these examples need not be present.
+
+
 
 
 The Types of Functions
@@ -187,8 +300,9 @@ but the latter can be useful for explicating the correspondence to
 functions from other languages or documents.
 
 * If it helps you, mentally read curried functions like this: input
-  argument types are all the types prior to the last arrow and the
-  type of the result is the type after the last arrow.
+  argument types are all prior to the last arrow and the
+  result type follows the last arrow. Pictorially: `in -> in -> ... ->
+  in -> out`
 * Partial application lets one form a new function from an old one
   where an argument is fixed.  For instance, `gcdCurried 10` is a
   function itself!
@@ -229,23 +343,29 @@ advantageous:
 abs : Integer -> Integer
 abs n = if n >= 0 then n else -n
 
-abs_nonnegative : Integer -> Bit
-property abs_nonnegative x = abs x >= 0
+absNonnegative : Integer -> Bit
+property absNonnegative x = abs x >= 0
 ```
 
 * `abs : Integer -> Integer` is the type signature for `abs`
 * `abs n = if n >= 0 then n else -n` is the definition for `abs` (or function body)
-* `property abs_nonnegative ...` is a property we expect the function to have.
-  * `:check property abs_nonnegative` checks this property with
+* `property absNonnegative ...` is a property we expect the function to have.
+* `:check property absNonnegative` checks this property with
     random tests. It's super cheap unit testing!
   ```sh
-  Main> :check abs_nonnegative 
+  Main> :check absNonnegative 
   Using random testing.
   Passed 100 tests.
   ```
-* Cryptol's `if`-`then`-`else` is much like C's ternary operator
-  `?`...`:`. It is not like the `if`-`then`-`else` control structure.
+* Cryptol's `if`/`then`/`else` is much like C's ternary operator
+  `?`...`:`. It is not like the `if`/`then`/`else` control structure.
 * The reserved word `property` documents that definition's intention.
+* We can go a step further ans `:prove` this property:
+  ```sh
+  Main> :prove absNonnegative 
+  Using random testing.
+  Passed 100 tests.
+  ```
 * Also Cryptol's `:check` with check all functions marked as
   properties in one go.
 
@@ -259,8 +379,8 @@ gcd m n = gcd' (abs m) (abs n)
     gcd' x y = if y == 0 then x else gcd' y (x % y)
 
 /* This property states that gcd x y is a divisor of both x and y */
-gcd_common_divisor' : Integer -> Integer -> Bit
-property gcd_common_divisor' x y
+gcdDividesBoth' : Integer -> Integer -> Bit
+property gcdDividesBoth' x y
     =  x % (gcd x y) == 0
     /\ y % (gcd x y) == 0
 ```
@@ -270,19 +390,19 @@ property gcd_common_divisor' x y
 * function `gcd'` is scoped within `gcd`
 * function `gcd'` is recursive
 * ```sh
-  labs::LanguageBasics::LanguageBasics> :check gcd_common_divisor' 
+  labs::LanguageBasics::LanguageBasics> :check gcdDividesBoth' 
   Using random testing.
   Passed 100 tests.
   ```
-* But `gcd_common_divisor' 0 0` gives a division by 0 error.
+* But `gcdDividesBoth' 0 0` gives a division by 0 error.
   ```sh
-  labs::LanguageBasics::LanguageBasics> gcd_common_divisor' 0 0
+  labs::LanguageBasics::LanguageBasics> gcdDividesBoth' 0 0
   division by 0
   ```
-* We could perhaps have found that with more testing...
+* We could perhaps have found that with more testing:
   ```sh
   labs::LanguageBasics::LanguageBasics> :set tests=1000
-  labs::LanguageBasics::LanguageBasics> :check gcd_common_divisor'
+  labs::LanguageBasics::LanguageBasics> :check gcdDividesBoth'
   Using random testing.
   ERROR for the following inputs:
   0
@@ -292,19 +412,19 @@ property gcd_common_divisor' x y
 * Since `:check` uses randomly generated tests the previous result may
   be intermittent.
 * Properties are useful and in other labs we will actually `:prove` some
-  properties, but you must remember than properties that pass `:check`
-  are not guarantees!
-* Properties may be partially applied: `:check gcd_common_divisor' 0`
+  properties, but you must remember than **properties that pass `:check`
+  are not guarantees!**
+* Properties may be partially applied: `:check gcdDividesBoth' 0`
   finds the problem faster since it only is using random values for
   the second argument.
 
-Let's patch up that property. (You surely noticed the prime in the
-property name which is a giveaway that is not really the property I
-have in mind.)
+Let's patch up that property. (You surely noticed the prime (`'`) in
+the property name which is a giveaway that is not really the property
+I have in mind.)
 
 ```
-gcd_common_divisor : Integer -> Integer -> Bit
-property gcd_common_divisor x y
+gcdDividesBoth : Integer -> Integer -> Bit
+property gcdDividesBoth x y
     = if z == 0
        then True
        else x % z == 0 /\ y % z == 0
@@ -317,9 +437,6 @@ property gcd_common_divisor x y
 * Property corner-cases are handled with `if`-`then`-`else`.
 * Another way to write the conditional part of the property that's a
 bit cooler: `z != 0 ==> x % z == 0 /\ y % z == 0`
-
-
-**Warning:** 
 
 
 Writing Loops
