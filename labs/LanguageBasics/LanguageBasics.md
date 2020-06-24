@@ -1,15 +1,17 @@
-# Introduction
+## Preface
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
-Cryptol document --- that is, it can be loaded directly into the Cryptol
-interpreter. Load this module from within the Cryptol interpreter running
-in the `cryptol-course` directory with:
+This lab is a
+[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
+document—that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter
+running in the `cryptol-course` directory with:
 
 ```shell
 cryptol> :m labs::LanguageBasics::LanguageBasics
 ```
 
-
+The following code declares the module name of this literate Cryptol
+document.
 
 ```
 module labs::LanguageBasics::LanguageBasics where
@@ -25,23 +27,24 @@ get when not specifying bit sizes of numbers. This is **not**
 something you should do when you're new at Cryptol. (In fact, I don't
 do it except when teaching.)
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> :set warnDefaulting = off
 ```
 
-Also some examples have eight bit outputs that are easier to see as
+Also some examples have octets as outputs that are easier to see as
 characters so I use:
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> :set ascii = on
 ```
 
 That makes any sequence of octets be displayed as the corresponding
-ASCII string in double quotes (`"`) and an octet outside a sequence be
-displayed as the corresponding ASCII character in single quotes
-(`'`). (This is mostly useful as a pedagogical aid.)
+[ASCII](https://en.wikipedia.org/wiki/ASCII) string in double quotes
+(`"`) and an octet outside a sequence be displayed as the
+corresponding ASCII character in single quotes (`'`). (This is mostly
+useful as a pedagogical aid.)
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> [0x63, 0x61, 0x74]
 "cat"
 labs::LanguageBasics::LanguageBasics> 0x78
@@ -91,20 +94,41 @@ Data
 Cryptol's "basic" data type is an _n_-dimensional array whose base
 type is bits.
 * 0-d: `False : Bit` and `True: Bit`
-* 1-d: Think bytes, words, nibbles, etc., i.e., a list of bits usually
-  thought of as a number. E.g., `0xaa : [8]` and `0b1011 : [4]`
-* 2-d: Think lists of 1-d objects all of the same size. E.g.,
+* 1-d: Think bytes, words, nibbles, etc., i.e., a sequence of bits of
+  any length usually thought of as a number. E.g., `0x5a : [8]` and
+  `0b1011010 : [7]`. These both compare, in type appropriate contexts,
+  as 170.
+* 2-d: Think sequences of 1-d objects all of the same size. E.g.,
   `[42, 0b010101010101, 0xa5a, 0o5757] : [4][12]`
-* 3-d: Lists of 2-d objects all of the same size. E.g.,
+* 3-d: Sequences of 2-d objects all of the same size. E.g.,
   `[[0, 1], [1, 2], [3, 5], [8, 13]] : [4][2][4]`
 * ...
-  
+
+Things to note:
+* There are no privileged bit widths in Cryptol. `[13]` is just as
+  good a type as `[8]`, `[16]`, `[32]` or `[64]`.
+* Lengths of sequences may be `0`. This is not terribly useful in
+  practice. The possible values in type `[0]` are just `0`; in type
+  `[1]` are `0` and `1`; in type `[2]` are `0`, `1`, `2` and `3`, etc.
+* 1-d sequences of bits are treated as numbers by arithmetic and
+  comparison operators. So for instance, `[True] == (1 : [1])` and
+  `[False, True] == (1 : [2])`
+* Cryptol distinguishes between the different dimensions. In
+  particular `True` and `[True]` are type incompatible.
+
+
 Other data types include:
 * Arbitrary-precision integers: E.g., `2^^1023 - 347835479 : Integer`
 * Heterogeneous tuples: E.g.: `(False, 0b11) : (Bit, [2])` and
   `(True, [1, 0], 7625597484987) : (Bit, [2][1], Integer)`
 * Records with named fields: E.g.,
   `{flag = True, x = 2} : {flag : Bit, x : [4]}`
+* Integers modulo _n_: Types of the form `[n]` already provide
+  [least residue systems](https://en.wikipedia.org/wiki/Modular_arithmetic#Residue_systems)
+  for
+  [integers modulo a power of 2](https://en.wikipedia.org/wiki/Modular_arithmetic#Integers_modulo_n).
+  Types of the form `Z n` provide that for any positive _n_. E.g.,
+  `4 + 4 : Z 7` evaluates to `1`.
 
 
 Operators
@@ -126,7 +150,7 @@ and show some tricks of Cryptol.
 ### Arithmetic: `+`, `-`, `*`, `/`, `%` and `^^`
 #### Signed versions: `/$` and `%$`
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> 1 + 1
 2
 labs::LanguageBasics::LanguageBasics> 1 + 1 : [1]
@@ -142,7 +166,7 @@ is exponentiation
 
 ### Bitwise logical: `~`, `&&`, `||` and `^`
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> ~0b000011001101 && 0o4115 || 0x0d0 ^ 9
 0x8d9
 ```
@@ -152,7 +176,7 @@ Notice there's `0b...` for binary, `0o...` for octal and `0x...` for hexadecimal
 ### Comparison:`==`, `!=`, `<` , `<=`, `>` and `>=`
 #### Signed versions: `<$`, `<=$`, `>$` and `>=$`
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> [~1, 1] == [6, 4 + 5]
 True
 labs::LanguageBasics::LanguageBasics> [~1, 1] == [6, 0b0100 + 5]
@@ -171,7 +195,7 @@ _**It is important to be precise about the widths of things!**_
 
 Comparisons are lexicographic on sequences of numbers.
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> [1, 2] < [1, 3]
 True
 labs::LanguageBasics::LanguageBasics> [1, 2] < [1, 2]
@@ -181,7 +205,7 @@ False
 ### Shifts: `<<`, `>>`, `<<<` and `>>>`
 #### Signed version: `>>$`
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> 0xa5a << 4
 0x5a0
 labs::LanguageBasics::LanguageBasics> 0xa5a << 12
@@ -192,7 +216,7 @@ labs::LanguageBasics::LanguageBasics> 0xa5a <<< 16
 
 ### Indexing and slicing: `@`, `!`, `@@` and `!!`
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> "cat" @ 0
 'c'
 labs::LanguageBasics::LanguageBasics> "dog" @@ [2, 1, 1, 0, 0, 1, 2]
@@ -206,7 +230,7 @@ from the front of the list and `!` and `!!` from the back.
 
 ### Concatenation: `#`
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> "dog" # "cow" // Moof!
 "dogcow"
 ```
@@ -216,7 +240,7 @@ labs::LanguageBasics::LanguageBasics> "dog" # "cow" // Moof!
 These are most often used in property statements. `/\` is "and", `\/` is
 "or" and `==>` is "implies". They have very low precedence.
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> 1 == 5 \/ 5 == 5
 True
 labs::LanguageBasics::LanguageBasics> False ==> 1 == 5 /\ 1 != 5
@@ -235,13 +259,13 @@ by the name of the primitive.
 
 * `0` is a sequence of `False` bits whose type is determined by the
 context.
-  ```sh
+  ```shell
   labs::LanguageBasics::LanguageBasics> 0 : [12]
   0x000
   ```
 * `zero` is an arbitrary collection of `False` bits whose type
 is determined by the context.
-  ```sh
+  ```shell
   labs::LanguageBasics::LanguageBasics> zero: ([8], [4])
   (0x00, 0x0)
   ```
@@ -273,7 +297,7 @@ above) will be unnecessary.
 
 ### List shape manipulation: `split`, `join`, `transpose`
 #### Variation: `groupBy` 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> split 0xdeadbeef : [8][4]
 [0xd, 0xe, 0xa, 0xd, 0xb, 0xe, 0xe, 0xf]
 labs::LanguageBasics::LanguageBasics> join [0xca, 0xfe]
@@ -297,7 +321,7 @@ The Types of Functions
   understand types. For instance the type of the `abs` function which
   we will define later is displayed by:
   
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> :type abs
 abs : Integer -> Integer
 ```
@@ -323,7 +347,7 @@ gcdUncurried: (Integer, Integer) -> Integer
 
 These two functions would be applied as shown:
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> gcdCurried 20 28
 4
 labs::LanguageBasics::LanguageBasics> gcdUncurried (20, 28)
@@ -343,7 +367,7 @@ functions from other languages or documents.
 * Partial application lets one form a new function from an old one
   where an argument is fixed.  For instance, `gcdCurried 10` is a
   function itself!
-  ```sh
+  ```shell
   labs::LanguageBasics::LanguageBasics> :type gcdCurried 10
   gcdCurried 10 : Integer -> Integer
   ```
@@ -389,7 +413,7 @@ property absNonnegative x = abs x >= 0
 * `property absNonnegative ...` is a property we expect the function to have.
 * `:check property absNonnegative` checks this property with
     random tests. It's super cheap unit testing!
-  ```sh
+  ```shell
   labs::LanguageBasics::LanguageBasics> :check absNonnegative 
   Using random testing.
   Passed 100 tests.
@@ -398,7 +422,7 @@ property absNonnegative x = abs x >= 0
   `?`...`:`. It is not like the `if ... then ... else` control structure.
 * The reserved word `property` documents that definition's intention.
 * We can go a step further and `:prove` this property:
-  ```sh
+  ```shell
   labs::LanguageBasics::LanguageBasics> :prove absNonnegative 
   Q.E.D.
   (Total Elapsed Time: 0.032s, using Z3)
@@ -426,18 +450,18 @@ property gcdDividesBoth' x y
   the word "where" in a similar fashion.)
 * function `gcd'` is scoped within `gcd`
 * function `gcd'` is recursive
-* ```sh
+* ```shell
   labs::LanguageBasics::LanguageBasics> :check gcdDividesBoth' 
   Using random testing.
   Passed 100 tests.
   ```
 * But `gcdDividesBoth' 0 0` gives a division by 0 error.
-  ```sh
+  ```shell
   labs::LanguageBasics::LanguageBasics> gcdDividesBoth' 0 0
   division by 0
   ```
 * We could perhaps have found that with more testing:
-  ```sh
+  ```shell
   labs::LanguageBasics::LanguageBasics> :set tests=1000
   labs::LanguageBasics::LanguageBasics> :check gcdDividesBoth'
   Using random testing.
@@ -490,7 +514,7 @@ Writing Loops
 
 * Many of Cryptol's operators naturally extend elementwise over nested
   sequences to any depth.
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> [[[2,3],[5,7]],[[11,13],[17,19]]] + [[[0,1],[1,2]],[[3,5],[8,13]]]
 [[[2, 4], [6, 9]], [[14, 18], [25, 32]]]
 ```
@@ -504,7 +528,7 @@ of multidimensional arrays.
 
 Enumerations serve to provide the indices to loops.
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> [1..10]
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 labs::LanguageBasics::LanguageBasics> [1, 3..10]
@@ -515,7 +539,7 @@ labs::LanguageBasics::LanguageBasics> [1, 3..10]
 
 You can have "infinite" enumerations with `...`.
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> [1...]
 [1, 2, 3, 4, 5, ...]
 ```
@@ -526,7 +550,7 @@ So long as only a finite prefix of any "infinite" calculation is needed we're fi
 
 Loops to accumulate a value are often simple calculations over indices.
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> sum [1..100]
 5050
 ```
@@ -535,7 +559,7 @@ labs::LanguageBasics::LanguageBasics> sum [1..100]
 
 Loops with functions on the indices are written as sequence comprehensions.
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> [n^^3 | n <- [0 .. 10]]
 [0, 1, 8, 27, 64, 125, 216, 343, 512, 729, 1000]
 ```
@@ -572,7 +596,7 @@ encrypt key plainText = cipherText
 
 Many block ciphers are just variations of the above theme. Here's a sample of it in action:
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> encrypt 0x1337c0de 0xdabbad00 
 0x6157c571
 labs::LanguageBasics::LanguageBasics> encrypt 0 0xdabbad00 
@@ -598,7 +622,7 @@ lazyAbsMin : Integer -> Integer -> Integer
 lazyAbsMin x y = if x == 0 then 0 else min (abs x) (abs y)
 ```
 Does not produce an error when `x` is zero, regardless of the value of `y`. For instance:
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> lazyAbsMin 1 (0/0)
 
 division by 0
@@ -620,7 +644,7 @@ sub8 : [4] -> [4]
 sub8 x = x - 8
 ```
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> :prove add8 === sub8
 Q.E.D.
 (Total Elapsed Time: 0.014s, using Z3)
@@ -630,7 +654,7 @@ There is also an `:exhaust` command for finite domains. On occasion
 the machinery behind `:prove` gets overwhelmed and, on small enough
 domains, exhausting works in a reasonable time.
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> :exhaust add8 === sub8
 Using exhaustive testing.
 Passed 16 tests.
@@ -640,7 +664,7 @@ Q.E.D.
 The `:check` command is smart enough to notice small enough domains
 and switch to exhaustion automagically:
 
-```sh
+```shell
 labs::LanguageBasics::LanguageBasics> :check add8 === sub8
 Using exhaustive testing.
 Passed 16 tests.
