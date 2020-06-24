@@ -188,6 +188,9 @@ labs::LanguageBasics::LanguageBasics> "cow" ! 0
 'w'
 ```
 
+Notice that these operators all use 0-based indexing: `@` and `@@`
+from the front of the list and `!` and `!!` from the back.
+
 ### Concatenation: `#`
 
 ```sh
@@ -252,7 +255,7 @@ Of course the sizes of lists have to be big enough. Also, notice that
 others return lists.
 
 Often in a Cryptol program, the context will determine the shapes of
-sequences, so that the type annonations (`: [3][8]` and `` `{2} ``
+sequences, so that the type annotations (`: [3][8]` and `` `{2} ``
 above) will be unnecessary.
 
 ### List shape manipulation: `split`, `join`, `transpose`
@@ -378,14 +381,14 @@ property absNonnegative x = abs x >= 0
   Using random testing.
   Passed 100 tests.
   ```
-* Cryptol's `if`/`then`/`else` is much like C's ternary operator
-  `?`...`:`. It is not like the `if`/`then`/`else` control structure.
+* Cryptol's `if ... then ... else` is much like C's ternary operator
+  `?`...`:`. It is not like the `if ... then ... else` control structure.
 * The reserved word `property` documents that definition's intention.
 * We can go a step further and `:prove` this property:
   ```sh
   labs::LanguageBasics::LanguageBasics> :prove absNonnegative 
-  Using random testing.
-  Passed 100 tests.
+  Q.E.D.
+  (Total Elapsed Time: 0.032s, using Z3)
   ```
 * Also Cryptol's `:check` with check all functions marked as
   properties in one go and, you guessed it, `:prove` works similarly.
@@ -439,9 +442,9 @@ property gcdDividesBoth' x y
   finds the problem faster since it only is using random values for
   the second argument.
 * WARNING: `:prove gcdDividesBoth'` will never complete. If you issue
-  that command, you'll need to use `CTRL-C` once or twice to
-  interrupt. The reason this proof won't complete is too technical for
-  the moment.
+  that command, you'll need to issue the abort sequence (often
+  `Control-C`) once or twice to interrupt and regain control. The
+  reason this proof won't complete is too technical for the moment.
   
 Let's patch up that property. (You surely noticed the prime (`'`) in
 the property name which is a giveaway that is not really the property
@@ -459,10 +462,12 @@ property gcdDividesBoth x y
 
 * Functions may have many associated properties.
 * Properties can have locally scoped definitions.
-* Property corner-cases are handled with `if`-`then`-`else`.
+* Property corner-cases are handled with `if ... then ... else`.
 * Another way to write the conditional part of the property that's a
 bit cooler: `z != 0 ==> x % z == 0 /\ y % z == 0`
-* WARNING: `:prove gcdDividesBoth` will never complete.
+* WARNING: `:prove gcdDividesBoth` will never complete. Don't try it
+  unless your favorite key combination is the abort sequence (often
+  `Control-C`) on your computer.
 
 
 Writing Loops
@@ -565,7 +570,7 @@ The latter shows that you can still write bad crypto with Cryptol! 😉
 
 Notice that both `roundKeys` in `keyExpand` and `roundResults` in
 `encrypt` are self-referential sequences, a paradigm that will often
-occur when coding up cryptoalgorithms.
+occur when coding up cryptography.
 
 
 Laziness
