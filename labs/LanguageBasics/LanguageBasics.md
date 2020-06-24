@@ -640,7 +640,7 @@ Q.E.D.
 The `:check` command is smart enough to notice small enough domains
 and switch to exhaustion automagically:
 
-```sh```
+```sh
 labs::LanguageBasics::LanguageBasics> :check add8 === sub8
 Using exhaustive testing.
 Passed 16 tests.
@@ -673,29 +673,32 @@ signatures.
 ### Provide additional types to aid in debugging
 
 Many of the errors in coding Cryptol will be instances of type
-mismatching. If you can't see your problem based on the error
-message, try adding addition type annotations. This
+mismatching. If you can't see your problem based on the error message,
+try adding more type annotations. This
 * makes the interpreter do less work trying alternative possibilites
 and, consequently, can make error messages more comprehensible
 * reduces the body of code to examine for bugs (a sort of binary bug
 search)
-* can get you to notice where you blew it.
+* can get you to notice where you blew it
 
 
 Here Abide Monsters
 -------------------
 
-Following is some code that supports this lab but is not discussed for
-pedagogical reasons. It does serve to illustrate the type signature
-and function definitions can be separated within a file. A practice
-that is **strongly** discouraged.
+Following is some code that is needed to make the Cryptol within this
+document valid, but is not discussed for pedagogical reasons. You may
+read on, but you have been warned...
+
+The following code does serve to illustrate the type signature and
+function definitions can be separated within a file. A practice that
+is _**strongly**_ discouraged.
 
 ```
 gcdCurried = gcd
 gcdUncurried = uncurry gcdCurried
 ```
 
-These illustrate higher order functions. We define the _function_
+These also illustrate higher order functions. We define the _function_
 `gcdCurried` in terms of the _function_ `gcd` without mentioning
 arguments. We use the built in `uncurry` higher-order function which
 takes a two argument curried function and returns an uncurried version
