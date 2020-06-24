@@ -50,7 +50,7 @@ user-mode solutions.)*
 ```
 $ docker pull cryptolcourse/cryptol
 ...
-$ docker run -it cryptolcourse/cryptol
+$ docker run --rm -it cryptolcourse/cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
@@ -66,7 +66,7 @@ Cryptol> :quit
 ```sh
 $ docker pull cryptolcourse/saw
 ...
-$ docker run -it cryptolcourse/saw
+$ docker run --rm -it cryptolcourse/saw
  ┏━━━┓━━━┓━┓━┓━┓
  ┃ ━━┓ ╻ ┃ ┃ ┃ ┃
  ┣━━ ┃ ╻ ┃┓ ╻ ┏┛
@@ -87,8 +87,8 @@ sawscript> :quit
 Details:
 - Instructions for installing `docker` on your system can be found at
 [https://docs.docker.com/get-docker](https://docs.docker.com/get-docker).
-- `docker run -it` indicates that the commands are to be run in an interactive
-TTY.
+- `docker run --rm -it` indicates that the commands are to be run in an interactive
+TTY, and the generated container is to be removed after use.
 - Version tags `0.5` and `2.8.0` are needed because a `latest` alias
 has not been set for these images.
 - If you are currently in the root of this repository, you can use
@@ -255,8 +255,7 @@ labs::Demos::OneTimePad>
 ### Using Docker on Linux
 
 ```sh
-.../cryptol-course$ docker run --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
-    ...
+.../cryptol-course> docker run --rm --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
 Loading module Cryptol
 Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad
@@ -265,8 +264,7 @@ labs::Demos::OneTimePad>
 
 ### Using Docker on Windows
 ```sh
-...\cryptol-course> docker run --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
-    ...
+...\cryptol-course> docker run --rm --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
 Loading module Cryptol
 Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad
