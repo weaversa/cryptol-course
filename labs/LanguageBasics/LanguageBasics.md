@@ -76,17 +76,7 @@ Operators
 
 Cryptol's `:help` command will provide a brief description of the
 operators in this section by issuing `:help ` followed
-by the name of the operator in parenetheses. For example:
-```sh
-labs::LanguageBasics::LanguageBasics> :help (@)
-
-    (@) : {n, a, ix} (fin ix) => [n]a -> [ix] -> a
-
-Precedence 100, associates to the left.
-
-Index operator.  The first argument is a sequence.  The second argument is
-the zero-based index of the element to select from the sequence.
-```
+by the name of the operator in parenetheses. For example: `:help (@)`
 
 Many languages differentiate signed and unsigned numbers at the type
 level (e.g. C's `uint32` and `int32`). Cryptol has separate operators
@@ -136,7 +126,7 @@ The `0b0100` in the second example needs four bits, so both sides have
 type `[2][4]`. In this case `[~1, 1] == [14, 1]` while `[6, 4 + 5] ==
 [6, 9]` so equality fails.
 
-**It is important to be precise about the widths of things!**
+_**It is important to be precise about the widths of things!**_
 
 Comparisons are lexicographic on sequences of numbers.
 
@@ -201,12 +191,15 @@ by the name of the primitive.
 
 * `0` is a sequence of `False` bits whose type is determinted by the
 context.
+  ```sh
+  labs::LanguageBasics::LanguageBasics> 0 : [12]
+  0x000
+  ```
 * `zero` is an arbitrary collection of `False` bits whose type
 is determinted by the context.
   ```sh
   labs::LanguageBasics::LanguageBasics> zero: ([8], [4])
   (0x00, 0x0)
-
   ```
   Here we produce an order pair of a 0 octext and a 0 nibble.
 * `~0` and `~zero` produce all `True` bits correspondingly.
@@ -310,9 +303,9 @@ functions from other languages or documents.
   labs::LanguageBasics::LanguageBasics> :type gcdCurried 10
   gcdCurried 10 : Integer -> Integer
   ```
-  It takes an integer and returns an integer. When `gcdCurried 10`
+  `gcdCurried 10` takes an integer and returns an integer. When it
   is applied to an integer it computes the gcd of 10 and that
-  integer. Other examples:
+  integer. Other examples to illustrate partial application:
   * Incrementing is addition partially applied to 1. Notionally:
     `inc x = (add 1) x`
   * The reciprocal is division partially applied to 1. Notionally:
@@ -360,14 +353,14 @@ property absNonnegative x = abs x >= 0
 * Cryptol's `if`/`then`/`else` is much like C's ternary operator
   `?`...`:`. It is not like the `if`/`then`/`else` control structure.
 * The reserved word `property` documents that definition's intention.
-* We can go a step further ans `:prove` this property:
+* We can go a step further and `:prove` this property:
   ```sh
   Main> :prove absNonnegative 
   Using random testing.
   Passed 100 tests.
   ```
 * Also Cryptol's `:check` with check all functions marked as
-  properties in one go.
+  properties in one go and, you guessed it, `:prove` works similarly.
 
 A little more involved example follows.
 
@@ -417,7 +410,11 @@ property gcdDividesBoth' x y
 * Properties may be partially applied: `:check gcdDividesBoth' 0`
   finds the problem faster since it only is using random values for
   the second argument.
-
+* WARNING: `:prove gcdDividesBoth'` will never complete. If you issue
+  that command, you'll need to use `CTRL-C` once or twice to
+  interrupt. The reason this proof won't complete is too technical for
+  the moment.
+  
 Let's patch up that property. (You surely noticed the prime (`'`) in
 the property name which is a giveaway that is not really the property
 I have in mind.)
@@ -437,6 +434,7 @@ property gcdDividesBoth x y
 * Property corner-cases are handled with `if`-`then`-`else`.
 * Another way to write the conditional part of the property that's a
 bit cooler: `z != 0 ==> x % z == 0 /\ y % z == 0`
+* WARNING: `:prove gcdDividesBoth` will never complete.
 
 
 Writing Loops
