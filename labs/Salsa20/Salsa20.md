@@ -368,7 +368,7 @@ specification, but it's a good opportunity here to learn more about
 Cryptol's properties.
 
 ```
-property rowroundOpProp ys = False
+property rowroundOpProp ys = undefined
 ```
 
 ## 4 The columnround function
@@ -786,15 +786,16 @@ Some hints:
 
   * Where the specification says "truncate" think `take`.
   * Don't be afraid to `take` from an implicitly constructed `2^^70`
-byte sequence.
+    byte sequence.
   * Salsa20Expansion returns a sequence of 64-bytes, so a `join` is
     needed if you want to create the sequence of `2^^70` bytes.
+  * `v` and `i` should be concatenated to be passed to
+    `Salsa20Expansion`.
 
 ```
 Salsa20Encrypt k v m = c
   where
-    c = m ^ take (join [ Salsa20Expansion k (v # littleendian' i)
-                       | i <- [0, 1 ... ] ])
+    c = m ^ undefined
 ```
 
 
