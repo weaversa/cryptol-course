@@ -473,8 +473,9 @@ property gcdDividesBoth' x y
 * Since `:check` uses randomly generated tests the previous result may
   be intermittent.
 * Properties are useful and in other labs we will actually `:prove` some
-  properties, but you must remember than **properties that pass `:check`
-  are not guarantees!**
+  properties, but you must remember that _**properties that pass `:check`
+  are not guarantees!**_ That is: _**`:check` is evidence, `:prove` is
+  proof!**_
 * Properties may be partially applied: `:check gcdDividesBoth' 0`
   finds the problem faster since it only is using random values for
   the second argument.
@@ -560,7 +561,7 @@ labs::LanguageBasics::LanguageBasics> sum [1..100]
 Loops with functions on the indices are written as sequence comprehensions.
 
 ```shell
-labs::LanguageBasics::LanguageBasics> [n^^3 | n <- [0 .. 10]]
+labs::LanguageBasics::LanguageBasics> [n^^3 | n <- [0..10]]
 [0, 1, 8, 27, 64, 125, 216, 343, 512, 729, 1000]
 ```
 
