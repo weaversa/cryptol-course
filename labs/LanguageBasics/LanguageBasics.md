@@ -37,8 +37,9 @@ labs::LanguageBasics::LanguageBasics> 0x78
 
 The Cryptol interpreter parses `"abc"` and `[0x61, 0x62, 0x63]` into
 the exact same internal representation. `:set ascii = on` just causes
-the display of output to be more easily read, not unlike using `:set
-base = 10` to see numbers in base 10.
+the display of output to be ASCII strings or characters when
+appropriate, not unlike using `:set base = 10` to see numbers in
+base 10.
 
 
 Comments
@@ -51,7 +52,7 @@ Comments
 Identifiers
 -----------
 
-Cryptol idenfiers consist of alphanumeric characters plus `'`
+Cryptol identifiers consist of alphanumeric characters plus `'`
 (apostrophe, but read "prime") and `_` (underscore). They must begin
 with an alphabetic character or an underscore. The notational
 convention for `'` is to indicate a related definition, while
@@ -71,12 +72,34 @@ Technically, Cryptol supports
 am pretending that it doesn't.
 
 
+Data
+----
+
+Cryptol's "basic" data type is an _n_-dimensional array whose base
+type is bits.
+* 0-d: `False : Bit` and `True: Bit`
+* 1-d: Think bytes, words, nibbles, etc., i.e., a list of bits usually
+  thought of as a number. E.g., `0xaa : [8]` and `0b1011 : [4]`
+* 2-d: Think lists of 1-d objects all of the same size. E.g.,
+  `[42, 0b010101010101, 0xa5a, 0o5757] : [4][12]`
+* 3-d: Lists of 2-d objects all of the same size. E.g.,
+  `[[0, 1], [1, 2], [3, 5], [8, 13]] : [4][2][4]`
+* ...
+  
+Other data types include:
+* Arbitrary-precision integers: E.g., `2^^1023 - 347835479 : Integer`
+* Heterogeneous tuples: E.g.: `(False, 0b11) : (Bit, [2])` and
+  `(True, [1, 0], 7625597484987) : (Bit, [2][1], Integer)`
+* Records with named fields: E.g.,
+  `{flag = True, x = 2} : {flag : Bit, x : [4]}`
+
+
 Operators
 ---------
 
 Cryptol's `:help` command will provide a brief description of the
 operators in this section by issuing `:help ` followed
-by the name of the operator in parenetheses. For example: `:help (@)`
+by the name of the operator in parentheses. For example: `:help (@)`
 
 Many languages differentiate signed and unsigned numbers at the type
 level (e.g. C's `uint32` and `int32`). Cryptol has separate operators
@@ -98,6 +121,11 @@ labs::LanguageBasics::LanguageBasics> 1 + 1 : [1]
 labs::LanguageBasics::LanguageBasics> 2^^127 - 1 // a 33 digit Mersenne prime
 170141183460469231731687303715884105727
 ```
+
+The first example defaults to type `Integer`. In the second, I
+explicitly state that I want 1 bit addition. The third shows that `^^`
+is exponentiation
+
 
 ### Bitwise logical: `~`, `&&`, `||` and `^`
 
@@ -189,19 +217,19 @@ by the name of the primitive.
 
 ### Collections of all `False` or all `True` bits
 
-* `0` is a sequence of `False` bits whose type is determinted by the
+* `0` is a sequence of `False` bits whose type is determined by the
 context.
   ```sh
   labs::LanguageBasics::LanguageBasics> 0 : [12]
   0x000
   ```
 * `zero` is an arbitrary collection of `False` bits whose type
-is determinted by the context.
+is determined by the context.
   ```sh
   labs::LanguageBasics::LanguageBasics> zero: ([8], [4])
   (0x00, 0x0)
   ```
-  Here we produce an order pair of a 0 octext and a 0 nibble.
+  Here we produce an order pair of a 0 octet and a 0 nibble.
 * `~0` and `~zero` produce all `True` bits correspondingly.
 
 
@@ -220,12 +248,12 @@ labs::LanguageBasics::LanguageBasics> reverse [0, 0, 1]
 ```
 
 Of course the sizes of lists have to be big enough. Also, notice that
-last (which is equivalent to `!0`) returns an element while the others
-return lists.
+`last` (which is equivalent to `!0`) returns an element while the
+others return lists.
 
 Often in a Cryptol program, the context will determine the shapes of
-sequences, so that the type annonations (`: [3][8]` and ``{2}` above)
-will be unnecesarry.
+sequences, so that the type annonations (`: [3][8]` and `` `{2} ``
+above) will be unnecessary.
 
 ### List shape manipulation: `split`, `join`, `transpose`
 #### Variation: `groupBy` 
@@ -346,7 +374,7 @@ property absNonnegative x = abs x >= 0
 * `:check property absNonnegative` checks this property with
     random tests. It's super cheap unit testing!
   ```sh
-  Main> :check absNonnegative 
+  labs::LanguageBasics::LanguageBasics> :check absNonnegative 
   Using random testing.
   Passed 100 tests.
   ```
@@ -355,7 +383,7 @@ property absNonnegative x = abs x >= 0
 * The reserved word `property` documents that definition's intention.
 * We can go a step further and `:prove` this property:
   ```sh
-  Main> :prove absNonnegative 
+  labs::LanguageBasics::LanguageBasics> :prove absNonnegative 
   Using random testing.
   Passed 100 tests.
   ```
@@ -440,7 +468,7 @@ bit cooler: `z != 0 ==> x % z == 0 /\ y % z == 0`
 Writing Loops
 -------------
 
-### Sometimes you don't have to
+### Or not...
 
 * Many of Cryptol's operators naturally extend elementwise over nested
   sequences to any depth.
@@ -454,39 +482,53 @@ of multidimensional arrays.
 * All the arithmetic, bitwise logical and comparison operators work
   elementwise over nested sequences!
 
-### Enumerations provide the indices to loops
+### Loop indices
+
+Enumerations serve to provide the indices to loops.
 
 ```sh
-Cryptol> [1..10]
+labs::LanguageBasics::LanguageBasics> [1..10]
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-Cryptol> [1, 3..10]
+labs::LanguageBasics::LanguageBasics> [1, 3..10]
 [1, 3, 5, 7, 9]
 ```
 
-### You can have "infinite" enumerations with `...`
+#### Infinite indices
+
+You can have "infinite" enumerations with `...`.
 
 ```sh
-Cryptol> [1...]
+labs::LanguageBasics::LanguageBasics> [1...]
 [1, 2, 3, 4, 5, ...]
 ```
 
 So long as only a finite prefix of any "infinite" calculation is needed we're fine.
 
-### Loops to accumulate a value are often simple calculations over indices
+### Loops to accumulate a value
+
+Loops to accumulate a value are often simple calculations over indices.
 
 ```sh
-Cryptol> sum [1..100]
+labs::LanguageBasics::LanguageBasics> sum [1..100]
 5050
 ```
 
-### Loops with functions on the indices are written as sequence comprehensions
+### Loops with functions on the indices
+
+Loops with functions on the indices are written as sequence comprehensions.
 
 ```sh
-Main> [n^^3 | n <- [0 .. 10]]
+labs::LanguageBasics::LanguageBasics> [n^^3 | n <- [0 .. 10]]
 [0, 1, 8, 27, 64, 125, 216, 343, 512, 729, 1000]
 ```
 
 Star Trek's (T.O.S.) warp factor light speed multipliers!
+
+### Loops that modify an accumulator in place
+
+Loops that modify an accumulator in place become self-referential
+sequence comprehensions. The following example illustrates this.
+
 
 
 Simple Block Encryption Example
@@ -519,7 +561,11 @@ labs::LanguageBasics::LanguageBasics> encrypt 0 0xdabbad00
 0xdabbad00
 ```
 
-Notice you can still write bad crypto with Cryptol! 😉
+The latter shows that you can still write bad crypto with Cryptol! 😉
+
+Notice that both `roundKeys` in `keyExpand` and `roundResults` in
+`encrypt` are self-referential sequences, a paradigm that will often
+occur when coding up cryptoalgorithms.
 
 
 Laziness
@@ -549,6 +595,40 @@ Less Common Operators
 Function equality: `===` and `!==`. These are mostly used to state
 properties about functions over a finite domain.
 
+```
+add8 : [4] -> [4]
+add8 x = x + 8
+sub8 : [4] -> [4]
+sub8 x = x - 8
+```
+
+```sh
+labs::LanguageBasics::LanguageBasics> :prove add8 === sub8
+Q.E.D.
+(Total Elapsed Time: 0.014s, using Z3)
+```
+
+There is also an `:exhaust` command for finite domains. On occasion
+the machinery behind `:prove` gets overwhelmed and, on small enough
+domains, exhausting works in a reasonable time.
+
+```sh
+labs::LanguageBasics::LanguageBasics> :exhaust add8 === sub8
+Using exhaustive testing.
+Passed 16 tests.
+Q.E.D.
+```
+
+The `:check` command is smart enough to notice small enough domains
+and switch to exhaustion automagically:
+
+```sh```
+labs::LanguageBasics::LanguageBasics> :check add8 === sub8
+Using exhaustive testing.
+Passed 16 tests.
+Q.E.D.
+```
+
 
 Judicious Type System Usage
 ---------------------------
@@ -571,6 +651,17 @@ signatures.
 
 * makes cleaner code
 * easier for other tools to consume/reason about
+
+### Provide additional types to aid in debugging
+
+Many of the errors in coding Cryptol will be instances of type
+mismatching. If you can't see your problem based on the error
+message, try adding addition type annotations. This
+* makes the interpreter do less work trying alternative possibilites
+and, consequently, can make error messages more comprehensible
+* reduces the body of code to examine for bugs (a sort of binary bug
+search)
+* can get you to notice where you blew it.
 
 
 Here Abide Monsters
