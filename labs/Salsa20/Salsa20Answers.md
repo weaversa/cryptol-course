@@ -51,9 +51,9 @@ type Bytes n = [n][8]
 
 ## 2 Words
 
-This section defines **word** to be an element of {0,1,...,2^32 -
-1}. Similarly to `Bytes` above, we define `Words` as a new type
-synonym for a sequence of `n` 32-bit words.
+This section defines **word** to be an element of
+{0,1,...,2<sup>32</sup> - 1}. Similarly to `Bytes` above, we define
+`Words` as a new type synonym for a sequence of `n` 32-bit words.
 
 ```
 type Words n = [n][32]
@@ -255,7 +255,7 @@ Q.E.D.
 It's worth noting here that Cryptol and associated theorem provers are
 doing some very heavy lifting behind the scenes. Without an automated
 theorem prover, the best one could do is run some tests. Cryptol does
-support automated testing with it's `:check` command.
+support automated testing with its `:check` command.
 
 ```bash
 labs::Salsa20::Salsa20> :check quarterroundIsInjectiveProp 
@@ -689,19 +689,20 @@ Salsa20Expansion :
 
 This definition is even trickier than the last because we have to
 account for the two different sizes of `k`. If `a` is two then we have
-to call Salsa20(s0, k0, s1, n, s2, k1, s3) where k0 are the low 16
-bytes of k and k1 are the high 16 bytes of k. In the case where `a` is
-one then we have to call Salsa20(t0, k0, t1, n, t2, k0, t3), and k1 is
-undefined. There are a few different ways to define `k0` and
-`k1`. This is, admittedly, often the most frustrating part of this
+to call Salsa20(s<sub>0</sub>, k<sub>0</sub>, s<sub>1</sub>, n, s<sub>2</sub>, k<sub>1</sub>, s<sub>3</sub>) where k<sub>0</sub> are the low 16
+bytes of k and k<sub>1</sub> are the high 16 bytes of k. In the case where `a` is
+one then we have to call Salsa20(t<sub>0</sub>, k<sub>0</sub>, t<sub>1</sub>, n, t<sub>2</sub>, k<sub>0</sub>, t<sub>3</sub>), and k<sub>1</sub> is
+undefined. There are a few different ways to define k<sub>0</sub> and
+k<sub>1</sub>. This is, admittedly, often the most frustrating part of this
 specifying Salsa20. If you're up for figuring it out, please do, but
 you won't be faulted for skipping the headache and checking the answer
 key (3 different definitions are provided there).
 
 The notation used here is also a little strange --- you'll notice that
 Salsa20Core doesn't actually take 7 different values as input. The
-author means, for example, when `a` is one that t0, k, t1, n, t2, k,
-and t3 should be concatenated together to make a sequence of 64-bytes.
+author means, for example, when `a` is one that t<sub>0</sub>, k,
+t<sub>1</sub>, n, t<sub>2</sub>, k, and t<sub>3</sub> should be
+concatenated together to make a sequence of 64 bytes.
 
 You'll find sigma and tau defined in a kind of fancy way in the
 Comments section below.
@@ -723,8 +724,9 @@ Salsa20Expansion k n = z
     //(k0, k1) = (take k, drop k)
 ```
 
-This last definition for `k0` and `k1` aren't as as nice because `k1
-== k0` when `a` is one. Not that it really makes any difference.
+This last definition for k<sub>0</sub> and k<sub>1</sub> aren't as as
+nice because k<sub>1</sub> == k<sub>0</sub> when `a` is one. Not that
+it really makes any difference.
 
 
 ### Examples
@@ -769,7 +771,7 @@ section.
 Again we have a polymorphic function on `k`. Also notice the type
 constraint levied on `l`. This really shows Cryptol's strength as a
 specification language. Cryptol isn't powerful enough to actually run
-`2^^70` bytes through this function, but the constraint can still be
+2<sup>70</sup> bytes through this function, but the constraint can still be
 expressed, if only for documentation purposes.
 
 ```
@@ -791,10 +793,10 @@ function from Section 7.
 Some hints:
 
   * Where the specification says "truncate" think `take`.
-  * Don't be afraid to `take` from an implicitly constructed `2^^70`
+  * Don't be afraid to `take` from an implicitly constructed 2<sup>70</sup>
     byte sequence.
-  * Salsa20Expansion returns a sequence of 64-bytes, so a `join` is
-    needed if you want to create the sequence of `2^^70` bytes.
+  * Salsa20Expansion returns a sequence of 64 bytes, so a `join` is
+    needed if you want to create the sequence of 2<sup>70</sup> bytes.
   * `v` and `i` should be concatenated to be passed to
     `Salsa20Expansion`.
 

@@ -53,7 +53,7 @@ property columnroundIsInvertibleProp x x' = undefined
 This next one (`doubleround`) may take about a minute to prove using
 the `z3` solver. It may also seem a bit frustrating to have to wait,
 but please keep in mind that the solver is searching over a space of
-about `2^^1024` possibilities.
+about 2<sup>1024</sup> possibilities.
 
 ```
 property doubleroundIsInvertibleProp xs xs' = undefined
@@ -122,8 +122,8 @@ Working from
 [[3]](https://www.iacr.org/archive/fse2008/50860470/50860470.pdf),
 Theorem 6 states the collision property for `Salsa20Core`:
 
-> Any pair of inputs M and M' (defined below) such that `Z < 2^^31`
-> and `Z' = Z + 2^^31`, generate a collision for any number of rounds
+> Any pair of inputs M and M' (defined below) such that Z < 2<sup>31</sup>
+> and Z' = Z + 2<sup>31</sup> generate a collision for any number of rounds
 > of the `Salsa20` "hash" [core] function, producing `h` (defined
 > below) as a common hash value.
 > 
@@ -187,7 +187,7 @@ property Salsa20CoreCollidesProp Z =
 Finally, we want to show that `Salsa20Encrypt` is invertible
 (i.e. there exists a `Salsa20Decrypt` function that inverts
 `Salsa20Encrypt` for a given key and nonce). It turns out that
-`Salsa20Encrypt` is it's own inverse, a so-called
+`Salsa20Encrypt` is its own inverse, a so-called
 [involution](https://en.wikipedia.org/wiki/Involution_(mathematics). That
 is, composing `Salsa20Encrypt` twice on a given key and nonce yields
 the original plaintext.

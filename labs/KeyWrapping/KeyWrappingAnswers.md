@@ -81,7 +81,7 @@ indicates:
 
 That is, `KW` (and `KWP`) are defined to operate with
 [`AES`](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
-for its three key sizes: 128, 192, and 256-bits.
+for its three key sizes: 128, 192, and 256 bits.
 
 The standard does not indicate a specific key size for
 [`TDEA`](https://en.wikipedia.org/wiki/Triple_DES), but
@@ -177,11 +177,11 @@ The document indicates that `KW-AE` depends on a *wrapping function*
 which we will have to model in our formal specification:
 
   * A **Key Encryption Key (KEK)** `K` and
-  * A **designated cipher function** `CIPHk`, which operates on 128-bit blocks
+  * A **designated cipher function** CIPH<sub>K</sub>, which operates on 128-bit blocks
   
 The document defines a *semiblock* to be a block with half the width
-of the underlying block cipher, `CIPHk`. Since `KW-AE` uses `AES` as
-its `CIPHk`, semiblocks will be 64-bit blocks. Also notice that the
+of the underlying block cipher, CIPH<sub>K</sub>. Since `KW-AE` uses `AES` as
+its CIPH<sub>K</sub>, semiblocks will be 64-bit blocks. Also notice that the
 specification for `W` defines the *Input* to be a string `S` of `n`
 semiblocks and the *Output* will be a transformed string `C` of `n`
 semiblocks. This is enough to build a simple type signature for `W`
@@ -189,7 +189,7 @@ which will contain the following components:
 
  * `n` -- A *type parameter* which controls the number of semiblocks
    in our inputs and outputs
- * `([128] -> [128])` -- The type of our *keyed* block cipher `CIPHk`
+ * `([128] -> [128])` -- The type of our *keyed* block cipher CIPH<sub>K</sub>
  * `[n][64]` -- The type of our string of input semiblocks
  * `[n][64]` -- The type of our transformed output
 
@@ -206,15 +206,15 @@ We haven't quite captured enough about the type of `W` -- for the
 algorithm to operate correctly, and according to the standard, we will
 have to make two more assumptions about `n`.
 
- * First, `n >= 3`, we can add this restriction to our type signature:
- * Second, `n <= 2^^54`, this comes directly from the limits imposed
+ * First, n >= 3: we can add this restriction to our type signature:
+ * Second, n <= 2<sup>54</sup>, this comes directly from the limits imposed
    by Table 1 (Section 5.3.1, page 10). As an aside, if this
    constraint is left off, Cryptol's type checker will point out that
-   `64 >= width (6*(n-1))` (which can be reexpressed as `6*(n-1) <
-   2^^64`). This constraint comes from the fact that the value `t`
+   `64 >= width (6*(n-1))` (which can be re-expressed as 6\*(n-1) <
+   2<sup>64</sup>). This constraint comes from the fact that the value `t`
    (which iterates over `[1..6*(n-1)]`) has to fit into a 64-bit word
-   when passed to `WStep`. Of course, `2^^54` is less than `6 *
-   (2^^54 - 1)` which is less than `2^^64`, so the tighter lower bound
+   when passed to `WStep`. Of course, 2<sup>54</sup> is less than 6 *
+   (2<sup>54</sup> - 1) which is less than 2<sup>64</sup>, so the tighter lower bound
    from Table 1 is acceptable.
  
 ```comment
@@ -235,8 +235,8 @@ understand this step function by studying `Figure 2` on page 12.
 counter found in step 2 of `Algorithm 1`.
 
 **EXERCISE**: Study `Algorithm 1` and `Figure 2`. Implement `WStep`
-  below assuming the appropriate input for `CIPHk` and assignments for
-  `A'` and `Rs'` found in the body of the function. *Hint*: R2 mentioned
+  below assuming the appropriate input for CIPH<sub>K</sub> and assignments for
+  `A'` and `Rs'` found in the body of the function. *Hint*: R<sub>2</sub> mentioned
   in the spec is actually the first (`head`) semi-block from Rs.
 
 ```
@@ -303,7 +303,7 @@ sequence, then we can use `foldl` as follows:
 Cryptol> foldl (+) 0 [1..10]
 55
 ```
-*...we now return to our regularly schedule program.*
+*...we now return to our regularly scheduled program.*
 
 We will use `foldl` along with our step function `WStep` to write a
 definition for `W`.
@@ -408,7 +408,7 @@ Q.E.D.
 (Total Elapsed Time: 1.832s, using Z3)
 ```
 
-These two properties state that for a fixed, dummy CIPHk and S of
+These two properties state that for a fixed, dummy CIPH<sub>K</sub> and S of
 length 3 semiblocks, `WStep` and `WStep'` are inverses and `W` and
 `W'` are inverses. Here are the definitions of these properties:
 
@@ -452,7 +452,7 @@ KWAD CIPHk' C = (FAIL, P)
 
 When you have successfully defined this function, you can test your
 work by `:prove`ing that `KWAE` and `KWAD` are inverses (well, at
-least for a dummy CIPHk and P of length 3 semiblocks) using the
+least for a dummy CIPH<sub>K</sub> and P of length 3 semiblocks) using the
 `KWAEInvProp`. You can also check your work against six test vectors
 by using the property `KWADTests` (this is defined later on
 in this document).
@@ -578,8 +578,8 @@ Many cryptographic specifications (especially hash functions) accept
 some arbitrary number of bits as input but operate over some number of
 words internally. Hence, it's common to see a bitvector **padded**
 with zeros (or sometimes a constant and zeroes) to inflate the
-bitvector until its size is a multiple of a word (usually 32- or
-64-bits). For example, say we have a bitvector of `37` bits and we
+bitvector until its size is a multiple of a word (usually 32 or
+64 bits). For example, say we have a bitvector of `37` bits and we
 want to pad it to fit into some number of 32-bit words. Well, the next
 largest multiple of `32` is `64`, and `64 - 37` is `27`, so we'll need
 to pad with `27` zeros. We can demonstrate this using Cryptol:
@@ -600,7 +600,7 @@ we have `10` apples divided amongst `3` friends, after giving everyone
 three apples, we'll have `10 % 3 = 1` apple remaining. What we desire
 with padding isn't what's remaining, but rather the amount needed to
 get to the next multiple, that is, how many **more** apples do we need
-if we had another friend? --- To which the answer here is, `2`. Or,
+if we had another friend? --- To which the answer here is `2`. Or,
 said another way, we are **short** `2` apples.
 
 As it turns out, Cryptol has such a shortage operator (the ceiling
@@ -648,10 +648,10 @@ bits onto `x`.
 The first 4 steps of `KWP-AE` describe how to create `S` from `P`.
 Here we introduce the type variable `k` to be the number of octets (or
 bytes) of `P`, and `l` to be the number of bits of `S`. You'll notice
-we constrain `k` to be between `1` and `2^^32-1`, as per Table 1.
+we constrain `k` to be between 1 and 2<sup>32</sup>-1, as per Table 1.
 Since `S` is comprised of two 32-bit numbers concatenated with input
 `P` and then padded to a multiple of `64`, `l` is constrained to be
-`32 + 32 + k*8 + k*8 %^ 64`, that is, 32-bits for `ICV2` plus 32-bits
+`32 + 32 + k*8 + k*8 %^ 64`, that is, 32 bits for `ICV2` plus 32 bits
 for the number of octets of `P` plus `P` itself plus the shortage of
 `P` as a multiple of `64` bits.
 
@@ -906,13 +906,13 @@ work.
 I'm sure the sticklers in the class noticed that we reused the same
 type constraints from `KWP-AE` which don't overtly mention the
 ciphertext bounds from Table 1, namely, that the length of `C` must be
-between `2` to `2^^29`, inclusively. Fortunately, those bounds
+between 2 to 2<sup>29</sup>, inclusively. Fortunately, those bounds
 _should_ be inferred by the plaintext bounds. And, now that you
 mention it, we can check! Table 1 tells us that, for `KWP`, if the
-number of octets of `P` is the upper limit of `2^^32-1`, that the
-number of semiblocks of `C` should be `2^^29`.
+number of octets of `P` is the upper limit of 2<sup>32</sup>-1`, that the
+number of semiblocks of `C` should be 2<sup>29</sup>.
 
-Asking Cryptol for the type of `KWPAE` after plugging in `2^^32-1` for
+Asking Cryptol for the type of `KWPAE` after plugging in 2<sup>32</sup>-1 for
 `k` gives an `l` of `34359738432`:
 
 ```sh
@@ -921,7 +921,7 @@ KWPAE`{k = 2 ^^ 32 -
            1} : ([128] -> [128]) -> [4294967295][8] -> [34359738432]
 ```
 
-Well, what's `34359738432`? Is it `2^^29` 64-bit words? Let's first
+Well, what's `34359738432`? Is it 2<sup>29</sup> 64-bit words? Let's first
 check how many 64-bit words it is. Here's one way:
 
 ```sh
@@ -929,15 +929,15 @@ labs::KeyWrapping::KeyWrappingAnswers> :t \(a : [34359738432]) -> groupBy`{64} a
 (\(a : [34359738432]) -> groupBy`{64} a) : [34359738432] -> [536870913][64]
 ```
 
-Great...now what's `536870913`? Is it `2^^29`?
+Great...now what's `536870913`? Is it 2<sup>29</sup>?
 
 ```sh
 labs::KeyWrapping::KeyWrappingAnswers> 2^^29 : Integer
 536870912
 ```
 
-Woh! Its not. `536870913` is `2^^29 + 1`. Let's double check this ---
-here is a command that tests the `2^^29` upper bound from Table 1:
+Woh! Its not. `536870913` is 2<sup>29</sup> + 1. Let's double check this ---
+here is a command that tests the 2<sup>29</sup> upper bound from Table 1:
 
 ```sh
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29)}
@@ -946,7 +946,7 @@ labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29)
   Unsolvable constraint: 34359738368 == 34359738432
 ```
 
-And here is a command that tests the bound we just found, `2^^29 + 1`.
+And here is a command that tests the bound we just found, 2<sup>29</sup> + 1.
 
 ```sh
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29 + 1)}
