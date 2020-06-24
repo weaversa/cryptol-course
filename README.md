@@ -113,7 +113,7 @@ command; your output should look similar to the following:
  version 2.8.1 (ce0365f)
  
  Loading module Cryptol
- Cryptol> :l README.md
+ Cryptol> :load README.md
  Loading module Cryptol
  Loading module Main
  Main> :prove algebra_fact 
