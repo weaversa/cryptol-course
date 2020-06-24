@@ -2,7 +2,10 @@
 module labs::LanguageBasics::LanguageBasics where
 ```
 
-# Basic Use of the Cryptol Language
+
+
+Basic Use of the Cryptol Language
+=================================
 
 For examples in this lab I have turned off the warning messages you
 get when not specifying bit sizes of numbers. This is **not**
@@ -21,14 +24,19 @@ labs::LanguageBasics::LanguageBasics> :set ascii = on
 ```
 
 That makes any sequence of 8 bit numbers be displayed as the
-corresponding ASCII string. (This is mostly useful in pedagogy.)
+corresponding ASCII string. (This is mostly useful as a pedagogical
+aid.)
 
-## Comments
+
+Comments
+--------
 
 * `//` to end of line
 * `/*` ... `*/` block comment
 
-## Operators
+
+Operators
+---------
 
 Many languages differentiate signed and unsigned numbers at the type
 level (e.g. C's `uint32` and `int32`). Cryptol has separate operators
@@ -131,7 +139,9 @@ labs::LanguageBasics::LanguageBasics> False ==> 1 == 5 /\ 1 != 5
 True
 ```
 
-## The Types of Functions
+
+The Types of Functions
+----------------------
 
 * The Cryptol interpreter command `:type` is very useful for helping you
   understand types. For instance the type of the `abs` function which
@@ -144,10 +154,12 @@ abs : Integer -> Integer
 
 indicating that it takes an integer and returns an integer.
 
-## Curried and Uncurried Style
 
-Cryptol functions are often written in the [curried]
-(https://en.wikipedia.org/wiki/Currying) style:
+Curried and Uncurried Style
+---------------------------
+
+Cryptol functions are often written in the
+[curried](https://en.wikipedia.org/wiki/Currying) style:
 
 ```
 gcdCurried: Integer -> Integer -> Integer
@@ -169,10 +181,10 @@ labs::LanguageBasics::LanguageBasics> gcdUncurried (20, 28)
 ```
 
 These two styles are equivalent at some level. The former is preferred
-as it affords [partial application]
-(https://en.wikipedia.org/wiki/Partial_application), but the latter
-can be useful for explicating the correspondence to functions from
-other languages or documents.
+as it affords
+[partial application](https://en.wikipedia.org/wiki/Partial_application),
+but the latter can be useful for explicating the correspondence to
+functions from other languages or documents.
 
 * If it helps you, mentally read curried functions like this: input
   argument types are all the types prior to the last arrow and the
@@ -180,22 +192,24 @@ other languages or documents.
 * Partial application lets one form a new function from an old one
   where an argument is fixed.  For instance, `gcdCurried 10` is a
   function itself!
-    ```sh
-    labs::LanguageBasics::LanguageBasics> :type gcdCurried 10
-    gcdCurried 10 : Integer -> Integer
-    ```
-    It takes an integer and returns an integer. When `gcdCurried 10`
-    is applied to an integer it computes the gcd of 10 and that
-    integer. Other examples:
-    * Incrementing is addition partially applied to 1. Notionally:
-      `inc x = (add 1) x`
-    * The reciprocal is division partially applied to 1. Notionally:
-      `recip x = (div 1) x`
+  ```sh
+  labs::LanguageBasics::LanguageBasics> :type gcdCurried 10
+  gcdCurried 10 : Integer -> Integer
+  ```
+  It takes an integer and returns an integer. When `gcdCurried 10`
+  is applied to an integer it computes the gcd of 10 and that
+  integer. Other examples:
+  * Incrementing is addition partially applied to 1. Notionally:
+    `inc x = (add 1) x`
+  * The reciprocal is division partially applied to 1. Notionally:
+    `recip x = (div 1) x`
 * Really `gcdUncurried` is a function of one argument. That argument
   is an ordered pair which makes `gcdUncurried (28, 20)` look just
   like a two argument function in many languages.
 
-## Small Functions
+
+Small Functions
+---------------
 
 Cryptol programs are just sequences of appropriate functions applied
 in the correct order. Good Cryptol features small, easy to understand
@@ -222,13 +236,13 @@ property abs_nonnegative x = abs x >= 0
 * `abs : Integer -> Integer` is the type signature for `abs`
 * `abs n = if n >= 0 then n else -n` is the definition for `abs` (or function body)
 * `property abs_nonnegative ...` is a property we expect the function to have.
-    * `:check property abs_nonnegative` checks this property with
-      random tests. It's super cheap unit testing!
-    ```sh
-    Main> :check abs_nonnegative 
-    Using random testing.
-    Passed 100 tests.
-    ```
+  * `:check property abs_nonnegative` checks this property with
+    random tests. It's super cheap unit testing!
+  ```sh
+  Main> :check abs_nonnegative 
+  Using random testing.
+  Passed 100 tests.
+  ```
 * Cryptol's `if`-`then`-`else` is much like C's ternary operator
   `?`...`:`. It is not like the `if`-`then`-`else` control structure.
 * The reserved word `property` documents that definition's intention.
@@ -256,28 +270,28 @@ property gcd_common_divisor' x y
 * function `gcd'` is scoped within `gcd`
 * function `gcd'` is recursive
 * ```sh
-    labs::LanguageBasics::LanguageBasics> :check gcd_common_divisor' 
-    Using random testing.
-    Passed 100 tests.
-    ```
+  labs::LanguageBasics::LanguageBasics> :check gcd_common_divisor' 
+  Using random testing.
+  Passed 100 tests.
+  ```
 * But `gcd_common_divisor' 0 0` gives a division by 0 error.
-   ```sh
-    labs::LanguageBasics::LanguageBasics> gcd_common_divisor' 0 0
-    division by 0
-    ```
+  ```sh
+  labs::LanguageBasics::LanguageBasics> gcd_common_divisor' 0 0
+  division by 0
+  ```
 * We could perhaps have found that with more testing...
-    ```sh
-    labs::LanguageBasics::LanguageBasics> :set tests=1000
-    labs::LanguageBasics::LanguageBasics> :check gcd_common_divisor'
-    Using random testing.
-    ERROR for the following inputs:
-    0
-    0
-    division by 0
-    ```
+  ```sh
+  labs::LanguageBasics::LanguageBasics> :set tests=1000
+  labs::LanguageBasics::LanguageBasics> :check gcd_common_divisor'
+  Using random testing.
+  ERROR for the following inputs:
+  0
+  0
+  division by 0
+  ```
 * Since `:check` uses randomly generated tests the previous result may
   be intermittent.
-* Properties are useful and later we will actually prove some
+* Properties are useful and in other labs we will actually `:prove` some
   properties, but you must remember than properties that pass `:check`
   are not guarantees!
 * Properties may be partially applied: `:check gcd_common_divisor' 0`
@@ -304,7 +318,12 @@ property gcd_common_divisor x y
 * Another way to write the conditional part of the property that's a
 bit cooler: `z != 0 ==> x % z == 0 /\ y % z == 0`
 
-## Writing Loops
+
+**Warning:** 
+
+
+Writing Loops
+-------------
 
 ### Sometimes you don't have to
 
@@ -354,7 +373,9 @@ Main> [n^^3 | n <- [0 .. 10]]
 
 Star Trek's (T.O.S.) warp factor light speed multipliers!
 
-## Simple Block Encryption Example
+
+Simple Block Encryption Example
+-------------------------------
 
 ```
 keyExpand : [32] -> [10][32]
@@ -373,7 +394,7 @@ encrypt key plainText = cipherText
                                  ]
     cipherText = last roundResults
 ```
-    
+
 Many block ciphers are just variations of the above theme. Here's a sample of it in action:
 
 ```sh
@@ -382,18 +403,22 @@ labs::LanguageBasics::LanguageBasics> encrypt 0x1337c0de 0xdabbad00
 labs::LanguageBasics::LanguageBasics> encrypt 0 0xdabbad00 
 0xdabbad00
 ```
-Notice you can still write bad crypto with Cryptol!
 
-## Laziness
+Notice you can still write bad crypto with Cryptol! 😉
 
-* Cryptol's evaluation strategy is [lazy] (https://en.wikipedia.org/wiki/Lazy_evaluation) a.k.a. "call-by-need". I.e., computations are not performed until necessary. So
 
+Laziness
+--------
+
+Cryptol's evaluation strategy is
+[lazy](https://en.wikipedia.org/wiki/Lazy_evaluation)
+a.k.a. "call-by-need". I.e., computations are not performed until
+necessary. So
 ```
 lazyAbsMin : Integer -> Integer -> Integer
 lazyAbsMin x y = if x == 0 then 0 else min (abs x) (abs y)
 ```
 Does not produce an error when `x` is zero, regardless of the value of `y`. For instance:
-
 ```sh
 labs::LanguageBasics::LanguageBasics> lazyAbsMin 1 (0/0)
 
@@ -402,11 +427,16 @@ labs::LanguageBasics::LanguageBasics> lazyAbsMin 0 (0/0)
 0
 ```
 
-## Less Common Operators
 
-* Function versions: `===`, `!==`
+Less Common Operators
+---------------------
 
-## Judicious Type System Usage
+Function equality: `===` and `!==`. These are mostly used to state
+properties about functions over a finite domain.
+
+
+Judicious Type System Usage
+---------------------------
 
 ### Don't let the type system do your work
 
@@ -427,7 +457,9 @@ signatures.
 * makes cleaner code
 * easier for other tools to consume/reason about
 
-## Here Abide Monsters
+
+Here Abide Monsters
+-------------------
 
 Following is some code that supports this lab but is not discussed for
 pedagogical reasons. It does serve to illustrate the type signature
