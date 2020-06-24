@@ -8,8 +8,6 @@ and the [Software Analysis
 Workbench](https://github.com/GaloisInc/saw-script) (SAW). Though,
 admittedly, we're a little light on SAW material right now.
 
------
-
 ## How To Take This Course
 
 Many of the labs in this course are taught using
