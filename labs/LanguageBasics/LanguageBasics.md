@@ -40,7 +40,7 @@ Following are some really quick examples of operators to remind you
 and show some tricks of Cryptol.
 
 ### Arithmetic: `+`, `-`, `*`, `/`, `%` and `^^`
-#### Signed versions: `/$`, `%$`
+#### Signed versions: `/$`and `%$`
 
 ```sh
 labs::LanguageBasics::LanguageBasics> 1 + 1
@@ -51,7 +51,7 @@ labs::LanguageBasics::LanguageBasics> 2^^127 - 1 // a 33 digit Mersenne prime
 170141183460469231731687303715884105727
 ```
 
-### Bitwise logical: `~`, `&&`, `||`, `^`
+### Bitwise logical: `~`, `&&`, `||` and `^`
 
 ```sh
 labs::LanguageBasics::LanguageBasics> ~0b000011001101 && 0o4115 || 0x0d0 ^ 9
@@ -60,8 +60,8 @@ labs::LanguageBasics::LanguageBasics> ~0b000011001101 && 0o4115 || 0x0d0 ^ 9
 
 Notice there's `0b...` for binary, `0o...` for octal and `0x...` for hexadecimal.
 
-### Comparison:`==`, `!=`, `<` , `<=`, `>`, `>=`
-#### Signed versions: `<$`, `<=$`, `>$`, `>=$`
+### Comparison:`==`, `!=`, `<` , `<=`, `>` and `>=`
+#### Signed versions: `<$`, `<=$`, `>$` and `>=$`
 
 ```sh
 labs::LanguageBasics::LanguageBasics> [~1, 1] == [6, 4 + 5]
@@ -109,7 +109,7 @@ labs::LanguageBasics::LanguageBasics> "cat" @ 0
 labs::LanguageBasics::LanguageBasics> "dog" @@ [2, 1, 1, 0, 0, 1, 2]
 "gooddog"
 labs::LanguageBasics::LanguageBasics> "cow" ! 0
-`w`
+'w'
 ```
 
 ### Concatenation: `#`
@@ -133,12 +133,12 @@ True
 
 ## The Types of Functions
 
-* The Cryptol interpreter command `:t` is very useful for helping you
+* The Cryptol interpreter command `:type` is very useful for helping you
   understand types. For instance the type of the `abs` function which
   we will define later is displayed by:
   
 ```sh
-labs::LanguageBasics::LanguageBasics> :t abs
+labs::LanguageBasics::LanguageBasics> :type abs
 abs : Integer -> Integer
 ```
 
@@ -180,12 +180,10 @@ other languages or documents.
 * Partial application lets one form a new function from an old one
   where an argument is fixed.  For instance, `gcdCurried 10` is a
   function itself!
-
     ```sh
-    labs::LanguageBasics::LanguageBasics> :t gcdCurried 10
+    labs::LanguageBasics::LanguageBasics> :type gcdCurried 10
     gcdCurried 10 : Integer -> Integer
     ```
-
     It takes an integer and returns an integer. When `gcdCurried 10`
     is applied to an integer it computes the gcd of 10 and that
     integer. Other examples:
@@ -226,13 +224,11 @@ property abs_nonnegative x = abs x >= 0
 * `property abs_nonnegative ...` is a property we expect the function to have.
     * `:check property abs_nonnegative` checks this property with
       random tests. It's super cheap unit testing!
-
     ```sh
     Main> :check abs_nonnegative 
     Using random testing.
     Passed 100 tests.
     ```
-
 * Cryptol's `if`-`then`-`else` is much like C's ternary operator
   `?`...`:`. It is not like the `if`-`then`-`else` control structure.
 * The reserved word `property` documents that definition's intention.
@@ -318,9 +314,11 @@ bit cooler: `z != 0 ==> x % z == 0 /\ y % z == 0`
 labs::LanguageBasics::LanguageBasics> [[[2,3],[5,7]],[[11,13],[17,19]]] + [[[0,1],[1,2]],[[3,5],[8,13]]]
 [[[2, 4], [6, 9]], [[14, 18], [25, 32]]]
 ```
+
 * So we don't have to write loops within loops to process these sorts
 of multidimensional arrays.
-* All the arithmetic, bitwise logical and comparison operators work elementwise over nested sequences!
+* All the arithmetic, bitwise logical and comparison operators work
+  elementwise over nested sequences!
 
 ### Enumerations provide the indices to loops
 
@@ -378,7 +376,7 @@ encrypt key plainText = cipherText
     
 Many block ciphers are just variations of the above theme. Here's a sample of it in action:
 
-```
+```sh
 labs::LanguageBasics::LanguageBasics> encrypt 0x1337c0de 0xdabbad00 
 0x6157c571
 labs::LanguageBasics::LanguageBasics> encrypt 0 0xdabbad00 
