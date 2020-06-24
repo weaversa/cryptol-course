@@ -93,13 +93,15 @@ property algebra_fact x y =
 ```
 
 A student might solve this problem by changing this snippet in their
-editor as follows:
+editor to the following:
 
 ```
 algebra_fact : Integer -> Integer -> Bit
 property algebra_fact x y =
     (x + y) * (x + y) == x^^2 + 2*x*y + y^^2 
 ```
+
+and then reloading the module using `:reload` (`:r` for short).
 
 Exercises will often have checks that follow along with instructions
 for how to verify their work. Check your answer with the following
