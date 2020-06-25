@@ -1,8 +1,8 @@
 Cryptol Style Guide
 ===================
 
-This document was crafted from [tibbe's Haskell style
-guide](https://github.com/tibbe/haskell-style-guide/blob/master/haskell-style.md). This
+This document was crafted from
+[tibbe's Haskell style guide](https://github.com/tibbe/haskell-style-guide/blob/master/haskell-style.md). This
 guide covers the major areas of formatting and naming of Cryptol
 specifications. That said, the overarching goal of writing a Cryptol
 specification is to make it look as much like the corresponding paper
@@ -22,9 +22,9 @@ default `set-fill-column` width in Emacs).
 ### Indentation
 
 Tabs are illegal. Use spaces for indenting. Indent your code blocks
-with *4 spaces*. Indent the `where` keyword two spaces to set it
-apart from the rest of the code and indent the definitions in a
-`where` clause 2 spaces. Some examples:
+with *4 spaces*. Indent the `where` keyword two spaces to set it apart
+from the rest of the code and indent the definitions in a `where`
+clause 2 spaces. Some examples:
 
 ```haskell
 sayHello : {a} (fin a) => [a][8] -> [a+7][8]
@@ -61,8 +61,8 @@ sayHello :
 ```
 
 The `:` should always be surrounded by a single space on either
-side. This aligns type definitions with value definitions (where the `=`
-is also surrounded by a single space on either side). For example,
+side. This aligns type definitions with value definitions (where the
+`=` is also surrounded by a single space on either side). For example,
 
 ```haskell
 x : [32]
@@ -73,7 +73,8 @@ y = [1, 2, 3, 4]
 
 ### Type Constraints
 
-Type constraints should always be tupleized. The following is incorrect:
+Type constraints should always be tupleized. The following is
+incorrect:
 
 ```haskell
 fun :
@@ -94,8 +95,8 @@ fun :
 ### Data Declarations
 
 The `=` should always be surrounded by a single space on either
-side. This aligns value definitions with type definitions (where the `:`
-is also surrounded by a single space on either side). For example,
+side. This aligns value definitions with type definitions (where the
+`:` is also surrounded by a single space on either side). For example,
 
 ```haskell
 x : [32]
@@ -135,7 +136,6 @@ directions = [ North
              ]
 ```
 
-
 ### If-then-else clauses
 
 Align if-then-else clauses like you would normal expressions:
@@ -173,6 +173,7 @@ foo = ...
     horse = ...
 ```
 
+
 Comments
 --------
 
@@ -184,14 +185,14 @@ punctuation.
 ### Top-Level Definitions
 
 Comment every top level function (particularly exported functions),
-and provide a type signature. The documentation should
-give enough information to
-apply the function without looking at the function's definition.
+and provide a type signature. The documentation should give enough
+information to apply the function without looking at the function's
+definition.
 
-When writing a cryptoalgorithm specification in Cryptol, often the
-arguments to a function have verbiage in the specification that may be
-copied into the function documentation.
-This is considered a good practice provided it does not become too verbose.
+When writing a cryptographic algorithm specification in Cryptol, often
+the arguments to a function have verbiage in the specification that
+may be copied into the function documentation. This is considered a
+good practice provided it does not become too verbose.
 
 ### End-of-Line Comments
 
@@ -201,34 +202,56 @@ Separate end-of-line comments from the code using 2 spaces.
 foo : [32] -> [32]
 foo n = n % p
   where
-    p = 4294967291  -- Largest 32 bit prime.
+    p = 4294967291  // Largest 32 bit prime.
 ```
+
 
 Naming
 ------
 
-When implementing cryptoalgorithm specifications, match identifiers to
-the case given in the specification.
-This helps make the correspondence clear (especially to those more
-steeped in cryptoalgorithm specifications).
-Should a specification's identifiers include
-characters illegal in Cryptol identifiers, underscore is often a
-reasonable substitute.
+When implementing cryptographic algorithm specifications, match
+identifiers to the case given in the specification. This helps make
+the correspondence clear (especially to those more steeped in
+cryptographic algorithm specifications). Should a specification's
+identifiers include characters illegal in Cryptol identifiers,
+underscore is often a reasonable substitute.
 
-When not constrained by the above it is probably best to follow Haskell's style:
+When not constrained by the above it is probably best to follow
+Haskell's style:
 
 > Use camel case (e.g. `functionName`) when naming functions and upper
 > camel case (e.g. `DataType`) when naming data types.
 
+
 Curried vs. Uncurried Functions
-------------------
+-------------------------------
 
 [Curried functions] (https://en.wikipedia.org/wiki/Currying) are
-preferred as they afford [partial application] (https://en.wikipedia.org/wiki/Partial_application) 
-and tend to reduce the number of parentheses. However, when writing
-Cryptol against a specification document, individual functions should follow
-the style of the functions from the document (which will usually be uncurried).
+preferred as they afford [partial application]
+(https://en.wikipedia.org/wiki/Partial_application) and tend to reduce
+the number of parentheses. However, when writing Cryptol against a
+specification document, individual functions should follow the style
+of the functions from the document (which will usually be uncurried).
 
+
+Argument Order
+--------------
+
+Order arguments so that partial application is most advantageous. For
+example:
+
+```haskell
+encrypt key plainText = ...
+```
+
+is superior to
+
+```haskell
+encrypt plainText key = ...
+```
+
+since it is easy to see the utility of `encrypt key`
+as a function in its own right.
 
 
 
