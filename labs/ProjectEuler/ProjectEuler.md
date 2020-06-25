@@ -110,9 +110,9 @@ hand at.
 ### [Problem 9](https://projecteuler.net/problem=9)
 
 > A Pythagorean triplet is a set of three natural numbers, a < b < c,
-> for which a^2 + b^2 = c^2.
+> for which a<sup>2</sup> + b<sup>2</sup> = c<sup>2</sup>.
 >
-> For example, 3^2 + 4^2 = 9 + 16 = 25 = 5^2.
+> For example, 3<sup>2</sup> + 4<sup>2</sup> = 9 + 16 = 25 = 5<sup>2</sup>.
 >
 > There exists exactly one Pythagorean triplet for which a + b +
 > c = 1000. Find this triple.
@@ -154,15 +154,15 @@ hand at.
 > made up of each of the digits 0 to 9 in some order, but it also has
 > a rather interesting sub-string divisibility property.
 >
-> Let d_(1) be the 1^(st) digit, d_(2) be the 2^(nd) digit, and so on. In this way, we note the following:
+> Let d<sub>1</sub> be the first digit, d<sub>2</sub> be the second digit, and so on. In this way, we note the following:
 >
->    * d_(2)d_(3)d_(4)=406 is divisible by 2
->    * d_(3)d_(4)d_(5)=063 is divisible by 3
->    * d_(4)d_(5)d_(6)=635 is divisible by 5
->    * d_(5)d_(6)d_(7)=357 is divisible by 7
->    * d_(6)d_(7)d_(8)=572 is divisible by 11
->    * d_(7)d_(8)d_(9)=728 is divisible by 13
->    * d_(8)d_(9)d_(10)=289 is divisible by 17
+>    * d<sub>2</sub>d<sub>3</sub>d<sub>4</sub>=406 is divisible by 2
+>    * d<sub>3</sub>d<sub>4</sub>d<sub>5</sub>=063 is divisible by 3
+>    * d<sub>4</sub>d<sub>5</sub>d<sub>6</sub>=635 is divisible by 5
+>    * d<sub>5</sub>d<sub>6</sub>d<sub>7</sub>=357 is divisible by 7
+>    * d<sub>6</sub>d<sub>7</sub>d<sub>8</sub>=572 is divisible by 11
+>    * d<sub>7</sub>d<sub>8</sub>d<sub>9</sub>=728 is divisible by 13
+>    * d<sub>8</sub>d<sub>9</sub>d<sub>10</sub>=289 is divisible by 17
 >
 > Find at least two 0 to 9 pandigital numbers with this property.
 
@@ -187,7 +187,7 @@ hand at.
 > to ASCII, then XOR each byte with a given value, taken from a secret
 > key. The advantage with the XOR function is that using the same
 > encryption key on the cipher text, restores the plain text; for
-> example, 65 XOR 42 = 107, then 107 XOR 42 = 65.
+> example, 65 ⊕ 42 = 107, then 107 ⊕ 42 = 65.
 >
 > For unbreakable encryption, the key is the same length as the
 > plaintext message, and the key is made up of random bytes. The user
