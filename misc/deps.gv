@@ -19,7 +19,7 @@ digraph G {
   Installation [URL="https://github.com/weaversa/cryptol-course/blob/master/INSTALL.md"];
   Overview [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Overview/Overview.md"];
   Interpreter [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Interpreter/Interpreter.md"];
-  LanguageBasics [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/LanguageBasics/LanguageBasics.md"];
+  LanguageBasics [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Language/Basics.md"];
   Demos [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Demos/Demos.md"];
   CRC [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/CRC/CRC.md"];
   Salsa20 [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Salsa20/Salsa20.md"];

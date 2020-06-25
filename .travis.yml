@@ -66,7 +66,7 @@ script:
 # Overview lab tests
   - cryptol -e -c ":m labs::Overview::Overview"
 # Language Basics lab tests
-  - cryptol -e -c ":m labs::LanguageBasics::LanguageBasics"
+  - cryptol -e -c ":m labs::Language::Basics"
 # Project Euler lab tests
   - cryptol -e -c ":m labs::ProjectEuler::ProjectEuler"
   - cryptol -e -c ":m labs::ProjectEuler::ProjectEulerAnswers"
