@@ -64,6 +64,20 @@ Comments
 * `//` to end of line
 * `/*` ... `*/` block comment
 
+There is also a [docstring](https://en.wikipedia.org/wiki/Docstring)
+comment facility:
+
+```
+/** 
+  * A totally made up identifier for pedagogical purposes. It is
+  * used elsewhere for demonstation of something or other.
+  */
+mask = 7
+```
+
+Now when issuing `:help mask`, the above comments are displayed along
+with other information about `mask`.
+
 
 Identifiers
 -----------
@@ -78,9 +92,8 @@ forbidden. [Camel case](https://en.wikipedia.org/wiki/Camel_case) is
 often used when other naming constraints aren't mandated.
 
 ```
-mask = 7
 fooBar = 15
-fooBar' = fooBar && mask
+fooBar' = fooBar && mask // mask defined elsewhere
 ```
 
 Technically, Cryptol supports
