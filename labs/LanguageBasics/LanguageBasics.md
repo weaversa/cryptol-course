@@ -1,4 +1,5 @@
-## Preface
+Preface
+-------
 
 This lab is a
 [literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
@@ -216,13 +217,17 @@ for suitable `n`. The `~` determines that it's `[n]` as `~` doesn't
 apply to type `Integer`. The literal `6` is the widest object so
 Cryptol defaults the base type of these sequences to be `[3]`. That in
 turn, forces the two sides to be of type `[2][3]` (two elements of
-three bits each). So `[~1, 1] == [6, 1] == [6, 3 * 3]`.
+three bits each). Now `~1 : [3]` is `0b110` or `6` in decimal and `3 *
+3 : [3]` is `1 : [3]` so `[~1, 1] == [6, 1] == [6, 3 * 3]`.
 
-In the second example, the `0b0100` has type `[4]`, so both sides have
-type `[2][4]`. In this case `[~1, 1] == [14, 1]` while
-`[6, 0b0011 * 3] == [6, 9]` so equality fails.
+In the second example, the `0b0011` (which is `3` in decimal) has type
+`[4]`, so both sides have type `[2][4]`. Now `~1 : [4]` is `0b1110` or
+`14` in decimal and `0b0011 * 3 : [4]` is `9` in decimal. We have
+`[~1, 1] == [14, 1]` while `[6, 0b0011 * 3] == [6, 9]` so equality
+fails.
 
-_**It is important to be precise about the widths of things!**_
+_**It can be crucially important to be precise about the widths of
+things!**_
 
 Comparisons are lexicographic on sequences of numbers.
 
@@ -266,10 +271,10 @@ labs::LanguageBasics::LanguageBasics> "dog" # "cow" // Moof!
 "dogcow"
 ```
 
-### Shortcutting logical:: `/\`, `\/` and `==>`
+### Shortcutting logical: `/\`, `\/` and `==>`
 
-These are most often used in property statements. `/\` is "and", `\/` is
-"or" and `==>` is "implies". They have very low precedence.
+These are most often used in property statements. `/\` is "and", `\/`
+is "or" and `==>` is "implies". They have very low precedence.
 
 ```shell
 labs::LanguageBasics::LanguageBasics> 1 == 5 \/ 5 == 5
@@ -308,7 +313,7 @@ is determined by the context.
 ```
 labs::LanguageBasics::LanguageBasics> take "dogcow" : [3][8]
 "dog"
-labs::LanguageBasics::LanguageBasics> drop`{2} [2, 3, 5, 7, 11]
+labs::LanguageBasics::LanguageBasics> drop [2, 3, 5, 7, 11] : [3]Integer
 [5, 7, 11]
 labs::LanguageBasics::LanguageBasics> tail [0, 1, 1]
 [1, 1]
@@ -319,11 +324,11 @@ labs::LanguageBasics::LanguageBasics> reverse [0, 0, 1]
 ```
 
 Of course the sizes of lists have to be big enough. Also, notice that
-`last` (which is equivalent to `!0`) returns an element while the
+`last` (which is equivalent to `! 0`) returns an element while the
 others return lists.
 
 Often in a Cryptol program, the context will determine the shapes of
-sequences, so that the type annotations (`: [3][8]` and `` `{2} ``
+sequences, so that the type annotations (`: [3][8]` and `: [3]Integer`
 above) will be unnecessary.
 
 ### List shape manipulation: `split`, `join`, `transpose`
@@ -457,7 +462,7 @@ property absNonnegative x = abs x >= 0
   Q.E.D.
   (Total Elapsed Time: 0.032s, using Z3)
   ```
-* Also Cryptol's `:check` with check all functions marked as
+* Also Cryptol's `:check` will check all functions marked as
   properties in one go and, you guessed it, `:prove` works similarly.
 
 A little more involved example follows.
@@ -501,7 +506,7 @@ property gcdDividesBoth' x y
   0
   division by 0
   ```
-* Since `:check` uses randomly generated tests the previous result may
+* Since `:check` uses randomly generated tests the failing result may
   be intermittent.
 * Properties are useful and sometimes may be `:prove`-n, but you must
   remember that _**properties that pass `:check` are not
@@ -713,7 +718,6 @@ Judicious Type System Usage
 Cryptol's type system tries to infer the types of functions lacking a
 type signature. Sometimes it comes up with a more general type than
 you were imagining. This causes problems:
-
 * Perhaps you only want your function to be applicable on a smaller
   set of types (usually minor, but occasionally major).
 * Error messages can become even more incomprehensible! (Major)
@@ -724,14 +728,14 @@ Type signatures for functions are wonderful bits of documentation. It
 is much easier to see what's going on if you use type synonyms and
 signatures.
 
-* makes cleaner code
+* cleaner code
 * easier for other tools to consume/reason about
 
 ### Provide additional types to aid in debugging
 
 Many of the errors in coding Cryptol will be instances of type
 mismatching. If you can't see your problem based on the error message,
-try adding more type annotations. This
+try adding more type annotations. This:
 * makes the interpreter do less work trying alternative possibilites
 and, consequently, can make error messages more comprehensible
 * reduces the body of code to examine for bugs (a sort of binary bug
@@ -760,3 +764,32 @@ These also illustrate higher order functions. We define the _function_
 arguments. We use the built in `uncurry` higher-order function which
 takes a two argument curried function and returns an uncurried version
 (a one argument function operating on an ordered pair).
+
+
+Postface
+--------
+
+In some sense Cryptol is like most any other programming language you
+know in that anything you can compute with one you can compute with
+the other. (I don't know of a formal proof that Cryptol is
+[Turing-complete](https://en.wikipedia.org/wiki/Turing_completeness))
+but it seems clear.) But once you are accustomed to Cryptol you will
+find that it is much easier to write correct cryptographic programs
+than with conventional languages. That's 'cause it's been tuned for
+such! To throw out the buzzwords:
+* Cryptol is a
+  [domain-specific language](https://en.wikipedia.org/wiki/Domain-specific_language). Not
+  only does it have things to support its domain, but also it elides a
+  lot of junk that makes programming and analyzing the programs
+  difficult.
+* Cryptol has been designed with reasoning about its code as a
+  priority, so that we can leverage it for verification. Some things
+  are harder to do in Cryptol, but they pay off in code that can be
+  proven correct!
+
+In some ways this requires a new mindset:
+* Write properties about your functions.
+* `:check` them.
+* Invest in `:prove` when your function's defintion has settled down.
+
+Enjoy getting addicted to this level of assurance!
