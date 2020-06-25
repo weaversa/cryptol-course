@@ -148,7 +148,7 @@ Other data types include:
 * Integers modulo _n_: Types of the form `[n]` already provide
   [least residue systems](https://en.wikipedia.org/wiki/Modular_arithmetic#Residue_systems)
   for
-  [integers modulo a power of 2](https://en.wikipedia.org/wiki/Modular_arithmetic#Integers_modulo_n).
+  [integers modulo 2<sup>n</sup>](https://en.wikipedia.org/wiki/Modular_arithmetic#Integers_modulo_n).
   Types of the form `Z n` provide that for any positive _n_. E.g.,
   `4 + 4 : Z 7` evaluates to `1`.
 
@@ -533,7 +533,8 @@ property gcdDividesBoth x y
 * Properties can have locally scoped definitions.
 * Property corner-cases are handled with `if ... then ... else`.
 * Another way to write the conditional part of the property that's a
-bit cooler: `z != 0 ==> x % z == 0 /\ y % z == 0`
+  bit cooler: `z != 0 ==> x % z == 0 /\ y % z == 0`. You can read that
+  as, "nonzero _z_ implies _z_ divides both _x_ and _y_".
 * WARNING: `:prove gcdDividesBoth` will never complete. Don't try it
   unless your favorite key combination is the abort sequence (often
   `Control-C`) on your computer.
