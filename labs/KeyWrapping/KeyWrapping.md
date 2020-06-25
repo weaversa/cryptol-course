@@ -531,7 +531,7 @@ Many cryptographic specifications (especially hash functions) accept
 some arbitrary number of bits as input but operate over some number of
 words internally. Hence, it's common to see a bitvector **padded**
 with zeros (or sometimes a constant and zeroes) to inflate the
-bitvector until its size is a multiple of a word (usually 32- or
+bitvector until its size is a multiple of a word (usually 32 or
 64 bits). For example, say we have a bitvector of `37` bits and we
 want to pad it to fit into some number of 32-bit words. Well, the next
 largest multiple of `32` is `64`, and `64 - 37` is `27`, so we'll need
