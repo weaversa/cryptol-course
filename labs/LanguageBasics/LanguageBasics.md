@@ -97,8 +97,8 @@ type is bits.
 * 1-d: Think bytes, words, nibbles, etc., i.e., a sequence of bits of
   any length usually thought of as a number. E.g., `0x2a : [8]`,
   `0b101010 : [6]` and
-  `[False, True, False, True, False, True, False]`. These all compare
-  as 42 in type appropriate contexts.
+  `[False, True, False, True, False, True, False] : [7]`. These all
+  compare as 42 in type appropriate contexts.
 * 2-d: Think sequences of 1-d objects all of the same size. E.g.,
   `[42, 0b010101010101, 0xa5a, 0o5757] : [4][12]`
 * 3-d: Sequences of 2-d objects all of the same size. E.g.,
@@ -175,8 +175,9 @@ modular addition. The third shows that `^^` is exponentiation
 The division (`/`) operation is not what a mathematician imagines in
 modular arithmetic. For instance `3 * 3 == 1 : [3]` so a mathematician
 would expect `1 / 3 == 3 : [3]` since division is the inverse of
-multiplication, but in Cryptol `1 / 3 == 0 : [3]`. Mathematically, `/`
-and `%` are the quotient and remainder, respectively, in
+multiplication. However, in Cryptol `1 / 3 == 0 :
+[3]`. Mathematically, `/` and `%` yield the quotient and remainder,
+respectively, in
 [Euclidean division](https://en.wikipedia.org/wiki/Euclidean_division).
 
 ### Bitwise logical: `~`, `&&`, `||` and `^`
@@ -243,7 +244,7 @@ labs::LanguageBasics::LanguageBasics> "cow" ! 0
 ```
 
 Notice that these operators all use 0-based indexing: `@` and `@@`
-from the front of the list and `!` and `!!` from the back.
+from the beginning of the sequence and `!` and `!!` from the end.
 
 ### Concatenation: `#`
 
@@ -334,9 +335,9 @@ so the type annotations shown in these examples need not be present.
 The Types of Functions
 ----------------------
 
-* The Cryptol interpreter command `:type` is very useful for helping you
-  understand types. For instance the type of the `abs` function which
-  we will define later is displayed by:
+The Cryptol interpreter command `:type` is very useful for helping you
+understand types. For instance the type of the `abs` function which we
+will define later is displayed by:
   
 ```shell
 labs::LanguageBasics::LanguageBasics> :type abs
@@ -411,9 +412,8 @@ advantageous:
 * Easy to test—Cryptol's interpreter makes it very cheap to try your
   functions out.
 * Encourages programming with properties—Properties can be tested
-  easily and, as we'll see in other labs, proven to provide guarantees
-  about code. Moreover, properties serve as another kind of
-  documentation!
+  easily and, as we'll see, proven to provide guarantees about
+  code. Moreover, properties serve as another kind of documentation!
 
 ### Examples
 
@@ -425,8 +425,8 @@ absNonnegative : Integer -> Bit
 property absNonnegative x = abs x >= 0
 ```
 
-* `abs : Integer -> Integer` is the type signature for `abs`
-* `abs n = if n >= 0 then n else -n` is the definition for `abs` (or function body)
+* `abs : Integer -> Integer` is the type signature for `abs`.
+* `abs n = if n >= 0 then n else -n` is the definition for `abs` (or function body).
 * `property absNonnegative ...` is a property we expect the function to have.
 * `:check property absNonnegative` checks this property with
     random tests. It's super cheap unit testing!
@@ -465,14 +465,15 @@ property gcdDividesBoth' x y
 
 * `where` introduces locally scoped definitions. (Mathematicians use
   the word "where" in a similar fashion.)
-* function `gcd'` is scoped within `gcd`
-* function `gcd'` is recursive
-* ```shell
+* The function `gcd'` is scoped within `gcd`.
+* The function `gcd'` is recursive.
+* Let's check `gcdDividesBoth'`:
+  ```shell
   labs::LanguageBasics::LanguageBasics> :check gcdDividesBoth' 
   Using random testing.
   Passed 100 tests.
   ```
-* But `gcdDividesBoth' 0 0` gives a division by 0 error.
+* It seems okay, yet `gcdDividesBoth' 0 0` gives a division by 0 error.
   ```shell
   labs::LanguageBasics::LanguageBasics> gcdDividesBoth' 0 0
   division by 0
@@ -489,20 +490,20 @@ property gcdDividesBoth' x y
   ```
 * Since `:check` uses randomly generated tests the previous result may
   be intermittent.
-* Properties are useful and in other labs we will actually `:prove` some
-  properties, but you must remember that _**properties that pass `:check`
-  are not guarantees!**_ That is: _**`:check` is evidence, `:prove` is
+* Properties are useful and sometimes may be `:prove`-n, but you must
+  remember that _**properties that pass `:check` are not
+  guarantees!**_ That is: _**`:check` is evidence, `:prove` is
   proof!**_
 * Properties may be partially applied: `:check gcdDividesBoth' 0`
   finds the problem faster since it only is using random values for
   the second argument.
-* WARNING: `:prove gcdDividesBoth'` will never complete. If you issue
-  that command, you'll need to issue the abort sequence (often
+* **Warning**: `:prove gcdDividesBoth'` will never complete. If you
+  issue that command, you'll need to issue the abort sequence (often
   `Control-C`) once or twice to interrupt and regain control. The
   reason this proof won't complete is too technical for the moment.
   
 Let's patch up that property. (You surely noticed the prime (`'`) in
-the property name which is a giveaway that is not really the property
+the property name which is a giveaway that is not quite the property
 I have in mind.)
 
 ```
