@@ -134,7 +134,9 @@ reference:
 * [Programming
   Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf)
   -- A good overview and reference for the Cryptol language. Contains
-  many examples and references for programming language features.
+  many examples and references for programming language
+  features. Especially see Appendix B on page 95 where you'll find a
+  listing of all of Cryptol's language constructs.
 
 * [Cryptol Version 2
   Syntax](https://github.com/GaloisInc/cryptol/blob/master/docs/Syntax.pdf)
