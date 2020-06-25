@@ -8,14 +8,14 @@ interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::LanguageBasics::LanguageBasics
+cryptol> :m labs::Language::Basics
 ```
 
 The following code declares the module name of this literate Cryptol
 document.
 
 ```
-module labs::LanguageBasics::LanguageBasics where
+module labs::Language::Basics where
 ```
 
 
@@ -29,14 +29,14 @@ something you should do when you're new at Cryptol. (In fact, I don't
 do it except when teaching.)
 
 ```shell
-labs::LanguageBasics::LanguageBasics> :set warnDefaulting = off
+labs::Language::Basics> :set warnDefaulting = off
 ```
 
 Also some examples have octets as outputs that are easier to see as
 characters so I use:
 
 ```shell
-labs::LanguageBasics::LanguageBasics> :set ascii = on
+labs::Language::Basics> :set ascii = on
 ```
 
 That makes any sequence of octets be displayed as the corresponding
@@ -46,9 +46,9 @@ corresponding ASCII character in single quotes (`'`). (This is mostly
 useful as a pedagogical aid.)
 
 ```shell
-labs::LanguageBasics::LanguageBasics> [0x63, 0x61, 0x74]
+labs::Language::Basics> [0x63, 0x61, 0x74]
 "cat"
-labs::LanguageBasics::LanguageBasics> 0x78
+labs::Language::Basics> 0x78
 'x'
 ```
 
@@ -174,11 +174,11 @@ and show some tricks of Cryptol.
 #### Signed versions: `/$` and `%$`
 
 ```shell
-labs::LanguageBasics::LanguageBasics> 1 + 1
+labs::Language::Basics> 1 + 1
 2
-labs::LanguageBasics::LanguageBasics> 1 + 1 : [1]
+labs::Language::Basics> 1 + 1 : [1]
 0x0
-labs::LanguageBasics::LanguageBasics> 2^^127 - 1 // a 33 digit Mersenne prime
+labs::Language::Basics> 2^^127 - 1 // a 33 digit Mersenne prime
 170141183460469231731687303715884105727
 ```
 
@@ -197,7 +197,7 @@ respectively, in
 ### Bitwise logical: `~`, `&&`, `||` and `^`
 
 ```shell
-labs::LanguageBasics::LanguageBasics> ~0b000011001101 && 0o4115 || 0x0d0 ^ 9
+labs::Language::Basics> ~0b000011001101 && 0o4115 || 0x0d0 ^ 9
 0x8d9
 ```
 
@@ -206,9 +206,9 @@ labs::LanguageBasics::LanguageBasics> ~0b000011001101 && 0o4115 || 0x0d0 ^ 9
 #### Signed versions: `<$`, `<=$`, `>$` and `>=$`
 
 ```shell
-labs::LanguageBasics::LanguageBasics> [~1, 1] == [6, 3 * 3]
+labs::Language::Basics> [~1, 1] == [6, 3 * 3]
 True
-labs::LanguageBasics::LanguageBasics> [~1, 1] == [6, 0b0011 * 3]
+labs::Language::Basics> [~1, 1] == [6, 0b0011 * 3]
 False
 ```
 
@@ -232,9 +232,9 @@ things!**_
 Comparisons are lexicographic on sequences of numbers.
 
 ```shell
-labs::LanguageBasics::LanguageBasics> [1, 2] < [1, 3]
+labs::Language::Basics> [1, 2] < [1, 3]
 True
-labs::LanguageBasics::LanguageBasics> [1, 2] < [1, 2]
+labs::Language::Basics> [1, 2] < [1, 2]
 False
 ```
 
@@ -242,22 +242,22 @@ False
 #### Signed version: `>>$`
 
 ```shell
-labs::LanguageBasics::LanguageBasics> 0xa5a << 4
+labs::Language::Basics> 0xa5a << 4
 0x5a0
-labs::LanguageBasics::LanguageBasics> 0xa5a << 12
+labs::Language::Basics> 0xa5a << 12
 0x000
-labs::LanguageBasics::LanguageBasics> 0xa5a <<< 16
+labs::Language::Basics> 0xa5a <<< 16
 0x5aa
 ```
 
 ### Indexing and slicing: `@`, `!`, `@@` and `!!`
 
 ```shell
-labs::LanguageBasics::LanguageBasics> "cat" @ 0
+labs::Language::Basics> "cat" @ 0
 'c'
-labs::LanguageBasics::LanguageBasics> "dog" @@ [2, 1, 1, 0, 0, 1, 2]
+labs::Language::Basics> "dog" @@ [2, 1, 1, 0, 0, 1, 2]
 "gooddog"
-labs::LanguageBasics::LanguageBasics> "cow" ! 0
+labs::Language::Basics> "cow" ! 0
 'w'
 ```
 
@@ -267,7 +267,7 @@ from the beginning of the sequence and `!` and `!!` from the end.
 ### Concatenation: `#`
 
 ```shell
-labs::LanguageBasics::LanguageBasics> "dog" # "cow" // Moof!
+labs::Language::Basics> "dog" # "cow" // Moof!
 "dogcow"
 ```
 
@@ -277,9 +277,9 @@ These are most often used in property statements. `/\` is "and", `\/`
 is "or" and `==>` is "implies". They have very low precedence.
 
 ```shell
-labs::LanguageBasics::LanguageBasics> 1 == 5 \/ 5 == 5
+labs::Language::Basics> 1 == 5 \/ 5 == 5
 True
-labs::LanguageBasics::LanguageBasics> False ==> 1 == 5 /\ 1 != 5
+labs::Language::Basics> False ==> 1 == 5 /\ 1 != 5
 True
 ```
 
@@ -296,13 +296,13 @@ by the name of the primitive.
 * `0` is a sequence of `False` bits whose type is determined by the
 context.
   ```shell
-  labs::LanguageBasics::LanguageBasics> 0 : [12]
+  labs::Language::Basics> 0 : [12]
   0x000
   ```
 * `zero` is an arbitrary collection of `False` bits whose type
 is determined by the context.
   ```shell
-  labs::LanguageBasics::LanguageBasics> zero: ([8], [4])
+  labs::Language::Basics> zero: ([8], [4])
   (0x00, 0x0)
   ```
   Here we produce an order pair of a 0 octet and a 0 nibble.
@@ -311,15 +311,15 @@ is determined by the context.
 
 ### List manipulation: `take`, `drop`, `tail`, `last` and `reverse`
 ```
-labs::LanguageBasics::LanguageBasics> take "dogcow" : [3][8]
+labs::Language::Basics> take "dogcow" : [3][8]
 "dog"
-labs::LanguageBasics::LanguageBasics> drop [2, 3, 5, 7, 11] : [3]Integer
+labs::Language::Basics> drop [2, 3, 5, 7, 11] : [3]Integer
 [5, 7, 11]
-labs::LanguageBasics::LanguageBasics> tail [0, 1, 1]
+labs::Language::Basics> tail [0, 1, 1]
 [1, 1]
-labs::LanguageBasics::LanguageBasics> last [2, 3, 5, 7, 11]
+labs::Language::Basics> last [2, 3, 5, 7, 11]
 11
-labs::LanguageBasics::LanguageBasics> reverse [0, 0, 1]
+labs::Language::Basics> reverse [0, 0, 1]
 [1, 0, 0]
 ```
 
@@ -334,13 +334,13 @@ above) will be unnecessary.
 ### List shape manipulation: `split`, `join`, `transpose`
 #### Variation: `groupBy` 
 ```shell
-labs::LanguageBasics::LanguageBasics> split 0xdeadbeef : [8][4]
+labs::Language::Basics> split 0xdeadbeef : [8][4]
 [0xd, 0xe, 0xa, 0xd, 0xb, 0xe, 0xe, 0xf]
-labs::LanguageBasics::LanguageBasics> join [0xca, 0xfe]
+labs::Language::Basics> join [0xca, 0xfe]
 0xcafe
-labs::LanguageBasics::LanguageBasics> transpose [[1, 2], [3, 4]]
+labs::Language::Basics> transpose [[1, 2], [3, 4]]
 [[1, 3], [2, 4]]
-labs::LanguageBasics::LanguageBasics> groupBy`{12} 0x5c00b1 // group into 12 bit chunks 
+labs::Language::Basics> groupBy`{12} 0x5c00b1 // group into 12 bit chunks 
 [0x5c0, 0x0b1]
 ```
 
@@ -358,7 +358,7 @@ understand types. For instance the type of the `abs` function which we
 will define later is displayed by:
   
 ```shell
-labs::LanguageBasics::LanguageBasics> :type abs
+labs::Language::Basics> :type abs
 abs : Integer -> Integer
 ```
 
@@ -384,9 +384,9 @@ gcdUncurried: (Integer, Integer) -> Integer
 These two functions would be applied as shown:
 
 ```shell
-labs::LanguageBasics::LanguageBasics> gcdCurried 20 28
+labs::Language::Basics> gcdCurried 20 28
 4
-labs::LanguageBasics::LanguageBasics> gcdUncurried (20, 28)
+labs::Language::Basics> gcdUncurried (20, 28)
 4
 ```
 
@@ -404,7 +404,7 @@ functions from other languages or documents.
   where an argument is fixed.  For instance, `gcdCurried 10` is a
   function itself!
   ```shell
-  labs::LanguageBasics::LanguageBasics> :type gcdCurried 10
+  labs::Language::Basics> :type gcdCurried 10
   gcdCurried 10 : Integer -> Integer
   ```
   `gcdCurried 10` takes an integer and returns an integer. When it
@@ -449,7 +449,7 @@ property absNonnegative x = abs x >= 0
 * `:check property absNonnegative` checks this property with
     random tests. It's super cheap unit testing!
   ```shell
-  labs::LanguageBasics::LanguageBasics> :check absNonnegative 
+  labs::Language::Basics> :check absNonnegative 
   Using random testing.
   Passed 100 tests.
   ```
@@ -458,7 +458,7 @@ property absNonnegative x = abs x >= 0
 * The reserved word `property` documents that definition's intention.
 * We can go a step further and `:prove` this property:
   ```shell
-  labs::LanguageBasics::LanguageBasics> :prove absNonnegative 
+  labs::Language::Basics> :prove absNonnegative 
   Q.E.D.
   (Total Elapsed Time: 0.032s, using Z3)
   ```
@@ -487,19 +487,19 @@ property gcdDividesBoth' x y
 * The function `gcd'` is recursive.
 * Let's check `gcdDividesBoth'`:
   ```shell
-  labs::LanguageBasics::LanguageBasics> :check gcdDividesBoth' 
+  labs::Language::Basics> :check gcdDividesBoth' 
   Using random testing.
   Passed 100 tests.
   ```
 * It seems okay, yet `gcdDividesBoth' 0 0` gives a division by 0 error.
   ```shell
-  labs::LanguageBasics::LanguageBasics> gcdDividesBoth' 0 0
+  labs::Language::Basics> gcdDividesBoth' 0 0
   division by 0
   ```
 * We could perhaps have found that with more testing:
   ```shell
-  labs::LanguageBasics::LanguageBasics> :set tests=1000
-  labs::LanguageBasics::LanguageBasics> :check gcdDividesBoth'
+  labs::Language::Basics> :set tests=1000
+  labs::Language::Basics> :check gcdDividesBoth'
   Using random testing.
   ERROR for the following inputs:
   0
@@ -553,7 +553,7 @@ Writing Loops
 * Many of Cryptol's operators naturally extend elementwise over nested
   sequences to any depth.
 ```shell
-labs::LanguageBasics::LanguageBasics> [[[2,3],[5,7]],[[11,13],[17,19]]] + [[[0,1],[1,2]],[[3,5],[8,13]]]
+labs::Language::Basics> [[[2,3],[5,7]],[[11,13],[17,19]]] + [[[0,1],[1,2]],[[3,5],[8,13]]]
 [[[2, 4], [6, 9]], [[14, 18], [25, 32]]]
 ```
 
@@ -567,9 +567,9 @@ of multidimensional arrays.
 Enumerations serve to provide the indices to loops.
 
 ```shell
-labs::LanguageBasics::LanguageBasics> [1..10]
+labs::Language::Basics> [1..10]
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-labs::LanguageBasics::LanguageBasics> [1, 3..10]
+labs::Language::Basics> [1, 3..10]
 [1, 3, 5, 7, 9]
 ```
 
@@ -578,7 +578,7 @@ labs::LanguageBasics::LanguageBasics> [1, 3..10]
 You can have "infinite" enumerations with `...`.
 
 ```shell
-labs::LanguageBasics::LanguageBasics> [1...]
+labs::Language::Basics> [1...]
 [1, 2, 3, 4, 5, ...]
 ```
 
@@ -589,7 +589,7 @@ So long as only a finite prefix of any "infinite" calculation is needed we're fi
 Loops to accumulate a value are often simple calculations over indices.
 
 ```shell
-labs::LanguageBasics::LanguageBasics> sum [1..100]
+labs::Language::Basics> sum [1..100]
 5050
 ```
 
@@ -598,7 +598,7 @@ labs::LanguageBasics::LanguageBasics> sum [1..100]
 Loops with functions on the indices are written as sequence comprehensions.
 
 ```shell
-labs::LanguageBasics::LanguageBasics> [n^^3 | n <- [0..10]]
+labs::Language::Basics> [n^^3 | n <- [0..10]]
 [0, 1, 8, 27, 64, 125, 216, 343, 512, 729, 1000]
 ```
 
@@ -635,9 +635,9 @@ encrypt key plainText = cipherText
 Many block ciphers are just variations of the above theme. Here's a sample of it in action:
 
 ```shell
-labs::LanguageBasics::LanguageBasics> encrypt 0x1337c0de 0xdabbad00 
+labs::Language::Basics> encrypt 0x1337c0de 0xdabbad00 
 0x6157c571
-labs::LanguageBasics::LanguageBasics> encrypt 0 0xdabbad00 
+labs::Language::Basics> encrypt 0 0xdabbad00 
 0xdabbad00
 ```
 
@@ -661,10 +661,10 @@ lazyAbsMin x y = if x == 0 then 0 else min (abs x) (abs y)
 ```
 Does not produce an error when `x` is zero, regardless of the value of `y`. For instance:
 ```shell
-labs::LanguageBasics::LanguageBasics> lazyAbsMin 1 (0/0)
+labs::Language::Basics> lazyAbsMin 1 (0/0)
 
 division by 0
-labs::LanguageBasics::LanguageBasics> lazyAbsMin 0 (0/0)
+labs::Language::Basics> lazyAbsMin 0 (0/0)
 0
 ```
 
@@ -683,7 +683,7 @@ sub8 x = x - 8
 ```
 
 ```shell
-labs::LanguageBasics::LanguageBasics> :prove add8 === sub8
+labs::Language::Basics> :prove add8 === sub8
 Q.E.D.
 (Total Elapsed Time: 0.014s, using Z3)
 ```
@@ -693,7 +693,7 @@ the machinery behind `:prove` gets overwhelmed and, on small enough
 domains, exhausting works in a reasonable time.
 
 ```shell
-labs::LanguageBasics::LanguageBasics> :exhaust add8 === sub8
+labs::Language::Basics> :exhaust add8 === sub8
 Using exhaustive testing.
 Passed 16 tests.
 Q.E.D.
@@ -703,7 +703,7 @@ The `:check` command is smart enough to notice small enough domains
 and switch to exhaustion automagically:
 
 ```shell
-labs::LanguageBasics::LanguageBasics> :check add8 === sub8
+labs::Language::Basics> :check add8 === sub8
 Using exhaustive testing.
 Passed 16 tests.
 Q.E.D.
