@@ -95,9 +95,10 @@ Cryptol's "basic" data type is an _n_-dimensional array whose base
 type is bits.
 * 0-d: `False : Bit` and `True: Bit`
 * 1-d: Think bytes, words, nibbles, etc., i.e., a sequence of bits of
-  any length usually thought of as a number. E.g., `0x5a : [8]` and
-  `0b1011010 : [7]`. These both compare, in type appropriate contexts,
-  as 170.
+  any length usually thought of as a number. E.g., `0x2a : [8]`,
+  `0b101010 : [6]` and
+  `[False, True, False, True, False, True, False]`. These all compare
+  as 42 in type appropriate contexts.
 * 2-d: Think sequences of 1-d objects all of the same size. E.g.,
   `[42, 0b010101010101, 0xa5a, 0o5757] : [4][12]`
 * 3-d: Sequences of 2-d objects all of the same size. E.g.,
@@ -107,15 +108,23 @@ type is bits.
 Things to note:
 * There are no privileged bit widths in Cryptol. `[13]` is just as
   good a type as `[8]`, `[16]`, `[32]` or `[64]`.
-* Lengths of sequences may be `0`. This is not terribly useful in
-  practice. The possible values in type `[0]` are just `0`; in type
-  `[1]` are `0` and `1`; in type `[2]` are `0`, `1`, `2` and `3`, etc.
+* There's `0b...` for binary, `0o...` for octal and `0x...` for
+  hexadecimal.
+* Lengths of sequences may be zero. This is not terribly useful in
+  practice, although zero length sequences act as an identity for
+  concatenation.
+* The possible values by type:
+  * `[0]`—`0`
+  * `[1]`—`0` and `1`
+  * `[2]`—`0`, `1`, `2` and `3`
+  * ...
+  * `[n]`—`0` through `2^^n - 1`
 * 1-d sequences of bits are treated as numbers by arithmetic and
-  comparison operators. So for instance, `[True] == (1 : [1])` and
-  `[False, True] == (1 : [2])`
+  comparison operators. So for instance, `[False, True] == (1 : [2])`
+  and `[True, False, True] > 4` both hold.
 * Cryptol distinguishes between the different dimensions. In
-  particular `True` and `[True]` are type incompatible.
-
+  particular, `True` and `[True]` are type incompatible.
+* The number of bracket pairs in a type gives its dimension.
 
 Other data types include:
 * Arbitrary-precision integers: E.g., `2^^1023 - 347835479 : Integer`
@@ -160,9 +169,15 @@ labs::LanguageBasics::LanguageBasics> 2^^127 - 1 // a 33 digit Mersenne prime
 ```
 
 The first example defaults to type `Integer`. In the second, I
-explicitly state that I want 1 bit addition. The third shows that `^^`
-is exponentiation
+explicitly state that I want 1 bit addition and so the computation is
+modular addition. The third shows that `^^` is exponentiation
 
+The division (`/`) operation is not what a mathematician imagines in
+modular arithmetic. For instance `3 * 3 == 1 : [3]` so a mathematician
+would expect `1 / 3 == 3 : [3]` since division is the inverse of
+multiplication, but in Cryptol `1 / 3 == 0 : [3]`. Mathematically, `/`
+and `%` are the quotient and remainder, respectively, in
+[Euclidean division](https://en.wikipedia.org/wiki/Euclidean_division).
 
 ### Bitwise logical: `~`, `&&`, `||` and `^`
 
@@ -171,25 +186,27 @@ labs::LanguageBasics::LanguageBasics> ~0b000011001101 && 0o4115 || 0x0d0 ^ 9
 0x8d9
 ```
 
-Notice there's `0b...` for binary, `0o...` for octal and `0x...` for hexadecimal.
 
 ### Comparison:`==`, `!=`, `<` , `<=`, `>` and `>=`
 #### Signed versions: `<$`, `<=$`, `>$` and `>=$`
 
 ```shell
-labs::LanguageBasics::LanguageBasics> [~1, 1] == [6, 4 + 5]
+labs::LanguageBasics::LanguageBasics> [~1, 1] == [6, 3 * 3]
 True
-labs::LanguageBasics::LanguageBasics> [~1, 1] == [6, 0b0100 + 5]
+labs::LanguageBasics::LanguageBasics> [~1, 1] == [6, 0b0011 * 3]
 False
 ```
 
-Cryptol figures that the `6` in the first example requires three bits
-and that's the widest thing so both sides are of type `[2][3]` (two
-elements of three bits each). So `[~1, 1] == [6, 1] == [6, 4 + 5]`.
+In the first example, the numbers might be of type `Integer` or `[n]`
+for suitable `n`. The `~` determines that it's `[n]` as `~` doesn't
+apply to type `Integer`. The literal `6` is the widest object so
+Cryptol defaults the base type of these sequences to be `[3]`. That in
+turn, forces the two sides to be of type `[2][3]` (two elements of
+three bits each). So `[~1, 1] == [6, 1] == [6, 3 * 3]`.
 
-The `0b0100` in the second example needs four bits, so both sides have
-type `[2][4]`. In this case `[~1, 1] == [14, 1]` while `[6, 4 + 5] ==
-[6, 9]` so equality fails.
+In the second example, the `0b0100` has type `[4]`, so both sides have
+type `[2][4]`. In this case `[~1, 1] == [14, 1]` while
+`[6, 0b0011 * 3] == [6, 9]` so equality fails.
 
 _**It is important to be precise about the widths of things!**_
 
