@@ -40,11 +40,11 @@ checks](https://en.wikipedia.org/wiki/Mathematics_of_cyclic_redundancy_checks#Ma
 
 > R(x) = M(x) * x<sup>n</sup> mod G(x)
 >
-> Here M(x) is the original message polynomial and G(x) is the degree-n
-generator polynomial. The bits of M(x) * x<sup>n</sup> are the original message
-with n zeroes added at the end. The CRC 'checksum' is formed by the
-coefficients of the remainder polynomial R(x) whose degree is strictly
-less than n.
+> Here M(x) is the original message polynomial and G(x) is the
+degree-n generator polynomial. The bits of M(x) * x<sup>n</sup> are
+the original message with n zeroes added at the end. The CRC
+'checksum' is formed by the coefficients of the remainder polynomial
+R(x) whose degree is strictly less than n.
 
 To start, our definition of CRC in Cryptol will need a generator
 polynomial `G` of degree `n`. Cryptol has some support for
