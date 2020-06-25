@@ -70,7 +70,7 @@ Cryptol](INSTALL.md).
    how Cryptol and SAW are used.
 3. [Cryptol Interpreter](labs/Interpreter/Interpreter.md): Learn how
    to use the Cryptol Interpreter.
-4. [Language Features](labs/Language/Basics.md): A resource
+4. [Language Basics](labs/Language/Basics.md): A resource
    for (most) of the language features you'll need to be successful
    here.
     * [Demos](labs/Demos/Demos.md): Lightweight walkthroughs with no
