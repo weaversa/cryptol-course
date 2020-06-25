@@ -11,17 +11,52 @@ running in the `cryptol-course` directory with:
 cryptol> :m labs::Language::Basics
 ```
 
+
+
+Basic Use of the Cryptol Language
+=================================
+
+
+Introduction
+------------
+
+In you've programmed in a variety of languages (not just different
+[procedural languages](https://en.wikipedia.org/wiki/Procedural_programming)
+descending from C), you'll find that, for the most part, Cryptol is
+just another language with a different vocabulary and a funky type
+system. After a little study you'll be able to do most anything
+computationally that you could otherwise, especially in the
+cryptographic realm. But once you are accustomed to Cryptol you will
+find that it is much easier to write correct cryptographic programs
+than with conventional languages. That's 'cause it's been tuned for
+such! To throw out the buzzwords:
+* Cryptol is a
+  [domain-specific language](https://en.wikipedia.org/wiki/Domain-specific_language). Not
+  only does it have things to support its domain, but also it elides a
+  lot of junk that makes programming and analyzing the programs
+  difficult.
+* Cryptol has been designed with automated reasoning about its code as
+  a priority, so that we can leverage it for verification. Some things
+  are harder to do in Cryptol, but they pay off in code that can be
+  proven correct!
+
+In some ways this requires a new mindset:
+* Write properties about your functions.
+* `:check` them.
+* Invest in `:prove` when your function's defintion has settled down.
+
+Enjoy getting addicted to this level of assurance!
+
+
+Preliminaries
+-------------
+
 The following code declares the module name of this literate Cryptol
 document.
 
 ```
 module labs::Language::Basics where
 ```
-
-
-
-Basic Use of the Cryptol Language
-=================================
 
 For examples in this lab I have turned off the warning messages you
 get when not specifying bit sizes of numbers. This is **not**
@@ -769,27 +804,4 @@ takes a two argument curried function and returns an uncurried version
 Postface
 --------
 
-In some sense Cryptol is like most any other programming language you
-know in that anything you can compute with one you can compute with
-the other. (I don't know of a formal proof that Cryptol is
-[Turing-complete](https://en.wikipedia.org/wiki/Turing_completeness))
-but it seems clear.) But once you are accustomed to Cryptol you will
-find that it is much easier to write correct cryptographic programs
-than with conventional languages. That's 'cause it's been tuned for
-such! To throw out the buzzwords:
-* Cryptol is a
-  [domain-specific language](https://en.wikipedia.org/wiki/Domain-specific_language). Not
-  only does it have things to support its domain, but also it elides a
-  lot of junk that makes programming and analyzing the programs
-  difficult.
-* Cryptol has been designed with reasoning about its code as a
-  priority, so that we can leverage it for verification. Some things
-  are harder to do in Cryptol, but they pay off in code that can be
-  proven correct!
-
-In some ways this requires a new mindset:
-* Write properties about your functions.
-* `:check` them.
-* Invest in `:prove` when your function's defintion has settled down.
-
-Enjoy getting addicted to this level of assurance!
+Go forth and write correct cryptographic algorithms!
