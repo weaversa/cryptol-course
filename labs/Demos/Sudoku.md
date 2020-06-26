@@ -108,7 +108,7 @@ check group = [ contains x | x <- [1 .. 9] ] == ~zero
 ```
 
 > We simply iterate over the numbers 1 through 9, and check that the 
-> given group contains that number. The function contains iterates 
+> given group contains that number. The function `contains` iterates 
 > through all the elements in the given group, and makes sure one of 
 > them is the currently looked for element. (The Cryptol primitive 
 > `zero` is a polymorphic constant representing all `False`s. The 
@@ -120,10 +120,15 @@ check group = [ contains x | x <- [1 .. 9] ] == ~zero
 
 Cryptol 2.6.0 also merged `Cryptol::Extras` into the `Prelude` (the 
 base module for Cryptol). `Cryptol::Extras` has numerous utility 
-functions, including `any` and `all`, which check a bit sequence to 
-determine whether any or all of the elements satisfy a given 
-predicate, respectively. So currently, this function could also be 
-defined in terms of simple, reusable helpers as:
+functions, including these and more:
+  - `any` and `all`, which check a bit sequence to determine whether 
+    any or all of the elements respectively satisfy a given predicate
+  - `elem`, which returns whether an item is in a sequence
+  - `map`, which applies a function to all items in a sequence, 
+    returning the sequence of values returned by the function
+
+So currently, this function could also be defined in terms of simple, 
+reusable helpers as:
 
 ```
 /** whether finite sequence `G` contains element `x` */
@@ -132,7 +137,7 @@ contains' :
     (Cmp a, fin n) =>
     [n]a -> a -> Bit
 contains' G x =
-    any ((==) x) G
+    elem x G
 
 /**
  * whether finite sequence `G` contains all items in finite 
@@ -152,15 +157,11 @@ check' G =
     supset' G [1..9]
 ```
 
-In Cryptol, the `infix` operator `==` can be called in prefix 
-notation, so `(==) x y` and `x == y` are equivalent. Functions are 
-first-class values in Cryptol, and `(==)` has type 
-`(==): {a} Cmp a -> Cmp a -> Bit`, so `(==) x` is a predicate that 
-returns `True` iff its argument equals `x`. Using `any`, `contains'` 
-checks whether any item in `G` is equal to `x` (satisfies `(==) x`).
-`contains` is a similarly nested function, so `contains G` checks 
-whether `G` contains the argument being passed, and `supset'` maps 
-this over `H` to determine if `G` contains all items in `H`.
+Using `elem`, `contains'` checks whether any item in `G` is equal to 
+`x` (satisfies `(==) x`). `contains` is a curried function, so 
+`contains' G` checks whether `G` contains the argument being passed, 
+and `supset'` maps this over `H` to determine if `G` contains all 
+items in `H`.
 
 As a sanity check, we can confirm these are equivalent:
 
@@ -168,14 +169,6 @@ As a sanity check, we can confirm these are equivalent:
 /** `check` and `check'` are equivalent. */
 check_equiv : SudokuGroup -> Bit
 property check_equiv = check === check'
-```
-
-Cryptol also provides it's own `contains'` variant called `elem`.
-
-```
-/** `contains'` and `elem` are equivalent */
-contains_equiv : SudokuGroup -> SudokuNum -> Bit
-property contains_equiv G x = contains' G x == elem x G
 ```
 
 For functions `f` and `g` of one argument, `f === g` is `True` iff 
@@ -186,7 +179,7 @@ Anyway, sorry for the interruption.
 > ### Recognizing a full board
 > 
 > Given a full Sudoku board, checking it’s a valid solution simply 
-> amounts to identifying rows, columns, and squares; and “check“-ing 
+> amounts to identifying rows, columns, and squares; and `check`-ing 
 > them all, in the above sense. The following Cryptol function 
 > accomplishes this task rather concisely:
 
@@ -199,27 +192,27 @@ valid rows = [ check grp | grp <- rows # columns # squares ] == ~zero
     squares = [ join sq | sq <- groupBy`{3} (join regions) ]
 ```
 
-> The function valid receives 9 rows; and calls check on all these 
+> The function `valid` receives 9 rows; and calls check on all these 
 > rows, columns, and the squares. Columns are easy to compute: we 
-> simply use Cryptol’s transpose primitive. The squares are slightly 
-> more tricky, but not particularly hard. We first group all the rows 
-> in length 3 segments, and transpose these to align them, thus 
-> forming the regions. Then the squares are simply grouping of the 
-> regions 3 elements at a time. It’s a good exercise to precisely 
+> simply use Cryptol’s `transpose` primitive. The squares are 
+> slightly more tricky, but not particularly hard. We first group all 
+> the rows in length 3 segments, and transpose these to align them, 
+> thus forming the regions. Then the squares are simply grouping of 
+> the regions 3 elements at a time. It’s a good exercise to precisely 
 > work out how the squares are formed using the above code, something 
 > we encourage the interested reader to do on a rainy afternoon..
 
 **INTERJECTION**
 
-We can use `all` again here to simplify `valid`:
+We can use `all` and `map` here to simplify `valid`:
 
 ```
 valid' : SudokuBoard -> Bit
 valid' rows = all check (rows # columns # squares)
   where
     columns = transpose rows
-    regions = transpose [ groupBy`{3} row | row <- rows ]
-    squares = [ join sq | sq <- groupBy`{3} (join regions) ]
+    regions = transpose (map groupBy`{3} rows)
+    squares = map join (groupBy`{3} (join regions))
 
 valid_equiv:
     SudokuBoard -> Bit
