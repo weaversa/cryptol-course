@@ -41,8 +41,8 @@ type signatures and function definitions.
 ### Whitespace
 
 Surround binary operators with a single space on either side. Use your
-better judgement for the insertion of spaces around arithmetic
-operators but always be consistent about whitespace on either side of
+best judgement for the insertion of spaces around arithmetic
+operators, but always be consistent about whitespace on either side of
 a binary operator. Don't insert a space after a lambda (the `\`
 symbol).
 
@@ -77,16 +77,16 @@ Type constraints should always be tupleized. The following is
 incorrect:
 
 ```haskell
-fun :
+func :
    {a, b}
    fin a => fin b =>
    [a][b] -> [a+b]
 ```
 
-`fun` should be:
+`func` should be:
 
 ```haskell
-fun :
+func :
    {a, b}
    (fin a, fin b)
    [a][b] -> [a+b]
@@ -94,15 +94,23 @@ fun :
 
 ### Data Declarations
 
-The `=` should always be surrounded by a single space on either
+The basecase for `=` should be surrounded by a single space on either
 side. This aligns value definitions with type definitions (where the
 `:` is also surrounded by a single space on either side). For example,
 
 ```haskell
-x : [32]
-x = 10
-y : [4][32]
-y = [1, 2, 3, 4]
+fish : [32]
+fish = 10
+```
+
+When multiple definitions are in the same where clause, align the
+`=` with the longest definition. For example,
+
+```haskell
+horse    : [4][32]
+horse    = [1, 2, 3, 4]
+elephant : [2]
+elephant = [False, True]
 ```
 
 Format records as follows:
@@ -126,7 +134,7 @@ exceptions =
 ```
 
 Optionally, you can skip the first newline. Use your judgement or try
-to match the paper document of the specification you're working from.
+to match the specification you're working from.
 
 ```haskell
 directions = [ North
@@ -238,7 +246,7 @@ Argument Order
 --------------
 
 Order arguments so that partial application is most advantageous. For
-example:
+example,
 
 ```haskell
 encrypt key plainText = ...
@@ -256,9 +264,6 @@ as a function in its own right.
 
 
 # STOPPED !!!
-
-Comments
---------
 
 ### Punctuation
 
