@@ -1,5 +1,20 @@
 # Bit Twiddling Exercises.
 
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+Cryptol document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter running
+in the `cryptol-course` directory with:
+
+```shell
+cryptol> :m labs::saw::bittwiddling::bittwiddling_answers
+```
+
+We start by defining a new module for this lab:
+
+```
+module labs::saw::bittwiddling::bittwiddling_answers where
+```
+
 Sean Eron Anderson, a former graduate student at Stanford, collected a
 large set of [Bit Twiddling
 Hacks](https://graphics.stanford.edu/~seander/bithacks.html). This

@@ -20,6 +20,10 @@ jobs:
         - brew install cryptol
       compiler: clang
       os: osx
+    -
+      before_install:
+        - docker pull cryptolcourse/cryptol:latest
+        - alias cryptol='docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol'
     - 
       before_install: 
         - wget https://saw.galois.com/builds/nightly/saw-0.4.0.99-2020-05-21-Ubuntu14.04-64.tar.gz
@@ -38,13 +42,13 @@ script:
   - export CRYPTOLPATH=$(pwd)
 # Interpreter lab tests
   - cryptol -e -c ":m labs::Interpreter::test" -c ":s base=10" -c "x + 2"
-  - cryptol -e -b labs/Interpreter/test.sry
+#  - cryptol -e -b labs/Interpreter/test.sry
 # Arithmetic verification tests
   - "! command -v saw >/dev/null 2>&1 || make -C labs/saw/ArithmeticVerifications"
 # Bittwiddling lab tests
-  - cryptol -e -c ":l labs/saw/bittwiddling/bittwiddling.md"
+  - cryptol -e -c ":m labs::saw::bittwiddling::bittwiddling.md"
   - clang -emit-llvm -c labs/saw/bittwiddling/bittwiddling.c -o labs/saw/bittwiddling/bittwiddling.bc
-  - cryptol -e -c ":l labs/saw/bittwiddling/bittwiddling_answers.md"
+  - cryptol -e -c ":m labs::saw::bittwiddling::bittwiddling_answers.md"
   - "! command -v saw >/dev/null 2>&1 || saw labs/saw/bittwiddling/bittwiddling_answers.saw"
 # Salsa20 lab tests
   - cryptol -e -c ":m labs::Salsa20::Salsa20"
