@@ -48,7 +48,7 @@ command; your output should look similar to the following:
  ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
  ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
  ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
- version 2.8.1 (ce0365f)
+ version 2.8.0
  
  Loading module Cryptol
  Cryptol> :load README.md
