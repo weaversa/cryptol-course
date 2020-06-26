@@ -261,7 +261,7 @@ f 4 = True
 ```
 
 > Indeed, 4 is a solution to this equation. Is there any other 
-> solution? It is easy to formulate a similar query using the lambda-
+> solution? It is easy to formulate a similar query using the lambda
 > notation:
 
 ```sh
