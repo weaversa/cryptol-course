@@ -122,7 +122,7 @@ different backgrounds. Here are some of them:
    collection of famous, yet hard to understand algorithms which
    perform relatively simple calculations. This is a good introduction
    to how one can use Cryptol and SAW to prove that an implementation
-   matches it's specification.
+   matches its specification.
 
 
 ## Supporting Materials
