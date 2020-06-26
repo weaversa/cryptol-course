@@ -244,7 +244,7 @@ To load a literate document into Cryptol, change to your
 (Windows), then run Cryptol via a locally installed binary or Docker
 image. We'll use [labs/Demos/OneTimePad.md](labs/Demos/OneTimePad.md)
 as an example. The literate document can be provided as a parameter
-when starting the Cryptol intepreter:
+when starting the Cryptol interpreter:
 
 ```sh
 .../cryptol-course$ cryptol labs/Demos/OneTimePad.md

@@ -108,7 +108,7 @@ given by black lines.
 
 ## Extra Labs and Demonstrations
 
-Ther are also labs that go beyond the scope of the course outline, but
+There are also labs that go beyond the scope of the course outline, but
 may prove interesting or useful for students with wider interests or
 different backgrounds. 
 
