@@ -391,7 +391,7 @@ The Types of Functions
 The Cryptol interpreter command `:type` is very useful for helping you
 understand types. For instance the type of the `abs` function which we
 will define later is displayed by:
-  
+
 ```shell
 labs::Language::Basics> :type abs
 abs : Integer -> Integer
@@ -554,7 +554,7 @@ property gcdDividesBoth' x y
   issue that command, you'll need to issue the abort sequence (often
   `Control-C`) once or twice to interrupt and regain control. The
   reason this proof won't complete is too technical for the moment.
-  
+
 Let's patch up that property. (You surely noticed the prime (`'`) in
 the property name which is a giveaway that is not quite the property
 I have in mind.)
