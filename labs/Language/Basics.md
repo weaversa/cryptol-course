@@ -43,7 +43,7 @@ such! To throw out the buzzwords:
 In some ways this requires a new mindset:
 * Write properties about your functions.
 * `:check` them.
-* Invest in `:prove` when your function's defintion has settled down.
+* Invest in `:prove` when your function's definition has settled down.
 
 Enjoy getting addicted to this level of assurance!
 
@@ -106,7 +106,7 @@ comment facility:
 ```
 /** 
   * A totally made up identifier for pedagogical purposes. It is
-  * used elsewhere for demonstation of something or other.
+  * used elsewhere for demonstration of something or other.
   */
 mask = 7
 ```
@@ -653,7 +653,7 @@ Simple Block Encryption Example
 keyExpand : [32] -> [10][32]
 keyExpand key = take roundKeys // take leverages the type signature
   where
-    roundKeys : [inf][32]  // a conceptually infinte list
+    roundKeys : [inf][32]  // a conceptually infinite list
     roundKeys = [key] # [roundKey <<< 1 | roundKey <- roundKeys]
 
 encrypt : [32] -> [32] -> [32]
@@ -771,7 +771,7 @@ signatures.
 Many of the errors in coding Cryptol will be instances of type
 mismatching. If you can't see your problem based on the error message,
 try adding more type annotations. This:
-* makes the interpreter do less work trying alternative possibilites
+* makes the interpreter do less work trying alternative possibilities
 and, consequently, can make error messages more comprehensible
 * reduces the body of code to examine for bugs (a sort of binary bug
 search)
