@@ -132,9 +132,11 @@ Unfortunately, SAW is not available via Homebrew.
 
 ### Downloading Cryptol and SAW
 
-Galois provide a server with nightly builds of SAW for CentOS, Ubuntu,
+Galois provides releases of Cryptol here: https://cryptol.net/downloads.html and releases of SAW here: https://saw.galois.com/downloads.html.
+
+Galois also provides a server with nightly builds of SAW for CentOS, Ubuntu,
 and OSX. Cryptol comes bundled with SAW, so if your computer is
-running one of these operating systems, you should download a recent
+running one of these operating systems, you may download a recent
 version from https://saw.galois.com/builds/nightly. *(Note that the
 Ubuntu files indicate Ubuntu14.04, but they work on later versions of
 Ubuntu as well.)*
@@ -152,9 +154,9 @@ $ export PATH=$(pwd)/saw-0.4.0.99-2020-05-21-OSX-64/bin:${PATH}
 ```
 
 *If you are running Windows, or you _only_ want Cryptol, you can find
-nightly builds at https://cryptol.net/builds/nightly/.  Note that
+an installer at https://cryptol.net/downloads.html.  Note that
 these instructions do not currently provide any details on how to
-install Cryptol on Windows.*
+install Cryptol on Windows, though the installer is self explanatory.*
 
 ### Downloading Z3
 
