@@ -284,8 +284,7 @@ Cryptol from the root of this repository, you can load this file using
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻  
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃  
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
-version 2.8.1 (e914cef)
-https://cryptol.net  :? for help
+version 2.8.0
 
 Loading module Cryptol
 Cryptol> :l labs/Interpreter/test.cry
@@ -348,8 +347,7 @@ cryptol-course]$ cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻  
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃  
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
-version 2.8.1 (e914cef)
-https://cryptol.net  :? for help
+version 2.8.0
 
 Loading module Cryptol
 Cryptol> :m labs::Interpreter::test

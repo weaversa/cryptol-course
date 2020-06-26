@@ -89,8 +89,6 @@ Details:
 [https://docs.docker.com/get-docker](https://docs.docker.com/get-docker).
 - `docker run --rm -it` indicates that the commands are to be run in an interactive
 TTY, and the generated container is to be removed after use.
-- Version tags `0.5` and `2.8.0` are needed because a `latest` alias
-has not been set for these images.
 - If you are currently in the root of this repository, you can use
 `-v` and `--env` to mount the repository in the docker image and set
 the `CRYPTOLPATH` environment variable for access to this repository's
@@ -258,6 +256,7 @@ labs::Demos::OneTimePad>
 
 ```sh
 .../cryptol-course> docker run --rm --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
+    ...
 Loading module Cryptol
 Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad
@@ -267,6 +266,7 @@ labs::Demos::OneTimePad>
 ### Using Docker on Windows
 ```sh
 ...\cryptol-course> docker run --rm --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
+    ...
 Loading module Cryptol
 Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad
