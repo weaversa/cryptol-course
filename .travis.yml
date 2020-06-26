@@ -47,9 +47,9 @@ script:
 # Arithmetic verification tests
   - "! command -v saw >/dev/null 2>&1 || make -C labs/saw/ArithmeticVerifications"
 # Bittwiddling lab tests
-  - cryptol -e -c ":m labs::saw::bittwiddling::bittwiddling.md"
+  - cryptol -e -c ":m labs::saw::bittwiddling::bittwiddling"
   - clang -emit-llvm -c labs/saw/bittwiddling/bittwiddling.c -o labs/saw/bittwiddling/bittwiddling.bc
-  - cryptol -e -c ":m labs::saw::bittwiddling::bittwiddling_answers.md"
+  - cryptol -e -c ":m labs::saw::bittwiddling::bittwiddling_answers"
   - "! command -v saw >/dev/null 2>&1 || saw labs/saw/bittwiddling/bittwiddling_answers.saw"
 # Salsa20 lab tests
   - cryptol -e -c ":m labs::Salsa20::Salsa20"
