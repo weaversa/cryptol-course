@@ -111,7 +111,7 @@ specs::Misc::Sudoku> :quit
 You may also want to assign this horrendous command to an alias. For example:
 
 ```sh
-alias cryptol="docker run --rm --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol"
+$ alias cryptol="docker run --rm --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol"
 $ cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
