@@ -48,7 +48,7 @@ $ cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
-version 2.8.1 (ce0365f)
+version 2.8.0
 
 Loading module Cryptol
 Cryptol> :module labs::Overview::Overview
