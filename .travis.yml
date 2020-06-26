@@ -23,6 +23,7 @@ jobs:
     -
       before_install:
         - docker pull cryptolcourse/cryptol:latest
+        - shopt -s expand_aliases
         - alias cryptol='docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol'
     - 
       before_install: 
