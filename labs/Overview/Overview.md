@@ -258,7 +258,7 @@ We will introduce some of these features below and discuss how they support buil
 
 Cryptol was designed to provide easy access to the sorts of data and operations that appear in Cryptographic algorithms and specifications. There are five basic data types provided by Cryptol: bits, sequences, integers, tuples, and records. Cryptol also supports the ability to create user-defined types built up from the basic types. In this section, we present some basic examples demonstrating these types; note that commands using `:t` are a request to Cryptol to report the type of argument.
 
- * **Bits** - The simplest data type, bits can take on two values: `True` and `False`. Single-bit operations like `and` (`/\`), `or` (`\/`), and `not` (`~`) are available.
+ * **Bits** - The simplest data type, bits can take on two values: `True` and `False`. Bit-level operations like `and` (`/\`) and `or` (`\/`), and `not` (`~`) are available.
 
 ```haskell
 Cryptol> :t True
@@ -271,7 +271,7 @@ Cryptol> ~True
 False
 ```
 
- * **Sequences** - Finite lists of objects all of the same data type. Common cryptographic algorithms make use of *words* or *registers*, which are one-dimensional sequences of Bits. Cryptol seemlessly handles operations on words of arbitrary sizes and also allows for multi-dimensional sequences (*i.e.* sequences of words, or sequences of sequences of words).
+ * **Sequences** - Finite lists of objects all of the same data type. Common cryptographic algorithms make use of *words* or *registers*, which are one-dimensional sequences of Bits. Cryptol seamlessly handles operations on words of arbitrary sizes and also allows for multi-dimensional sequences (*i.e.* sequences of words, or sequences of sequences of words).
 
 ```haskell
 Cryptol> let s1 = [True, True, False, True]
@@ -326,8 +326,8 @@ Cryptol> point.y
 
 Cryptol provides a collection of built-in operators to build expressions and perform computations. Some familiar operators which appear in cryptographic applications include:
 
-* `~`, `/\`, `\/` -- single bit logical operations
-* `&&`, `||`, `^` -- logical operations for sequences
+* `/\`, `\/` -- single bit logical operations
+* `~`, `&&`, `||`, `^` -- logical operations for sequences
 * `==`, `!=` -- structural comparison
 * `==`, `>=`, `>`, `<=`, `<` -- nonnegative word comparisons
 * `+`, `-`, `*`, `/`, `%`, `**` -- wordwise modular arithmetic
@@ -403,7 +403,7 @@ RotWord : [4][8] -> [4][8]
 RotWord [a0, a1, a2, a3] = [a1, a2, a3, a0]
 ```
 
-This provides a type for `RotWord` (`[4][8] -> [4][8]`) and a definition (`RotWord [a0, a1, a2, a3] = [a1, a2, a3, a0]`). Within the interpreter we can perform computations and check the type of this function as follows:
+This provides a type for `RotWord` of `[4][8] -> [4][8]` and a definition of `RotWord [a0, a1, a2, a3] = [a1, a2, a3, a0]`. Within the interpreter we can perform computations and check the type of this function as follows:
 
 ```sh
 labs::overview::overview> RotWord [0x01, 0x02, 0x03, 0x04]

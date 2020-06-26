@@ -187,7 +187,7 @@ property Salsa20CoreCollidesProp Z =
 Finally, we want to show that `Salsa20Encrypt` is invertible
 (i.e. there exists a `Salsa20Decrypt` function that inverts
 `Salsa20Encrypt` for a given key and nonce). It turns out that
-`Salsa20Encrypt` is it's own inverse, a so-called
+`Salsa20Encrypt` is its own inverse, a so-called
 [involution](https://en.wikipedia.org/wiki/Involution_(mathematics). That
 is, composing `Salsa20Encrypt` twice on a given key and nonce yields
 the original plaintext.

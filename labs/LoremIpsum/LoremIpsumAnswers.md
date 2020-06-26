@@ -224,7 +224,7 @@ after tagging.
 
 The specific variant of CRC used is the CRC-32c defined in
 [RFC 3309](https://tools.ietf.org/pdf/rfc3309.pdf). For reference, the
-polynomial is given as,
+polynomial is given as:
 
 x^32 + x^28 + x^27 + x^26 + x^25 + x^23 + x^22 + x^20 + x^19 + x^18 +
 x^14 + x^13 + x^11 + x^10 + x^9 + x^8 + x^6 + 1

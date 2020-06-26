@@ -81,7 +81,7 @@ indicates:
 
 That is, `KW` (and `KWP`) are defined to operate with
 [`AES`](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
-for its three key sizes: 128, 192, and 256-bits.
+for its three key sizes: 128, 192, and 256 bits.
 
 The standard does not indicate a specific key size for
 [`TDEA`](https://en.wikipedia.org/wiki/Triple_DES), but
@@ -206,16 +206,17 @@ We haven't quite captured enough about the type of `W` -- for the
 algorithm to operate correctly, and according to the standard, we will
 have to make two more assumptions about `n`.
 
- * First, `n >= 3`, we can add this restriction to our type signature:
- * Second, `n <= 2^^54`, this comes directly from the limits imposed
-   by Table 1 (Section 5.3.1, page 10). As an aside, if this
-   constraint is left off, Cryptol's type checker will point out that
-   `64 >= width (6*(n-1))` (which can be reexpressed as `6*(n-1) <
-   2^^64`). This constraint comes from the fact that the value `t`
-   (which iterates over `[1..6*(n-1)]`) has to fit into a 64-bit word
-   when passed to `WStep`. Of course, `2^^54` is less than `6 *
-   (2^^54 - 1)` which is less than `2^^64`, so the tighter lower bound
-   from Table 1 is acceptable.
+1. `n >= 3`: we can add this restriction to our type signature:
+
+2. `n <= 2^^54`: this comes directly from the limits imposed by Table
+   1 (Section 5.3.1, page 10). As an aside, if this constraint is left
+   off, Cryptol's type checker will point out that `64 >= width
+   (6*(n-1))` (which can be re-expressed as `6*(n-1) < 2^^64`). This
+   constraint comes from the fact that the value `t` (which iterates
+   over `[1..6*(n-1)]`) has to fit into a 64-bit word when passed to
+   `WStep`. Of course, `2^^54` is less than `6 * (2^^54 - 1)` which is
+   less than `2^^64`, so the tighter lower bound from Table 1 is
+   acceptable.
  
 ```comment
 W : 
@@ -303,7 +304,7 @@ sequence, then we can use `foldl` as follows:
 Cryptol> foldl (+) 0 [1..10]
 55
 ```
-*...we now return to our regularly schedule program.*
+*...we now return to our regularly scheduled program.*
 
 We will use `foldl` along with our step function `WStep` to write a
 definition for `W`.
@@ -531,8 +532,8 @@ Many cryptographic specifications (especially hash functions) accept
 some arbitrary number of bits as input but operate over some number of
 words internally. Hence, it's common to see a bitvector **padded**
 with zeros (or sometimes a constant and zeroes) to inflate the
-bitvector until its size is a multiple of a word (usually 32- or
-64-bits). For example, say we have a bitvector of `37` bits and we
+bitvector until its size is a multiple of a word (usually 32 or
+64 bits). For example, say we have a bitvector of `37` bits and we
 want to pad it to fit into some number of 32-bit words. Well, the next
 largest multiple of `32` is `64`, and `64 - 37` is `27`, so we'll need
 to pad with `27` zeros. We can demonstrate this using Cryptol:
@@ -553,7 +554,7 @@ we have `10` apples divided amongst `3` friends, after giving everyone
 three apples, we'll have `10 % 3 = 1` apple remaining. What we desire
 with padding isn't what's remaining, but rather the amount needed to
 get to the next multiple, that is, how many **more** apples do we need
-if we had another friend? --- To which the answer here is, `2`. Or,
+if we had another friend? --- To which the answer here is `2`. Or,
 said another way, we are **short** `2` apples.
 
 As it turns out, Cryptol has such a shortage operator (the ceiling
@@ -604,7 +605,7 @@ bytes) of `P`, and `l` to be the number of bits of `S`. You'll notice
 we constrain `k` to be between `1` and `2^^32-1`, as per Table 1.
 Since `S` is comprised of two 32-bit numbers concatenated with input
 `P` and then padded to a multiple of `64`, `l` is constrained to be
-`32 + 32 + k*8 + k*8 %^ 64`, that is, 32-bits for `ICV2` plus 32-bits
+`32 + 32 + k*8 + k*8 %^ 64`, that is, 32 bits for `ICV2` plus 32 bits
 for the number of octets of `P` plus `P` itself plus the shortage of
 `P` as a multiple of `64` bits.
 
@@ -638,10 +639,10 @@ KWPAEPad P = S
 
 ## Concept 2: Oddly Typed `if-then-else` Statements
 
-Sometimes, though not often, cryptographic algorithms will contain if
-statements where the `then` and `else` branches return different
+Sometimes, though not often, cryptographic algorithms will contain
+`if` statements where the `then` and `else` branches return different
 types. You were exposed to this a bit already in the [Salsa20
-lab](../Salsa20/Salsa20.md)). First off, this is always frustrating to
+lab](../Salsa20/Salsa20.md). First off, this is always frustrating to
 deal with in Cryptol, and we want you to know that we feel your pain
 and we're sorry. Cryptol _can_ handle these types of situations, but
 coming up with a solution requires experience with the type system
@@ -857,7 +858,7 @@ work.
 I'm sure the sticklers in the class noticed that we reused the same
 type constraints from `KWP-AE` which don't overtly mention the
 ciphertext bounds from Table 1, namely, that the length of `C` must be
-between `2` to `2^^29`, inclusively. Fortunately, those bounds
+between `2` and `2^^29`, inclusively. Fortunately, those bounds
 _should_ be inferred by the plaintext bounds. And, now that you
 mention it, we can check! Table 1 tells us that, for `KWP`, if the
 number of octets of `P` is the upper limit of `2^^32-1`, that the

@@ -255,7 +255,7 @@ Q.E.D.
 It's worth noting here that Cryptol and associated theorem provers are
 doing some very heavy lifting behind the scenes. Without an automated
 theorem prover, the best one could do is run some tests. Cryptol does
-support automated testing with it's `:check` command.
+support automated testing with its `:check` command.
 
 ```bash
 labs::Salsa20::Salsa20> :check quarterroundIsInjectiveProp 
@@ -279,7 +279,7 @@ Using exhaustive testing.
 Testing...     0%
 ```
 
-While you wait, why not consider just how great automated theorem
+While you wait, you should consider just how great automated theorem
 provers have become. Next, appreciate all the work the folks at Galois
 have put into Cryptol over the last 20 years...you may even consider
 sending a thank you note to Évariste (evariste@galois.com). After
@@ -435,10 +435,10 @@ author claims that rejiggering the input and outputs of `rowround` (in
 a special way) will cause `rowround` to produce results identical to
 `columnround`. To rejigger we
 
-  * transform the 16 element input sequence into a 4 by 4 element
+  * transform the 16-element input sequence into a 4 by 4 element
 sequence,
   * transpose this matrix, and
-  * transform the transposed 4 by 4 matrix back into a 16 element
+  * transform the transposed 4 by 4 matrix back into a 16-element
 sequence.
 
 Luckily Cryptol provides `split`, `transpose`, and `join` to perform
@@ -525,7 +525,7 @@ the Salsa20 specification. You'll know you've gotten it right when
 
 This one is a little tricky because the elegant solution does not look
 like the solution in the paper document. This is because, for example,
-`b0` (and 8-bit value) added to anything can never produce a 32-bit
+`b0` (an 8-bit value) added to anything can never produce a 32-bit
 result --- Cryptol enforces that it can only add, multiply, subtract,
 etc. n-bit things to other n-bit things. So, one solution would be to
 create new 32-bit variables that are `b0` through `b3` each padded
@@ -792,15 +792,17 @@ Some hints:
 
   * Where the specification says "truncate" think `take`.
   * Don't be afraid to `take` from an implicitly constructed `2^^70`
-byte sequence.
+    byte sequence.
   * Salsa20Expansion returns a sequence of 64-bytes, so a `join` is
     needed if you want to create the sequence of `2^^70` bytes.
+  * `v` and `i` should be concatenated to be passed to
+    `Salsa20Expansion`.
 
 ```
 Salsa20Encrypt k v m = c
   where
     c = m ^ take (join [ Salsa20Expansion k (v # littleendian' i)
-                       | i <- [0, 1 ... ] ])
+                       | i <- [0 ... ] ])
 ```
 
 
