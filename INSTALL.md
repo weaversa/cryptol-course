@@ -89,8 +89,6 @@ Details:
 [https://docs.docker.com/get-docker](https://docs.docker.com/get-docker).
 - `docker run --rm -it` indicates that the commands are to be run in an interactive
 TTY, and the generated container is to be removed after use.
-- Version tags `0.5` and `2.8.0` are needed because a `latest` alias
-has not been set for these images.
 - If you are currently in the root of this repository, you can use
 `-v` and `--env` to mount the repository in the docker image and set
 the `CRYPTOLPATH` environment variable for access to this repository's
@@ -98,7 +96,7 @@ Cryptol modules. This environment variable is used by both Cryptol and
 SAW. For example:
 
 ```sh
-$ docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
+$ docker run --rm --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
@@ -110,6 +108,21 @@ Loading module specs::Misc::Sudoku
 specs::Misc::Sudoku> :quit
 ```
 
+You may also want to assign this horrendous command to an alias. For example:
+
+```sh
+$ alias cryptol="docker run --rm --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol"
+$ cryptol
+┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
+┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
+┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
+version 2.8.0
+
+Loading module Cryptol
+Cryptol> :module specs::Misc::Sudoku
+Loading module specs::Misc::Sudoku
+specs::Misc::Sudoku> :quit
+```
 
 ## Option 2: Homebrew
 
@@ -132,9 +145,11 @@ Unfortunately, SAW is not available via Homebrew.
 
 ### Downloading Cryptol and SAW
 
-Galois provide a server with nightly builds of SAW for CentOS, Ubuntu,
-and OSX. Cryptol comes bundled with SAW, so if your computer is
-running one of these operating systems, you should download a recent
+Galois provides releases of Cryptol here: https://cryptol.net/downloads.html and releases of SAW here: https://saw.galois.com/downloads.html.
+
+Galois also provides a server with nightly builds of SAW for CentOS,
+Ubuntu, and OSX. Cryptol comes bundled with SAW, so if your computer
+is running one of these operating systems, you may download a recent
 version from https://saw.galois.com/builds/nightly. *(Note that the
 Ubuntu files indicate Ubuntu14.04, but they work on later versions of
 Ubuntu as well.)*
@@ -146,15 +161,15 @@ For CentOS, Ubuntu, or OSX, the whole process would look something
 like (depending on the date and which OS build and version you download):
 
 ```
-$ curl -fsSL https://saw.galois.com/builds/nightly/saw-0.4.0.99-2020-05-21-OSX-64.tar.gz -o saw-0.4.0.99-2020-05-21-OSX-64.tar.gz
-$ tar -xzf saw-0.4.0.99-2020-05-21-OSX-64.tar.gz
-$ export PATH=$(pwd)/saw-0.4.0.99-2020-05-21-OSX-64/bin:${PATH}
+$ curl -fsSL https://github.com/GaloisInc/saw-script/releases/download/v0.5/saw-0.5-Ubuntu14.04-64.tar.gz
+$ tar -xvzf saw-0.5-Ubuntu14.04-64.tar.gz
+$ export PATH=$(pwd)/saw-0.5-Ubuntu14.04-64/bin:${PATH}
 ```
 
 *If you are running Windows, or you _only_ want Cryptol, you can find
-nightly builds at https://cryptol.net/builds/nightly/.  Note that
-these instructions do not currently provide any details on how to
-install Cryptol on Windows.*
+an installer at https://cryptol.net/downloads.html. Note that these
+instructions do not currently provide any details on how to install
+Cryptol on Windows, though the installer is self explanatory.*
 
 ### Downloading Z3
 
@@ -256,6 +271,7 @@ labs::Demos::OneTimePad>
 
 ```sh
 .../cryptol-course> docker run --rm --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
+    ...
 Loading module Cryptol
 Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad
@@ -265,6 +281,7 @@ labs::Demos::OneTimePad>
 ### Using Docker on Windows
 ```sh
 ...\cryptol-course> docker run --rm --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
+    ...
 Loading module Cryptol
 Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad

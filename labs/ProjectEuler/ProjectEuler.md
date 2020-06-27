@@ -45,8 +45,7 @@ should get a response like this:
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻  
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃  
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
-version 2.8.1 (e914cef)
-https://cryptol.net  :? for help
+version 2.8.0
 
 Loading module Cryptol
 Loading module labs::ProjectEuler::cipher1
