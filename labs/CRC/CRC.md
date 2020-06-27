@@ -72,7 +72,7 @@ CRCSimple :
     (fin n, fin m) =>
     [n+1] -> [m] -> [n]
 CRCSimple G M = undefined
-  where M' = undefined
+  where M' = undefined  //Concatenate M with n zero bits
 ```
 
 This test-case is from [1].
