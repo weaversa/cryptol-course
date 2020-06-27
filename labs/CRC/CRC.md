@@ -279,9 +279,7 @@ property CRC32_XFERTest =
 
 ## Parting Exercises
 
-It would be nice for the `CRC` function to accept arbitrary
-bitvectors, rather than strings of bytes. As an exercise, try to do
-this. This lab defined the 32-bit CRCs from [3]. You might also
+This lab defined the 32-bit CRCs from [3]. You might also
 consider defining the 8, 16, and 64-bit CRC's from [3] or any of the
 CRCs given in [1], Section "Polynomial representations of cyclic
 redundancy checks".
