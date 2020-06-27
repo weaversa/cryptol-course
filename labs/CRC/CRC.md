@@ -71,8 +71,8 @@ CRCSimple :
     {n, m}
     (fin n, fin m) =>
     [n+1] -> [m] -> [n]
-CRCSimple G M = pmod M' G
-  where M' = M # (0 : [n])
+CRCSimple G M = undefined
+  where M' = undefined
 ```
 
 This test-case is from [1].
