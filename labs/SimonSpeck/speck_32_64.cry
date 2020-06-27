@@ -1,0 +1,8 @@
+module speck_32_64 = seanspeck where
+
+type n = 16
+type m = 4
+a = 7
+b = 2
+type T = 22
+

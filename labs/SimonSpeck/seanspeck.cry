@@ -1,0 +1,21 @@
+module seanspeck where
+
+parameter
+
+  type n : #
+  type m : #
+  a : [n]
+  b : [n]
+  type T : #
+  type constraint (fin n, fin m, fin T)
+
+type blockSize = 2 * n
+type keySize   = m * n
+
+//((S−αx+y)⊕k, Sβy⊕(S−αx+y)⊕k)
+
+Rk : [n] -> [2][n] -> [2][n]
+Rk k [x, y] = [x', y']
+  where
+    x' = ((x >>> a) + y) ^ k
+    y' = (x <<< b) ^ x'
