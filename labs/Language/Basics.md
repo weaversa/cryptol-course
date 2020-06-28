@@ -106,7 +106,7 @@ comment facility:
 ```
 /** 
   * A totally made up identifier for pedagogical purposes. It is
-  * used elsewhere for demonstation of something or other.
+  * used elsewhere for demonstration of something or other.
   */
 mask = 7
 ```
