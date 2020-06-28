@@ -217,7 +217,7 @@ A function is invertible if
  * each input maps to a unique output (collision free) and
  * every element in the range of the function can be mapped to by some
    input (no output is missing).
-   
+
 In mathematics, this type of function would be called
 bijective. Bijective functions are both injective and surjective
 (one-to-one and onto). So, to prove that quarterround is invertible we
