@@ -128,7 +128,7 @@ property LeftRotationProp =
 ```
 
 
-## 3 The quarterround Function
+## 3 The quarterround function
 
 
 ### Inputs and outputs
