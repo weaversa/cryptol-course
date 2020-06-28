@@ -271,7 +271,7 @@ Cryptol> ~True
 False
 ```
 
- * **Sequences** - Finite lists of objects, all of the same data type. Common cryptographic algorithms make use of *words* or *registers*, which are one-dimensional sequences of Bits. Cryptol seamlessly handles operations on words of arbitrary sizes and also allows for multi-dimensional sequences (*i.e.* sequences of words, or sequences of sequences of words).
+ * **Sequences** - Finite lists of objects, all of the same data type. Common cryptographic algorithms make use of *words* or *registers*, which are one-dimensional sequences of Bits. Cryptol seamlessly handles operations on words of arbitrary sizes and also allows for multi-dimensional sequences (*e.g.* sequences of words, or sequences of sequences of words).
 
 ```haskell
 Cryptol> let s1 = [True, True, False, True]
