@@ -73,16 +73,16 @@ encrypt psk pt = ct
   where
     ct = (take`{m} psk) ^ pt
 
-/* Decrypt plaintext; same as `encrypt` */  
+/* Decrypt plaintext; same as `encrypt` */
 decrypt = encrypt
-  
+
 /**
  * Verify test vector 
  *   "ZUGESAGT" "HELLO" -> [0x12, 0x10, 0x0B, 0x09, 0x1C]
  */
 property test =
     (encrypt "ZUGESAGT" "HELLO" == [0x12, 0x10, 0x0B, 0x09, 0x1C])
-  
+
 /**
  * Verify that for any pre-shared key `psk` and plaintext `pt` of 
  * size 8 and 5, respectively, decrypting ciphertext encrypted 
@@ -178,7 +178,7 @@ help text for it:
 
 ```sh
 labs::Demos::OneTimePad> :h encrypt
-    
+
     encrypt : {k, m} (fin k, k >= m) =>
                 String k -> String m -> String m
 
@@ -186,7 +186,7 @@ labs::Demos::OneTimePad> :h encrypt
 ```
 
 ### Function Evaluation
-  
+
 Cool. Let's do a quick sanity check:
 
 ```sh

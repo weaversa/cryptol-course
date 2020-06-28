@@ -10,9 +10,9 @@ uint32_t add_standard(uint16_t a, uint16_t b) {
   uint32_t local_a = (uint32_t) a;
   uint32_t local_b = (uint32_t) b;
   uint32_t result;
-  
+
   result = local_a + local_b;
-  
+
   return result;
 }
 
@@ -41,15 +41,15 @@ uint32_t add_textbook(uint16_t a, uint16_t b) {
   uint16_t P_0 = a_0 + b_0;
   uint16_t O_0 = P_0 & 0x00ff;
   uint16_t C_1 = (P_0 & 0xff00) >> 8;
-  
+
   uint16_t P_1 = a_1 + b_1 + C_1;
   uint16_t O_1 = P_1 & 0x00ff;
   uint16_t C_2 = (P_1 & 0xff00) >> 8;
-  
+
   uint16_t O_2 = C_2;
 
   uint32_t result = (O_2 << 16) | (O_1 << 8) | (O_0 << 0);
-  
+
   return result;
 }
 
@@ -61,9 +61,9 @@ uint32_t multiply_standard(uint16_t a, uint16_t b) {
   uint32_t local_a = (uint32_t) a;
   uint32_t local_b = (uint32_t) b;
   uint32_t result;
-  
+
   result = local_a * local_b;
-  
+
   return result;
 }
 
@@ -90,18 +90,18 @@ uint32_t multiply_textbook(uint16_t a, uint16_t b) {
   uint8_t a_0 = (uint8_t)( (0x00ff & a) >> 0 );
   uint8_t b_1 = (uint8_t)( (0xff00 & b) >> 8 );
   uint8_t b_0 = (uint8_t)( (0x00ff & b) >> 0 );
-  
+
   uint16_t z0 = (uint16_t)a_0 * (uint16_t)b_0;
   uint16_t z1 = (uint16_t)a_1 * (uint16_t)b_0;
   uint16_t z2 = (uint16_t)a_0 * (uint16_t)b_1;
   uint16_t z3 = (uint16_t)a_1 * (uint16_t)b_1;
-  
+
   uint32_t result = 0;
   result += (uint32_t)z0;
   result += (uint32_t)z1 << 8;
   result += (uint32_t)z2 << 8;
   result += (uint32_t)z3 << 16;
-  
+
   return result;
 }
 
@@ -141,16 +141,16 @@ uint32_t multiply_karatsuba(uint16_t a, uint16_t b) {
   uint16_t a_0 = (0x00ff & a) >>  0;
   uint16_t b_1 = (0xff00 & b) >> 8;
   uint16_t b_0 = (0x00ff & b) >>  0;
-  
+
   uint32_t O_0 = a_0 * b_0;
   uint32_t O_2 = a_1 * b_1;
   uint32_t O_1 = (a_1 + a_0) * (b_1 + b_0) - O_0 - O_2;
-  
+
   uint32_t result = 0;
   result += O_0;
   result += O_1 << 8;
   result += O_2 << 16;
-  
+
   return result;
 }
 
@@ -177,7 +177,7 @@ int main() {
       printf("[INFO] add_textbook (%08x, %08x) = %08x\n", a, b, r2);
       printf("\n");
     }
-  }  
+  }
 
   printf("[INFO] ------------------------\n"  );
   printf("[INFO]   Multiplication Tests  \n"   );
@@ -194,5 +194,5 @@ int main() {
       printf("[INFO] multiply_karatsuba(%08x, %08x) = %08x\n", a, b, r3);
       printf("\n");
     }
-  }    
+  }
 }

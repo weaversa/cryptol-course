@@ -178,7 +178,7 @@ which we will have to model in our formal specification:
 
   * A **Key Encryption Key (KEK)** `K` and
   * A **designated cipher function** `CIPHk`, which operates on 128-bit blocks
-  
+
 The document defines a *semiblock* to be a block with half the width
 of the underlying block cipher, `CIPHk`. Since `KW-AE` uses `AES` as
 its `CIPHk`, semiblocks will be 64-bit blocks. Also notice that the
@@ -505,7 +505,7 @@ them after finishing your work here. Good luck!
 
 ```
 TWStep CIPHk ([A] # Rs) t = undefined
-    
+
 TW CIPHk S = undefined
 
 TKWAE CIPHk P = undefined
@@ -774,7 +774,7 @@ With those two considerations firmly under our belt, we can now tackle
   above to create `S`. Use the `shrink` and `widen` functions to
   assist in resizing `S` and the function outputs on the `then` and
   `else` branches of line 5.
-  
+
 *Hint:* You'll notice that we needed to pull in the type variable `n`
 and type constraints from `W` and relate `n` and `l` (the type of both
 `S` and `C`). It may also be necessary to tell `W` that our type
