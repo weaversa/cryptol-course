@@ -105,7 +105,6 @@ given by black lines.
 
 <img class="center" src="https://raw.githubusercontent.com/weaversa/cryptol-course/master/misc/deps.svg" alt="Dependencies and Suggested Course Flow">
 
-
 ## Extra Labs and Demonstrations
 
 There are also labs that go beyond the scope of the course outline, but

@@ -586,7 +586,7 @@ Cryptol> last ss
 
 Cryptol also has support for common functional programming concepts
 such as `map`, `fold`, and `scan`. For example, a left fold (`foldl`)
-can be used to compute the sum of the first 100 integers like so:
+can be used to compute the sum of the first 100 integers:
 
 ```sh
 labs::overview::overview> foldl (+) 0 [1..100]
