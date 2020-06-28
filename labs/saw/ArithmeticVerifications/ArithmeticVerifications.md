@@ -26,7 +26,7 @@ The file *arithmetic.c* contains definitions for the following functions:
   > __Declaration__: `uint32_t multiply_karatsuba( uint16_t a, uint16_t b)`  
   > __Description__: Multiplies two 16-bit integers, but uses the Karatsuba multiplication technique as though it was binned on 8-bit bins  
 
-This set of exmples demonstrates how to use Cryptol and Saw to verify that the implementations of these familiar functions are correct and equivalent to one another.
+This set of examples demonstrates how to use Cryptol and Saw to verify that the implementations of these familiar functions are correct and equivalent to one another.
 
 
 Software Requirements

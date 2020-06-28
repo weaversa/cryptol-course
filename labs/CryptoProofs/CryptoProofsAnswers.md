@@ -197,7 +197,7 @@ Q.E.D.
 (Total Elapsed Time: 0.023s, using "Z3")
 ```
 
-Here's the breadown of this proof:
+Here's the breakdown of this proof:
 
 |Proof of Inversion||||
 |-|-|-|-|

@@ -728,7 +728,7 @@ In support of fixing the function, notice that since since `g` always
 takes and returns 32-bit values, we have to shrink `x` from `a` bits
 to `32` bits, and widen the result up to `48` bits. And, since `h`
 always takes and returns 64-bit values, we have to widen `x` from `a`
-bits to `64` bits, and shrink the result back down to `48` bits To
+bits to `64` bits, and shrink the result back down to `48` bits. To
 help us do this resizing work, we'll introduce `shrink` and `widen`
 functions.
 

@@ -20,7 +20,7 @@ systems and cryptographic development, including:
  * higher-order functions
 
 Cryptol is used to create gold-standard algorithm specifications and provides 
-access to tools that facilitate their exploration and evalution.
+access to tools that facilitate their exploration and evaluation.
 
 This lab will provide a quick overview of Cryptol, some motivating applications 
 where the language and technology have been deployed, and to the language 
@@ -74,9 +74,9 @@ Further examples are distributed with the [Cryptol software source](https://gith
 
 [Amazon s2n](https://aws.amazon.com/blogs/security/introducing-s2n-a-new-open-source-tls-implementation/) is "a C99 implementation of the TLS/SSL protocols that is designed to be simple, small, fast, and with security as a priority". TLS/SSL is a suite of cryptographic protocols and algorithms used to provide integrity, confidentiality and other familiar security services. Amazon s2n is an implementation of this suite used to protect communications on Amazon's cloud infrastructure platforms such as Amazon Web Services (AWS) and Amazon Simple Storage Service (S3).
 
-These security property tests are performed as part of a continuous integration pipline using the [Travis Continuous Integration Service](https://travis-ci.com/). Whenever changes are made -- no matter how small -- to the C implementations, Cryptol and SAW evaluations are automatically run to ensure that no security properties of the system have been disrupted by the proposed updates.
+These security property tests are performed as part of a continuous integration pipeline using the [Travis Continuous Integration Service](https://travis-ci.com/). Whenever changes are made -- no matter how small -- to the C implementations, Cryptol and SAW evaluations are automatically run to ensure that no security properties of the system have been disrupted by the proposed updates.
 
-A thorough description of the research, design decisions, and application of Cryptol to evaluating cryptographic implementations in Amazon's s2n system can be found in the paper [Contiuous Formal Verificationof Amazon s2n](https://link.springer.com/chapter/10.1007/978-3-319-96142-2_26). This paper was selected by NSA's Science of Security group for honorable mention in the [7th Annual Best Scientific Cybersecurity Paper Competition](https://cps-vo.org/group/sos/papercompetition/pastcompetitions).
+A thorough description of the research, design decisions, and application of Cryptol to evaluating cryptographic implementations in Amazon's s2n system can be found in the paper [Continuous Formal Verification of Amazon s2n](https://link.springer.com/chapter/10.1007/978-3-319-96142-2_26). This paper was selected by NSA's Science of Security group for honorable mention in the [7th Annual Best Scientific Cybersecurity Paper Competition](https://cps-vo.org/group/sos/papercompetition/pastcompetitions).
 
 You can review the code for yourself on [Amazon's s2n Github Repository](https://github.com/awslabs/s2n). The code relevant to the specification and evaluation of the HMAC routines can be found in the `tests/saw/` directory.
 
@@ -200,13 +200,13 @@ saw xxhash32-ref.saw
 [17:48:43.617] Checking proof obligations XXH_rotl32 ...
 [17:48:43.778] Proof succeeded! XXH_rotl32
 
-... output ommitted ...
+... output omitted ...
 
 [17:48:54.220] Checking proof obligations XXH64 ...
 [17:48:54.311] Proof succeeded! XXH64
 ```
 
-These scripts will check that the `C` implementations match the Cryptol specification for *every possible* input for the hash lengths specified. This is important to highlight because this is far beyond the capability of unit testing to detect errors. For instance, for inputs of length `128` bits, there are `2^160` input/seed combinations to check. Unit tests -- even random unit tests -- may only typically cover a few hundred or thousand cases. Cryptol and SAW are able to provide confidence on a space many orders of magnitude larger.
+These scripts will check that the `C` implementations match the Cryptol specification for *every possible* input for the hash lengths specified. This is important to highlight because this is far beyond the capability of unit testing to detect errors. For instance, for inputs of length `128` bits, there are 2<sup>160</sup> input/seed combinations to check. Unit tests -- even random unit tests -- may only typically cover a few hundred or thousand cases. Cryptol and SAW are able to provide confidence on a space many orders of magnitude larger.
 
 ## Verifying Properties about Algorithms
 
@@ -222,7 +222,7 @@ decrypt key ciphertext = [ ct ^ key | ct <- ciphertext ]
 property roundtrip key plaintext = decrypt key (encrypt key plaintext) == plaintext
 ```
 
-This file defines an `encrypt` operation, a `decrypt` operation, and a property called `roundtrip` which checks for all keys `key` and all input plaintexts `plaintext` that `decrypt key (encrypt key plaintext) == plaintext` (*i.e.* that these operations are inverse to one another).
+This file defines an `encrypt` operation, a `decrypt` operation, and a property called `roundtrip` which checks for all keys `key` and all input plaintexts `plaintext` that `decrypt key (encrypt key plaintext) == plaintext` (*i.e.* that these operations are the inverse of each other).
 
 We can see the effect of encrypting the particular input `attack at dawn` with the key `0xff`:
 
@@ -234,7 +234,7 @@ labs::overview::overview> encrypt 0xff "attack at dawn"
 
 Cryptol interprets the string `"attack at dawn"` as a sequence of bytes suitable for the encrypt operations. (We will introduce Cryptol types later in this lab and discuss them in detail throughout this course.)
 
-Furthermore, we can prove this property holds in the interpreter using the `:prove` command and the currently configured SMT solver (Z3 by default):
+We can prove the `roundtrip` property holds in the interpreter using the `:prove` command and the currently configured SMT solver (Z3 by default):
 
 ```sh
 labs::overview::overview> :prove roundtrip : [8] -> [16][8] -> Bit
@@ -242,7 +242,7 @@ Q.E.D.
 (Total Elapsed Time: 0.010s, using Z3)
 ```
 
-Cryptol reports `Q.E.D.`, indicating that our property is indeed true for all keys and all 16-character inputs. Cryptol currently only supports proofs of [total](https://en.wikipedia.org/wiki/Partial_function#Function) [monomorphic](https://en.wikipedia.org/wiki/Polymorphism_(computer_science)) properties with a finite domain. Here we must specify the length of the messages that we want to check this property for. This example checks the property for 16 character messages, but we could check this for at any (reasonable) length.
+Cryptol reports `Q.E.D.`, indicating that our property is indeed true for all keys and all 16-character inputs. Cryptol currently only supports proofs of [total](https://en.wikipedia.org/wiki/Partial_function#Function) [monomorphic](https://en.wikipedia.org/wiki/Polymorphism_(computer_science)) properties with a finite domain. Here we must specify the length of the messages that we want to check this property for. This example checks the property for 16 character messages, but we could check this for any (reasonable) length.
 
 # Language Features
 
@@ -256,9 +256,9 @@ We will introduce some of these features below and discuss how they support buil
 
 ## Basic Data Types
 
-Cryptol was designed to provide easy access to the sorts of data and operations that appear in Cryptographic algorithms and specifications. There are five basic data types provided by Cryptol: bits, sequences, integers, tuples, and records. Cryptol also supports the ability to create user-defined types built up from the basic types. In this section, we present some basic examples demonstrating these types; note that commands using `:t` are a request to Cryptol to report the type of argument.
+Cryptol was designed to provide easy access to the sorts of data and operations that appear in Cryptographic algorithms and specifications. There are five basic data types provided by Cryptol: bits, sequences, integers, tuples, and records. Cryptol also supports the ability to create user-defined types built up from the basic types. In this section, we present some basic examples demonstrating these types; note that the Cryptol `:t` command reports the type of argument.
 
- * **Bits** - The simplest data type, bits can take on two values: `True` and `False`. Bit-level operations like `and` (`/\`) and `or` (`\/`), and `not` (`~`) are available.
+ * **Bits** - The simplest data type, bits can take on two values: `True` and `False`. Bit-level operations like `and` (`/\`), `or` (`\/`), and `not` (`~`) are available.
 
 ```haskell
 Cryptol> :t True
@@ -271,7 +271,7 @@ Cryptol> ~True
 False
 ```
 
- * **Sequences** - Finite lists of objects all of the same data type. Common cryptographic algorithms make use of *words* or *registers*, which are one-dimensional sequences of Bits. Cryptol seamlessly handles operations on words of arbitrary sizes and also allows for multi-dimensional sequences (*i.e.* sequences of words, or sequences of sequences of words).
+ * **Sequences** - Finite lists of objects, all of the same data type. Common cryptographic algorithms make use of *words* or *registers*, which are one-dimensional sequences of Bits. Cryptol seamlessly handles operations on words of arbitrary sizes and also allows for multi-dimensional sequences (*e.g.* sequences of words, or sequences of sequences of words).
 
 ```haskell
 Cryptol> let s1 = [True, True, False, True]
@@ -298,7 +298,7 @@ Cryptol> 123456789234567890+234567890123456789 : Integer
 358024679358024679
 ```
 
- * **Tuples** - Tuples support heterogenous collections. Members are accessed with the `dot operator` (`.`) and are zero-indexed.
+ * **Tuples** - Tuples support heterogeneous collections. Members are accessed with the `dot operator` (`.`) and are zero-indexed.
  
 ```haskell
 Cryptol> let tup = (1 : Integer, 0x02, [0x31, 0x32])
@@ -324,7 +324,7 @@ Cryptol> point.y
 
 ## Operators
 
-Cryptol provides a collection of built-in operators to build expressions and perform computations. Some familiar operators which appear in cryptographic applications include:
+Cryptol provides a collection of built-in operators to build expressions and perform computations. Some operators which frequently appear in cryptographic applications include:
 
 * `/\`, `\/` -- single bit logical operations
 * `~`, `&&`, `||`, `^` -- logical operations for sequences
@@ -427,7 +427,7 @@ Q.E.D.
 (Total Elapsed Time: 0.005s, using Z3)
 ```
 
-Building up more complex properties and relationships between the components of a system allow us to assert with very high confidence that the system is correct.
+Building up more complex properties and relationships between the components of a system allows us to assert with very high confidence that the system is correct.
 
 * **lambda expressions** / **anonymous functions** -- Cryptol lets users define functions without having to specify a name.  This can be useful in some circumstances, such as to formulate a function which will be the return value of another function. Lambda expressions have types and can be computed with just like regular functions. They are formed as follows:
 
@@ -472,7 +472,7 @@ labs::overview::overview> [0 .. 15 : [32]]
  0x0000000f]
 ```
 
-Furthermore, Cryptol even supports *infinite* sequences and accessing their members. Here is an example of creating an infinite sequence of odd integers and accessing the 100th element of that sequence:
+Cryptol even supports *infinite* sequences and accessing their members. Here is an example of creating an infinite sequence of odd integers and accessing the 100th element of that sequence:
 
 ```sh
 labs::overview::overview> [1, 3 ... ] 
@@ -485,7 +485,7 @@ Note that two dots (`..`) are used for constructing finite enumerations and thre
 
 ## Sequence Comprehensions
 
-Sequence Comprehensions are a technique for computing the elements of a new sequence out of the elements of existing ones. Here is a simple comprehension that computes the squares of the numbers from 1 to 10:
+Sequence Comprehensions are a technique for computing the elements of a new sequence using the elements of existing sequences. Here is a simple comprehension that computes the squares of the numbers from 1 to 10:
 
 ```sh
 labs::overview::overview> [ x^^2 | x <- [1 .. 10]]
@@ -586,7 +586,7 @@ Cryptol> last ss
 
 Cryptol also has support for common functional programming concepts
 such as `map`, `fold`, and `scan`. For example, a left fold (`foldl`)
-can be used to compute the sum of the first 100 integers, like so:
+can be used to compute the sum of the first 100 integers:
 
 ```sh
 labs::overview::overview> foldl (+) 0 [1..100]
