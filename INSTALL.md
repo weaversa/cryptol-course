@@ -28,7 +28,7 @@ here. Also, [Galois](https://galois.com) (the maintainer of Cryptol
 and SAW) does not currently provide a Windows installer for SAW, and
 Homebrew ([Option 2](#option-2-homebrew)) doesn't provide SAW
 installers for any platform. So if you want to use SAW, we recommend
-installing SAW via docker ([Option 1](#option-1-docker)) as it is
+installing SAW via docker ([Option 1](#option-1-docker)) as docker is
 platform agnostic and easy to install and use.
 
 ## Option 1: Docker
@@ -37,9 +37,9 @@ platform agnostic and easy to install and use.
 [Cryptol](https://hub.docker.com/repository/docker/cryptolcourse/cryptol)
 and
 [SAW](https://hub.docker.com/repository/docker/cryptolcourse/saw). These
-are not Galois's own Cryptol and SAW docker containers; the ones we
-suggest here are recommended for this class because as they have more
-theorem provers installed in the containers.  If Docker has been
+are not Galois' own Cryptol and SAW docker containers; the ones we
+suggest here are recommended for this class as they have more
+theorem provers pre-installed.  If Docker has been
 [installed](https://docs.docker.com/get-docker), it is easy to `pull`
 and `run` these images. *(Note that this docker approach may require
 `sudo` privileges. If so, and you don't have such privileges, follow
@@ -88,7 +88,7 @@ Details:
 - Instructions for installing `docker` on your system can be found at
 [https://docs.docker.com/get-docker](https://docs.docker.com/get-docker).
 - `docker run --rm -it` indicates that the commands are to be run in an interactive
-TTY, and the generated container is to be removed after use.
+TTY, and the generated container will be removed upon exit.
 - If you are currently in the root of this repository, you can use
 `-v` and `--env` to mount the repository in the docker image and set
 the `CRYPTOLPATH` environment variable for access to this repository's
@@ -145,24 +145,21 @@ Unfortunately, SAW is not available via Homebrew.
 
 ### Downloading Cryptol and SAW
 
-Galois provides releases of Cryptol here: https://cryptol.net/downloads.html and releases of SAW here: https://saw.galois.com/downloads.html.
-
-Galois also provides a server with nightly builds of SAW for CentOS,
-Ubuntu, and OSX. Cryptol comes bundled with SAW, so if your computer
-is running one of these operating systems, you may download a recent
-version from https://saw.galois.com/builds/nightly. *(Note that the
-Ubuntu files indicate Ubuntu14.04, but they work on later versions of
-Ubuntu as well.)*
+Galois provides releases of Cryptol at
+https://cryptol.net/downloads.html and releases of SAW at
+https://saw.galois.com/downloads.html. For Linux variants, Cryptol
+comes bundled with SAW, so you will only need to install SAW to get
+both tools. *(Note that the Ubuntu files indicate Ubuntu14.04, but
+they work on later versions of Ubuntu as well.)*
 
 The `bin` directory (containing `cryptol` and/or `saw`) of the archive
 you downloaded should be placed in your system path.
 
 For CentOS, Ubuntu, or OSX, the whole process would look something
-like (depending on the date and which OS build and version you download):
+like (depending on the which OS variant you have):
 
 ```
-$ curl -fsSL https://github.com/GaloisInc/saw-script/releases/download/v0.5/saw-0.5-Ubuntu14.04-64.tar.gz
-$ tar -xvzf saw-0.5-Ubuntu14.04-64.tar.gz
+$ curl -fsSL https://github.com/GaloisInc/saw-script/releases/download/v0.5/saw-0.5-Ubuntu14.04-64.tar.gz | tar -xz
 $ export PATH=$(pwd)/saw-0.5-Ubuntu14.04-64/bin:${PATH}
 ```
 
@@ -171,11 +168,15 @@ an installer at https://cryptol.net/downloads.html. Note that these
 instructions do not currently provide any details on how to install
 Cryptol on Windows, though the installer is self explanatory.*
 
+*Galois also provides a server with nightly builds of SAW for CentOS,
+Ubuntu, and OSX, which you can find at
+https://saw.galois.com/builds/nightly.*
+
 ### Downloading Z3
 
 Both Cryptol and SAW require a tool called `z3`. This tool is not
 bundled with Cryptol or SAW, so it must be installed separately.
-*(Note that the version of `z3` available via `apt` is old and
+*(Note that the version of `z3` available via default `apt` repos is old and
 incompatible with this course.)*
 
 Pre-built binaries for Z3 can be found at
@@ -243,7 +244,7 @@ To load a literate document into Cryptol, change to your
 (Windows), then run Cryptol via a locally installed binary or Docker
 image. We'll use [labs/Demos/OneTimePad.md](labs/Demos/OneTimePad.md)
 as an example. The literate document can be provided as a parameter
-when starting the Cryptol intepreter:
+when starting the Cryptol interpreter:
 
 ```sh
 .../cryptol-course$ cryptol labs/Demos/OneTimePad.md
