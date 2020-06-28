@@ -160,10 +160,10 @@ gives `Q.E.D`.
 
 ```
 quarterround [y0, y1, y2, y3] = [z0, z1, z2, z3] where
-    z1 = undefined
-    z2 = undefined
-    z3 = undefined
-    z0 = undefined
+    z1 = y1 ^ ((y0 + y3) <<< 7)
+    z2 = y2 ^ ((z1 + y0) <<< 9)
+    z3 = y3 ^ ((z2 + z1) <<< 13)
+    z0 = y0 ^ ((z3 + z2) <<< 18)
 ```
 
 ### Examples
@@ -214,11 +214,12 @@ author does little to convince us that this is true. Fortunately, we
 can prove this using Cryptol.
 
 You may be wondering, what does it mean for a function to be
-invertible? Well, it means that a function (say, quarterround) has an
-inverse function (call it quarterround') such that for all possible
-values of y, quarterround' (quarterround y) == y. Unfortunately the
-author didn't provide us with such an inverse function. Now, we could
-attempt to create it, but there is a much simpler solution here!
+invertible? Well, it means that a function (say, `quarterround`) has
+an inverse function (call it `quarterround'`) such that for all
+possible values of y, `quarterround' (quarterround y) ==
+y`. Unfortunately the author didn't provide us with such an inverse
+function. Now, we could attempt to create it, but there is a much
+simpler solution here!
 
 A function is invertible if
  * each input maps to a unique output (collision free) and
