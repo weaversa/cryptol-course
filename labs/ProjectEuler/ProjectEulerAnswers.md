@@ -65,14 +65,14 @@ factorial :
     (Arith b, Cmp b, Literal 362880 b) =>
     b -> b
 factorial n = if n == 2 then      2 else
-	      if n == 3 then      6 else
-	      if n == 4 then     24 else
-	      if n == 5 then    120 else
-	      if n == 6 then    720 else
-	      if n == 7 then   5040 else
-	      if n == 8 then  40320 else
-	      if n == 9 then 362880 else
-	      1
+              if n == 3 then      6 else
+              if n == 4 then     24 else
+              if n == 5 then    120 else
+              if n == 6 then    720 else
+              if n == 7 then   5040 else
+              if n == 8 then  40320 else
+              if n == 9 then 362880 else
+              1
 
 powersoften :
     {a}
@@ -351,11 +351,11 @@ containsWords :
 containsWords l ws = [ checkword w | w <- ws ] == ~0
   where
     checkword w = [ c0 == w@0 /\
-    	       	    c1 == w@1 /\
-		    c2 == w@2
-		  | c0 <- l
-		  | c1 <- tail l
-		  | c2 <- tail (tail l) ] != 0
+                    c1 == w@1 /\
+                    c2 == w@2
+                  | c0 <- l
+                  | c1 <- tail l
+                  | c2 <- tail (tail l) ] != 0
 
 isLowercase : Char -> Bit
 isLowercase c = c >= 0x61 /\ c <= 0x7a
@@ -416,11 +416,11 @@ passcode :
 passcode l = [ loop l kl != 0 | kl <- keylog ] == ~0
   where 
     loop ll kll = [ [ ll@(i:[a]), ll@j, ll@k] == kll /\
-	            i < j                            /\
-	            j < k
-	          | i <- [0..a-1],
-	     	    j <- [0..a-1],
-	   	    k <- [0..a-1] ]
+                    i < j                            /\
+                    j < k
+                  | i <- [0..a-1],
+                    j <- [0..a-1],
+                    k <- [0..a-1] ]
 ```
 
 ```sh

@@ -423,7 +423,7 @@ Then from the interpreter we could check that this property was true:
 ```sh
 labs::overview::overview> :prove
 :prove check_identity
-	Q.E.D.
+Q.E.D.
 (Total Elapsed Time: 0.005s, using Z3)
 ```
 
