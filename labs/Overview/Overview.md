@@ -222,7 +222,7 @@ decrypt key ciphertext = [ ct ^ key | ct <- ciphertext ]
 property roundtrip key plaintext = decrypt key (encrypt key plaintext) == plaintext
 ```
 
-This file defines an `encrypt` operation, a `decrypt` operation, and a property called `roundtrip` which checks for all keys `key` and all input plaintexts `plaintext` that `decrypt key (encrypt key plaintext) == plaintext` (*i.e.* that these operations are the inverse to one another).
+This file defines an `encrypt` operation, a `decrypt` operation, and a property called `roundtrip` which checks for all keys `key` and all input plaintexts `plaintext` that `decrypt key (encrypt key plaintext) == plaintext` (*i.e.* that these operations are the inverse of each other).
 
 We can see the effect of encrypting the particular input `attack at dawn` with the key `0xff`:
 
