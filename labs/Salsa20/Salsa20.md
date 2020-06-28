@@ -152,12 +152,18 @@ required, namely, sequences in Cryptol are book-ended by `[]` rather
 than `()` and commas are not needed after statements in a where
 clause.
 
+**EXERCISE**: Here we provide a skeleton for `quarterround`. Please
+replace the `undefined` symbols with the appropriate logic as given in
+the Salsa20 specification. You'll know you've gotten it right when it
+looks like the specification and when `:prove quarterroundExamplesProp`
+gives `Q.E.D`.
+
 ```
 quarterround [y0, y1, y2, y3] = [z0, z1, z2, z3] where
-    z1 = y1 ^ ((y0 + y3) <<< 7)
-    z2 = y2 ^ ((z1 + y0) <<< 9)
-    z3 = y3 ^ ((z2 + z1) <<< 13)
-    z0 = y0 ^ ((z3 + z2) <<< 18)
+    z1 = undefined
+    z2 = undefined
+    z3 = undefined
+    z0 = undefined
 ```
 
 ### Examples
@@ -239,9 +245,14 @@ every pair of different inputs causes the function to produce
 different outputs. We can now encode this (almost verbatim) into a
 Cryptol property.
 
+**EXERCISE**: Here we provide a skeleton for `quarterroundIsInjectiveProp`. Please
+replace the `undefined` symbol with the appropriate logic to show that quarterround is injective. You'll know you've gotten it right when it
+looks like the specification and when `:prove quarterroundIsInjectiveProp`
+gives `Q.E.D`.
+
 ```
 property quarterroundIsInjectiveProp x x' =
-    x != x' ==> quarterround x != quarterround x'
+    undefined
 ```
 
 And then prove that the property is true.
