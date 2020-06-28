@@ -126,7 +126,7 @@ property factorionprop n l =
     sumfactorial l == n
 ```
 
-```sh
+```shell
 labs::ProjectEuler::ProjectEulerAnswers> :s satNum=all
 labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop`{1, Integer}
 factorionprop`{1, Integer} 2 [2] = True
@@ -185,7 +185,7 @@ property doublepalindrome x l =
       nocarryprods = [ carrymult i p | i <- l | p <- powersoften ] == 0
 ```
 
-```sh
+```shell
 labs::ProjectEuler::ProjectEulerAnswers> :s base=10
 labs::ProjectEuler::ProjectEulerAnswers> :s satNum=all
 labs::ProjectEuler::ProjectEulerAnswers> :sat doublepalindrome`{3, 9}
@@ -250,7 +250,7 @@ pandigital n l =
       n890 = formnumber (l @@ ([7,8,9] : [3][16]))
 ```
 
-```sh
+```shell
 labs::ProjectEuler::ProjectEulerAnswers> :s satNum=all
 labs::ProjectEuler::ProjectEulerAnswers> :s base=10
 labs::ProjectEuler::ProjectEulerAnswers> :sat pandigital
@@ -298,7 +298,7 @@ property productdigits n ls =
                | i <- [2..6] ] == ~0
 ```
 
-```sh
+```shell
 labs::ProjectEuler::ProjectEulerAnswers> :sat productdigits`{6, [32]}
 productdigits`{6, [32]}
   142857
@@ -385,7 +385,7 @@ decrypt s key = s ^ (take ks)
     keys = [ key ] # [ k | k <- keys ]
 ```
 
-```sh
+```shell
 labs::ProjectEuler::ProjectEulerAnswers> :s ascii=on
 labs::ProjectEuler::ProjectEulerAnswers> :sat XORtowords cipher1
 XORtowords cipher1 "abe" = True
@@ -423,7 +423,7 @@ passcode l = [ loop l kl != 0 | kl <- keylog ] == ~0
                     k <- [0..a-1] ]
 ```
 
-```sh
+```shell
 labs::ProjectEuler::ProjectEulerAnswers> :s base=10
 labs::ProjectEuler::ProjectEulerAnswers> :sat passcode`{1}
 Unsatisfiable
@@ -451,7 +451,7 @@ passcode`{8} [7, 3, 1, 6, 2, 8, 9, 0] = True
 > EXTRA CHALLENGE:
 > What about five-digit numbers? Other numbers of digits?
 
-```sh
+```shell
 labs::ProjectEuler::ProjectEulerAnswers> :sat \(x : [32]) -> x > 999 /\ x ^^ 2 % 10000 == x
 (\(x : [32]) -> x > 999 /\ x ^^ 2 % 10000 == x) 9376 = True
 ```
@@ -466,7 +466,7 @@ squaredrop n l =
     formnumber (drop`{back = ((a)/2)} l) == n
 ```
 
-```sh
+```shell
 labs::ProjectEuler::ProjectEulerAnswers> :sat squaredrop`{8}
 squaredrop`{8} 9376 [8, 7, 9, 0, 9, 3, 7, 6] = True
 ```

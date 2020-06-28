@@ -254,7 +254,7 @@ f x = x*x - 7*x + 12 == 0
 > The function `f` returns `True` if its given 8-bit argument is a 
 > solution to the quadratic equation `x^2 – 7x + 12 = 0`. We have:
 
-```sh
+```shell
 labs::Demos::Sudoku> :sat f
 f 4 = True
 (Total Elapsed Time: 0.151s, using "Z3")
@@ -264,7 +264,7 @@ f 4 = True
 > solution? It is easy to formulate a similar query using the lambda
 > notation:
 
-```sh
+```shell
 labs::Demos::Sudoku> :sat (\x -> f x && (x != 4))
 (\x -> f x && (x != 4)) 3 = True
 (Total Elapsed Time: 0.034s, using "Z3")
@@ -273,7 +273,7 @@ labs::Demos::Sudoku> :sat (\x -> f x && (x != 4))
 > Cryptol tells us 3 is a solution as well! There happen to only be two 
 > solutions to this equation; let’s verify:
 
-```sh
+```shell
 labs::Demos::Sudoku> :sat (\x -> f x && (x != 4) && (x != 3))
 Unsatisfiable
 (Total Elapsed Time: 0.034s, using "Z3")
@@ -347,7 +347,7 @@ Ahem...sorry.
 > the function return `True`, i.e., we need to find a satisfying 
 > assignment. Here’s the response from Cryptol:
 
-```sh
+```shell
 labs::Demos::Sudoku> :sat puzzle
 puzzle
 puzzle
@@ -417,7 +417,7 @@ property puzzle_unique
            [i1,  5,  4, i4, i5,  8, i7,  7, i9]]
 ```
 
-```sh
+```shell
 labs::Demos::Sudoku> :prove puzzle_unique
 Q.E.D.
 (Total Elapsed Time: 0.813s, using "Z3")
@@ -465,7 +465,7 @@ hard_puzzle
        [i1,  9, i3, i4, i5, i6,  4, i8, i9]]
 ```
 
-```sh
+```shell
 labs::Demos::Sudoku> :sat hard_puzzle
 hard_puzzle
   [0x1, 0x2, 0x7, 0x5, 0x3, 0x6, 0x4, 0x9, 0x9, 0x4, 0x8, 0x2, 0x1,
@@ -528,7 +528,7 @@ property hard_unique
            [i1,  9, i3, i4, i5, i6,  4, i8, i9]]
 ```
 
-```sh
+```shell
 labs::Demos::Sudoku> :prove hard_unique
 Q.E.D.
 (Total Elapsed Time: 5.431s, using "Z3")

@@ -63,7 +63,7 @@ Cryptol> :sat \(x:[4]) -> (x + 1 < x)
 Cryptol> :quit
 ```
 
-```sh
+```shell
 $ docker pull cryptolcourse/saw
 ...
 $ docker run --rm -it cryptolcourse/saw
@@ -95,7 +95,7 @@ the `CRYPTOLPATH` environment variable for access to this repository's
 Cryptol modules. This environment variable is used by both Cryptol and
 SAW. For example:
 
-```sh
+```shell
 $ docker run --rm --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
@@ -110,7 +110,7 @@ specs::Misc::Sudoku> :quit
 
 You may also want to assign this horrendous command to an alias. For example:
 
-```sh
+```shell
 $ alias cryptol="docker run --rm --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol"
 $ cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
@@ -134,7 +134,7 @@ pasting a simple command into a shell prompt.
 Once Homebrew is installed, Cryptol (along with its `z3` dependency)
 can be installed via:
 
-```sh
+```shell
 brew update && brew install cryptol
 ```
 
@@ -246,7 +246,7 @@ image. We'll use [labs/Demos/OneTimePad.md](labs/Demos/OneTimePad.md)
 as an example. The literate document can be provided as a parameter
 when starting the Cryptol interpreter:
 
-```sh
+```shell
 .../cryptol-course$ cryptol labs/Demos/OneTimePad.md
     ...
 Loading module Cryptol
@@ -259,7 +259,7 @@ within Cryptol to load the document. (Either ensure the cryptol
 intepreter is started in the `cryptol-course` directory, or set the
 environment variable CRYPTOLPATH to point to that directory.)
 
-```sh
+```shell
 .../cryptol-course$ cryptol
     ...
 Loading module Cryptol
@@ -270,7 +270,7 @@ labs::Demos::OneTimePad>
 
 ### Using Docker on Linux
 
-```sh
+```shell
 .../cryptol-course> docker run --rm --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
     ...
 Loading module Cryptol
@@ -280,7 +280,7 @@ labs::Demos::OneTimePad>
 ```
 
 ### Using Docker on Windows
-```sh
+```shell
 ...\cryptol-course> docker run --rm --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
     ...
 Loading module Cryptol
