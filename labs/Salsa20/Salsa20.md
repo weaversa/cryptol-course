@@ -160,10 +160,10 @@ gives `Q.E.D`.
 
 ```
 quarterround [y0, y1, y2, y3] = [z0, z1, z2, z3] where
-    z1 = y1 ^ ((y0 + y3) <<< 7)
-    z2 = y2 ^ ((z1 + y0) <<< 9)
-    z3 = y3 ^ ((z2 + z1) <<< 13)
-    z0 = y0 ^ ((z3 + z2) <<< 18)
+    z1 = undefined
+    z2 = undefined
+    z3 = undefined
+    z0 = undefined
 ```
 
 ### Examples
