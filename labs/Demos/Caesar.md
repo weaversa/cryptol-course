@@ -35,7 +35,7 @@ caesar msg = map rot3 msg
         c
 ```
 
-```sh
+```shell
 labs::Demos::Caesar> :s ascii=on
 labs::Demos::Caesar> caesar "ATTACK AT DAWN"
 "XQQXZH XQ AXTK"
@@ -92,7 +92,7 @@ indexCorrect L x = elem x L ==> L ! (index L x) == x
 property charIsAtIndex = indexCorrect alphabet
 ```
 
-```sh
+```shell
 labs::Demos::Caesar> :prove charIsAtIndex
 Q.E.D.
 (Total Elapsed Time: 0.072s, using "Z3")
@@ -100,7 +100,7 @@ Q.E.D.
 
 The property even holds for other sequences, repeating or not:
 
-```sh
+```shell
 labs::Demos::Caesar> :prove \(A : [64]Char) -> indexCorrect A
 Q.E.D.
 (Total Elapsed Time: 1.172s, using "Z3")
@@ -134,7 +134,7 @@ encrypt key msg = map rot msg
 Note the `alphabet >>> key` part: Cryptol allows rotation not only 
 over bit sequences, ...
 
-```sh
+```shell
 labs::Demos::Caesar> :s ascii=off
 labs::Demos::Caesar> :s base=2
 labs::Demos::Caesar> 0b11001010 <<< 4
@@ -143,7 +143,7 @@ labs::Demos::Caesar> 0b11001010 <<< 4
 
 ...but over sequences of arbitrary shape...
 
-```sh
+```shell
 labs::Demos::Caesar> :s base=10
 labs::Demos::Caesar> [1, 2, 3, 4, 5 : Integer] <<< 3
 [4, 5, 1, 2, 3]
@@ -194,7 +194,7 @@ Though we could `:prove` these, for static test cases with no
 variables, it makes more sense to `:check` these (this saves 
 the solver some work and often speeds up such tests).
 
-```sh
+```shell
 labs::Demos::Caesar> :check v1
 Using exhaustive testing.
 Passed 1 tests.
@@ -232,7 +232,7 @@ property recovery_4 = recovery`{4}
 property recovery_14 = recovery`{14}
 ```
 
-```sh
+```shell
 labs::Demos::Caesar> :prove recovery_4
 Q.E.D.
 (Total Elapsed Time: 4.226s, using "Z3")
@@ -247,7 +247,7 @@ Q.E.D.
 So is this a good cipher?  Well, no.  Let's...here.  We can manually 
 deduce a key from known ciphertext...
 
-```sh
+```shell
 labs::Demos::Caesar> map (\k -> (k, decrypt k "SXQW SJLXK FJB J SRWPUNQNRVNA BLQVRMC")) [0..25]
 [(0, "SXQW SJLXK FJB J SRWPUNQNRVNA BLQVRMC"),
  (1, "TYRX TKMYL GKC K TSXQVOROSWOB CMRWSND"),
@@ -280,7 +280,7 @@ labs::Demos::Caesar> map (\k -> (k, decrypt k "SXQW SJLXK FJB J SRWPUNQNRVNA BLQ
 ...and we can recover a key from chosen plaintext through SAT 
 solving...
 
-```sh
+```shell
 labs::Demos::Caesar> :sat \k -> encrypt k "ILLUMINATI CONFIRMED" == "NQQZRNSFYN HTSKNWRJI"
 (\k -> encrypt k "ILLUMINATI CONFIRMED" == "NQQZRNSFYN HTSKNWRJI")
   21 = True

@@ -34,7 +34,7 @@ import specs::Primitive::Symmetric::Cipher::Block::DES
 
 Now, from the command line, load this module.
 
-```sh
+```shell
 Cryptol> :m labs::CryptoProofs::CryptoProofsAnswers
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
@@ -43,21 +43,21 @@ Loading module labs::CryptoProofs::CryptoProofsAnswers
 
 First, we'll take a look at the type of the DES encryption function.
 
-```sh
+```shell
 labs::CryptoProofs::CryptoProofsAnswers> :t DES.encrypt
 DES.encrypt : [64] -> [64] -> [64]
 ```
 
 DES takes two 64-bit values and returns a 64-bit value. (The key comes first and then the plaintext.) Let's encrypt something with DES.
 
-```sh
+```shell
 labs::CryptoProofs::CryptoProofs> DES.encrypt 0x752979387592cb70 0x1122334455667788
 0xb5219ee81aa7499d
 ```
 
 Now decrypt:
 
-```sh
+```shell
 labs::CryptoProofs::CryptoProofs> DES.decrypt 0x752979387592cb70 0xb5219ee81aa7499d
 0x1122334455667788
 ```
@@ -100,7 +100,7 @@ square x = x * x
 
 Now we can reverse it from the REPL. Let's use the solver to find a square root using only a squaring function!
 
-```sh
+```shell
 labs::CryptoProofs::CryptoProofs> :sat \x -> square x == 1764
 (\x -> square x == 1764) 42 = True
 (Total Elapsed Time: 0.021s, using "Z3")
@@ -125,20 +125,20 @@ known_ct = 0xf2930290ea4db580
 
 Note: For whatever reason, the default Z3 solver has trouble with this one. Try one of the other solvers, such as yices:
 
-```sh
+```shell
 labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
 ```
 
 Or use all the installed solvers in a first-to-the-post race.
 *Caution! May exhaust system resources.*
 
-```sh
+```shell
 labs::CryptoProofs::CryptoProofsAnswers> :s prover=any
 ```
 
 > Solution:
 >
->```sh
+>```shell
 >labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
 >labs::CryptoProofs::CryptoProofsAnswers> :sat \pt -> DES.encrypt known_key pt == known_ct
 >(\pt -> DES.encrypt known_key pt == known_ct)
@@ -160,7 +160,7 @@ To make this solvable, try it again with the first six bytes of key provided: `0
 
 > Solution:
 >
->```sh
+>```shell
 >labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct
 >```
 > At this point, the solver hangs, unable to find a solution in any 
@@ -169,7 +169,7 @@ To make this solvable, try it again with the first six bytes of key provided: `0
 > DES keys have been broken using specialized algorithms 
 > and large amounts of compute power, but not by a single computer
 > running a SAT solver.
->```sh
+>```shell
 >labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt (0x1234567890AB # key) matched_pt == matched_ct
 >(\key -> DES.encrypt (0x1234567890ab # key)
 >                     matched_pt == matched_ct)
@@ -191,7 +191,7 @@ g x = (x - 2) / 3
 
 We want to prove that function `g` inverts function `f`; that is, applying `g` to the result of `f x` gets `x` back. Here's the invocation:
 
-```sh
+```shell
 labs::CryptoProofs::CryptoProofsAnswers> :prove \x -> g (f x) == x
 Q.E.D.
 (Total Elapsed Time: 0.023s, using "Z3")
@@ -211,7 +211,7 @@ Our example proof showed that `g` inverts `f` for all inputs. Does this work the
 
 > Solution:
 >
->```sh
+>```shell
 >labs::CryptoProofs::CryptoProofsAnswers> :prove \x -> f (g x) == x
 >(\x -> f (g x) == x) 3 = False
 >(Total Elapsed Time: 0.003s, using Yices)
@@ -221,7 +221,7 @@ Our example proof showed that `g` inverts `f` for all inputs. Does this work the
 >but provides a counterexample that we can analyze to see why.
 >Let's look a little closer.
 >
->```sh
+>```shell
 >labs::CryptoProofs::CryptoProofsAnswers> g 3
 >0
 >```
@@ -240,7 +240,7 @@ Use Cryptol to prove that `DES.encrypt` and `DES.decrypt` are inverses for all p
 
 >Solution:
 >
->```sh
+>```shell
 >labs::CryptoProofs::CryptoProofsAnswers> :s prover=abc
 >labs::CryptoProofs::CryptoProofsAnswers> :prove \key pt -> DES.decrypt key (DES.encrypt key pt) == pt
 >Q.E.D.
@@ -259,7 +259,7 @@ In cryptography, a *collision* occurs when two different inputs produce the same
 Use the solver to find two different keys and a plaintext such that both keys encrypt that plaintext to the same ciphertext.
 
 > Solution:
->```sh
+>```shell
 >labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
 >labs::CryptoProofs::CryptoProofsAnswers> :sat \k1 k2 pt  -> k1 != k2 /\ DES.encrypt >k1 pt == DES.encrypt k2 pt
 >(\k1 k2 pt -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2 pt)
@@ -280,7 +280,7 @@ Show that, for any given key, `DES.encrypt` is injective (collision-free) with r
 *Hint* Consider using the implication operator `==>`
 
 > Solution:
->```sh
+>```shell
 >labs::CryptoProofs::CryptoProofsAnswers> :s prover=boolector
 >labs::CryptoProofs::CryptoProofsAnswers> :prove \k p1 p2 -> p1 != p2 ==> DES.encrypt k p1 != DES.encrypt k p2
 >Q.E.D.
@@ -298,7 +298,7 @@ One of the most powerful uses of Cryptol's theorem proving technology is the abi
 Attempt to prove that the two keys you just found are equivalent keys. That is, prove that these two keyed DES functions are equivalent for all plaintext inputs. *Hint: Use abc*
 
 > Solution:
->```sh
+>```shell
 >labs::CryptoProofs::CryptoProofsAnswers> :s prover=abc
 >labs::CryptoProofs::CryptoProofsAnswers> :prove \pt -> DES.encrypt 0x0000000000000000 pt == DES.encrypt 0x0100000000000000 pt
 >Q.E.D.
@@ -330,7 +330,7 @@ Use the function `DESFixParity` that you wrote above to show that DES completely
 Given that this proof passes, what is the actual maximum key strength of DES in terms of bits?
 
 > Solution
->```sh
+>```shell
 >labs::CryptoProofs::CryptoProofsAnswers> :prove \key pt -> DES.encrypt key pt == DES.encrypt (DESFixParity key) pt
 >Q.E.D.
 >(Total Elapsed Time: 0.807s, using ABC)

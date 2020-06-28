@@ -147,7 +147,7 @@ The instructions for [1] also work here:
 
 > To see this in action, try:
 > 
-> ```sh
+> ```shell
 > > :sat nQueens : (Solution n)
 > ```
 > where n is the board size.
@@ -157,19 +157,19 @@ The instructions for [1] also work here:
 > 
 > To do that,
 > 
-> ```sh
+> ```shell
 > > :set prover=z3
 > ```
 > 
 > or
 > 
-> ```sh
+> ```shell
 > > :set prover=yices
 > ```
 
 Here is one possible outcome for `n = 8`:
 
-```sh
+```shell
 labs::Demos::NQueens> :s base=10
 labs::Demos::NQueens> :sat nQueens : (Solution 8)
 (nQueens : Solution 8)
