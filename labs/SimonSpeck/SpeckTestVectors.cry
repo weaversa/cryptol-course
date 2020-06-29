@@ -11,6 +11,21 @@ import labs::SimonSpeck::speck_128_128 as speck_128_128
 import labs::SimonSpeck::speck_128_192 as speck_128_192
 import labs::SimonSpeck::speck_128_256 as speck_128_256
 
+K_32_64 = join[0x1918, 0x1110, 0x0908, 0x0100]
+P_32_64 = join[0x6574, 0x694c]
+C_32_64 = join[0xa868, 0x42f2]
+property TV_32_64 = speck_32_64::encrypt K_32_64 P_32_64 == C_32_64
+
+K_48_72 = join[0x121110, 0x0a0908, 0x020100]
+P_48_72 = join[0x20796c, 0x6c6172]
+C_48_72 = join[0xc049a5, 0x385adc]
+property TV_48_72 = speck_48_72::encrypt K_48_72 P_48_72 == C_48_72
+
+K_48_96 = join [0x1a1918, 0x121110, 0x0a0908, 0x020100]
+P_48_96 = join [0x6d2073, 0x696874]
+C_48_96 = join [0x735e10, 0xb6445d]
+property TV_48_96 = speck_48_96::encrypt K_48_96 P_48_96 == C_48_96
+
 K_64_96 = join [0x13121110, 0x0b0a0908, 0x03020100]
 P_64_96 = join [0x74614620, 0x736e6165]
 C_64_96 = join [0x9f7952ec, 0x4175946c]
@@ -20,6 +35,16 @@ K_64_128 = join [0x1b1a1918, 0x13121110, 0x0b0a0908, 0x03020100]
 P_64_128 = join [0x3b726574, 0x7475432d]
 C_64_128 = join [0x8c6fa548, 0x454e028b]
 property TV_64_128 = speck_64_128::encrypt K_64_128 P_64_128 == C_64_128
+
+K_96_96 = join [0x0d0c0b0a0908, 0x050403020100]
+P_96_96 = join [0x65776f68202c, 0x656761737520]
+C_96_96 = join [0x9e4d09ab7178, 0x62bdde8f79aa]
+property TV_96_96 = speck_96_96::encrypt K_96_96 P_96_96 == C_96_96
+
+K_96_144 = join [0x151413121110, 0x0d0c0b0a0908, 0x050403020100]
+P_96_144 = join [0x656d6974206e, 0x69202c726576]
+C_96_144 = join [0x2bf31072228a, 0x7ae440252ee6]
+property TV_96_144 = speck_96_144::encrypt K_96_144 P_96_144 == C_96_144
 
 K_128_128 = join [0x0f0e0d0c0b0a0908, 0x0706050403020100]
 P_128_128 = join [0x6c61766975716520, 0x7469206564616d20]
@@ -37,4 +62,8 @@ P_128_256 = join [0x65736f6874206e49, 0x202e72656e6f6f70]
 C_128_256 = join [0x4109010405c0f53e, 0x4eeeb48d9c188f43]
 property TV_128_256 = speck_128_256::encrypt K_128_256 P_128_256 == C_128_256
 
-
+property all_pass = and [TV_32_64,  
+                         TV_48_72, TV_48_96,  
+                         TV_64_96, TV_64_128,
+                         TV_96_96, TV_96_144, 
+                         TV_128_128, TV_128_192, TV_128_256]
