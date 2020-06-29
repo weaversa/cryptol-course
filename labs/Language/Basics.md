@@ -167,8 +167,9 @@ Things to note:
   * `[2]`—`0`, `1`, `2` and `3`
   * ...
   * `[n]`—`0` through `2^^n - 1`
-  There are 2<sup>n</sup> values of type `[n]`. There are 2<sup>m *
-  n</sup> values of type `[m][n]`, etc.
+
+  There are 2<sup>_n_</sup> values of type `[n]`. There are
+  2<sup>_mn_</sup> values of type `[m][n]`, etc.
 * 1-d sequences of bits are treated as numbers by arithmetic and
   comparison operators. So for instance, `[False, True] == (1 : [2])`
   and `[True, False, True] > 4` both hold.
@@ -213,8 +214,8 @@ for signed operations which are indicated by a suffixed `$`. Most of
 the time you don't need them as cryptography tends to use nonnegative
 numbers.
 
-Where appropriate operators "blast through" typing constructs like
-sequences, tuples and records.
+Where appropriate, operators act elementwise (or "blast through")
+typing constructs like sequences, tuples and records.
 
 ```shell
 labs::Language::Basics> [[0, 1], [1, 2]] + [[3, 5], [8, 13]]
@@ -225,7 +226,8 @@ labs::Language::Basics> {x = 1, y = 3} + {y = 6, x = 10}
 {x = 11, y = 9}
 labs::Language::Basics> [(0, 1), (4, 9), (16, 25)].1
 [1, 9, 25]
-
+labs::Language::Basics> [{x = 1, y = 3}, {y = 6, x = 10}].y
+[3, 6]
 ```
 
 Following are some really quick examples of operators to remind you
@@ -273,7 +275,7 @@ labs::Language::Basics> [~1, 1] == [6 : [4], 3 * 3]
 False
 ```
 
-In the first example, `6` is the literal needed the most bits and is
+In the first example, `6` is the literal needing the most bits and is
 given type `[3]`. That makes both sides of the equality test have type
 `[2][3]` (two elements of three bits each). Now `~1 : [3]` is `0b110`
 or `6` in decimal and `3 * 3 : [3]` is `1 : [3]` so `[~1, 1] == [6, 1]
@@ -390,7 +392,6 @@ sequences, so that the type annotations (`: [3][8]` and `: [3]Integer`
 above) will be unnecessary.
 
 ### List shape manipulation: `split`, `join`, `transpose`
-#### Variation: `groupBy`
 ```shell
 labs::Language::Basics> split 0xdeadbeef : [8][4]
 [0xd, 0xe, 0xa, 0xd, 0xb, 0xe, 0xe, 0xf]
@@ -398,8 +399,6 @@ labs::Language::Basics> join [0xca, 0xfe]
 0xcafe
 labs::Language::Basics> transpose [[1, 2], [3, 4]]
 [[1, 3], [2, 4]]
-labs::Language::Basics> groupBy`{12} 0x5c00b1 // group into 12 bit chunks
-[0x5c0, 0x0b1]
 ```
 
 In most Cryptol programs, the context will enforce the size of things,
