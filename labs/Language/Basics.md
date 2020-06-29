@@ -20,7 +20,7 @@ Basic Use of the Cryptol Language
 Introduction
 ------------
 
-In you've programmed in a variety of languages (not just different
+If you've programmed in a variety of languages (not just different
 [procedural languages](https://en.wikipedia.org/wiki/Procedural_programming)
 descending from C), you'll find that, for the most part, Cryptol is
 just another language with a different vocabulary and a funky type
@@ -142,7 +142,7 @@ Data
 
 Cryptol's "basic" data type is an _n_-dimensional array whose base
 type is bits.
-* 0-d: `False : Bit` and `True: Bit`
+* 0-d: `False : Bit` and `True : Bit`
 * 1-d: Think bytes, words, nibbles, etc., i.e., a sequence of bits of
   any length usually thought of as a number. E.g., `0x2a : [8]`,
   `0b101010 : [6]` and
@@ -503,7 +503,7 @@ property absNonnegative x = abs x >= 0
 * `abs : Integer -> Integer` is the type signature for `abs`.
 * `abs n = if n >= 0 then n else -n` is the definition for `abs` (or function body).
 * `property absNonnegative ...` is a property we expect the function to have.
-* `:check property absNonnegative` checks this property with
+* `:check absNonnegative` checks this property with
     random tests. It's super cheap unit testing!
   ```shell
   labs::Language::Basics> :check absNonnegative
