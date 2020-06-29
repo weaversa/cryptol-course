@@ -104,7 +104,7 @@ There is also a [docstring](https://en.wikipedia.org/wiki/Docstring)
 comment facility:
 
 ```
-/** 
+/**
   * A totally made up identifier for pedagogical purposes. It is
   * used elsewhere for demonstration of something or other.
   */
@@ -159,15 +159,16 @@ Things to note:
   good a type as `[8]`, `[16]`, `[32]` or `[64]`.
 * There's `0b...` for binary, `0o...` for octal and `0x...` for
   hexadecimal.
-* Lengths of sequences may be zero. This is not terribly useful in
-  practice, although zero length sequences act as an identity for
-  concatenation.
+* Lengths of sequences may be zero. Zero length sequences act as an
+  identity for concatenation and are useful in padding.
 * The possible values by type:
   * `[0]`—`0`
   * `[1]`—`0` and `1`
   * `[2]`—`0`, `1`, `2` and `3`
   * ...
   * `[n]`—`0` through `2^^n - 1`
+  There are 2<sup>n</sup> values of type `[n]`. There are 2<sup>m *
+  n</sup> values of type `[m][n]`, etc.
 * 1-d sequences of bits are treated as numbers by arithmetic and
   comparison operators. So for instance, `[False, True] == (1 : [2])`
   and `[True, False, True] > 4` both hold.
@@ -179,8 +180,18 @@ Other data types include:
 * Arbitrary-precision integers: E.g., `2^^1023 - 347835479 : Integer`
 * Heterogeneous tuples: E.g.: `(False, 0b11) : (Bit, [2])` and
   `(True, [1, 0], 7625597484987) : (Bit, [2][1], Integer)`
+  * Elements of tuples are accessed by `.0`, `.1`, ...
+    ```shell
+    labs::Language::Basics> (False, 0b11).0
+    False
+    ```
 * Records with named fields: E.g.,
   `{flag = True, x = 2} : {flag : Bit, x : [4]}`
+  * Elements of records are accessed by `.` followed by the field name.
+    ```shell
+    labs::Language::Basics> {flag = True, x = 2}.flag
+    True
+    ```
 * Integers modulo _n_: Types of the form `[n]` already provide
   [least residue systems](https://en.wikipedia.org/wiki/Modular_arithmetic#Residue_systems)
   for
@@ -201,6 +212,21 @@ level (e.g. C's `uint32` and `int32`). Cryptol has separate operators
 for signed operations which are indicated by a suffixed `$`. Most of
 the time you don't need them as cryptography tends to use nonnegative
 numbers.
+
+Where appropriate operators "blast through" typing constructs like
+sequences, tuples and records.
+
+```shell
+labs::Language::Basics> [[0, 1], [1, 2]] + [[3, 5], [8, 13]]
+[[3, 6], [9, 15]]
+labs::Language::Basics> (3, (1, 4)) + (1, (5, 9))
+(4, (6, 13))
+labs::Language::Basics> {x = 1, y = 3} + {y = 6, x = 10}
+{x = 11, y = 9}
+labs::Language::Basics> [(0, 1), (4, 9), (16, 25)].1
+[1, 9, 25]
+
+```
 
 Following are some really quick examples of operators to remind you
 and show some tricks of Cryptol.
@@ -241,25 +267,22 @@ labs::Language::Basics> ~0b000011001101 && 0o4115 || 0x0d0 ^ 9
 #### Signed versions: `<$`, `<=$`, `>$` and `>=$`
 
 ```shell
-labs::Language::Basics> [~1, 1] == [6, 3 * 3]
+labs::Language::Basics> [~1, 1] == [6 : [3], 3 * 3]
 True
-labs::Language::Basics> [~1, 1] == [6, 0b0011 * 3]
+labs::Language::Basics> [~1, 1] == [6 : [4], 3 * 3]
 False
 ```
 
-In the first example, the numbers might be of type `Integer` or `[n]`
-for suitable `n`. The `~` determines that it's `[n]` as `~` doesn't
-apply to type `Integer`. The literal `6` is the widest object so
-Cryptol defaults the base type of these sequences to be `[3]`. That in
-turn, forces the two sides to be of type `[2][3]` (two elements of
-three bits each). Now `~1 : [3]` is `0b110` or `6` in decimal and `3 *
-3 : [3]` is `1 : [3]` so `[~1, 1] == [6, 1] == [6, 3 * 3]`.
+In the first example, `6` is the literal needed the most bits and is
+given type `[3]`. That makes both sides of the equality test have type
+`[2][3]` (two elements of three bits each). Now `~1 : [3]` is `0b110`
+or `6` in decimal and `3 * 3 : [3]` is `1 : [3]` so `[~1, 1] == [6, 1]
+== [6, 3 * 3]`.
 
-In the second example, the `0b0011` (which is `3` in decimal) has type
-`[4]`, so both sides have type `[2][4]`. Now `~1 : [4]` is `0b1110` or
-`14` in decimal and `0b0011 * 3 : [4]` is `9` in decimal. We have
-`[~1, 1] == [14, 1]` while `[6, 0b0011 * 3] == [6, 9]` so equality
-fails.
+In the second example, `6` is given type `[4]`, so both sides have
+type `[2][4]`. Now `~1 : [4]` is `0b1110` or `14` in decimal and
+`3 * 3 : [4]` is `9` in decimal. We have `[~1, 1] == [14, 1]`
+while `[6, 3 * 3] == [6, 9]` so equality fails.
 
 _**It can be crucially important to be precise about the widths of
 things!**_
@@ -367,7 +390,7 @@ sequences, so that the type annotations (`: [3][8]` and `: [3]Integer`
 above) will be unnecessary.
 
 ### List shape manipulation: `split`, `join`, `transpose`
-#### Variation: `groupBy` 
+#### Variation: `groupBy`
 ```shell
 labs::Language::Basics> split 0xdeadbeef : [8][4]
 [0xd, 0xe, 0xa, 0xd, 0xb, 0xe, 0xe, 0xf]
@@ -375,7 +398,7 @@ labs::Language::Basics> join [0xca, 0xfe]
 0xcafe
 labs::Language::Basics> transpose [[1, 2], [3, 4]]
 [[1, 3], [2, 4]]
-labs::Language::Basics> groupBy`{12} 0x5c00b1 // group into 12 bit chunks 
+labs::Language::Basics> groupBy`{12} 0x5c00b1 // group into 12 bit chunks
 [0x5c0, 0x0b1]
 ```
 
@@ -484,7 +507,7 @@ property absNonnegative x = abs x >= 0
 * `:check property absNonnegative` checks this property with
     random tests. It's super cheap unit testing!
   ```shell
-  labs::Language::Basics> :check absNonnegative 
+  labs::Language::Basics> :check absNonnegative
   Using random testing.
   Passed 100 tests.
   ```
@@ -493,7 +516,7 @@ property absNonnegative x = abs x >= 0
 * The reserved word `property` documents that definition's intention.
 * We can go a step further and `:prove` this property:
   ```shell
-  labs::Language::Basics> :prove absNonnegative 
+  labs::Language::Basics> :prove absNonnegative
   Q.E.D.
   (Total Elapsed Time: 0.032s, using Z3)
   ```
@@ -522,7 +545,7 @@ property gcdDividesBoth' x y
 * The function `gcd'` is recursive.
 * Let's check `gcdDividesBoth'`:
   ```shell
-  labs::Language::Basics> :check gcdDividesBoth' 
+  labs::Language::Basics> :check gcdDividesBoth'
   Using random testing.
   Passed 100 tests.
   ```
@@ -670,9 +693,9 @@ encrypt key plainText = cipherText
 Many block ciphers are just variations of the above theme. Here's a sample of it in action:
 
 ```shell
-labs::Language::Basics> encrypt 0x1337c0de 0xdabbad00 
+labs::Language::Basics> encrypt 0x1337c0de 0xdabbad00
 0x6157c571
-labs::Language::Basics> encrypt 0 0xdabbad00 
+labs::Language::Basics> encrypt 0 0xdabbad00
 0xdabbad00
 ```
 
