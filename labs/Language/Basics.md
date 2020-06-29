@@ -247,7 +247,7 @@ labs::Language::Basics> 2^^127 - 1 // a 33 digit Mersenne prime
 
 The first example defaults to type `Integer`. In the second, I
 explicitly state that I want 1 bit addition and so the computation is
-modular addition. The third shows that `^^` is exponentiation
+modular addition. The third shows that `^^` is exponentiation.
 
 The division (`/`) operation is not what a mathematician imagines in
 modular arithmetic. For instance `3 * 3 == 1 : [3]` so a mathematician
@@ -565,7 +565,7 @@ property gcdDividesBoth' x y
   ```
 * Since `:check` uses randomly generated tests the failing result may
   be intermittent.
-* Properties are useful and sometimes may be `:prove`-n, but you must
+* Properties are useful and sometimes may be proven, but you must
   remember that _**properties that pass `:check` are not
   guarantees!**_ That is: _**`:check` is evidence, `:prove` is
   proof!**_
@@ -610,7 +610,7 @@ Writing Loops
 * Many of Cryptol's operators naturally extend elementwise over nested
   sequences to any depth.
 ```shell
-labs::Language::Basics> [[[2,3],[5,7]],[[11,13],[17,19]]] + [[[0,1],[1,2]],[[3,5],[8,13]]]
+labs::Language::Basics> [[[2, 3], [5, 7]], [[11, 13], [17, 19]]] + [[[0, 1], [1, 2]], [[3, 5], [8, 13]]]
 [[[2, 4], [6, 9]], [[14, 18], [25, 32]]]
 ```
 
