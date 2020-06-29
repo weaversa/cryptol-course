@@ -1,79 +1,52 @@
-// Specialized version with n = 16, m = 4, T = 22
+module labs::SimonSpeck::Speck where
 
-R:
-    [2*32] -> [32] -> [2*32]
-R xy ki = x' # y'
+parameter
+  
+  type n : #
+  type m : #
+  a : [n]
+  b : [n]
+  type T : #
+  type constraint (fin n, fin m, fin T, n >= width T, m >= 2, T >= 22)
+
+type blockSize = 2 * n
+type keySize   = m * n
+
+/* Rk - Speck Round Function
+ * 
+ *  From eprint-2013-404.pdf, Section 4.1 p. 14
+ *   Rk(x, y) = ((S−αx+y)⊕k, Sβy⊕(S−αx+y)⊕k)
+ */
+Rk : [n] -> [2][n] -> [2][n]
+Rk k [x, y] = [x', y']
   where
-    [x, y] = split`{2} xy
-    (a:[4], b:[4]) = (8, 3)
-    x' = ((x >>> a) + y) ^ ki
-    y' = (y <<< b) ^ x'
-
-
-// Parameterized version -- added "p" to make the linear constraints easier to
-//    write.
-R_param :
-    {n, p}
-    ( fin n, fin p, n == 8*p, 2 <= p, p <= 8, p != 5, p != 7  ) =>
-    [2*n] -> [n] -> [2*n]
-R_param xy ki = x' # y'
-  where
-    [x, y] = split`{2} xy
-    (a, b) = if `n == 16 then (7:[8], 2:[8]) else (8:[8], 3:[8])
-    x' = ((x >>> a) + y) ^ ki
+    x' = ((x >>> a) + y) ^ k
     y' = (y <<< b) ^ x'
 
 KeyScheduleRound :
-    [32] -> [3][32] -> [3][32]
-KeyScheduleRound i (Ls # [ki]) = S'
+    [m][n] -> [n] -> [m][n]
+KeyScheduleRound (Ls # [ki]) i = S'
   where
-    xy          = (last Ls) # ki
-    [l', ki']   = split`{2}(R xy i)
-    Ls'         = [l'] # reverse( tail( reverse Ls))
-    S'          = Ls' # [ki']
-
-KeyScheduleRound_param :
-    {n, p, m}
-    ( fin n, fin p, n == 8*p, 2 <= p, p <= 8, p != 5, p != 7,
-      fin m, m >= 2 ) =>
-    [n] -> [m][n] -> [m][n]
-KeyScheduleRound_param i (Ls # [ki]) = S'
-  where
-    xy          = (last Ls) # ki
-    [l', ki']   = split`{2}(R_param xy i)
-    Ls'         = [l'] # reverse( tail( reverse Ls))
-    S'          = Ls' # [ki']
-
-KeySchedule : [96] -> [26][32]
+    [l', ki']  = Rk i [last Ls, ki]
+    S'         = [l'] # (take Ls) # [ki']
+    
+KeySchedule : [keySize] -> [T][n]
 KeySchedule K = Ks
   where
-    S0 = split`{3} K
-    Ss = [S0] # [ KeyScheduleRound i S | i <- [0:[32]..24] | S <- Ss]
+    S0 = split K
+    Ss = scanl KeyScheduleRound S0 [0..T-2]
     Ks = last (transpose Ss)
 
-//This does not work yet
-/* 
-KeySchedule_param : 
-    {n, p, m}
-    ( fin n, fin p, n == 8*p, 2 <= p, p <= 8, p != 5, p != 7,
-      fin m, m >= 2, fin T, 22 <= T, T <= 34 ) =>
-    [m*n] -> [T][n]
-KeySchedule_param K = Ks
+encryptList:
+    [keySize] -> [blockSize] -> [T+1][2][n]
+encryptList K P = Cs
   where
-    S0 = split`{m} K
-    Ss = [S0] # [ KeyScheduleRound i S | i <- [0:[n]..(`T)] | S <- Ss]
-    Ks = last (transpose Ss)
-*/
-
-
+    Ps = split P
+    Ks = KeySchedule K
+    Cs = [Ps] # [ Rk k xy | k <- Ks | xy <- Cs]
 
 KTest = 0x131211100b0a090803020100
 PTest = 0x74614620736e6165
-Speck_64_96 :
-    [96] -> [64] -> [64]
-Speck_64_96 K P = C
-  where
-    Ks = KeySchedule K
-    C = foldl R P Ks
 
+encrypt K P = join (last (encryptList K P))
 

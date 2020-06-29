@@ -1,0 +1,40 @@
+module labs::SimonSpeck::SpeckTestVectors where
+
+import labs::SimonSpeck::speck_32_64   as speck_32_64
+import labs::SimonSpeck::speck_48_72   as speck_48_72
+import labs::SimonSpeck::speck_48_96   as speck_48_96
+import labs::SimonSpeck::speck_64_96   as speck_64_96
+import labs::SimonSpeck::speck_64_128  as speck_64_128
+import labs::SimonSpeck::speck_96_96   as speck_96_96
+import labs::SimonSpeck::speck_96_144  as speck_96_144
+import labs::SimonSpeck::speck_128_128 as speck_128_128
+import labs::SimonSpeck::speck_128_192 as speck_128_192
+import labs::SimonSpeck::speck_128_256 as speck_128_256
+
+K_64_96 = join [0x13121110, 0x0b0a0908, 0x03020100]
+P_64_96 = join [0x74614620, 0x736e6165]
+C_64_96 = join [0x9f7952ec, 0x4175946c]
+property TV_64_96 = speck_64_96::encrypt K_64_96 P_64_96 == C_64_96
+
+K_64_128 = join [0x1b1a1918, 0x13121110, 0x0b0a0908, 0x03020100]
+P_64_128 = join [0x3b726574, 0x7475432d]
+C_64_128 = join [0x8c6fa548, 0x454e028b]
+property TV_64_128 = speck_64_128::encrypt K_64_128 P_64_128 == C_64_128
+
+K_128_128 = join [0x0f0e0d0c0b0a0908, 0x0706050403020100]
+P_128_128 = join [0x6c61766975716520, 0x7469206564616d20]
+C_128_128 = join [0xa65d985179783265, 0x7860fedf5c570d18]
+property TV_128_128 = speck_128_128::encrypt K_128_128 P_128_128 == C_128_128
+
+K_128_192 = join [0x1716151413121110, 0x0f0e0d0c0b0a0908, 0x0706050403020100]
+P_128_192 = join [0x7261482066656968, 0x43206f7420746e65]
+C_128_192 = join [0x1be4cf3a13135566, 0xf9bc185de03c1886]
+property TV_128_192 = speck_128_192::encrypt K_128_192 P_128_192 == C_128_192
+
+K_128_256 = join [0x1f1e1d1c1b1a1918, 0x1716151413121110, 
+                  0x0f0e0d0c0b0a0908, 0x0706050403020100]
+P_128_256 = join [0x65736f6874206e49, 0x202e72656e6f6f70]
+C_128_256 = join [0x4109010405c0f53e, 0x4eeeb48d9c188f43]
+property TV_128_256 = speck_128_256::encrypt K_128_256 P_128_256 == C_128_256
+
+
