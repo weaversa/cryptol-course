@@ -73,16 +73,16 @@ encrypt psk pt = ct
   where
     ct = (take`{m} psk) ^ pt
 
-/* Decrypt plaintext; same as `encrypt` */  
+/* Decrypt plaintext; same as `encrypt` */
 decrypt = encrypt
-  
+
 /**
  * Verify test vector 
  *   "ZUGESAGT" "HELLO" -> [0x12, 0x10, 0x0B, 0x09, 0x1C]
  */
 property test =
     (encrypt "ZUGESAGT" "HELLO" == [0x12, 0x10, 0x0B, 0x09, 0x1C])
-  
+
 /**
  * Verify that for any pre-shared key `psk` and plaintext `pt` of 
  * size 8 and 5, respectively, decrypting ciphertext encrypted 
@@ -104,7 +104,7 @@ command prompt (Windows), or Cryptol image (Docker) per
 [instructions](../../INSTALL.md) and load this module into a 
 Cryptol interpreter:
 
-```sh
+```shell
 > cryptol labs/Demos/OneTimePad.cry
 ...
 Loading module Cryptol
@@ -116,7 +116,7 @@ labs::Demos::OneTimePad>
 
 Great. Now let's try applying the module to the previous example:
 
-```sh
+```shell
 labs::Demos::OneTimePad> let psk = "ZUGESAGT"
 labs::Demos::OneTimePad> let pt = "HELLO"
 labs::Demos::OneTimePad> let ct = (encrypt psk pt)
@@ -126,7 +126,7 @@ OK, we've assigned variables representing the pre-shared key (`psk`),
 plaintext (`pt`), and ciphertext (`ct`) from the example. Let's see 
 the plaintext:
 
-```sh
+```shell
 labs::Demos::OneTimePad> pt
 [0x48, 0x45, 0x4c, 0x4c, 0x4f]
 ```
@@ -136,7 +136,7 @@ differently, in this case as a sequence of 5 hexadecimal bytes
 rather than a string of 5 characters.  We can ask the interpreter 
 to show us a string instead:
 
-```sh
+```shell
 labs::Demos::OneTimePad> :s ascii=on
 labs::Demos::OneTimePad> pt
 "HELLO"
@@ -144,7 +144,7 @@ labs::Demos::OneTimePad> pt
 
 That was pleasant.  Now let's see the ciphertext:
 
-```sh
+```shell
 labs::Demos::OneTimePad> ct
 "\DC2\DLE\v\t\FS"
 ```
@@ -152,7 +152,7 @@ labs::Demos::OneTimePad> ct
 That looks ciphertexty, all right.  Entering `:s` shows all the 
 configuration settings:
 
-```sh
+```shell
 labs::Demos::OneTimePad> :s
 ascii = on
 base = 16
@@ -176,9 +176,9 @@ warnShadowing = on
 If a symbol's name isn't descriptive enough, we can use `:h` to display 
 help text for it:
 
-```sh
+```shell
 labs::Demos::OneTimePad> :h encrypt
-    
+
     encrypt : {k, m} (fin k, k >= m) =>
                 String k -> String m -> String m
 
@@ -186,10 +186,10 @@ labs::Demos::OneTimePad> :h encrypt
 ```
 
 ### Function Evaluation
-  
+
 Cool. Let's do a quick sanity check:
 
-```sh
+```shell
 labs::Demos::OneTimePad> (decrypt psk ct)
 "HELLO"
 ```
@@ -199,7 +199,7 @@ labs::Demos::OneTimePad> (decrypt psk ct)
 It matches! Our sanity is intact. Well, maybe not -- let's make 
 sure:
 
-```sh
+```shell
 labs::Demos::OneTimePad> it == pt
 True
 ```
@@ -209,7 +209,7 @@ True
 Nice! So that one example checks out, as expressed by the `test` 
 property in our module. Let's prove it:
 
-```sh
+```shell
 labs::Demos::OneTimePad> :prove test
 Q.E.D.
 (Total Elapsed Time: 0.028s, using Z3)
@@ -229,7 +229,7 @@ type), as reflected in the
 rather sesquipedalian name; let's use tab-completion to prove the 
 property:
 
-```sh
+```shell
 labs::Demos::OneTimePad> :prove dec<Tab>
 labs::Demos::OneTimePad> :prove decrypt_<Tab>
 labs::Demos::OneTimePad> :prove decrypt_of_encrypt_yields_original_plaintext_8_5<Enter>
@@ -246,7 +246,7 @@ one time is not a good idea. Suppose Bob replies to Alice with a
 second plaintext/ciphertext exchange also using the pre-shared key 
 `ZUGESAGT`:
 
-```sh
+```shell
 labs::Demos::OneTimePad> let pt2 = "GOODBYE"
 labs::Demos::OneTimePad> let ct2 = (encrypt psk pt2)
 ```
@@ -257,7 +257,7 @@ deduces that with no further communication the message might
 reasonably have been "GOODBYE". Then Eve can exploit Cryptol to 
 deduce the pre-shared key Bob just used:
 
-```sh
+```shell
 labs::Demos::OneTimePad> :sat \psk -> (encrypt psk pt2) == ct2
 (\psk -> (encrypt (psk : String 7) pt2) == ct2) "ZUGESAG" = True
 (Total Elapsed Time: 0.042s, using Z3)
@@ -273,7 +273,7 @@ applied `XOR` directly; this example is silly.)
 Now that Eve has the pre-shared key for this exchange, she could 
 stash it and try it on the message Bob received earlier:
 
-```sh
+```shell
 labs::Demos::OneTimePad> it
 {result = True, arg1 = "ZUGESAG"}
 labs::Demos::OneTimePad> let psk' = it.arg1

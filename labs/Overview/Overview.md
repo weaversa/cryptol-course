@@ -43,7 +43,7 @@ sayHello name = greeting
 
 If you have Cryptol installed, you should be able to do the following from the terminal:
 
-```sh
+```shell
 $ cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
@@ -93,7 +93,7 @@ Take a look through the [`saw-demos` repository](https://github.com/GaloisInc/sa
 
 This directory contains the following files:
 
-```sh
+```shell
 .
 ├── Makefile
 ├── output
@@ -188,7 +188,7 @@ Finally the files [```xxhash32-ref.saw```](https://github.com/GaloisInc/saw-demo
 
 Running `make` at the commandline will initiate the verification for both the 32- and 64-bit implementations, producing the following output:
 
-```sh
+```shell
 $ make
 clang xxhash32-ref.c -o xxhash32-ref.bc -c -emit-llvm -O0 -std=c90
 clang xxhash64-ref.c -o xxhash64-ref.bc -c -emit-llvm -O0 -std=c90
@@ -226,7 +226,7 @@ This file defines an `encrypt` operation, a `decrypt` operation, and a property 
 
 We can see the effect of encrypting the particular input `attack at dawn` with the key `0xff`:
 
-```sh
+```shell
 labs::overview::overview> encrypt 0xff "attack at dawn"
 [0x9e, 0x8b, 0x8b, 0x9e, 0x9c, 0x94, 0xdf, 0x9e, 0x8b, 0xdf, 0x9b,
  0x9e, 0x88, 0x91]
@@ -236,7 +236,7 @@ Cryptol interprets the string `"attack at dawn"` as a sequence of bytes suitable
 
 We can prove the `roundtrip` property holds in the interpreter using the `:prove` command and the currently configured SMT solver (Z3 by default):
 
-```sh
+```shell
 labs::overview::overview> :prove roundtrip : [8] -> [16][8] -> Bit
 Q.E.D.
 (Total Elapsed Time: 0.010s, using Z3)
@@ -338,7 +338,7 @@ There are many more. A list of the currently defined symbols and operators are a
 
 An interesting feature of Cryptol's type system is that operators are typed. You can check this with the `:t` command in the interpreter just as you can for data:
 
-```sh
+```shell
 labs::overview::overview> :t (&&)
 (&&) : {a} (Logic a) => a -> a -> a
 ```
@@ -351,7 +351,7 @@ Cryptol offers a robust set of primitives to construct more complex functions an
 
  * **Sequence manipulation** -- `take`, `drop`
  
-```sh
+```shell
 labs::overview::overview> take `{1} [1, 2, 3]
 [1]
 labs::overview::overview> drop `{1} [1, 2, 3]
@@ -360,7 +360,7 @@ labs::overview::overview> drop `{1} [1, 2, 3]
  
  * **Structural manipulation** -- `split`, `groupBy`
 
-```sh
+```shell
 labs::overview::overview> split `{3} [1, 2, 3, 4, 5, 6]
 [[1, 2], [3, 4], [5, 6]]
 labs::overview::overview> groupBy `{3} [1, 2, 3, 4, 5, 6]
@@ -369,7 +369,7 @@ labs::overview::overview> groupBy `{3} [1, 2, 3, 4, 5, 6]
 
  * **Arithmetic** -- `sum`, `min`, `max`
 
-```sh
+```shell
 labs::overview::overview> sum [1, 2, 3, 4, 5]
 15
 labs::overview::overview> min 5 10
@@ -380,7 +380,7 @@ labs::overview::overview> max 5 10
 
 In the Cryptol interpreter, you can inspect the symbols, functions, and primitives that are defined within the current context using the `:browse` (or simply `:b`) command. Doing so at the beginning of a fresh interpreter session will show you the list of built-ins and other information about the environment:
 
-```sh
+```shell
 labs::overview::overview> :b
     all : {n, a} (fin n) => (a -> Bit) -> [n]a -> Bit
     and : {n} (fin n) => [n] -> Bit
@@ -405,7 +405,7 @@ RotWord [a0, a1, a2, a3] = [a1, a2, a3, a0]
 
 This provides a type for `RotWord` of `[4][8] -> [4][8]` and a definition of `RotWord [a0, a1, a2, a3] = [a1, a2, a3, a0]`. Within the interpreter we can perform computations and check the type of this function as follows:
 
-```sh
+```shell
 labs::overview::overview> RotWord [0x01, 0x02, 0x03, 0x04]
 [0x02, 0x03, 0x04, 0x01]
 labs::overview::overview> :t RotWord 
@@ -420,10 +420,10 @@ property check_identity x = RotWord [x, x, x, x] == [x, x, x, x]
 
 Then from the interpreter we could check that this property was true:
 
-```sh
+```shell
 labs::overview::overview> :prove
 :prove check_identity
-	Q.E.D.
+Q.E.D.
 (Total Elapsed Time: 0.005s, using Z3)
 ```
 
@@ -431,7 +431,7 @@ Building up more complex properties and relationships between the components of 
 
 * **lambda expressions** / **anonymous functions** -- Cryptol lets users define functions without having to specify a name.  This can be useful in some circumstances, such as to formulate a function which will be the return value of another function. Lambda expressions have types and can be computed with just like regular functions. They are formed as follows:
 
-```sh
+```shell
 labs::overview::overview> \(x:[32]) -> x*x
 <function>
 labs::overview::overview> :t \(x:[32]) -> x*x
@@ -444,7 +444,7 @@ Main> (\(x:[32]) -> x*x) 3
 
 Cryptol supports compact notation for [Arithmetic Sequences](https://en.m.wikipedia.org/wiki/Arithmetic_progression) (which increase or decrease in regular intervals):
 
-```sh
+```shell
 labs::overview::overview> [1, 2 .. 10]
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 labs::overview::overview> [1, 4 .. 12]
@@ -455,7 +455,7 @@ labs::overview::overview> [10, 9 .. 0]
 
 Cryptol is kind enough to inform us that it is making an assumption about the type in the sequence. Here is the full output:
 
-```sh
+```shell
 labs::overview::overview> [1, 2 .. 10]
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for type argument 'a' of 'Cryptol::fromThenTo'
@@ -464,7 +464,7 @@ Showing a specific instance of polymorphic result:
 
 We can nudge Cryptol with the element types to control the types of the elements of the enumeration:
 
-```sh
+```shell
 labs::overview::overview> [0 .. 15 : [32]]
 [0x00000000, 0x00000001, 0x00000002, 0x00000003, 0x00000004,
  0x00000005, 0x00000006, 0x00000007, 0x00000008, 0x00000009,
@@ -474,7 +474,7 @@ labs::overview::overview> [0 .. 15 : [32]]
 
 Cryptol even supports *infinite* sequences and accessing their members. Here is an example of creating an infinite sequence of odd integers and accessing the 100th element of that sequence:
 
-```sh
+```shell
 labs::overview::overview> [1, 3 ... ] 
 [1, 3, 5, 7, 9, ...]
 labs::overview::overview> [1, 3 ... ] @ 100
@@ -487,7 +487,7 @@ Note that two dots (`..`) are used for constructing finite enumerations and thre
 
 Sequence Comprehensions are a technique for computing the elements of a new sequence using the elements of existing sequences. Here is a simple comprehension that computes the squares of the numbers from 1 to 10:
 
-```sh
+```shell
 labs::overview::overview> [ x^^2 | x <- [1 .. 10]]
 [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
 ```
@@ -496,7 +496,7 @@ Comprehensions also support notions of *cartesian*, *parallel*, and *self-refere
 
 * **Cartesian** -- A new sequence is formed from all possible combinations of pairs taken from the supplied sequences when they are separated by commas. The size of a Cartesian comprehension will (in general) be the product of the sizes of the supplied sequences:
 
-```sh
+```shell
 labs::overview::overview> [ (x, y) | x <- [0 .. 2], y <- [0 .. 2] ]
 [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]
 labs::overview::overview> [ x * y | x <- [0 .. 2], y <- [0 .. 2] ]
@@ -505,7 +505,7 @@ labs::overview::overview> [ x * y | x <- [0 .. 2], y <- [0 .. 2] ]
 
 * **Parallel** -- Parallel definitions consume elements from multiple sequences simultaneously (when separated by a vertical bar `|`) and terminate when one sequence is exhausted. Typically, the size of a Parallel comprehension will be the minimum of the sizes of the supplied sequences:
 
-```sh
+```shell
 labs::overview::overview> [ x + y | x <- [1 .. 10] | y <- [1 .. 10] ]
 [2, 4, 6, 8, 10, 12, 14, 16, 18, 20]
 labs::overview::overview> [ x + y | x <- [1 .. 3] | y <- [1 .. 10] ]
@@ -514,7 +514,7 @@ labs::overview::overview> [ x + y | x <- [1 .. 3] | y <- [1 .. 10] ]
 
 * **Self-Referential** -- Sequences can even refer to themselves in a comprehension. This is a very powerful technique which is frequently used in cryptographic applications. Here we construct a representation of the infinite sequence of Fibonacci numbers. Note that here we assign a name to the sequence so that we can use it self-referentially in the definition:
 
-```sh
+```shell
 labs::overview::overview> let fibs = [0, 1] # [ x + y | x <- fibs | y <- tail fibs ]
 labs::overview::overview> fibs
 [0, 1, 1, 2, 3, ...]
@@ -526,7 +526,7 @@ Building formal specifications in Cryptol requires imitating the sorts of contro
 
 * `if ... then ... else ...` -- Conditional expressions in Cryptol work similar to the ternary conditional operator (`... ? ... : ...`) in C. This structure evaluates the first field, then evaluates the second field if `True` or the third field if `False`:
 
-```sh
+```shell
 labs::overview::overview> if True then 0x2 else 0x3
 0x2
 labs::overview::overview> if False then 0x2 else 0x3
@@ -535,14 +535,14 @@ labs::overview::overview> if False then 0x2 else 0x3
 
 Cryptol conditionals are subject to typing conditions, and the two branches must have the same type to be a valid conditional expression. The type of a conditional expression is the shared type of the two branches.
 
-```sh
+```shell
 labs::overview::overview> :t if True then 0x2 else 0x3
 (if True then 0x2 else 0x3) : [4]
 ```
 
 If the two branches are typed differently, Cryptol flags this as an error:
 
-```sh
+```shell
 labs::overview::overview> :t if True then 2:[16] else 3:[32]
 
 [error] at <interactive>:1:27--1:33:
@@ -568,7 +568,7 @@ The following Cryptol snippet computes the same sequence of partial sums as the 
 ss = [0] # [ s + i | s <- ss | i <- [1 .. 100] ]
 ```
 
-```sh
+```shell
 labs::overview::overview> ss
 [0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91, 105, 120, 136,
  153, 171, 190, 210, 231, 253, 276, 300, 325, 351, 378, 406, 435,
@@ -588,7 +588,7 @@ Cryptol also has support for common functional programming concepts
 such as `map`, `fold`, and `scan`. For example, a left fold (`foldl`)
 can be used to compute the sum of the first 100 integers:
 
-```sh
+```shell
 labs::overview::overview> foldl (+) 0 [1..100]
 5050
 ```

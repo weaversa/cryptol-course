@@ -178,7 +178,7 @@ which we will have to model in our formal specification:
 
   * A **Key Encryption Key (KEK)** `K` and
   * A **designated cipher function** `CIPHk`, which operates on 128-bit blocks
-  
+
 The document defines a *semiblock* to be a block with half the width
 of the underlying block cipher, `CIPHk`. Since `KW-AE` uses `AES` as
 its `CIPHk`, semiblocks will be 64-bit blocks. Also notice that the
@@ -512,7 +512,7 @@ TWStep CIPHk ([A] # Rs) t = [A'] # Rs'
     [MSB, LSB] = split (CIPHk (A # head Rs))
     A'         = MSB ^ t
     Rs'        = tail Rs # [LSB]
-    
+
 TW :
     {n}
     (fin n, 3 <= n, n <= 2^^28) =>
@@ -606,7 +606,7 @@ said another way, we are **short** `2` apples.
 As it turns out, Cryptol has such a shortage operator (the ceiling
 modulus), namely, `%^`
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrapping> :h (%^)
 
     primitive type (%^) : # -> # -> #
@@ -625,7 +625,7 @@ So, to revisit our padding example above, if we have a bitvector of
 length `37` and it needs to be padded to a multiple of `32`, we're
 short `27`, as demonstrated here using Cryptol:
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrapping> `(37 %^ 32)
 27
 ```
@@ -697,7 +697,7 @@ that is likely only learned through trial and error.
 To dig into this a bit, let's consider the type of a generic
 `if-then-else` statement
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrapping> :t \(c, t, e) -> if c then t else e
 (\(c, t, e) -> if c then t else e) : {a} (Bit, a, a) -> a
 ```
@@ -737,7 +737,7 @@ values. If `a > 0x30`, `f` returns `h x` where `h` takes and returns
 only 64-bit values. If we try to load this function into Cryptol we
 see:
 
-```sh
+```shell
 [error] at labs/KeyWrapping/KeyWrapping.md:663:1--666:14:
   Failed to validate user-specified signature.
     in the definition of 'f', at labs/KeyWrapping/KeyWrapping.md:663:1--663:2,
@@ -801,7 +801,7 @@ f x = if `a <= 0x30 then
 And here we test that `f` correctly calls `g` and `h` (which increment
 and decrement by 1, respectively).
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrapping> f (10 : [37])
 11
 labs::KeyWrapping::KeyWrapping> f (10 : [53])
@@ -820,7 +820,7 @@ With those two considerations firmly under our belt, we can now tackle
   above to create `S`. Use the `shrink` and `widen` functions to
   assist in resizing `S` and the function outputs on the `then` and
   `else` branches of line 5.
-  
+
 *Hint:* You'll notice that we needed to pull in the type variable `n`
 and type constraints from `W` and relate `n` and `l` (the type of both
 `S` and `C`). It may also be necessary to tell `W` that our type
@@ -915,7 +915,7 @@ number of semiblocks of `C` should be `2^^29`.
 Asking Cryptol for the type of `KWPAE` after plugging in `2^^32-1` for
 `k` gives an `l` of `34359738432`:
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1}
 KWPAE`{k = 2 ^^ 32 -
            1} : ([128] -> [128]) -> [4294967295][8] -> [34359738432]
@@ -924,14 +924,14 @@ KWPAE`{k = 2 ^^ 32 -
 Well, what's `34359738432`? Is it `2^^29` 64-bit words? Let's first
 check how many 64-bit words it is. Here's one way:
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrappingAnswers> :t \(a : [34359738432]) -> groupBy`{64} a
 (\(a : [34359738432]) -> groupBy`{64} a) : [34359738432] -> [536870913][64]
 ```
 
 Great...now what's `536870913`? Is it `2^^29`?
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrappingAnswers> 2^^29 : Integer
 536870912
 ```
@@ -939,7 +939,7 @@ labs::KeyWrapping::KeyWrappingAnswers> 2^^29 : Integer
 Woh! Its not. `536870913` is `2^^29 + 1`. Let's double check this ---
 here is a command that tests the `2^^29` upper bound from Table 1:
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29)}
 
 [error] at <interactive>:1:1--1:6:
@@ -948,7 +948,7 @@ labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29)
 
 And here is a command that tests the bound we just found, `2^^29 + 1`.
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29 + 1)}
 KWPAE`{k = 2 ^^ 32 - 1,
        l = 64 *

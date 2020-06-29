@@ -43,7 +43,7 @@ Exercises will often have checks that follow along with instructions
 for how to verify their work. Check your answer with the following
 command; your output should look similar to the following:
 
-```sh
+```shell
  $ cryptol
  ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
  ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
