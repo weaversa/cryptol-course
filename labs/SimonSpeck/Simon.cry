@@ -1,0 +1,72 @@
+module labs::SimonSpeck::Simon where
+
+parameter
+  
+  type n : #    // word size
+  type m : #    // words in key
+  type T : #    // rounds in the key schedule
+  type j : #    // index of z-sequence used
+  type constraint (fin n, fin m, fin T, fin j, m <= 4, 0 <= j, j <= 4, T-1 >= m,  n >= width T, m >= 2, T >= 22)
+
+type blockSize = 2 * n
+type keySize   = m * n
+
+f x = (x <<< 1) && (x <<< 8) ^ (x <<< 2)
+
+Rk : [n] -> [2][n] -> [2][n]
+Rk k [x, y] = [x', y']
+  where
+    x'  = y
+    y'  = x ^ (f y) ^ k
+
+u = join(repeat`{inf} 0b1111101000100101011000011100110)
+v = join(repeat`{inf} 0b1000111011111001001100001011010)
+w = join(repeat`{inf} 0b1000010010110011111000110111010)
+
+z0 = u
+z1 = w
+z2 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} u ])
+z3 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} v ])
+z4 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} w ])
+
+Z = [z0, z1, z2, z3, z4]@(`j:[width j])
+//property period_62 S i = (S@i) == (S@(i+62))
+
+KTest_64_96 = 0x131211100b0a090803020100
+PTest_64_96 = 0x6f7220676e696c63
+
+KTest_64_128 = 0x1b1a1918131211100b0a090803020100
+PTest_64_128 = 0x656b696c20646e75
+
+KTest_128_128 = join [0x0f0e0d0c0b0a0908, 0x0706050403020100]
+PTest_128_128 = join [0x6373656420737265, 0x6c6c657661727420]
+
+tmp: [n] -> [n] -> [n]
+tmp k1 k2 = r
+  where 
+    r  = t ^ (t >>> 1)
+    t  = if `m == 0x4 then (t' ^ k2) else t'
+    t' = (k1 >>> 3)
+            
+KeySchedule : [keySize] -> [T][n]
+KeySchedule K = take Ks
+  where
+    Kis : [m][n]
+    Kis = reverse(split`{m} K)
+    Ks : [inf][n]
+    Ks = Kis # [ ~k0 ^ (tmp k1 k2) ^ (zext [z]) ^ (zext 0x3) 
+               | k0 <- Ks
+               | k1 <- drop`{m-1} Ks
+               | k2 <- drop`{max m 3 - 3} Ks // kludge to typecheck "drop`{m-3}"
+               | z <- Z ]
+
+encryptList:
+    [keySize] -> [blockSize] -> [T+1][2][n]
+encryptList K P = Cs
+  where
+    Ps = reverse(split P)
+    Ks = KeySchedule K
+    Cs = [Ps] # [ Rk k xy | k <- Ks | xy <- Cs]
+
+encrypt K P = join (reverse(last (encryptList K P)))
+

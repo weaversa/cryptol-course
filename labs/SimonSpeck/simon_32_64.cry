@@ -1,0 +1,7 @@
+module labs::SimonSpeck::simon_32_64 = labs::SimonSpeck::Simon where
+
+  type n = 16
+  type m = 4
+  type T = 32
+  type j = 0
+

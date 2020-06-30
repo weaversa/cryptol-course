@@ -45,8 +45,5 @@ encryptList K P = Cs
     Ks = KeySchedule K
     Cs = [Ps] # [ Rk k xy | k <- Ks | xy <- Cs]
 
-KTest = 0x131211100b0a090803020100
-PTest = 0x74614620736e6165
-
 encrypt K P = join (last (encryptList K P))
 

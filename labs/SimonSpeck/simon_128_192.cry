@@ -1,0 +1,7 @@
+module labs::SimonSpeck::simon_128_192 = labs::SimonSpeck::Simon where
+
+  type n = 64
+  type m = 3
+  type T = 69
+  type j = 3
+
