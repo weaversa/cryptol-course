@@ -31,8 +31,8 @@ installers for any platform. So if you want to use SAW, we recommend
 installing SAW via docker ([Option 1](#option-1-docker)) as docker is
 platform agnostic and easy to install and use.
 
-Experiences among teachers and students indicate that those installing 
-tools on Windows systems need Windows 10.
+☞ Every path to using Cryptol on a Windows system relies on
+Windows 10.
 
 
 ## Option 1: Docker
@@ -211,8 +211,8 @@ see that they report no errors.
 
 ```
 $ cryptol
-┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻  
-┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃  
+┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
+┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
 version 2.8.1 (e914cef)
 https://cryptol.net  :? for help
@@ -255,7 +255,7 @@ when starting the Cryptol interpreter:
     ...
 Loading module Cryptol
 Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad> 
+labs::Demos::OneTimePad>
 ```
 
 Alternatively, you can use the `:module` or `:load` command from
@@ -269,7 +269,7 @@ environment variable CRYPTOLPATH to point to that directory.)
 Loading module Cryptol
 Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad> 
+labs::Demos::OneTimePad>
 ```
 
 ### Using Docker on Linux
@@ -280,7 +280,7 @@ labs::Demos::OneTimePad>
 Loading module Cryptol
 Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad> 
+labs::Demos::OneTimePad>
 ```
 
 ### Using Docker on Windows
@@ -290,5 +290,5 @@ labs::Demos::OneTimePad>
 Loading module Cryptol
 Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad> 
+labs::Demos::OneTimePad>
 ```
