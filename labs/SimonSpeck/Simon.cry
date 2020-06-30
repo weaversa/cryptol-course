@@ -24,7 +24,7 @@ v = join(repeat`{inf} 0b1000111011111001001100001011010)
 w = join(repeat`{inf} 0b1000010010110011111000110111010)
 
 z0 = u
-z1 = w
+z1 = v
 z2 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} u ])
 z3 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} v ])
 z4 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} w ])
