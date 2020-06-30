@@ -39,19 +39,19 @@ digraph G {
   ProjectEuler            [label="Project\nEuler"];
   BitTwiddling            [label="Bit Twiddling"];
   ArithmeticVerifications [label="Arithmetic\nVerifications"]
-  
+
   // The Suggested Flow with Red Arrows
   edge [color=red];
   Installation -> Overview;
   Overview -> Interpreter;
-  Interpreter -> LanguageBasics;  
+  Interpreter -> LanguageBasics;
   LanguageBasics -> CRC;
   CRC -> Salsa20;
   Salsa20 -> Salsa20Properties;
   Salsa20Properties -> CryptographicProperties; 
   CryptographicProperties -> KeyWrapping; 
   KeyWrapping -> Capstone; 
-    
+
   // Logical Dependencies with Black Arrows
   edge [color=black];
   CryptographicProperties -> ProjectEuler;

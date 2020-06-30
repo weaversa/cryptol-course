@@ -457,7 +457,7 @@ hard_puzzle
         d1,     d3, d4, d5,     d7, d8, d9,
         e1, e2, e3, e4,             e8, e9,
         f1, f2, f3,     f5, f6, f7,     f9,
-        g1, g2,     g4, g5, g6, g7,        
+        g1, g2,     g4, g5, g6, g7,
         h1, h2,         h5, h6, h7,     h9,
         i1,     i3, i4, i5, i6,     i8, i9] =
     valid
@@ -518,7 +518,7 @@ property hard_unique
             d1,     d3, d4, d5,     d7, d8, d9,
             e1, e2, e3, e4,             e8, e9,
             f1, f2, f3,     f5, f6, f7,     f9,
-            g1, g2,     g4, g5, g6, g7,        
+            g1, g2,     g4, g5, g6, g7,
             h1, h2,         h5, h6, h7,     h9,
             i1,     i3, i4, i5, i6,     i8, i9] =
     solution == hard_solution \/ ~ valid solution
