@@ -20,16 +20,18 @@ material directly from the GitHub website.
 
 This course currently focuses on learning to program in Cryptol. As
 such, you will greatly benefit from installing the Cryptol
-interpreter.
+interpreter. Supported platforms include CentOS, Ubuntu, OSX, and
+Windows 10.
 
 Some challenge labs make use of SAW, a companion verification tool
 associated with Cryptol. However, SAW is not a requirement for success
 here. Also, [Galois](https://galois.com) (the maintainer of Cryptol
-and SAW) does not currently provide a Windows installer for SAW, and
+and SAW) does not currently provide a Windows 10 installer for SAW, and
 Homebrew ([Option 2](#option-2-homebrew)) doesn't provide SAW
 installers for any platform. So if you want to use SAW, we recommend
 installing SAW via docker ([Option 1](#option-1-docker)) as docker is
 platform agnostic and easy to install and use.
+
 
 ## Option 1: Docker
 
@@ -163,10 +165,10 @@ $ curl -fsSL https://github.com/GaloisInc/saw-script/releases/download/v0.5/saw-
 $ export PATH=$(pwd)/saw-0.5-Ubuntu14.04-64/bin:${PATH}
 ```
 
-*If you are running Windows, or you _only_ want Cryptol, you can find
+*If you are running Windows 10, or you _only_ want Cryptol, you can find
 an installer at https://cryptol.net/downloads.html. Note that these
 instructions do not currently provide any details on how to install
-Cryptol on Windows, though the installer is self explanatory.*
+Cryptol on Windows 10, though the installer is self explanatory.*
 
 *Galois also provides a server with nightly builds of SAW for CentOS,
 Ubuntu, and OSX, which you can find at
@@ -207,8 +209,8 @@ see that they report no errors.
 
 ```
 $ cryptol
-┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻  
-┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃  
+┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
+┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
 version 2.8.1 (e914cef)
 https://cryptol.net  :? for help
@@ -241,7 +243,7 @@ documentation provided in their respective repositories, found here:
 
 To load a literate document into Cryptol, change to your
 `cryptol-course` directory in a terminal (Linux) or command prompt
-(Windows), then run Cryptol via a locally installed binary or Docker
+(Windows 10), then run Cryptol via a locally installed binary or Docker
 image. We'll use [labs/Demos/OneTimePad.md](labs/Demos/OneTimePad.md)
 as an example. The literate document can be provided as a parameter
 when starting the Cryptol interpreter:
@@ -251,7 +253,7 @@ when starting the Cryptol interpreter:
     ...
 Loading module Cryptol
 Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad> 
+labs::Demos::OneTimePad>
 ```
 
 Alternatively, you can use the `:module` or `:load` command from
@@ -265,7 +267,7 @@ environment variable CRYPTOLPATH to point to that directory.)
 Loading module Cryptol
 Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad> 
+labs::Demos::OneTimePad>
 ```
 
 ### Using Docker on Linux
@@ -276,15 +278,15 @@ labs::Demos::OneTimePad>
 Loading module Cryptol
 Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad> 
+labs::Demos::OneTimePad>
 ```
 
-### Using Docker on Windows
+### Using Docker on Windows 10
 ```shell
 ...\cryptol-course> docker run --rm --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
     ...
 Loading module Cryptol
 Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad> 
+labs::Demos::OneTimePad>
 ```
