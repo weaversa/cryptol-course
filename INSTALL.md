@@ -31,6 +31,10 @@ installers for any platform. So if you want to use SAW, we recommend
 installing SAW via docker ([Option 1](#option-1-docker)) as docker is
 platform agnostic and easy to install and use.
 
+Experiences among teachers and students indicate that those installing 
+tools on Windows systems need Windows 10.
+
+
 ## Option 1: Docker
 
 [Docker](https://www.docker.com) images are available for both
