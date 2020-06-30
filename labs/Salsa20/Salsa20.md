@@ -716,7 +716,7 @@ Salsa20Expansion k n = undefined
 
 ```
 
-This last definition for `k0` and `k1` aren't as as nice because `k1
+This last definition for `k0` and `k1` aren't as nice because `k1
 == k0` when `a` is one. Not that it really makes any difference.
 
 
