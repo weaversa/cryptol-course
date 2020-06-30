@@ -1,6 +1,6 @@
 # Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
@@ -113,14 +113,14 @@ a sense of the overall organization:
      good background if we were trying to decide *how* to use these
      algorithms; however we will not need to reference this
      information to build our specifications.
- 
+
  Feel free to skim through this material or skip for now.
 
  * **Section 4, Definitions and Notation** -- This section contains
      important definitions, acronyms, variables, and operations used
      in this standard. Let's scan through this to see if we find
      anything useful...
- 
+
 Section `4.3` provides some constants `ICV1`, `ICV2`, and `ICV3` which
 are defined to have special values. Since we are working inside of a
 module we can define these variables without fear of polluting another
@@ -145,22 +145,22 @@ to us in some fashion or another.
      out, is simply a 64-bit word when used in conjunction with AES,
      and a 32-bit word when used in conjunction with TDEA) and Table 1
      that provides limits on the size of the input and outputs.
- 
+
  * **Section 6, Specifications of KW and KWP** -- This section
      specifies the two families of algorithms `KW` and `KWP`. This
      section is the reference we will use for the bulk of this lab as
      we work through building a specification for `KW`.
- 
+
  * **Section 7, Specification of TKW** -- This section specifies the
      final major algorithm `TKW`. It is structurally very similar to
      `KW`, but there are some differences that warrant its own section
      in the standards.
- 
+
  * **Section 8, Conformance** -- This section has information about
      how implementations may claim conformance to the algorithms
      described in this standard.
- 
- 
+
+
 # Formal Specification of `KW`
 
 `KW` is a family of algorithms comprised of `KW-AE` and `KW-AD`. We
@@ -196,9 +196,9 @@ which will contain the following components:
 Putting these together we have our preliminary type signature:
 
 ```comment
-W_prelim : 
-  {n} 
-  (fin n) => 
+W_prelim :
+  {n}
+  (fin n) =>
   ([128] -> [128]) -> [n][64] -> [n][64]
 ```
 
@@ -216,10 +216,10 @@ have to make two more assumptions about `n`.
    `WStep`. Of course, `2^^54` is less than `6 * (2^^54 - 1)` which is
    less than `2^^64`, so the tighter lower bound from Table 1 is
    acceptable.
- 
+
 ```comment
-W : 
-  {n} 
+W :
+  {n}
   (fin n, 3 <= n, n <= 2^^54) =>
   ([128] -> [128]) -> [n][64] -> [n][64]
 ```
@@ -310,7 +310,7 @@ definition for `W`.
 
 **EXERCISE**: Complete the definition of `W` below by filling in the
   function skeleton provided.
- 
+
 ```
 W :
     {n}
@@ -400,7 +400,7 @@ having Cryptol `:prove` the properties `WStep'Prop` and
 `W'Prop`. Your output should look something like the following:
 
 ```shell
-Cryptol> :prove WStep'Prop 
+Cryptol> :prove WStep'Prop
 Q.E.D.
 (Total Elapsed Time: 0.079s, using Z3)
 Cryptol> :prove W'Prop
@@ -458,7 +458,7 @@ by using the property `KWADTests` (this is defined later on
 in this document).
 
 ```
-property KWAEInvProp S = 
+property KWAEInvProp S =
     KWAD`{3} (\a -> a-1) (KWAE (\a -> a+1) S) == (False, S)
 ```
 
@@ -881,7 +881,7 @@ KWPADUnpad S = (FAIL, split P)
 ```
 
 ```
-KWPAD : 
+KWPAD :
     {k, l, n}            // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
     , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C

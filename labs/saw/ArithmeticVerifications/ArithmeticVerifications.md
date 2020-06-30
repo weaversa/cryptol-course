@@ -4,27 +4,27 @@ Introduction
 These files are a set of examples meant to demonstrate simple verifications of arithmetic implemented in C using Cryptol and Saw. These examples are not meant to be especially deep, but may be useful as a reference and also to demonstrate some limitations of these techniques.
 
 The file *arithmetic.c* contains definitions for the following functions:
- 
+
  * `add_standard`
- 
-  > __Declaration__: `uint32_t add_standard( uint16_t a, uint16_t b)`  
-  > __Description__: Adds two 16-bit unsigned integers using built-in addition  
- 
+
+  > __Declaration__: `uint32_t add_standard( uint16_t a, uint16_t b)`
+  > __Description__: Adds two 16-bit unsigned integers using built-in addition
+
  * `add_textbook`
-  > __Declaration__: `uint32_t add_textbook( uint16_t a, uint16_t b)`  
-  > __Description__: Adds two 16-bit integers, but simulates how this might be done on a restricted 8-bit architecture using a "textbook" algorithm  
- 
+  > __Declaration__: `uint32_t add_textbook( uint16_t a, uint16_t b)`
+  > __Description__: Adds two 16-bit integers, but simulates how this might be done on a restricted 8-bit architecture using a "textbook" algorithm
+
  * `multiply_standard`
-  > __Declaration__: `uint32_t multiply_standard( uint16_t a, uint16_t b)`  
-  > __Description__: Multiplies two 16-bit unsigned integers using built-n multiplication  
+  > __Declaration__: `uint32_t multiply_standard( uint16_t a, uint16_t b)`
+  > __Description__: Multiplies two 16-bit unsigned integers using built-n multiplication
 
  * `multiply_textbook`
-  > __Declaration__: `uint32_t multiply_textbook( uint16_t a, uint16_t b)`  
-  > __Description__: Multiplies two 16-bit integers, but simulates how this might be done on a restricted 8-bit architecture using a "textbook" algorithm  
- 
+  > __Declaration__: `uint32_t multiply_textbook( uint16_t a, uint16_t b)`
+  > __Description__: Multiplies two 16-bit integers, but simulates how this might be done on a restricted 8-bit architecture using a "textbook" algorithm
+
  * `multiply_karatsuba`
-  > __Declaration__: `uint32_t multiply_karatsuba( uint16_t a, uint16_t b)`  
-  > __Description__: Multiplies two 16-bit integers, but uses the Karatsuba multiplication technique as though it was binned on 8-bit bins  
+  > __Declaration__: `uint32_t multiply_karatsuba( uint16_t a, uint16_t b)`
+  > __Description__: Multiplies two 16-bit integers, but uses the Karatsuba multiplication technique as though it was binned on 8-bit bins
 
 This set of examples demonstrates how to use Cryptol and Saw to verify that the implementations of these familiar functions are correct and equivalent to one another.
 

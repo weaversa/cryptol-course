@@ -303,7 +303,7 @@ only need to type `:b l` then press the TAB key and the interpreter
 will fill in the rest.
 
 ```shell
-labs::Interpreter::test> :b labs::Interpreter::test 
+labs::Interpreter::test> :b labs::Interpreter::test
 Type Synonyms
 =============
 
@@ -390,7 +390,7 @@ And here we issue the same commands by running the `test.sry` batch
 file using the interpreter's `-b` flag:
 
 ```shell
-$ cat labs/Interpreter/test.sry 
+$ cat labs/Interpreter/test.sry
 :m labs::Interpreter::test
 :s base=10
 x + 2
