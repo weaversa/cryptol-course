@@ -141,7 +141,7 @@ parameters.
      initial fill into the high-order bits of the zero-expanded
      message before calculating the modulus.
 * Post-XOR (`post`)
-    * A sequence of bits that are XOR'd into the modulus to create the
+    * A sequence of bits that are XOR'd into the remainder to create the
       final output.
 * Reflect Input Bytes (`rib`)
     * Denotes whether or not the input (when viewed as a sequence of

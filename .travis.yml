@@ -56,9 +56,11 @@ script:
   - cryptol -e -c ":m labs::Salsa20::Salsa20Answers"
   - cryptol -e -c ":m labs::Salsa20::Salsa20Props"
   - cryptol -e -c ":m labs::Salsa20::Salsa20PropsAnswers"
+  - cryptol -e -c ":m labs::Salsa20::spec::Salsa20"
 # CRC lab tests
   - cryptol -e -c ":m labs::CRC::CRC"
   - cryptol -e -c ":m labs::CRC::CRCAnswers"
+  - cryptol -e -c ":m labs::CRC::spec::CRC"
 # LoremIpsum tests
   - cryptol -e -c ":m labs::LoremIpsum::LoremIpsum"
   - cryptol -e -c ":m labs::LoremIpsum::LoremIpsumAnswers"
@@ -75,9 +77,13 @@ script:
 # Project Euler lab tests
   - cryptol -e -c ":m labs::ProjectEuler::ProjectEuler"
   - cryptol -e -c ":m labs::ProjectEuler::ProjectEulerAnswers"
+  - cryptol -e -c ":m labs::ProjectEuler::keylog"
+  - cryptol -e -c ":m labs::ProjectEuler::cipher1"
+  - cryptol -e -c ":m labs::ProjectEuler::cipher2"
 # Crypto Proofs lab tests
   - cryptol -e -c ":m labs::CryptoProofs::CryptoProofs"
   - cryptol -e -c ":m labs::CryptoProofs::CryptoProofsAnswers"
 # Key Wrapping lab tests
   - cryptol -e -c ":m labs::KeyWrapping::KeyWrapping"
   - cryptol -e -c ":m labs::KeyWrapping::KeyWrappingAnswers"
+  - cryptol -e -c ":m labs::KeyWrapping::spec::NISTKeyWrapping"
