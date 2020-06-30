@@ -18,7 +18,7 @@ interpreter. This README.md is no exception!
 Labs have exercises that look like this:
 
 **EXERCISE:** Literate Cryptol documents are meant to be opened up
-along side and edited while you work through the labs. For instance,
+alongside and edited while you work through the labs. For instance,
 you might be asked to fill in a portion of a Cryptol snippet:
 
 ```comment
@@ -43,7 +43,7 @@ Exercises will often have checks that follow along with instructions
 for how to verify their work. Check your answer with the following
 command; your output should look similar to the following:
 
-```sh
+```shell
  $ cryptol
  ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
  ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
@@ -59,8 +59,8 @@ command; your output should look similar to the following:
  (Total Elapsed Time: 0.056s, using Z3)
 ```
 
-Don't worry -- the first lab walks you through [installing and running
-Cryptol](INSTALL.md).
+Don't worry if Cryptol is not on your system -- the first lab walks
+you through [installing and running Cryptol](INSTALL.md).
 
 
 ## Suggested Lab Order
@@ -87,14 +87,14 @@ Cryptol](INSTALL.md).
     * [Project Euler](labs/ProjectEuler/ProjectEuler.md): If you
       enjoyed the last lab, why not try you hand at using Cryptol's
       connection to automated provers (SMT solvers) to solve some
-      complicated computational puzzles.
+      computational puzzles.
 9. [Methods for Key Wrapping](labs/KeyWrapping/KeyWrapping.md):
    Create a Cryptol specification of NIST's [SP800-38F key wrap
    standard](https://csrc.nist.gov/publications/detail/sp/800-38f/final).
 10. [Capstone: Putting it all
    together](labs/LoremIpsum/LoremIpsum.md): Decrypt a series of
-   secret messages by feeding wrapping keys into the anomalus KLI20
-   cryptographic engine. Success here requires modules and concepts
+   secret messages by feeding wrapping keys into the anomalous KLI20
+   cryptographic engine. Success here requires use of modules and concepts
    from many of the previous labs.
 
 
@@ -105,12 +105,11 @@ given by black lines.
 
 <img class="center" src="https://raw.githubusercontent.com/weaversa/cryptol-course/master/misc/deps.svg" alt="Dependencies and Suggested Course Flow">
 
-
 ## Extra Labs and Demonstrations
 
-Some labs or examples go beyond the scope of the course outline, but
+There are also labs that go beyond the scope of the course outline, but
 may prove interesting or useful for students with wider interests or
-different backgrounds. Here are some of them:
+different backgrounds. 
 
 1. [Arithmetic Verifications](labs/saw/ArithmeticVerifications/ArithmeticVerifications.md):
    This lab demonstrates using SAW to prove facts about various
@@ -128,7 +127,7 @@ different backgrounds. Here are some of them:
 ## Supporting Materials
 
 You will find references and supporting materials linked throughout
-the course but here are manuals and important documents for easy
+the course, but here are some key manuals and documents for easy
 reference:
 
 * [Programming
@@ -140,10 +139,10 @@ reference:
 
 * [Cryptol Version 2
   Syntax](https://github.com/GaloisInc/cryptol/blob/master/docs/Syntax.pdf)
-  -- A comprehensive guide to Cryptol Syntax
+  -- A comprehensive guide to Cryptol Syntax.
 
 * [Cryptol
   Semantics](https://github.com/GaloisInc/cryptol/blob/master/docs/Semantics.pdf)
   -- A guide to Cryptol language semantics and overview of the
-  underlying representations of Cryptol's type system
+  underlying representations of Cryptol's type system.
 

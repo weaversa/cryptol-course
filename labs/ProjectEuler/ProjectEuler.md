@@ -40,7 +40,7 @@ Now that we have our function and a property about our function, we
 can load this lab directly into Cryptol and find an answer!  You
 should get a response like this:
 
-```sh
+```shell
 [cryptol-course]$ cryptol labs/ProjectEuler/ProjectEuler.md 
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
@@ -69,7 +69,7 @@ factor3000013 x y =
 Note that if we don't include the `x > 1 /\ y > 1` clauses we get a
 trivial factorization.  Now we can use Cryptol to factor our number:
 
-```sh
+```shell
 labs::ProjectEuler::ProjectEuler> :sat factor3000013 
 factor3000013 773 3881 = True
 (Total Elapsed Time: 0.215s, using Z3)

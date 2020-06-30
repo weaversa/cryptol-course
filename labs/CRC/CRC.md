@@ -72,7 +72,7 @@ CRCSimple :
     (fin n, fin m) =>
     [n+1] -> [m] -> [n]
 CRCSimple G M = undefined
-  where M' = undefined
+  where M' = undefined  //Concatenate M with n zero bits
 ```
 
 This test-case is from [1].
@@ -139,7 +139,7 @@ parameters.
      initial fill into the high-order bits of the zero-expanded
      message before calculating the modulus.
 * Post-XOR (`post`)
-    * A sequence of bits that are XOR'd into the modulus to create the
+    * A sequence of bits that are XOR'd into the remainder to create the
       final output.
 * Reflect Input Bytes (`rib`)
     * Denotes whether or not the input (when viewed as a sequence of
