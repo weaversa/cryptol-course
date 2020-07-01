@@ -93,7 +93,7 @@ you through [installing and running Cryptol](INSTALL.md).
    standard](https://csrc.nist.gov/publications/detail/sp/800-38f/final).
 10. [Capstone: Putting it all
    together](labs/LoremIpsum/LoremIpsum.md): Decrypt a series of
-   secret messages by feeding wrapping keys into the anomalous KLI20
+   secret messages by feeding wrapped keys into the anomalous KLI20
    cryptographic engine. Success here requires use of modules and concepts
    from many of the previous labs.
 
