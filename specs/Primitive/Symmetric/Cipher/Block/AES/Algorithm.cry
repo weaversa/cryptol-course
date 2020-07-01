@@ -50,6 +50,3 @@ decrypt (kInit, ks, kFinal) ct =
   where
   state0 = kInit ^ msgToState ct
   rounds = [state0] # [ decRound rk s | rk <- ks | s <- rounds ]
-
-
-

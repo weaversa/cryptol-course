@@ -189,4 +189,3 @@ testct = [0xB5219EE81AA7499D
 
 property testsPass = and [ DES.encrypt key msg == ct
                          | key <- testkeys | msg <- testmsgs | ct <- testct ]
-

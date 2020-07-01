@@ -145,4 +145,3 @@ reference:
   Semantics](https://github.com/GaloisInc/cryptol/blob/master/docs/Semantics.pdf)
   -- A guide to Cryptol language semantics and overview of the
   underlying representations of Cryptol's type system.
-

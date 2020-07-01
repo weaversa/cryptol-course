@@ -40,5 +40,3 @@ gf28VectorMult v ms = [ gf28DotProduct v m | m <- ms ]
 gf28MatrixMult : {n, m, k} (fin m) => [n][m]GF28 -> [m][k]GF28 -> [n][k]GF28
 gf28MatrixMult xss yss = [ gf28VectorMult xs yss' | xs <- xss ]
    where yss' = transpose yss
-
-
