@@ -808,7 +808,7 @@ function but not for anything else.
 Turns out there were official test vectors on
 [ECRYPT](http://www.ecrypt.eu.org/stream/svn/viewcvs.cgi/ecrypt/trunk/submissions/salsa20/full/verified.test-vectors?logsort=rev&rev=210&view=markup),
 but that the link is now defunct. It doesn't seem to be that big of a
-loss because The test vectors really didn't test all the functionality
+loss because the test vectors really didn't test all the functionality
 of Salsa20Encrypt because they _all_ took a message of entirely zeroes
 as input. This makes it difficult to know if you're processing an
 actual message correctly.
