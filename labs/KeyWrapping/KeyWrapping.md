@@ -724,7 +724,7 @@ This message tells us that `a`, the length of our input, has to
 simultaneously be both `64` and `32` and (looking at the line numbers)
 that these constraints come from the types of `g` and `h`.
 
-In support of fixing the function, notice that since since `g` always
+In support of fixing the function, notice that since `g` always
 takes and returns 32-bit values, we have to shrink `x` from `a` bits
 to `32` bits, and widen the result up to `48` bits. And, since `h`
 always takes and returns 64-bit values, we have to widen `x` from `a`
