@@ -295,7 +295,7 @@ One of the most powerful uses of Cryptol's theorem proving technology is the abi
 
 **EXERCISE** 2.5.1 DES Equivalent Keys
 
-Attempt to prove that the two keys you just found are equivalent keys. That is, prove that these two keyed DES functions are equivalent for all plaintext inputs. *Hint: Use abc*
+Attempt to prove that the two keys you just found are equivalent keys. That is, prove that these two keyed DES functions are equivalent for all plaintext inputs. *Hint* Use the `abc` prover.
 
 > Solution:
 >```shell
