@@ -21,7 +21,6 @@ P_48_72 = join[0x612067, 0x6e696c]
 C_48_72 = join[0xdae5ac, 0x292cac]
 property TV_48_72 = simon_48_72::encrypt K_48_72 P_48_72 == C_48_72
 
-// Fails?
 K_48_96 = join [0x1a1918, 0x121110, 0x0a0908, 0x020100]
 P_48_96 = join [0x726963, 0x20646e]
 C_48_96 = join [0x6e06a5, 0xacf156]

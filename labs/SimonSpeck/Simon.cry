@@ -11,62 +11,129 @@ parameter
 type blockSize = 2 * n
 type keySize   = m * n
 
-f x = (x <<< 1) && (x <<< 8) ^ (x <<< 2)
+/**
+  * The Simon block cipher, encryption direction. See [1] for further details.
+  *
+  * [1] Beaulieu R., Shors D., et. al. "The Simon and Speck Families of Lightweight 
+  * Block Ciphers". e-print-2013-404.pdf.
+  *    
+  */
+encrypt K P = join (last (encryptList K P))
 
-Rk : [n] -> [2][n] -> [2][n]
-Rk k [x, y] = [x', y']
-  where
-    x'  = y
-    y'  = x ^ (f y) ^ k
+/**
+  * The Simon block cipher, decryption direction. See [1] for further details.
+  *
+  * [1] Beaulieu R., Shors D., et. al. "The Simon and Speck Families of Lightweight 
+  * Block Ciphers". e-print-2013-404.pdf.
+  *    
+  */
+decrypt K P = join (last (decryptList K P))
 
-u = join(repeat`{inf} 0b1111101000100101011000011100110)
-v = join(repeat`{inf} 0b1000111011111001001100001011010)
-w = join(repeat`{inf} 0b1000010010110011111000110111010)
+/**
+  * EncryptDecryptRoundIdentity k x = Rk' k (Rk k x) == x
+  *
+  */
+property EncryptDecryptRoundIdentity k x =
+  Rk' k (Rk k x) == x
 
-z0 = u
-z1 = v
-z2 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} u ])
-z3 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} v ])
-z4 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} w ])
+/**
+  * DecryptEncryptRoundIdentity k x = Rk k (Rk' k x) == x
+  *
+  */ 
+property DecryptEncryptRoundIdentity k x = 
+  Rk k (Rk' k x) == x
 
-Z = [z0, z1, z2, z3, z4]@(`j:[width j])
-//property period_62 S i = (S@i) == (S@(i+62))
+// These properties take too long to verify with Z3
+// Possibly try proving with abc
+//   :s prover=abc   or
+//   :s prover=any
+property EncryptDecryptIdentity k x =
+  decrypt k (encrypt k x) == x
+  
+property DecryptEncryptIdentity k x = 
+  encrypt k (decrypt k x) == x
 
-KTest_64_96 = 0x131211100b0a090803020100
-PTest_64_96 = 0x6f7220676e696c63
 
-KTest_64_128 = 0x1b1a1918131211100b0a090803020100
-PTest_64_128 = 0x656b696c20646e75
+/* TODO Try to clean up this claim from the paper
+repeats_62 S i = S@i == S@(i+62)
+property period_62_z3 i = repeats_62 z3 i
+*/
 
-KTest_128_128 = join [0x0f0e0d0c0b0a0908, 0x0706050403020100]
-PTest_128_128 = join [0x6373656420737265, 0x6c6c657661727420]
+private
 
-tmp: [n] -> [n] -> [n]
-tmp k1 k2 = r
-  where 
-    r  = t ^ (t >>> 1)
-    t  = if `m == 0x4 then (t' ^ k2) else t'
-    t' = (k1 >>> 3)
-            
-KeySchedule : [keySize] -> [T][n]
-KeySchedule K = take Ks
-  where
-    Kis : [m][n]
-    Kis = reverse(split`{m} K)
-    Ks : [inf][n]
-    Ks = Kis # [ ~k0 ^ (tmp k1 k2) ^ (zext [z]) ^ (zext 0x3) 
-               | k0 <- Ks
-               | k1 <- drop`{m-1} Ks
-               | k2 <- drop`{max m 3 - 3} Ks // kludge to typecheck "drop`{m-3}"
-               | z <- Z ]
+    u = join(repeat`{inf} 0b1111101000100101011000011100110)
+    v = join(repeat`{inf} 0b1000111011111001001100001011010)
+    w = join(repeat`{inf} 0b1000010010110011111000110111010)
 
-encryptList:
-    [keySize] -> [blockSize] -> [T+1][2][n]
-encryptList K P = Cs
-  where
-    Ps = reverse(split P)
-    Ks = KeySchedule K
-    Cs = [Ps] # [ Rk k xy | k <- Ks | xy <- Cs]
+    z0 = u
+    z1 = v
+    z2 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} u ])
+    z3 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} v ])
+    z4 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} w ])
 
-encrypt K P = join (reverse(last (encryptList K P)))
+
+    /**
+      * The Simon round function
+      */
+    Rk : [n] -> [2][n] -> [2][n]
+    Rk k [x, y] = [x', y']
+      where
+        x'  = y ^ (f x) ^ k
+        y'  = x
+
+    /**
+      * The Simon inverse round function
+      */
+    Rk' : [n] -> [2][n] -> [2][n]
+    Rk' k [x, y] = [x', y']
+      where
+        x'  = y
+        y'  = x ^ (f y) ^ k
+
+    f x = (x <<< 1) && (x <<< 8) ^ (x <<< 2)
+
+
+
+    Z = [z0, z1, z2, z3, z4]@(`j:[width j])
+
+    // tmp
+    //
+    // "tmp" shows up as the name of a variable in the Simon key schedule example
+    // implementation. This function is meant to capture what final values this
+    // portion of the expression has, depending on the value of `m
+    //
+    tmp: [n] -> [n] -> [n]
+    tmp k1 k2 = r
+      where 
+        r  = t ^ (t >>> 1)
+        t  = if `m == 0x4 then (t' ^ k2) else t'
+        t' = (k1 >>> 3)
+                
+    KeySchedule : [keySize] -> [T][n]
+    KeySchedule K = take Ks
+      where
+        Kis : [m][n]
+        Kis = reverse(split`{m} K)
+        Ks : [inf][n]
+        Ks = Kis # [ ~k0 ^ (tmp k1 k2) ^ (zext [z]) ^ (zext 0x3) 
+                   | k0 <- Ks
+                   | k1 <- drop`{m-1} Ks
+                   | k2 <- drop`{max m 3 - 3} Ks // kludge to typecheck "drop`{m-3}"
+                   | z <- Z ]
+
+    decryptList:
+        [keySize] -> [blockSize] -> [T+1][2][n]
+    decryptList K C = Ps
+      where
+        Cs = split C
+        Ks = reverse(KeySchedule K)
+        Ps = [Cs] # [ Rk' k xy | k <- Ks | xy <- Ps]
+
+    encryptList:
+        [keySize] -> [blockSize] -> [T+1][2][n]
+    encryptList K P = Cs
+      where
+        Ps = split P
+        Ks = KeySchedule K
+        Cs = [Ps] # [ Rk k xy | k <- Ks | xy <- Cs]
 
