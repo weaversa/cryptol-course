@@ -48,4 +48,3 @@ print "Checking C anyZeroByte implementation vs Cryptol specification";
 let thm5 = {{ \x -> anyZeroByte_c x == [ anyZeroByte x ] }};
 result <- prove z3 thm5;
 print result;
-

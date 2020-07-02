@@ -1,6 +1,6 @@
 # Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
@@ -9,9 +9,9 @@ in the `cryptol-course` directory with:
 cryptol> :m labs::Overview::Overview
 ```
 
-Cryptol is a domain specific language and tool suite created by Galois, Inc., 
+Cryptol is a domain specific language and tool suite created by Galois, Inc.,
 with support from NSA cryptographers. The language has lots of cool programming
-language features that make it well suited for applications in high assurance 
+language features that make it well suited for applications in high assurance
 systems and cryptographic development, including:
 
  * strong, static typing
@@ -19,11 +19,11 @@ systems and cryptographic development, including:
  * parametric size-polymorphism
  * higher-order functions
 
-Cryptol is used to create gold-standard algorithm specifications and provides 
+Cryptol is used to create gold-standard algorithm specifications and provides
 access to tools that facilitate their exploration and evaluation.
 
-This lab will provide a quick overview of Cryptol, some motivating applications 
-where the language and technology have been deployed, and to the language 
+This lab will provide a quick overview of Cryptol, some motivating applications
+where the language and technology have been deployed, and to the language
 features which make Cryptol an excellent choice for these applications.
 
 More information about Cryptol is available at [http://www.cryptol.net](https://cryptol.net).
@@ -59,7 +59,7 @@ labs::Overview::Overview> sayHello "Cryptol!"
 labs::Overview::Overview> :set ascii=on
 labs::Overview::Overview> sayHello "Cryptol!"
 "Hello, Cryptol!"
-labs::Overview::Overview> 
+labs::Overview::Overview>
 ```
 Congratulations, you are now officially on speaking terms!
 
@@ -89,7 +89,7 @@ Further exposition on the development of these integration tests can be found in
 
 The tools that Cryptol provides access to allows users to bring together cryptographic implementations from other languages like *Java* or *C* and prove that they are equivalent to "gold standard" specifications one can create in Cryptol. This allows users to iteratively optimize code in performance-centric or system languages while maintaining a single trusted specification in Cryptol.
 
-Take a look through the [`saw-demos` repository](https://github.com/GaloisInc/saw-demos) by GaloisInc hosted on GitHub which highlights several of these applications. We will do a brief survey of the `xxhash` example which you can find in the `demos/xxhash` directory of this repository. This is a demo of using Cryptol algorithm specifications (along with SAW). 
+Take a look through the [`saw-demos` repository](https://github.com/GaloisInc/saw-demos) by GaloisInc hosted on GitHub which highlights several of these applications. We will do a brief survey of the `xxhash` example which you can find in the `demos/xxhash` directory of this repository. This is a demo of using Cryptol algorithm specifications (along with SAW).
 
 This directory contains the following files:
 
@@ -286,7 +286,7 @@ Cryptol> let s3 = [[0x1, 0x2], [0x3, 0x4], [0x5, 0x6]]
 Cryptol> :t s3
 s3 : [3][2][4]
 ```
- 
+
  * **Integers** - An arbitrary precision integer type.
 
 ```haskell
@@ -299,7 +299,7 @@ Cryptol> 123456789234567890+234567890123456789 : Integer
 ```
 
  * **Tuples** - Tuples support heterogeneous collections. Members are accessed with the `dot operator` (`.`) and are zero-indexed.
- 
+
 ```haskell
 Cryptol> let tup = (1 : Integer, 0x02, [0x31, 0x32])
 Cryptol> :t tup
@@ -313,7 +313,7 @@ Cryptol> tup.2
 ```
 
  * **Records** - Records allow for more complex data structures to be formed, where fields may be accessed by their names.
- 
+
 ```haskell
 Cryptol> let point = {x = 10:[32], y = 25:[32]}
 Cryptol> point.x
@@ -350,14 +350,14 @@ In a nutshell, this indicates that the bitwise `and` operator (`&&`) operates on
 Cryptol offers a robust set of primitives to construct more complex functions and specifications. The built-in primitives cover a wide variety of purposes. A sampling of these built-ins include:
 
  * **Sequence manipulation** -- `take`, `drop`
- 
+
 ```shell
 labs::overview::overview> take `{1} [1, 2, 3]
 [1]
 labs::overview::overview> drop `{1} [1, 2, 3]
 [2, 3]
 ```
- 
+
  * **Structural manipulation** -- `split`, `groupBy`
 
 ```shell
@@ -408,7 +408,7 @@ This provides a type for `RotWord` of `[4][8] -> [4][8]` and a definition of `Ro
 ```shell
 labs::overview::overview> RotWord [0x01, 0x02, 0x03, 0x04]
 [0x02, 0x03, 0x04, 0x01]
-labs::overview::overview> :t RotWord 
+labs::overview::overview> :t RotWord
 RotWord : [4][8] -> [4][8]
 ```
 
@@ -475,7 +475,7 @@ labs::overview::overview> [0 .. 15 : [32]]
 Cryptol even supports *infinite* sequences and accessing their members. Here is an example of creating an infinite sequence of odd integers and accessing the 100th element of that sequence:
 
 ```shell
-labs::overview::overview> [1, 3 ... ] 
+labs::overview::overview> [1, 3 ... ]
 [1, 3, 5, 7, 9, ...]
 labs::overview::overview> [1, 3 ... ] @ 100
 201
@@ -604,4 +604,3 @@ starting with the initial value.
 * [Cryptol Version 2 Syntax](https://github.com/GaloisInc/cryptol/blob/master/docs/Syntax.pdf) -- A comprehensive guide to Cryptol Syntax
 
 * [Cryptol Semantics](https://github.com/GaloisInc/cryptol/blob/master/docs/Semantics.pdf) -- A guide to Cryptol language semantics and overview of the underlying representations of Cryptol's type system
-

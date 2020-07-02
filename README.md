@@ -34,7 +34,7 @@ editor to the following:
 ```
 algebra_fact : Integer -> Integer -> Bit
 property algebra_fact x y =
-    (x + y) * (x + y) == x^^2 + 2*x*y + y^^2 
+    (x + y) * (x + y) == x^^2 + 2*x*y + y^^2
 ```
 
 and then reloading the module using `:reload` (`:r` for short).
@@ -49,12 +49,12 @@ command; your output should look similar to the following:
  ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
  ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
  version 2.8.0
- 
+
  Loading module Cryptol
  Cryptol> :load README.md
  Loading module Cryptol
  Loading module Main
- Main> :prove algebra_fact 
+ Main> :prove algebra_fact
  Q.E.D.
  (Total Elapsed Time: 0.056s, using Z3)
 ```
@@ -109,7 +109,7 @@ given by black lines.
 
 There are also labs that go beyond the scope of the course outline, but
 may prove interesting or useful for students with wider interests or
-different backgrounds. 
+different backgrounds.
 
 1. [Arithmetic Verifications](labs/saw/ArithmeticVerifications/ArithmeticVerifications.md):
    This lab demonstrates using SAW to prove facts about various
@@ -145,4 +145,3 @@ reference:
   Semantics](https://github.com/GaloisInc/cryptol/blob/master/docs/Semantics.pdf)
   -- A guide to Cryptol language semantics and overview of the
   underlying representations of Cryptol's type system.
-
