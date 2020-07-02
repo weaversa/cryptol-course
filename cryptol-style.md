@@ -144,6 +144,25 @@ directions = [ North
              ]
 ```
 
+### Properties
+
+Shortcircuit logical operators are preferred to if-then-else in
+properties. For example,
+
+```
+property myProperty x =
+    x != 0 ==> (100/x) <= 100
+```
+
+is superior to
+
+```
+property myProperty x =
+    if x != 0
+    then (100/x) <= 100
+    else True
+```
+
 ### If-then-else clauses
 
 Align if-then-else clauses like you would normal expressions:
@@ -192,7 +211,8 @@ punctuation.
 
 ### Top-Level Definitions
 
-Comment every top level function (particularly exported functions),
+Comment every top level function (particularly exported functions)
+using [docstring comments](https://en.wikipedia.org/wiki/Docstring),
 and provide a type signature. The documentation should give enough
 information to apply the function without looking at the function's
 definition.
@@ -204,9 +224,14 @@ good practice provided it does not become too verbose.
 
 ### End-of-Line Comments
 
-Separate end-of-line comments from the code using 2 spaces.
+Separate end-of-line comments from the code using two spaces.
 
 ```haskell
+/**
+ * Here is a docstring comment for the function named foo.
+ * This comment will appear in the Cryptol interpreter
+ * when you type `:help foo`.
+ */
 foo : [32] -> [32]
 foo n = n % p
   where
@@ -230,6 +255,14 @@ Haskell's style:
 > Use camel case (e.g. `functionName`) when naming functions and upper
 > camel case (e.g. `DataType`) when naming data types.
 
+As well, an apostrophe (`'`) can be appended to a function name to
+denote a relationship.
+
+```haskell
+encrypt key plainText = f  key plainText
+
+decrypt key plainText = f' key plainText
+```
 
 Curried vs. Uncurried Functions
 -------------------------------
@@ -262,184 +295,7 @@ since it is easy to see the utility of `encrypt key`
 as a function in its own right.
 
 
-
-# STOPPED !!!
-
-### Punctuation
-
-Write proper sentences; start with a capital letter and use proper
-punctuation.
-
-### Top-Level Definitions
-
-Comment every top level function (particularly exported functions),
-and provide a type signature; use Haddock syntax in the comments.
-Comment every exported data type. Function example:
-
-```haskell
--- | Send a message on a socket. The socket must be in a connected
--- state. Returns the number of bytes sent. Applications are
--- responsible for ensuring that all data has been sent.
-send :: Socket      -- ^ Connected socket
-     -> ByteString  -- ^ Data to send
-     -> IO Int      -- ^ Bytes sent
-```
-
-For functions the documentation should give enough information to
-apply the function without looking at the function's definition.
-
-Record example:
-
-```haskell
--- | Bla bla bla.
-data Person = Person
-    { age  :: !Int     -- ^ Age
-    , name :: !String  -- ^ First name
-    }
-```
-
-For fields that require longer comments format them like so:
-
-```haskell
-data Record = Record
-    { -- | This is a very very very long comment that is split over
-      -- multiple lines.
-      field1 :: !Text
-
-      -- | This is a second very very very long comment that is split
-      -- over multiple lines.
-    , field2 :: !Int
-    }
-```
-
-### End-of-Line Comments
-
-Separate end-of-line comments from the code using 2 spaces. Align
-comments for data type definitions. Some examples:
-
-```haskell
-data Parser = Parser
-    !Int         -- Current position
-    !ByteString  -- Remaining input
-
-foo :: Int -> Int
-foo n = salt * 32 + 9
-  where
-    salt = 453645243  -- Magic hash salt.
-```
-
-### Links
-
-Use in-line links economically. You are encouraged to add links for
-API names. It is not necessary to add links for all API names in a
-Haddock comment. We therefore recommend adding a link to an API name
-if:
-
-* The user might actually want to click on it for more information (in
-  your judgment), and
-
-* Only for the first occurrence of each API name in the comment (don't
-  bother repeating a link)
-
-Naming
-------
-
-Use camel case (e.g. `functionName`) when naming functions and upper
-camel case (e.g. `DataType`) when naming data types.
-
-For readability reasons, don't capitalize all letters when using an
-abbreviation. For example, write `HttpServer` instead of
-`HTTPServer`. Exception: Two letter abbreviations, e.g. `IO`.
-
-### Modules
-
-Use singular when naming modules e.g. use `Data.Map` and
-`Data.ByteString.Internal` instead of `Data.Maps` and
-`Data.ByteString.Internals`.
-
-Dealing with laziness
----------------------
-
-By default, use strict data types and lazy functions.
-
-### Data types
-
-Constructor fields should be strict, unless there's an explicit reason
-to make them lazy. This avoids many common pitfalls caused by too much
-laziness and reduces the number of brain cycles the programmer has to
-spend thinking about evaluation order.
-
-```haskell
--- Good
-data Point = Point
-    { pointX :: !Double  -- ^ X coordinate
-    , pointY :: !Double  -- ^ Y coordinate
-    }
-```
-
-```haskell
--- Bad
-data Point = Point
-    { pointX :: Double  -- ^ X coordinate
-    , pointY :: Double  -- ^ Y coordinate
-    }
-```
-
-Additionally, unpacking simple fields often improves performance and
-reduces memory usage:
-
-```haskell
-data Point = Point
-    { pointX :: {-# UNPACK #-} !Double  -- ^ X coordinate
-    , pointY :: {-# UNPACK #-} !Double  -- ^ Y coordinate
-    }
-```
-
-As an alternative to the `UNPACK` pragma, you can put
-
-```haskell
-{-# OPTIONS_GHC -funbox-strict-fields #-}
-```
-
-at the top of the file. Including this flag in the file itself instead
-of e.g. in the Cabal file is preferable as the optimization will be
-applied even if someone compiles the file using other means (i.e. the
-optimization is attached to the source code it belongs to).
-
-Note that `-funbox-strict-fields` applies to all strict fields, not
-just small fields (e.g. `Double` or `Int`). If you're using GHC 7.4 or
-later you can use `NOUNPACK` to selectively opt-out for the unpacking
-enabled by `-funbox-strict-fields`.
-
-### Functions
-
-Have function arguments be lazy unless you explicitly need them to be
-strict.
-
-The most common case when you need strict function arguments is in
-recursion with an accumulator:
-
-```haskell
-mysum :: [Int] -> Int
-mysum = go 0
-  where
-    go !acc []    = acc
-    go acc (x:xs) = go (acc + x) xs
-```
-
-Misc
-----
-
-### Point-free style ###
-
-Avoid over-using point-free style. For example, this is hard to read:
-
-```haskell
--- Bad:
-f = (g .) . h
-```
-
 ### Warnings ###
 
-Code should be compilable with `-Wall -Werror`. There should be no
-warnings.
+All Cryptol specifications should load into the Cryptol interpreter
+without warnings.
