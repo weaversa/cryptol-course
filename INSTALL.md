@@ -20,36 +20,31 @@ material directly from the GitHub website.
 
 This course currently focuses on learning to program in Cryptol. As
 such, you will greatly benefit from installing the Cryptol
-interpreter. Supported platforms include CentOS, Ubuntu, OSX, and
+interpreter. Supported platforms include CentOS, Ubuntu, MacOS, and
 Windows 10.
 
 Some challenge labs make use of SAW, a companion verification tool
 associated with Cryptol. However, SAW is not a requirement for success
-here. Also, [Galois](https://galois.com) (the maintainer of Cryptol
-and SAW) does not currently provide a Windows 10 installer for SAW, and
-Homebrew ([Option 2](#option-2-homebrew)) doesn't provide SAW
-installers for any platform. So if you want to use SAW, we recommend
-installing SAW via docker ([Option 1](#option-1-docker)) as docker is
-platform agnostic and easy to install and use.
+here.
 
+## Option 1: Docker (*Preferred Installation Method*)
 
-## Option 1: Docker
-
-[Docker](https://www.docker.com) images are available for both
+[Docker](https://www.docker.com) containers are available for both
 [Cryptol](https://hub.docker.com/repository/docker/cryptolcourse/cryptol)
 and
-[SAW](https://hub.docker.com/repository/docker/cryptolcourse/saw). These
-are not Galois' own Cryptol and SAW docker containers; the ones we
-suggest here are recommended for this class as they have more
-theorem provers pre-installed.  If Docker has been
-[installed](https://docs.docker.com/get-docker), it is easy to `pull`
-and `run` these images. *(Note that this docker approach may require
-`sudo` privileges. If so, and you don't have such privileges, follow
-the steps in [Option 2](#option-2-homebrew) or [Option
-3](#option-3-downloading-pre-built-cryptol-and-saw-binaries) for
-user-mode solutions.)*
+[SAW](https://hub.docker.com/repository/docker/cryptolcourse/saw). To
+use these Docker containers you'll *first* need to install `docker` on
+your computer. Instructions for installing `docker` on Linux, MacOS,
+and Windows 10 can be found at
+[https://docs.docker.com/get-docker](https://docs.docker.com/get-docker). Once
+Docker has been [installed](https://docs.docker.com/get-docker), it is
+easy to `pull` and `run` these containers. *(Note that this docker
+approach may require `sudo` privileges. If so, and you don't have such
+privileges, follow the steps in [Option 2](#option-2-homebrew) or
+[Option 3](#option-3-downloading-pre-built-cryptol-and-saw-binaries)
+for user-mode solutions.)*
 
-```
+```shell
 $ docker pull cryptolcourse/cryptol
 ...
 $ docker run --rm -it cryptolcourse/cryptol
@@ -87,12 +82,13 @@ sawscript> :quit
 ```
 
 Details:
-- Instructions for installing `docker` on your system can be found at
+- Instructions for installing `docker` on your system (Linux, MacOS, and
+Windows 10) can be found at
 [https://docs.docker.com/get-docker](https://docs.docker.com/get-docker).
 - `docker run --rm -it` indicates that the commands are to be run in an interactive
 TTY, and the generated container will be removed upon exit.
 - If you are currently in the root of this repository, you can use
-`-v` and `--env` to mount the repository in the docker image and set
+`-v` and `--env` to mount the repository in the docker container and set
 the `CRYPTOLPATH` environment variable for access to this repository's
 Cryptol modules. This environment variable is used by both Cryptol and
 SAW. For example:
@@ -110,25 +106,9 @@ Loading module specs::Misc::Sudoku
 specs::Misc::Sudoku> :quit
 ```
 
-You may also want to assign this horrendous command to an alias. For example:
-
-```shell
-$ alias cryptol="docker run --rm --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol"
-$ cryptol
-┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
-┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
-┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
-version 2.8.0
-
-Loading module Cryptol
-Cryptol> :module specs::Misc::Sudoku
-Loading module specs::Misc::Sudoku
-specs::Misc::Sudoku> :quit
-```
-
 ## Option 2: Homebrew
 
-[Homebrew](https://brew.sh) is a package manager for OSX, Linux, and
+[Homebrew](https://brew.sh) is a package manager for MacOS, Linux, and
 Windows Subsystem for Linux. Instructions for installing Homebrew can
 be found on [Homebrew's website](https://brew.sh), and consist of
 pasting a simple command into a shell prompt.
@@ -157,7 +137,7 @@ they work on later versions of Ubuntu as well.)*
 The `bin` directory (containing `cryptol` and/or `saw`) of the archive
 you downloaded should be placed in your system path.
 
-For CentOS, Ubuntu, or OSX, the whole process would look something
+For CentOS, Ubuntu, or MacOS, the whole process would look something
 like (depending on the which OS variant you have):
 
 ```
@@ -171,7 +151,7 @@ instructions do not currently provide any details on how to install
 Cryptol on Windows 10, though the installer is self explanatory.*
 
 *Galois also provides a server with nightly builds of SAW for CentOS,
-Ubuntu, and OSX, which you can find at
+Ubuntu, and MacOS, which you can find at
 https://saw.galois.com/builds/nightly.*
 
 ### Downloading Z3
@@ -188,7 +168,7 @@ https://github.com/Z3Prover/z3.  The base directory (containing `z3`
 and more) of the zip file you download or built should be placed in
 your system path.
 
-For CentOS, Ubuntu, or OSX, the whole process would look something
+For CentOS, Ubuntu, or MacOS, the whole process would look something
 like (depending on which OS build and version you download):
 
 ```
@@ -243,10 +223,11 @@ documentation provided in their respective repositories, found here:
 
 To load a literate document into Cryptol, change to your
 `cryptol-course` directory in a terminal (Linux) or command prompt
-(Windows 10), then run Cryptol via a locally installed binary or Docker
-image. We'll use [labs/Demos/OneTimePad.md](labs/Demos/OneTimePad.md)
-as an example. The literate document can be provided as a parameter
-when starting the Cryptol interpreter:
+(Windows 10), then run Cryptol via a locally installed binary or
+Docker container. We'll use
+[labs/Demos/OneTimePad.md](labs/Demos/OneTimePad.md) as an
+example. The literate document can be provided as a parameter when
+starting the Cryptol interpreter:
 
 ```shell
 .../cryptol-course$ cryptol labs/Demos/OneTimePad.md
