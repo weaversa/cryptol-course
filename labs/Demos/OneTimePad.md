@@ -1,6 +1,6 @@
 # One-Time Pad
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
@@ -12,53 +12,53 @@ cryptol> :m labs::Demos::OneTimePad
 ## Overview
 
 Cryptol's documentation includes the excellent [Programming Cryptol](
-https://cryptol.net/files/ProgrammingCryptol.pdf), a comprehensive 
-introduction to Cryptol that offers a "crash course" in the 
+https://cryptol.net/files/ProgrammingCryptol.pdf), a comprehensive
+introduction to Cryptol that offers a "crash course" in the
 fundamentals before moving on to:
 
 * a chapter on classic ciphers such as:
-  + [Caesar](https://en.wikipedia.org/wiki/Caesar_cipher), 
-  + [Vigenère](https://en.wikipedia.org/wiki/Vigenère_cipher), and 
-  + [Atbash](https://en.wikipedia.org/wiki/Atbash), 
+  + [Caesar](https://en.wikipedia.org/wiki/Caesar_cipher),
+  + [Vigenère](https://en.wikipedia.org/wiki/Vigenère_cipher), and
+  + [Atbash](https://en.wikipedia.org/wiki/Atbash),
 + a chapter on the [Enigma machine](
-  https://en.wikipedia.org/wiki/Enigma_machine), 
-+ a chapter on proving simple properties about algorithms (by 
-  invoking Boolean satisfiability modulo theories, or "SMT", 
-  solvers), and 
+  https://en.wikipedia.org/wiki/Enigma_machine),
++ a chapter on proving simple properties about algorithms (by
+  invoking Boolean satisfiability modulo theories, or "SMT",
+  solvers), and
 + a chapter on the more modern [Advanced Encryption Standard](
-  https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) (AES). 
+  https://en.wikipedia.org/wiki/Advanced_Encryption_Standard) (AES).
 
-That sounds too complicated for now. Let's start with a motivating 
+That sounds too complicated for now. Let's start with a motivating
 example based on the [One-Time Pad](
-https://en.wikipedia.org/wiki/One-time_pad), a simple theoretically 
-perfect but impractical technique in which plaintext is paired with a 
-[pre-shared key](https://en.wikipedia.org/wiki/Pre-shared_key) that 
+https://en.wikipedia.org/wiki/One-time_pad), a simple theoretically
+perfect but impractical technique in which plaintext is paired with a
+[pre-shared key](https://en.wikipedia.org/wiki/Pre-shared_key) that
 is at least as long as the plaintext and only used once.
 
 ### Example
 
-Suppose Alice wishes to encipher the message `HELLO` using the 
-pre-shared key `ZUGESAGT` with [ASCII](https://ascii.cl) encoding 
+Suppose Alice wishes to encipher the message `HELLO` using the
+pre-shared key `ZUGESAGT` with [ASCII](https://ascii.cl) encoding
 and the [XOR](
-https://en.wikipedia.org/wiki/Exclusive_or) pairing operation. Then 
-she encodes `HELLO` as the ASCII hexadecimal sequence 
-`[48 45 4C 4C 4F]` and `ZUGES` (the letters needed from the one-time 
-pad to cover the plaintext) as `[5A 55 47 45 53]`. Pairing these 
-yields the ciphertext `[48⊕5A 45⊕55 4C⊕47 4C⊕45 4F⊕53] = 
+https://en.wikipedia.org/wiki/Exclusive_or) pairing operation. Then
+she encodes `HELLO` as the ASCII hexadecimal sequence
+`[48 45 4C 4C 4F]` and `ZUGES` (the letters needed from the one-time
+pad to cover the plaintext) as `[5A 55 47 45 53]`. Pairing these
+yields the ciphertext `[48⊕5A 45⊕55 4C⊕47 4C⊕45 4F⊕53] =
 [12 10 0B 09 1C]`, which she sends to Bob. Bob, also knowing the pre-
-shared key `ZUGESAGT`, observes that the ciphertext 
-`[12 10 0B 09 1C]` has length `5`, likewise encodes enough of the 
-pre-shared key (`ZUGES`) as `[5A 55 47 45 53]`, applies 
-the reverse pairing operation (which is also `XOR`), yielding the 
-original plaintext `[12⊕5A 10⊕55 0B⊕47 09⊕45 1C⊕53] = 
-[48 45 4C 4C 4F]` (`"HELLO"`). Both parties must then unfortunately 
-discard `ZUGES` so attackers can't exploit it -- one-time pad and all 
+shared key `ZUGESAGT`, observes that the ciphertext
+`[12 10 0B 09 1C]` has length `5`, likewise encodes enough of the
+pre-shared key (`ZUGES`) as `[5A 55 47 45 53]`, applies
+the reverse pairing operation (which is also `XOR`), yielding the
+original plaintext `[12⊕5A 10⊕55 0B⊕47 09⊕45 1C⊕53] =
+[48 45 4C 4C 4F]` (`"HELLO"`). Both parties must then unfortunately
+discard `ZUGES` so attackers can't exploit it -- one-time pad and all
 that.
 
 ## Hello Cryptol
 
-That was a pretty vague and long-winded bloviation about the humble 
-one-time pad. We could use Cryptol to express this algorithm clearly 
+That was a pretty vague and long-winded bloviation about the humble
+one-time pad. We could use Cryptol to express this algorithm clearly
 and concisely (provided the audience can read the language).
 
 ```
@@ -73,70 +73,70 @@ encrypt psk pt = ct
   where
     ct = (take`{m} psk) ^ pt
 
-/* Decrypt plaintext; same as `encrypt` */  
+/* Decrypt plaintext; same as `encrypt` */
 decrypt = encrypt
-  
+
 /**
- * Verify test vector 
+ * Verify test vector
  *   "ZUGESAGT" "HELLO" -> [0x12, 0x10, 0x0B, 0x09, 0x1C]
  */
 property test =
     (encrypt "ZUGESAGT" "HELLO" == [0x12, 0x10, 0x0B, 0x09, 0x1C])
-  
+
 /**
- * Verify that for any pre-shared key `psk` and plaintext `pt` of 
- * size 8 and 5, respectively, decrypting ciphertext encrypted 
+ * Verify that for any pre-shared key `psk` and plaintext `pt` of
+ * size 8 and 5, respectively, decrypting ciphertext encrypted
  * using the same pre-shared key yields the original plaintext
  */
 property decrypt_of_encrypt_yields_original_plaintext_8_5 (psk, pt) =
     (decrypt psk (encrypt`{8, 5} psk pt)) == pt
 ```
 
-(You are reading Markdown-Literate Cryptol. Future labs will 
-embellish upon this by interspersing Cryptol with Markdown and shell 
+(You are reading Markdown-Literate Cryptol. Future labs will
+embellish upon this by interspersing Cryptol with Markdown and shell
 logs, but that's too complicated; here it's all in one place.)
 
 ### The Cryptol Interpreter
 
-We'll figure out what all this means later. First, let's make sure 
-Cryptol successfully loads the module. Start a terminal (Linux), 
-command prompt (Windows), or Cryptol image (Docker) per 
-[instructions](../../INSTALL.md) and load this module into a 
+We'll figure out what all this means later. First, let's make sure
+Cryptol successfully loads the module. Start a terminal (Linux),
+command prompt (Windows), or Cryptol image (Docker) per
+[instructions](../../INSTALL.md) and load this module into a
 Cryptol interpreter:
 
-```sh
+```shell
 > cryptol labs/Demos/OneTimePad.cry
 ...
 Loading module Cryptol
 Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad> 
+labs::Demos::OneTimePad>
 ```
 
 ### Setting and Reading Variables
 
 Great. Now let's try applying the module to the previous example:
 
-```sh
+```shell
 labs::Demos::OneTimePad> let psk = "ZUGESAGT"
 labs::Demos::OneTimePad> let pt = "HELLO"
 labs::Demos::OneTimePad> let ct = (encrypt psk pt)
 ```
 
-OK, we've assigned variables representing the pre-shared key (`psk`), 
-plaintext (`pt`), and ciphertext (`ct`) from the example. Let's see 
+OK, we've assigned variables representing the pre-shared key (`psk`),
+plaintext (`pt`), and ciphertext (`ct`) from the example. Let's see
 the plaintext:
 
-```sh
+```shell
 labs::Demos::OneTimePad> pt
 [0x48, 0x45, 0x4c, 0x4c, 0x4f]
 ```
 
-That wasn't what we assigned to `pt`!!!  Actually it is, just shown 
-differently, in this case as a sequence of 5 hexadecimal bytes 
-rather than a string of 5 characters.  We can ask the interpreter 
+That wasn't what we assigned to `pt`!!!  Actually it is, just shown
+differently, in this case as a sequence of 5 hexadecimal bytes
+rather than a string of 5 characters.  We can ask the interpreter
 to show us a string instead:
 
-```sh
+```shell
 labs::Demos::OneTimePad> :s ascii=on
 labs::Demos::OneTimePad> pt
 "HELLO"
@@ -144,15 +144,15 @@ labs::Demos::OneTimePad> pt
 
 That was pleasant.  Now let's see the ciphertext:
 
-```sh
+```shell
 labs::Demos::OneTimePad> ct
 "\DC2\DLE\v\t\FS"
 ```
 
-That looks ciphertexty, all right.  Entering `:s` shows all the 
+That looks ciphertexty, all right.  Entering `:s` shows all the
 configuration settings:
 
-```sh
+```shell
 labs::Demos::OneTimePad> :s
 ascii = on
 base = 16
@@ -173,12 +173,12 @@ warnShadowing = on
 
 ### Help!!!
 
-If a symbol's name isn't descriptive enough, we can use `:h` to display 
+If a symbol's name isn't descriptive enough, we can use `:h` to display
 help text for it:
 
-```sh
+```shell
 labs::Demos::OneTimePad> :h encrypt
-    
+
     encrypt : {k, m} (fin k, k >= m) =>
                 String k -> String m -> String m
 
@@ -186,50 +186,50 @@ labs::Demos::OneTimePad> :h encrypt
 ```
 
 ### Function Evaluation
-  
+
 Cool. Let's do a quick sanity check:
 
-```sh
+```shell
 labs::Demos::OneTimePad> (decrypt psk ct)
 "HELLO"
 ```
 
 ### Previous Result
 
-It matches! Our sanity is intact. Well, maybe not -- let's make 
+It matches! Our sanity is intact. Well, maybe not -- let's make
 sure:
 
-```sh
+```shell
 labs::Demos::OneTimePad> it == pt
 True
 ```
 
 ### Test Vectors
 
-Nice! So that one example checks out, as expressed by the `test` 
+Nice! So that one example checks out, as expressed by the `test`
 property in our module. Let's prove it:
 
-```sh
+```shell
 labs::Demos::OneTimePad> :prove test
 Q.E.D.
 (Total Elapsed Time: 0.028s, using Z3)
 ```
 
-(For concrete test vectors like this one, `:check test` also fits the 
-bill and is marginally faster...but it's important to remember to do 
-this only for static test vectors and properties that `:prove` can't 
+(For concrete test vectors like this one, `:check test` also fits the
+bill and is marginally faster...but it's important to remember to do
+this only for static test vectors and properties that `:prove` can't
 finish in the time you are willing to wait.)
 
 ### Properties
 
-That's just one test vector, but Cryptol is not just a test runner. 
-We can apply SMT solving to prove it for all cases (of a particular 
-type), as reflected in the 
-`decrypt_of_encrypt_yields_original_plaintext_8_5` property. That's a 
-rather sesquipedalian name; let's use tab-completion to prove the 
+That's just one test vector, but Cryptol is not just a test runner.
+We can apply SMT solving to prove it for all cases (of a particular
+type), as reflected in the
+`decrypt_of_encrypt_yields_original_plaintext_8_5` property. That's a
+rather sesquipedalian name; let's use tab-completion to prove the
 property:
 
-```sh
+```shell
 labs::Demos::OneTimePad> :prove dec<Tab>
 labs::Demos::OneTimePad> :prove decrypt_<Tab>
 labs::Demos::OneTimePad> :prove decrypt_of_encrypt_yields_original_plaintext_8_5<Enter>
@@ -239,41 +239,41 @@ Q.E.D.
 
 ### Satisfiability
 
-Good to know. Another use of SMT solving is to find an input 
-satisfying a property. We could apply this to our one-time pad by 
-demonstrating why using the one-time pad (pre-shared key) more than 
-one time is not a good idea. Suppose Bob replies to Alice with a 
-second plaintext/ciphertext exchange also using the pre-shared key 
+Good to know. Another use of SMT solving is to find an input
+satisfying a property. We could apply this to our one-time pad by
+demonstrating why using the one-time pad (pre-shared key) more than
+one time is not a good idea. Suppose Bob replies to Alice with a
+second plaintext/ciphertext exchange also using the pre-shared key
 `ZUGESAGT`:
 
-```sh
+```shell
 labs::Demos::OneTimePad> let pt2 = "GOODBYE"
 labs::Demos::OneTimePad> let ct2 = (encrypt psk pt2)
 ```
 
-Now suppose an attacker Eve doesn't know the pre-shared key, but has 
-compromised Bob's network port, sees a 7-character message, and 
-deduces that with no further communication the message might 
-reasonably have been "GOODBYE". Then Eve can exploit Cryptol to 
+Now suppose an attacker Eve doesn't know the pre-shared key, but has
+compromised Bob's network port, sees a 7-character message, and
+deduces that with no further communication the message might
+reasonably have been "GOODBYE". Then Eve can exploit Cryptol to
 deduce the pre-shared key Bob just used:
 
-```sh
+```shell
 labs::Demos::OneTimePad> :sat \psk -> (encrypt psk pt2) == ct2
 (\psk -> (encrypt (psk : String 7) pt2) == ct2) "ZUGESAG" = True
 (Total Elapsed Time: 0.042s, using Z3)
 ```
 
 (That "`->`" syntax defines a [lambda function](
-https://en.wikipedia.org/wiki/Anonymous_function) that maps one 
-argument (`psk`) to an expression that will return `True` or `False`, 
-basically asking for a pre-shared key that encrypts the given 
-plaintext to the given ciphertext. Of course, Eve could have just 
+https://en.wikipedia.org/wiki/Anonymous_function) that maps one
+argument (`psk`) to an expression that will return `True` or `False`,
+basically asking for a pre-shared key that encrypts the given
+plaintext to the given ciphertext. Of course, Eve could have just
 applied `XOR` directly; this example is silly.)
 
-Now that Eve has the pre-shared key for this exchange, she could 
+Now that Eve has the pre-shared key for this exchange, she could
 stash it and try it on the message Bob received earlier:
 
-```sh
+```shell
 labs::Demos::OneTimePad> it
 {result = True, arg1 = "ZUGESAG"}
 labs::Demos::OneTimePad> let psk' = it.arg1
@@ -286,6 +286,6 @@ Hello!!! So much for communications security...
 
 ## Review
 
-Well that was fun. We have clearly expressed the one-time pad using 
-Cryptol, demonstrated it on some test cases, verified some simple 
+Well that was fun. We have clearly expressed the one-time pad using
+Cryptol, demonstrated it on some test cases, verified some simple
 properties, and manipulated it for nefarious misdeeds.

@@ -1,6 +1,6 @@
 # Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
@@ -113,14 +113,14 @@ a sense of the overall organization:
      good background if we were trying to decide *how* to use these
      algorithms; however we will not need to reference this
      information to build our specifications.
- 
+
  Feel free to skim through this material or skip for now.
 
  * **Section 4, Definitions and Notation** -- This section contains
      important definitions, acronyms, variables, and operations used
      in this standard. Let's scan through this to see if we find
      anything useful...
- 
+
 Section `4.3` provides some constants `ICV1`, `ICV2`, and `ICV3` which
 are defined to have special values. Since we are working inside of a
 module we can define these variables without fear of polluting another
@@ -145,22 +145,22 @@ to us in some fashion or another.
      out, is simply a 64-bit word when used in conjunction with AES,
      and a 32-bit word when used in conjunction with TDEA) and Table 1
      that provides limits on the size of the input and outputs.
- 
+
  * **Section 6, Specifications of KW and KWP** -- This section
      specifies the two families of algorithms `KW` and `KWP`. This
      section is the reference we will use for the bulk of this lab as
      we work through building a specification for `KW`.
- 
+
  * **Section 7, Specification of TKW** -- This section specifies the
      final major algorithm `TKW`. It is structurally very similar to
      `KW`, but there are some differences that warrant its own section
      in the standards.
- 
+
  * **Section 8, Conformance** -- This section has information about
      how implementations may claim conformance to the algorithms
      described in this standard.
- 
- 
+
+
 # Formal Specification of `KW`
 
 `KW` is a family of algorithms comprised of `KW-AE` and `KW-AD`. We
@@ -178,7 +178,7 @@ which we will have to model in our formal specification:
 
   * A **Key Encryption Key (KEK)** `K` and
   * A **designated cipher function** `CIPHk`, which operates on 128-bit blocks
-  
+
 The document defines a *semiblock* to be a block with half the width
 of the underlying block cipher, `CIPHk`. Since `KW-AE` uses `AES` as
 its `CIPHk`, semiblocks will be 64-bit blocks. Also notice that the
@@ -196,9 +196,9 @@ which will contain the following components:
 Putting these together we have our preliminary type signature:
 
 ```comment
-W_prelim : 
-  {n} 
-  (fin n) => 
+W_prelim :
+  {n}
+  (fin n) =>
   ([128] -> [128]) -> [n][64] -> [n][64]
 ```
 
@@ -216,10 +216,10 @@ have to make two more assumptions about `n`.
    `WStep`. Of course, `2^^54` is less than `6 * (2^^54 - 1)` which is
    less than `2^^64`, so the tighter lower bound from Table 1 is
    acceptable.
- 
+
 ```comment
-W : 
-  {n} 
+W :
+  {n}
   (fin n, 3 <= n, n <= 2^^54) =>
   ([128] -> [128]) -> [n][64] -> [n][64]
 ```
@@ -310,7 +310,7 @@ definition for `W`.
 
 **EXERCISE**: Complete the definition of `W` below by filling in the
   function skeleton provided.
- 
+
 ```
 W :
     {n}
@@ -400,7 +400,7 @@ having Cryptol `:prove` the properties `WStep'Prop` and
 `W'Prop`. Your output should look something like the following:
 
 ```shell
-Cryptol> :prove WStep'Prop 
+Cryptol> :prove WStep'Prop
 Q.E.D.
 (Total Elapsed Time: 0.079s, using Z3)
 Cryptol> :prove W'Prop
@@ -458,7 +458,7 @@ by using the property `KWADTests` (this is defined later on
 in this document).
 
 ```
-property KWAEInvProp S = 
+property KWAEInvProp S =
     KWAD`{3} (\a -> a-1) (KWAE (\a -> a+1) S) == (False, S)
 ```
 
@@ -512,7 +512,7 @@ TWStep CIPHk ([A] # Rs) t = [A'] # Rs'
     [MSB, LSB] = split (CIPHk (A # head Rs))
     A'         = MSB ^ t
     Rs'        = tail Rs # [LSB]
-    
+
 TW :
     {n}
     (fin n, 3 <= n, n <= 2^^28) =>
@@ -606,7 +606,7 @@ said another way, we are **short** `2` apples.
 As it turns out, Cryptol has such a shortage operator (the ceiling
 modulus), namely, `%^`
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrapping> :h (%^)
 
     primitive type (%^) : # -> # -> #
@@ -625,7 +625,7 @@ So, to revisit our padding example above, if we have a bitvector of
 length `37` and it needs to be padded to a multiple of `32`, we're
 short `27`, as demonstrated here using Cryptol:
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrapping> `(37 %^ 32)
 27
 ```
@@ -697,7 +697,7 @@ that is likely only learned through trial and error.
 To dig into this a bit, let's consider the type of a generic
 `if-then-else` statement
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrapping> :t \(c, t, e) -> if c then t else e
 (\(c, t, e) -> if c then t else e) : {a} (Bit, a, a) -> a
 ```
@@ -737,7 +737,7 @@ values. If `a > 0x30`, `f` returns `h x` where `h` takes and returns
 only 64-bit values. If we try to load this function into Cryptol we
 see:
 
-```sh
+```shell
 [error] at labs/KeyWrapping/KeyWrapping.md:663:1--666:14:
   Failed to validate user-specified signature.
     in the definition of 'f', at labs/KeyWrapping/KeyWrapping.md:663:1--663:2,
@@ -770,11 +770,11 @@ This message tells us that `a`, the length of our input, has to
 simultaneously be both `64` and `32` and (looking at the line numbers)
 that these constraints come from the types of `g` and `h`.
 
-In support of fixing the function, notice that since since `g` always
+In support of fixing the function, notice that since `g` always
 takes and returns 32-bit values, we have to shrink `x` from `a` bits
 to `32` bits, and widen the result up to `48` bits. And, since `h`
 always takes and returns 64-bit values, we have to widen `x` from `a`
-bits to `64` bits, and shrink the result back down to `48` bits To
+bits to `64` bits, and shrink the result back down to `48` bits. To
 help us do this resizing work, we'll introduce `shrink` and `widen`
 functions.
 
@@ -801,7 +801,7 @@ f x = if `a <= 0x30 then
 And here we test that `f` correctly calls `g` and `h` (which increment
 and decrement by 1, respectively).
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrapping> f (10 : [37])
 11
 labs::KeyWrapping::KeyWrapping> f (10 : [53])
@@ -820,7 +820,7 @@ With those two considerations firmly under our belt, we can now tackle
   above to create `S`. Use the `shrink` and `widen` functions to
   assist in resizing `S` and the function outputs on the `then` and
   `else` branches of line 5.
-  
+
 *Hint:* You'll notice that we needed to pull in the type variable `n`
 and type constraints from `W` and relate `n` and `l` (the type of both
 `S` and `C`). It may also be necessary to tell `W` that our type
@@ -881,7 +881,7 @@ KWPADUnpad S = (FAIL, split P)
 ```
 
 ```
-KWPAD : 
+KWPAD :
     {k, l, n}            // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
     , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C
@@ -915,7 +915,7 @@ number of semiblocks of `C` should be `2^^29`.
 Asking Cryptol for the type of `KWPAE` after plugging in `2^^32-1` for
 `k` gives an `l` of `34359738432`:
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1}
 KWPAE`{k = 2 ^^ 32 -
            1} : ([128] -> [128]) -> [4294967295][8] -> [34359738432]
@@ -924,14 +924,14 @@ KWPAE`{k = 2 ^^ 32 -
 Well, what's `34359738432`? Is it `2^^29` 64-bit words? Let's first
 check how many 64-bit words it is. Here's one way:
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrappingAnswers> :t \(a : [34359738432]) -> groupBy`{64} a
 (\(a : [34359738432]) -> groupBy`{64} a) : [34359738432] -> [536870913][64]
 ```
 
 Great...now what's `536870913`? Is it `2^^29`?
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrappingAnswers> 2^^29 : Integer
 536870912
 ```
@@ -939,7 +939,7 @@ labs::KeyWrapping::KeyWrappingAnswers> 2^^29 : Integer
 Woh! Its not. `536870913` is `2^^29 + 1`. Let's double check this ---
 here is a command that tests the `2^^29` upper bound from Table 1:
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29)}
 
 [error] at <interactive>:1:1--1:6:
@@ -948,7 +948,7 @@ labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29)
 
 And here is a command that tests the bound we just found, `2^^29 + 1`.
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29 + 1)}
 KWPAE`{k = 2 ^^ 32 - 1,
        l = 64 *

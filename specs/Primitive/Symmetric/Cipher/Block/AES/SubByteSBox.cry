@@ -8,4 +8,3 @@ SubByte b = sbox @ b
 
 InvSubByte : GF28 -> GF28
 InvSubByte b = sboxInv @ b
-

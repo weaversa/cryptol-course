@@ -43,7 +43,7 @@ such! To throw out the buzzwords:
 In some ways this requires a new mindset:
 * Write properties about your functions.
 * `:check` them.
-* Invest in `:prove` when your function's defintion has settled down.
+* Invest in `:prove` when your function's definition has settled down.
 
 Enjoy getting addicted to this level of assurance!
 
@@ -104,9 +104,9 @@ There is also a [docstring](https://en.wikipedia.org/wiki/Docstring)
 comment facility:
 
 ```
-/** 
+/**
   * A totally made up identifier for pedagogical purposes. It is
-  * used elsewhere for demonstation of something or other.
+  * used elsewhere for demonstration of something or other.
   */
 mask = 7
 ```
@@ -159,15 +159,17 @@ Things to note:
   good a type as `[8]`, `[16]`, `[32]` or `[64]`.
 * There's `0b...` for binary, `0o...` for octal and `0x...` for
   hexadecimal.
-* Lengths of sequences may be zero. This is not terribly useful in
-  practice, although zero length sequences act as an identity for
-  concatenation.
+* Lengths of sequences may be zero. Zero length sequences act as an
+  identity for concatenation and are useful in padding.
 * The possible values by type:
   * `[0]`—`0`
   * `[1]`—`0` and `1`
   * `[2]`—`0`, `1`, `2` and `3`
   * ...
   * `[n]`—`0` through `2^^n - 1`
+
+  There are 2<sup>_n_</sup> values of type `[n]`. There are
+  2<sup>_mn_</sup> values of type `[m][n]`, etc.
 * 1-d sequences of bits are treated as numbers by arithmetic and
   comparison operators. So for instance, `[False, True] == (1 : [2])`
   and `[True, False, True] > 4` both hold.
@@ -179,8 +181,18 @@ Other data types include:
 * Arbitrary-precision integers: E.g., `2^^1023 - 347835479 : Integer`
 * Heterogeneous tuples: E.g.: `(False, 0b11) : (Bit, [2])` and
   `(True, [1, 0], 7625597484987) : (Bit, [2][1], Integer)`
+  * Elements of tuples are accessed by `.0`, `.1`, ...
+    ```shell
+    labs::Language::Basics> (False, 0b11).0
+    False
+    ```
 * Records with named fields: E.g.,
   `{flag = True, x = 2} : {flag : Bit, x : [4]}`
+  * Elements of records are accessed by `.` followed by the field name.
+    ```shell
+    labs::Language::Basics> {flag = True, x = 2}.flag
+    True
+    ```
 * Integers modulo _n_: Types of the form `[n]` already provide
   [least residue systems](https://en.wikipedia.org/wiki/Modular_arithmetic#Residue_systems)
   for
@@ -202,6 +214,22 @@ for signed operations which are indicated by a suffixed `$`. Most of
 the time you don't need them as cryptography tends to use nonnegative
 numbers.
 
+Where appropriate, operators act elementwise (or "blast through")
+typing constructs like sequences, tuples and records.
+
+```shell
+labs::Language::Basics> [[0, 1], [1, 2]] + [[3, 5], [8, 13]]
+[[3, 6], [9, 15]]
+labs::Language::Basics> (3, (1, 4)) + (1, (5, 9))
+(4, (6, 13))
+labs::Language::Basics> {x = 1, y = 3} + {y = 6, x = 10}
+{x = 11, y = 9}
+labs::Language::Basics> [(0, 1), (4, 9), (16, 25)].1
+[1, 9, 25]
+labs::Language::Basics> [{x = 1, y = 3}, {y = 6, x = 10}].y
+[3, 6]
+```
+
 Following are some really quick examples of operators to remind you
 and show some tricks of Cryptol.
 
@@ -219,7 +247,7 @@ labs::Language::Basics> 2^^127 - 1 // a 33 digit Mersenne prime
 
 The first example defaults to type `Integer`. In the second, I
 explicitly state that I want 1 bit addition and so the computation is
-modular addition. The third shows that `^^` is exponentiation
+modular addition. The third shows that `^^` is exponentiation.
 
 The division (`/`) operation is not what a mathematician imagines in
 modular arithmetic. For instance `3 * 3 == 1 : [3]` so a mathematician
@@ -241,25 +269,22 @@ labs::Language::Basics> ~0b000011001101 && 0o4115 || 0x0d0 ^ 9
 #### Signed versions: `<$`, `<=$`, `>$` and `>=$`
 
 ```shell
-labs::Language::Basics> [~1, 1] == [6, 3 * 3]
+labs::Language::Basics> [~1, 1] == [6 : [3], 3 * 3]
 True
-labs::Language::Basics> [~1, 1] == [6, 0b0011 * 3]
+labs::Language::Basics> [~1, 1] == [6 : [4], 3 * 3]
 False
 ```
 
-In the first example, the numbers might be of type `Integer` or `[n]`
-for suitable `n`. The `~` determines that it's `[n]` as `~` doesn't
-apply to type `Integer`. The literal `6` is the widest object so
-Cryptol defaults the base type of these sequences to be `[3]`. That in
-turn, forces the two sides to be of type `[2][3]` (two elements of
-three bits each). Now `~1 : [3]` is `0b110` or `6` in decimal and `3 *
-3 : [3]` is `1 : [3]` so `[~1, 1] == [6, 1] == [6, 3 * 3]`.
+In the first example, `6` is the literal needing the most bits and is
+given type `[3]`. That makes both sides of the equality test have type
+`[2][3]` (two elements of three bits each). Now `~1 : [3]` is `0b110`
+or `6` in decimal and `3 * 3 : [3]` is `1 : [3]` so `[~1, 1] == [6, 1]
+== [6, 3 * 3]`.
 
-In the second example, the `0b0011` (which is `3` in decimal) has type
-`[4]`, so both sides have type `[2][4]`. Now `~1 : [4]` is `0b1110` or
-`14` in decimal and `0b0011 * 3 : [4]` is `9` in decimal. We have
-`[~1, 1] == [14, 1]` while `[6, 0b0011 * 3] == [6, 9]` so equality
-fails.
+In the second example, `6` is given type `[4]`, so both sides have
+type `[2][4]`. Now `~1 : [4]` is `0b1110` or `14` in decimal and
+`3 * 3 : [4]` is `9` in decimal. We have `[~1, 1] == [14, 1]`
+while `[6, 3 * 3] == [6, 9]` so equality fails.
 
 _**It can be crucially important to be precise about the widths of
 things!**_
@@ -367,7 +392,6 @@ sequences, so that the type annotations (`: [3][8]` and `: [3]Integer`
 above) will be unnecessary.
 
 ### List shape manipulation: `split`, `join`, `transpose`
-#### Variation: `groupBy` 
 ```shell
 labs::Language::Basics> split 0xdeadbeef : [8][4]
 [0xd, 0xe, 0xa, 0xd, 0xb, 0xe, 0xe, 0xf]
@@ -375,8 +399,6 @@ labs::Language::Basics> join [0xca, 0xfe]
 0xcafe
 labs::Language::Basics> transpose [[1, 2], [3, 4]]
 [[1, 3], [2, 4]]
-labs::Language::Basics> groupBy`{12} 0x5c00b1 // group into 12 bit chunks 
-[0x5c0, 0x0b1]
 ```
 
 In most Cryptol programs, the context will enforce the size of things,
@@ -391,7 +413,7 @@ The Types of Functions
 The Cryptol interpreter command `:type` is very useful for helping you
 understand types. For instance the type of the `abs` function which we
 will define later is displayed by:
-  
+
 ```shell
 labs::Language::Basics> :type abs
 abs : Integer -> Integer
@@ -481,10 +503,10 @@ property absNonnegative x = abs x >= 0
 * `abs : Integer -> Integer` is the type signature for `abs`.
 * `abs n = if n >= 0 then n else -n` is the definition for `abs` (or function body).
 * `property absNonnegative ...` is a property we expect the function to have.
-* `:check property absNonnegative` checks this property with
+* `:check absNonnegative` checks this property with
     random tests. It's super cheap unit testing!
   ```shell
-  labs::Language::Basics> :check absNonnegative 
+  labs::Language::Basics> :check absNonnegative
   Using random testing.
   Passed 100 tests.
   ```
@@ -493,7 +515,7 @@ property absNonnegative x = abs x >= 0
 * The reserved word `property` documents that definition's intention.
 * We can go a step further and `:prove` this property:
   ```shell
-  labs::Language::Basics> :prove absNonnegative 
+  labs::Language::Basics> :prove absNonnegative
   Q.E.D.
   (Total Elapsed Time: 0.032s, using Z3)
   ```
@@ -522,7 +544,7 @@ property gcdDividesBoth' x y
 * The function `gcd'` is recursive.
 * Let's check `gcdDividesBoth'`:
   ```shell
-  labs::Language::Basics> :check gcdDividesBoth' 
+  labs::Language::Basics> :check gcdDividesBoth'
   Using random testing.
   Passed 100 tests.
   ```
@@ -543,7 +565,7 @@ property gcdDividesBoth' x y
   ```
 * Since `:check` uses randomly generated tests the failing result may
   be intermittent.
-* Properties are useful and sometimes may be `:prove`-n, but you must
+* Properties are useful and sometimes may be proven, but you must
   remember that _**properties that pass `:check` are not
   guarantees!**_ That is: _**`:check` is evidence, `:prove` is
   proof!**_
@@ -554,7 +576,7 @@ property gcdDividesBoth' x y
   issue that command, you'll need to issue the abort sequence (often
   `Control-C`) once or twice to interrupt and regain control. The
   reason this proof won't complete is too technical for the moment.
-  
+
 Let's patch up that property. (You surely noticed the prime (`'`) in
 the property name which is a giveaway that is not quite the property
 I have in mind.)
@@ -588,7 +610,7 @@ Writing Loops
 * Many of Cryptol's operators naturally extend elementwise over nested
   sequences to any depth.
 ```shell
-labs::Language::Basics> [[[2,3],[5,7]],[[11,13],[17,19]]] + [[[0,1],[1,2]],[[3,5],[8,13]]]
+labs::Language::Basics> [[[2, 3], [5, 7]], [[11, 13], [17, 19]]] + [[[0, 1], [1, 2]], [[3, 5], [8, 13]]]
 [[[2, 4], [6, 9]], [[14, 18], [25, 32]]]
 ```
 
@@ -653,7 +675,7 @@ Simple Block Encryption Example
 keyExpand : [32] -> [10][32]
 keyExpand key = take roundKeys // take leverages the type signature
   where
-    roundKeys : [inf][32]  // a conceptually infinte list
+    roundKeys : [inf][32]  // a conceptually infinite list
     roundKeys = [key] # [roundKey <<< 1 | roundKey <- roundKeys]
 
 encrypt : [32] -> [32] -> [32]
@@ -670,9 +692,9 @@ encrypt key plainText = cipherText
 Many block ciphers are just variations of the above theme. Here's a sample of it in action:
 
 ```shell
-labs::Language::Basics> encrypt 0x1337c0de 0xdabbad00 
+labs::Language::Basics> encrypt 0x1337c0de 0xdabbad00
 0x6157c571
-labs::Language::Basics> encrypt 0 0xdabbad00 
+labs::Language::Basics> encrypt 0 0xdabbad00
 0xdabbad00
 ```
 
@@ -771,7 +793,7 @@ signatures.
 Many of the errors in coding Cryptol will be instances of type
 mismatching. If you can't see your problem based on the error message,
 try adding more type annotations. This:
-* makes the interpreter do less work trying alternative possibilites
+* makes the interpreter do less work trying alternative possibilities
 and, consequently, can make error messages more comprehensible
 * reduces the body of code to examine for bugs (a sort of binary bug
 search)

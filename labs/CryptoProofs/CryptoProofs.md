@@ -4,7 +4,7 @@ Cryptol and SAW allow users to rapidly and transparently deploy powerful theorem
 
 By the end of this lab, the student will be able to describe and demonstrate five powerful classes of proofs that can be applied to a wide variety of cryptographic algorithms.
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
@@ -34,7 +34,7 @@ import specs::Primitive::Symmetric::Cipher::Block::DES
 
 Now, from the command line, load this module.
 
-```sh
+```shell
 Cryptol> :m labs::CryptoProofs::CryptoProofs
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
@@ -43,21 +43,21 @@ Loading module labs::CryptoProofs::CryptoProofs
 
 First, we'll take a look at the type of the DES encryption function.
 
-```sh
-labs::CryptoProofs::CryptoProofsAnswers> :t DES.encrypt
+```shell
+labs::CryptoProofs::CryptoProofs> :t DES.encrypt
 DES.encrypt : [64] -> [64] -> [64]
 ```
 
 DES takes two 64-bit values and returns a 64-bit value. (The key comes first and then the plaintext.) Let's encrypt something with DES.
 
-```sh
+```shell
 labs::CryptoProofs::CryptoProofs> DES.encrypt 0x752979387592cb70 0x1122334455667788
 0xb5219ee81aa7499d
 ```
 
 Now decrypt:
 
-```sh
+```shell
 labs::CryptoProofs::CryptoProofs> DES.decrypt 0x752979387592cb70 0xb5219ee81aa7499d
 0x1122334455667788
 ```
@@ -71,7 +71,7 @@ For the rest of the lab, we'll be looking at some of the types of questions you 
 | Proof | Invocation |
 |-|-|
 | Function reversal | `:sat \x -> f x == y` |
-| Proof of inversion | `:prove \x -> g (f x) == x` | 
+| Proof of inversion | `:prove \x -> g (f x) == x` |
 | Collision detection | `:sat \x y -> f x == f y /\ x != y` |
 | Proof of injectivity | `:prove \x y -> x != y ==> f x != f y` |
 | Equivalence checking | `:prove \x -> f x == g x` |
@@ -100,7 +100,7 @@ square x = x * x
 
 Now we can reverse it from the REPL. Let's use the solver to find a square root using only a squaring function!
 
-```sh
+```shell
 labs::CryptoProofs::CryptoProofs> :sat \x -> square x == 1764
 (\x -> square x == 1764) 42 = True
 (Total Elapsed Time: 0.021s, using "Z3")
@@ -125,15 +125,15 @@ known_ct = 0xf2930290ea4db580
 
 Note: For whatever reason, the default Z3 solver has trouble with this one. Try one of the other solvers, such as yices:
 
-```sh
-labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
+```shell
+labs::CryptoProofs::CryptoProofs> :s prover=yices
 ```
 
 Or use all the installed solvers in a first-to-the-post race.
 *Caution! May exhaust system resources.*
 
-```sh
-labs::CryptoProofs::CryptoProofsAnswers> :s prover=any
+```shell
+labs::CryptoProofs::CryptoProofs> :s prover=any
 ```
 
 
@@ -164,13 +164,13 @@ g x = (x - 2) / 3
 
 We want to prove that function `g` inverts function `f`; that is, applying `g` to the result of `f x` gets `x` back. Here's the invocation:
 
-```sh
-labs::CryptoProofs::CryptoProofsAnswers> :prove \x -> g (f x) == x
+```shell
+labs::CryptoProofs::CryptoProofs> :prove \x -> g (f x) == x
 Q.E.D.
 (Total Elapsed Time: 0.023s, using "Z3")
 ```
 
-Here's the breadown of this proof:
+Here's the breakdown of this proof:
 
 |Proof of Inversion||||
 |-|-|-|-|
@@ -210,7 +210,7 @@ Show that, for any given key, `DES.encrypt` is injective (collision-free) with r
 
 *Hint* Use the boolector theorem prover. (Even then, this proof may take a few minutes!)
 
-*Hint* Consider using the implication operator `==>`
+*Hint* Consider using the implication operator (Type `:h (==>)` for more information.)
 
 
 ## 2.5 Equivalence Checking
@@ -221,7 +221,7 @@ One of the most powerful uses of Cryptol's theorem proving technology is the abi
 
 **EXERCISE** 2.5.1 DES Equivalent Keys
 
-Attempt to prove that the two keys you just found are equivalent keys. That is, prove that these two keyed DES functions are equivalent for all plaintext inputs. *Hint: Use abc*
+Attempt to prove that the two keys you just found are equivalent keys. That is, prove that these two keyed DES functions are equivalent for all plaintext inputs. *Hint:* Use the abc prover.
 
 
 **EXERCISE** 2.5.2 DES Parity Bits

@@ -12,7 +12,7 @@ entering the commands found here into the interpreter.
 The interpreter has a number of different configuration settings. To
 view them type `:set`.
 
-```sh
+```shell
 Cryptol> :set
 ascii = off
 base = 16
@@ -37,7 +37,7 @@ The most common setting to change is `base`. The default is `base =
 16` which means the interpreter will display bitvectors by printing
 their hexadecimal representations. For example,
 
-```sh
+```shell
 Cryptol> 0xa
 0xa
 Cryptol> 10 : [4]
@@ -47,7 +47,7 @@ Cryptol> 10 : [4]
 To make the interpreter display bitvectors in decimal (base 10) type
 `:set base=10`.
 
-```sh
+```shell
 Cryptol> :set base=10
 Cryptol> 0xa
 10
@@ -69,7 +69,7 @@ Cryptol's interpreter has a built-in help command. To invoke it, type
 example, if we'd like to know more about the `:set base` command, we
 can type:
 
-```sh
+```shell
 Cryptol> :h :set base
 
     base = 10
@@ -82,7 +82,7 @@ The base to display words at (2, 8, 10, or 16).
 Cryptol has a built-in command to reverse a list, called
 `reverse`. Let's look at the help for this command.
 
-```sh
+```shell
 Cryptol> :h reverse
 
     reverse : {n, a} (fin n) => [n]a -> [n]a
@@ -97,7 +97,7 @@ You'll notice that some commands start with a colon (`:`) and others
 do not. The colon commands are commands that are outside of the
 Cryptol language, and only exist in the interpreter. You can see a full listing of these commands by typing `:h`.
 
-```sh
+```shell
 Cryptol> :h
   :t, :type            Check the type of an expression.
   :b, :browse          Display environment for all loaded modules, or for a specific module.
@@ -151,7 +151,7 @@ prelude is discouraged.
 About `:browse` --- If you enter `:b` into the interpreter you will
 first see:
 
-```sh
+```shell
 Cryptol> :b
 Type Synonyms
 =============
@@ -171,7 +171,7 @@ Type synonyms are helper functions used to express the type of some
 data. For example, The integer `10` can be expressed as a 32-bit word
 via,
 
-```sh
+```shell
 Cryptol> 10 : Word 32
 0x0000000a
 ```
@@ -189,7 +189,7 @@ cryptographic type constraints elegantly. These are used when defining
 the type of a function or variable. For example, the size of a
 bitvector can be represented in terms of the width of an integer:
 
-```sh
+```shell
 Cryptol> :t 10 : [width 32]
 (10 : [width 32]) : [6]
 ```
@@ -200,7 +200,7 @@ operators). These are used when defining the value of a function or
 variable. For example, `reverse` can be used to reverse the order of a
 sequence of integers:
 
-```sh
+```shell
 Cryptol> reverse [1, 2, 3] : [3][2]
 [0x3, 0x2, 0x1]
 ```
@@ -232,7 +232,7 @@ interpreter evaluated. For example, if we can `reverse` a list, the
 result `[3, 2, 1]` is automatically bound to the `it` symbol. We can
 then `reverse it` and see that we get `[1, 2, 3]` back.
 
-```sh
+```shell
 Cryptol> :s base=10
 Cryptol> reverse [1, 2, 3] : [3][2]
 [3, 2, 1]
@@ -246,7 +246,7 @@ example, here we bind the result of `reverse [1, 2, 3] : [3][2]` to
 `r`, then `reverse r` and show that the result is as expected and that
 `r` still retains `[3, 2, 1]`.
 
-```sh
+```shell
 Cryptol> let r = reverse [1, 2, 3] : [3][2]
 Cryptol> r
 [3, 2, 1]
@@ -265,7 +265,7 @@ the interpreter, definitions can be overwritten, it's better to place
 these kinds of definitions in a file and use the `:reload` (or `:r`)
 command when editing to maintain a consistent state.
 
-```sh
+```shell
 Cryptol> let x = 0
 Cryptol> let y = x + 1
 Cryptol> let x = 1
@@ -279,10 +279,10 @@ directory as this lab (`labs/Interpreter/test.cry`). If you run
 Cryptol from the root of this repository, you can load this file using
 `:l` like so:
 
-```sh
+```shell
 [cryptol-course]$ cryptol
-┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻  
-┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃  
+┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
+┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
 version 2.8.0
 
@@ -302,8 +302,8 @@ provides. Remember that the interpreter supports TAB completion so you
 only need to type `:b l` then press the TAB key and the interpreter
 will fill in the rest.
 
-```sh
-labs::Interpreter::test> :b labs::Interpreter::test 
+```shell
+labs::Interpreter::test> :b labs::Interpreter::test
 Type Synonyms
 =============
 
@@ -341,11 +341,11 @@ To load a module by its name (rather than by filename), we use
 The latter is preferred. To set the CRYPTOLPATH variable such that we
 can access the labs and specs here, do this:
 
-```sh
+```shell
 $ export CRYPTOLPATH=<path-to-cryptol-course>
 cryptol-course]$ cryptol
-┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻  
-┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃  
+┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
+┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
 version 2.8.0
 
@@ -368,7 +368,7 @@ an environment variable called `EDITOR`. For example, if in a Linux
 like environment, the following command will change the default to
 [Emacs](https://www.gnu.org/software/emacs/).
 
-```sh
+```shell
 $ export EDITOR="emacs -nw"
 ```
 
@@ -379,7 +379,7 @@ Interpreter commands can be issued directly from the command line, or
 from a batch file. For example, here we issue some commands from the
 command line using the interpreter's `-c` flag:
 
-```sh
+```shell
 $ cryptol -c ":m labs::Interpreter::test" -c ":s base=10" -c "x + 2"
 Loading module Cryptol
 Loading module labs::Interpreter::test
@@ -389,8 +389,8 @@ Loading module labs::Interpreter::test
 And here we issue the same commands by running the `test.sry` batch
 file using the interpreter's `-b` flag:
 
-```sh
-$ cat labs/Interpreter/test.sry 
+```shell
+$ cat labs/Interpreter/test.sry
 :m labs::Interpreter::test
 :s base=10
 x + 2
@@ -404,7 +404,7 @@ Loading module labs::Interpreter::test
 
 The last few items covered here (and more) can be found querying Cryptol's usage options via:
 
-```sh
+```shell
 $ cryptol --help
 Usage: cryptol [OPTIONS]
   -b FILE     --batch=FILE             run the script provided and exit

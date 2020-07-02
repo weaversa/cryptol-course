@@ -10,7 +10,7 @@ print "Extracting implementation term: add_textbook";
 add_textbook <- crucible_llvm_extract l "add_textbook";
 
 print "Assigning Cryptol implementation: add_cryptol";
-let {{ 
+let {{
     add_cryptol : [16] -> [16] -> [32]
     add_cryptol x y = (zero # x) + (zero # y)
 }};

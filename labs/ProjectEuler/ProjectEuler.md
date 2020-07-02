@@ -1,6 +1,6 @@
 # Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
@@ -40,10 +40,10 @@ Now that we have our function and a property about our function, we
 can load this lab directly into Cryptol and find an answer!  You
 should get a response like this:
 
-```sh
-[cryptol-course]$ cryptol labs/ProjectEuler/ProjectEuler.md 
-┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻  
-┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃  
+```shell
+[cryptol-course]$ cryptol labs/ProjectEuler/ProjectEuler.md
+┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
+┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
 version 2.8.0
 
@@ -52,7 +52,7 @@ Loading module labs::ProjectEuler::cipher1
 Loading module labs::ProjectEuler::keylog
 Loading module labs::ProjectEuler::cipher2
 Loading module labs::ProjectEuler::ProjectEuler
-labs::ProjectEuler::ProjectEuler> :sat inc1001 
+labs::ProjectEuler::ProjectEuler> :sat inc1001
 inc1001 1000 = True
 (Total Elapsed Time: 0.028s, using "Z3")
 ```
@@ -69,8 +69,8 @@ factor3000013 x y =
 Note that if we don't include the `x > 1 /\ y > 1` clauses we get a
 trivial factorization.  Now we can use Cryptol to factor our number:
 
-```sh
-labs::ProjectEuler::ProjectEuler> :sat factor3000013 
+```shell
+labs::ProjectEuler::ProjectEuler> :sat factor3000013
 factor3000013 773 3881 = True
 (Total Elapsed Time: 0.215s, using Z3)
 ```
