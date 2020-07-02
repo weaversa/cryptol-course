@@ -1,6 +1,6 @@
 # Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
@@ -35,7 +35,7 @@ pythagoreantriple : Integer -> Integer -> Integer -> Bit
 property pythagoreantriple a b c =
     a^^2 + b^^2 == c^^2 /\
     a + b + c == 1000   /\
-    a > 0 /\ b > 0 
+    a > 0 /\ b > 0
 ```
 
 
@@ -414,7 +414,7 @@ passcode :
     (fin a, a >= 1) =>
     [a]Integer -> Bit
 passcode l = [ loop l kl != 0 | kl <- keylog ] == ~0
-  where 
+  where
     loop ll kll = [ [ ll@(i:[a]), ll@j, ll@k] == kll /\
                     i < j                            /\
                     j < k

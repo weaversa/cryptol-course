@@ -73,7 +73,7 @@ KWPAE CIPHk P = C
         else
           shrink (join (W`{n} CIPHk (split (widen S))))
 
-KWPAD : 
+KWPAD :
     {k, l, n}            // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
     , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C
@@ -89,7 +89,7 @@ KWPAD CIPHk' C = (FAIL, split P)
     (MSB32 # k # P # (PAD : [k*8 %^ 64])) = S
     FAIL = MSB32      != ICV2 \/
            (k : [32]) != `k   \/
-           PAD        !=0 
+           PAD        !=0
 
 private
 
@@ -111,14 +111,14 @@ private
       type s = 6*(n-1)
       ts     = [ 1 .. s ]
       C      = foldl step S ts
-  
+
       step : [n][64] -> [64] -> [n][64]
       step ([A] # Rs) t = [A'] # Rs'
         where
           [MSB, LSB] = split (CIPHk (A # head Rs))
           A'         = MSB ^ t
           Rs'        = tail Rs # [LSB]
-  
+
   /**
    * This is the inverse wrapping function, W', for KWAD and KWPAD,
    * using the same KEK and designated cipher function CIPHk.
@@ -132,7 +132,7 @@ private
       type s = 6*(n-1)
       ts     = [ s, s-1 .. 1 ]
       S      = foldl step C ts
-  
+
       step : [n][64] -> [64] -> [n][64]
       step ([A] # Rs) t = [A'] # Rs'
         where
@@ -153,7 +153,7 @@ private
       type s = 6*(n-1)
       ts     = [ 1 .. s ]
       C      = foldl step S ts
-  
+
       step : [n][32] -> [32] -> [n][32]
       step ([A] # Rs) t = [A'] # Rs'
         where
@@ -174,7 +174,7 @@ private
       type s = 6*(n-1)
       ts     = [ s, s-1 .. 1 ]
       S      = foldl step C ts
-  
+
       step : [n][32] -> [32] -> [n][32]
       step ([A] # Rs) t = [A'] # Rs'
         where
@@ -183,15 +183,15 @@ private
           Rs'        = [LSB] # take Rs
 
   //Here are two helper functions
-  
+
   widen : {a, b} (fin a, fin b) => [b] -> [a + b]
   widen a = 0 # a
-  
+
   shrink : {a, b} (fin a, fin b) => [a + b] -> [b]
   shrink a = drop a
 
   //Tests for the six main functions
-  
+
   TestKWAE :
      {a, n}
      (a >= 2, 4 >= a, n >= 2, 2^^54-1 >= n) =>
@@ -199,7 +199,7 @@ private
   TestKWAE k pt = join ct
     where
       ct = KWAE (\p -> AES::encrypt k p) (split pt)
-  
+
   property KWAETests =
       (TestKWAE (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F ])
                  (join [ 0x0011223344556677, 0x8899AABBCCDDEEFF ]) ==
@@ -227,7 +227,7 @@ private
        join [ 0x28c9f404c4b810f4, 0xcbccb35cfb87f826,
               0x3f5786e2d80ed326, 0xcbc7f0e71a99f43b,
               0xfb988b9b7a02dd21 ])
-  
+
   TestKWAD :
      {a, n}
      (a >= 2, 4 >= a, n >= 2, 2^^54-1 >= n) =>
@@ -235,7 +235,7 @@ private
   TestKWAD k ct = (FAIL, join pt)
     where
       (FAIL, pt) = KWAD (\c -> AES::decrypt k c) (split ct)
-  
+
   property KWADTests =
       (TestKWAD (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F ])
                 (join [ 0x1fa68b0a8112b447, 0xaef34bd8fb5a7b82, 0x9d3e862371d2cfe5 ]) ==
@@ -263,7 +263,7 @@ private
                         0xfb988b9b7a02dd21 ]) ==
        (True, join [ 0x20ca3cba6f93747e, 0x456c666158ed83da,
                      0x3a6d614e94ba1ac5, 0xfe957c5963100091]))
-  
+
   TestTKWAE :
      {n}
      (n >= 2, 2^^28-1 >= n) =>
@@ -271,7 +271,7 @@ private
   TestTKWAE (k0#k1#k2) pt = join ct
     where
       ct = TKWAE (\p -> TDEA::blockEncrypt (k0, k1, k2, p)) (split pt)
-  
+
   property TKWAETests =
       (TestTKWAE 0x12b84c663120c196f8fc17428bc86a110d92cc7c4d3cb695
                  0xef7da3da918d0679
@@ -279,7 +279,7 @@ private
       (TestTKWAE 0xee9e19d319e4669d46fafc47f266277788017de0e38a4eaf
                  0xd96075b0ee4525fe0bbe2abbd49d4d68e15a37c2bb11bd79a491e13ed3d32a48aef0d1fbcd9a65c7e0bf3cbba92366cb23b4b0876d509539df8f6dd8edb5eb9d8487ec42497b579b8a660a95455063bb7703ea6d57717c7d3625c86e3162c78b13068605e9e1c6ebed9d8f8b2b72784de432bb1ae596d4210538d4ca8577878ec42fa25694bd12a0a27423c62dd0e35a2781b8fecab7066871f4f4d506d41fceb63b669558c1df622259eaefd33bbd6af871798ca98d469a6c5a8bef284318b9692263b7c84c1d352bea16c3ee40b86061aa99d7e60013d618f579111f1e03685ede51b9fe7cde04416718db5f7d322a6f8547c354c8ee9a8f176de5f090e08e
               == 0x61a9e9ec40462f6915179fef341b41cfcebe70f4539cc8babb6d6083905ead8f62f1e1cebf8045a7930812acd93227c09be10758dccd1afdb997931adeeb5e39749aaec607bc8c0346c0d864e65f61a4d7de4c3aea6cbcd9ff5c7664e705b441d8bce4b44ffbfb796a81e491eab7b817382ff87c8f6ce855ab80e234432ed7cf3d7bfddc15406d4b07fd0455c23669306634fccefb0cef69f693ec6c075912ec23342116d28453f7e1d2df05585d9a03e6e8ed3b8e2e0a95394b19779e26f845245c0806f7f619c618889caa9167f8908c0325923a1118cdd2c0a48b8b2b224c5faec7beb7d6a7d54e4212783f01661fb570ab1aa2589a6e922c9c3accc308b8088b601e)
-  
+
   TestTKWAD :
      {n}
      (n >= 2, 2^^28-1 >= n) =>
@@ -287,7 +287,7 @@ private
   TestTKWAD (k0#k1#k2) pt = (FAIL, join ct)
     where
       (FAIL, ct) = TKWAD (\p -> TDEA::blockDecrypt (k0, k1, k2, p)) (split pt)
-  
+
   property TKWADTests =
       (TestTKWAD 0xe273cd9d7210a973b4113c5772474938d353b54e265dd944
                  0x10a38310b604b48f94357d67
@@ -298,7 +298,7 @@ private
       (TestTKWAD 0xee9e19d319e4669d46fafc47f266277788017de0e38a4eaf
                  0x61a9e9ec40462f6915179fef341b41cfcebe70f4539cc8babb6d6083905ead8f62f1e1cebf8045a7930812acd93227c09be10758dccd1afdb997931adeeb5e39749aaec607bc8c0346c0d864e65f61a4d7de4c3aea6cbcd9ff5c7664e705b441d8bce4b44ffbfb796a81e491eab7b817382ff87c8f6ce855ab80e234432ed7cf3d7bfddc15406d4b07fd0455c23669306634fccefb0cef69f693ec6c075912ec23342116d28453f7e1d2df05585d9a03e6e8ed3b8e2e0a95394b19779e26f845245c0806f7f619c618889caa9167f8908c0325923a1118cdd2c0a48b8b2b224c5faec7beb7d6a7d54e4212783f01661fb570ab1aa2589a6e922c9c3accc308b8088b601e
               == (False, 0xd96075b0ee4525fe0bbe2abbd49d4d68e15a37c2bb11bd79a491e13ed3d32a48aef0d1fbcd9a65c7e0bf3cbba92366cb23b4b0876d509539df8f6dd8edb5eb9d8487ec42497b579b8a660a95455063bb7703ea6d57717c7d3625c86e3162c78b13068605e9e1c6ebed9d8f8b2b72784de432bb1ae596d4210538d4ca8577878ec42fa25694bd12a0a27423c62dd0e35a2781b8fecab7066871f4f4d506d41fceb63b669558c1df622259eaefd33bbd6af871798ca98d469a6c5a8bef284318b9692263b7c84c1d352bea16c3ee40b86061aa99d7e60013d618f579111f1e03685ede51b9fe7cde04416718db5f7d322a6f8547c354c8ee9a8f176de5f090e08e))
-  
+
   TestKWPAE :
      {a, k, l, n}
      ( a >= 2, 4 >= a
@@ -310,7 +310,7 @@ private
   TestKWPAE k pt = ct
     where
       ct = KWPAE`{k, l, n} (\p -> AES::encrypt k p) (split pt)
-  
+
   property KWPAETests =
       (TestKWPAE 0x6decf10a1caf8e3b80c7a4be8c9c84e8
                  0x49
@@ -330,7 +330,7 @@ private
       (TestKWPAE 0xa8571d0257d79010ab20d01858f4763c03e628f912786119850614d9023950b3
                  0xed9061eac56e8fc571134219e5f713a7a57cb11760e2e7848ab38102a7ce4e1e2a4e18e4da4d13978c6d41f8e05969a140c40929fd0f57f073d83c15f56a1f5a5db0e9b0da57a763e85ae365e3a24c79ec6b9ce90e12bd9fe080c357a469b2fcbe2e897a277764c97f4af160acac71c9fe6110c19ead71d2a7ce9624a0d1f9639867559e93bffb81fdedfe30a408bc4c69b56a17aced776c1fcb0e956351bcc5c2102ad7a4b3274f3a9e3ab9a9885830c30942cd210afc260971e879caf74aef71ae6d083a0362b047dad38d91773a555da7dc6d6377b8cc8c8c158ab708a02479be5362854f45c7f119a4da9adef76ef5bc42a7be85ee8cfab244673b649c9bfc52faee6e46af2322a65c1a07cb40c6f78f36d5519c8d15edcf5bab4ae00a8106ef7389029d796367c49c1555680ef910e0844fe7b0b7c47188ce0b64ad6f3b57a6507f825b8b05d95b30c407f127ac73d9e25cf70992586e037edd1edd897f863c8a052543b68eccaa2eb4199b045a27310effc0168591a4b32484e8541c79dc8b61e749828f03a3313edfd75d0336aeb2c64d5900df9ba5afc9c2302385bfa032f0f2f775762dab19df0dc464c67ff9537636b9ea0fd58ff210376e735e4d5c54129fbe55694f170476cf5a1511e11ab71d5be8590ce6f073b7daed59d3d9fd36ad804e2b3f2d5f4207d65f014cb0351a4c774bfaae7c0777b9e0f5e7eca6
               == 0x0e522e2dc48dcd4833226ca86439a2cd6188315794a41098fe3e7bc6e442212fc216d5bd682a6829b61fbb6d466b4cd82da87a40ade8833b4782b23ed869e2d47275a12fb21a4ca980458e64e4ce7e95c228b570f536179f4df2842302f0efaee7be28c7ca7f7edab902cb11a0325eaf2abf45fffff78f72a5a1061ea579592407866edb9863a2d05445bf4f21778ad620164c289d8fcc31e846bea4dc251c9baf7b7211296a9229148447dbffafeb780bb18a2436689cb897f791af171fac294f1b289dba66b233e42022548cb904222a09b742fd6a9a5c2e864124dea1be9877661cfc7f28810a4c2448f00c7d07a7ea9daae6a9a18569e68620df9f35a66b585c00d411912f6858ec8f70931ecc692c38b72ec096850fa5d7a77c826d9d053ee859ebea486b8d1802a4879b3237a36f773c13806a2449faefa9bf30dc5176b758d153cb2a0373ff795a58da303a48cd3531423926160be19dce1b1a9dc76739e01baa86e489cb8d378ad40e0a1ebeb4a0ffa246762915d92ba1e78449df45d0b99a78b74d64da3cf03fed733f36fe5a23d48ceab01446aa67433b8a2b15610ee27a5bb81247d2172c4e555094e957efac906e5fb502a46e7097fb42251885782f7e0cb19ee0e4028f659447647ebdd2d0b59e026874e44b62d8dd862fda89095fa170af25b156d7687152cc6cd50aebc143a781b9802484eb068ae284aa9db54e8b5cf4303a4c)
-  
+
   TestKWPAD :
      {a, k, l, n}
      ( a >= 2, 4 >= a
@@ -342,7 +342,7 @@ private
   TestKWPAD k ct = (FAIL, join pt)
     where
       (FAIL, pt) = KWPAD`{k, l, n} (\c -> AES::decrypt k c) ct
-  
+
   property KWPADTests =
       (TestKWPAD 0x49319c331231cd6bf74c2f70b07fcc5c
                  0x9c211f32f8b341f32b052fed5f31a387

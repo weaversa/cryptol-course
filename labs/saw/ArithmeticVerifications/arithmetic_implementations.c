@@ -21,8 +21,8 @@ uint32_t add_standard(uint16_t a, uint16_t b) {
 // Add two 16-bit numbers by treating each as two 8-bit parts and using
 // the "textbook" addition algorithm.
 //
-// Suppose we break up 16-bit integers a and b as follows: 
-//     a = [ a_1 ] [ a_0 ] 
+// Suppose we break up 16-bit integers a and b as follows:
+//     a = [ a_1 ] [ a_0 ]
 //     b = [ b_1 ] [ b_0 ]
 //
 // Then we compute a + b as:
@@ -72,8 +72,8 @@ uint32_t multiply_standard(uint16_t a, uint16_t b) {
 // Multiply two 16-bit numbers by treating each as two 8-bit parts and using
 // the "textbook" multiplication algorithm.
 //
-// Suppose we break up 32-bit integers a and b as follows: 
-//     a = [ a_1 ] [ a_0 ] 
+// Suppose we break up 32-bit integers a and b as follows:
+//     a = [ a_1 ] [ a_0 ]
 //     b = [ b_1 ] [ b_0 ]
 //
 // Then we compute a * b as:
@@ -110,8 +110,8 @@ uint32_t multiply_textbook(uint16_t a, uint16_t b) {
 // Multiply two 32-bit numbers by treating each as two 16-bit parts and using
 // the (one-step) Karatsuba multiplication algorithm.
 //
-// Suppose we break up 32-bit integers a and b as follows: 
-//     a = [ a_1 ] [ a_0 ] 
+// Suppose we break up 32-bit integers a and b as follows:
+//     a = [ a_1 ] [ a_0 ]
 //     b = [ b_1 ] [ b_0 ]
 //
 // Then we compute a * b as follows:
@@ -125,7 +125,7 @@ uint32_t multiply_textbook(uint16_t a, uint16_t b) {
 //   [ O_0 ] and [ O_2 ]. If we algebraically reduce the expression defining
 //   [ O_1 ] we arrive with:
 //
-//     [ a_1 ] * [ b_0 ] + [ a_0 ] * [ b_1 ] 
+//     [ a_1 ] * [ b_0 ] + [ a_0 ] * [ b_1 ]
 //
 //   which has _two_ multiplications, while the expression defining [ O_1 ] only
 //   uses _one_ multiplication.
@@ -156,7 +156,7 @@ uint32_t multiply_karatsuba(uint16_t a, uint16_t b) {
 
 
 //
-// The main routine, allows user to visually confirm that the algorithms above 
+// The main routine, allows user to visually confirm that the algorithms above
 // agree on a small collection of test vectors.
 //
 int main() {

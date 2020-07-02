@@ -11,5 +11,3 @@ msgToState msg = transpose (split (split msg))
 
 stateToMsg : State -> [128]
 stateToMsg st = join (join (transpose st))
-
-

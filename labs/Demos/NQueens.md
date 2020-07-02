@@ -1,6 +1,6 @@
 # N-Queens
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
@@ -12,10 +12,10 @@ cryptol> :m labs::Demos::NQueens
 ## Overview
 
 
-Cryptol is not just for crypto. Here, we demonstrate how Cryptol can 
-solve the [N-Queens 
-puzzle](https://en.wikipedia.org/wiki/Eight_queens_puzzle). This demo 
-draws from and cites [Galois, Inc.'s 
+Cryptol is not just for crypto. Here, we demonstrate how Cryptol can
+solve the [N-Queens
+puzzle](https://en.wikipedia.org/wiki/Eight_queens_puzzle). This demo
+draws from and cites [Galois, Inc.'s
 example](https://github.com/GaloisInc/cryptol/blob/master/examples/funstuff/NQueens.cry)
 [1].
 
@@ -23,9 +23,9 @@ example](https://github.com/GaloisInc/cryptol/blob/master/examples/funstuff/NQue
 module labs::Demos::NQueens where
 ```
 
-Before proceeding, we define some helper functions. `product` returns 
-the [Cartesian 
-product](https://en.wikipedia.org/wiki/Cartesian_product) of two 
+Before proceeding, we define some helper functions. `product` returns
+the [Cartesian
+product](https://en.wikipedia.org/wiki/Cartesian_product) of two
 sequences:
 
 ```
@@ -34,10 +34,10 @@ product : {n, m, a, b} (fin m) => [n]a -> [m]b -> [n * m](a, b)
 product X Y = [ (i, j) | i <- X, j <- Y ]
 ```
 
-`distinct` checks whether each element in a sequence is unique. We 
-will use this to determine whether queen positions (represented as a 
-sequence of column positions within each row of the board) are 
-unique.  (If not, then at least two queens are in the same column, 
+`distinct` checks whether each element in a sequence is unique. We
+will use this to determine whether queen positions (represented as a
+sequence of column positions within each row of the board) are
+unique.  (If not, then at least two queens are in the same column,
 violating the N-Queens constraint.)
 
 ```
@@ -61,15 +61,15 @@ This `distinct` function works roughly as follows:
 
 (The counterpart in [1] works roughly as follows:
 - Enumerate an index over the sequence.
-- Check for equality only over positions in index order (emulate a 
+- Check for equality only over positions in index order (emulate a
   triangular search).
 - Return `True` if any duplicate was found.)
 
-(Neither approach short circuits when a duplicate is found, so both 
+(Neither approach short circuits when a duplicate is found, so both
 end up with comparable performance for `nQueens`.)
 
-Next, we declare some type aliases to represent a chess `Board` and 
-the `Position`s of queens on the board. A (proposed) `Solution` is a 
+Next, we declare some type aliases to represent a chess `Board` and
+the `Position`s of queens on the board. A (proposed) `Solution` is a
 `Board` that meets (or violates) the N-Queens constraint.
 
 ```
@@ -83,11 +83,11 @@ type Board n = [n](Position n)
 type Solution n = Board n -> Bit
 ```
 
-(Note: `Position` could be defined using modular integers `Z`, but its 
-dual use for sequence indexing severely hinders performance for 
+(Note: `Position` could be defined using modular integers `Z`, but its
+dual use for sequence indexing severely hinders performance for
 `nQueens`.)
 
-Next, we define a function to check whether two queens on the board 
+Next, we define a function to check whether two queens on the board
 can "see" each other diagonally:
 
 ```
@@ -95,7 +95,7 @@ can "see" each other diagonally:
  * whether queens in rows `i` and `j` of `Q` can see each other
  * diagonally
  */
-checkDiag : 
+checkDiag :
     {n} (fin n, n >= 1) => Board n -> (Position n, Position n) -> Bit
 checkDiag Q (i, j) =
     (i < j) ==> (diffR != diffC)
@@ -106,11 +106,11 @@ checkDiag Q (i, j) =
     diffC = j - i                   // we know i < j
 ```
 
-(This mostly follows [1], but swaps out eager 
+(This mostly follows [1], but swaps out eager
 `||` for lazy `==>`; this doesn't matter much.)
 
-Next, we follow suit from [1] and define a function to return all 
-possible row/column positions on a board (the Cartesian product of 
+Next, we follow suit from [1] and define a function to return all
+possible row/column positions on a board (the Cartesian product of
 board positions):
 
 ```
@@ -121,7 +121,7 @@ ijs = product P P
     P = [0 .. (n-1) : Position n]
 ```
 
-As in [1], we define a function returning whether a `Position` within 
+As in [1], we define a function returning whether a `Position` within
 a row is actually on the board:
 
 ```
@@ -130,8 +130,8 @@ inRange : {n} (fin n, n >= 1) => Board n -> Position n -> Bit
 inRange Q x = x <= `(n - 1)
 ```
 
-We can now define the N-Queens constraint: a `Board` is a `Solution` 
-to N-Queens iff all queens are on the board and cannot see each 
+We can now define the N-Queens constraint: a `Board` is a `Solution`
+to N-Queens iff all queens are on the board and cannot see each
 other:
 
 ```
@@ -146,23 +146,23 @@ nQueens Q =
 The instructions for [1] also work here:
 
 > To see this in action, try:
-> 
+>
 > ```shell
 > > :sat nQueens : (Solution n)
 > ```
 > where n is the board size.
-> 
+>
 > You may find that `cvc4` takes a long time for solutions bigger than 5.
 > For those sizes, we have had good luck with both `yices` and `Z3`.
-> 
+>
 > To do that,
-> 
+>
 > ```shell
 > > :set prover=z3
 > ```
-> 
+>
 > or
-> 
+>
 > ```shell
 > > :set prover=yices
 > ```
@@ -177,9 +177,9 @@ labs::Demos::NQueens> :sat nQueens : (Solution 8)
 (Total Elapsed Time: 0.053s, using "Z3")
 ```
 
-This corresponds to the following arrangement (diagram produced by 
-[chessboard.js](https://chessboardjs.com/)) ([Solution 
-8](https://en.wikipedia.org/wiki/Eight_queens_puzzle#Solutions) in 
+This corresponds to the following arrangement (diagram produced by
+[chessboard.js](https://chessboardjs.com/)) ([Solution
+8](https://en.wikipedia.org/wiki/Eight_queens_puzzle#Solutions) in
 the Wikipedia article):
 
 <img src="NQueensSolution.png" alt="Solution to 8-Queens Puzzle">

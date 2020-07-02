@@ -4,7 +4,7 @@ Cryptol and SAW allow users to rapidly and transparently deploy powerful theorem
 
 By the end of this lab, the student will be able to describe and demonstrate five powerful classes of proofs that can be applied to a wide variety of cryptographic algorithms.
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
@@ -71,7 +71,7 @@ For the rest of the lab, we'll be looking at some of the types of questions you 
 | Proof | Invocation |
 |-|-|
 | Function reversal | `:sat \x -> f x == y` |
-| Proof of inversion | `:prove \x -> g (f x) == x` | 
+| Proof of inversion | `:prove \x -> g (f x) == x` |
 | Collision detection | `:sat \x y -> f x == f y /\ x != y` |
 | Proof of injectivity | `:prove \x y -> x != y ==> f x != f y` |
 | Equivalence checking | `:prove \x -> f x == g x` |

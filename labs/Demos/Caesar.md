@@ -1,6 +1,6 @@
 # Caesar Cipher
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
@@ -11,9 +11,9 @@ cryptol> :m labs::Demos::Caesar
 
 ## Overview
 
-The [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher) is a 
+The [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher) is a
 simple shift cipher named after Julius Caesar. This cipher was...
-evidently effective against illiterate adversaries of ancient Rome, 
+evidently effective against illiterate adversaries of ancient Rome,
 but will it protect its secrets from you and Cryptol...?
 
 ```
@@ -21,8 +21,8 @@ but will it protect its secrets from you and Cryptol...?
 module labs::Demos::Caesar where
 ```
 
-A Caesar cipher simply rotates characters in the alphabet by a fixed 
-amount. (Caesar himself used a left rotation by 3, according to 
+A Caesar cipher simply rotates characters in the alphabet by a fixed
+amount. (Caesar himself used a left rotation by 3, according to
 Suetonius.) We could define this simply and directly in Cryptol:
 
 ```
@@ -67,13 +67,13 @@ alphabet = ['A'..'Z'] : Alphabet
 
 ## Aside: A confounding search
 
-The above definition assumed a continguous character set, which does 
-not necessarily hold in general. So we'll need a function to find a 
+The above definition assumed a continguous character set, which does
+not necessarily hold in general. So we'll need a function to find a
 character in the alphabet:
 
 ```
 /**
- * index (from end) of first occurence (from start) of item `x` in 
+ * index (from end) of first occurence (from start) of item `x` in
  * sequence `L`
  */
 index L x = if (or M) then (lg2 ((0b0 # M) + 1) - 1) else (length M)
@@ -81,7 +81,7 @@ index L x = if (or M) then (lg2 ((0b0 # M) + 1) - 1) else (length M)
     M = (map ((==) x) L)
 ```
 
-It's...not obvious how this function works, so let's establish a 
+It's...not obvious how this function works, so let's establish a
 property to verify its correctness:
 
 ```
@@ -109,14 +109,14 @@ Q.E.D.
 (Total Elapsed Time: 0.347s, using "Z3")
 ```
 
-But to work for a Caesar cipher, each character in the alphabet needs 
+But to work for a Caesar cipher, each character in the alphabet needs
 to be unique.
 
 
 ## Encryption via Alphabet Rotation
 
-Our encryption strategy will mimic the Romans in preselecting a key 
-and generating a cipher alphabet, then generating cipher characters 
+Our encryption strategy will mimic the Romans in preselecting a key
+and generating a cipher alphabet, then generating cipher characters
 by matching position:
 
 ```
@@ -131,7 +131,7 @@ encrypt key msg = map rot msg
         i = index alphabet c
 ```
 
-Note the `alphabet >>> key` part: Cryptol allows rotation not only 
+Note the `alphabet >>> key` part: Cryptol allows rotation not only
 over bit sequences, ...
 
 ```shell
@@ -157,7 +157,7 @@ labs::Demos::Caesar> :t (<<<)
 
 ## Decryption
 
-To decrypt, simply swap the plaintext and cipher alphabets in the 
+To decrypt, simply swap the plaintext and cipher alphabets in the
 search and output operations:
 
 ```
@@ -190,8 +190,8 @@ property v2 =
 property v3 = encrypt 13 "ABJURER" == "NOWHERE"
 ```
 
-Though we could `:prove` these, for static test cases with no 
-variables, it makes more sense to `:check` these (this saves 
+Though we could `:prove` these, for static test cases with no
+variables, it makes more sense to `:check` these (this saves
 the solver some work and often speeds up such tests).
 
 ```shell
@@ -211,7 +211,7 @@ Q.E.D.
 
 ## Properties
 
-In addition to test vectors, we would like to know whether decryption 
+In addition to test vectors, we would like to know whether decryption
 with the same key recovers the original plaintext for all messages:
 
 ```
@@ -244,7 +244,7 @@ Q.E.D.
 
 ## Security Analysis
 
-So is this a good cipher?  Well, no.  Let's...here.  We can manually 
+So is this a good cipher?  Well, no.  Let's...here.  We can manually
 deduce a key from known ciphertext...
 
 ```shell
@@ -277,7 +277,7 @@ labs::Demos::Caesar> map (\k -> (k, decrypt k "SXQW SJLXK FJB J SRWPUNQNRVNA BLQ
  (25, "RWPV RIKWJ EIA I RQVOTMPMQUMZ AKPUQLB")]
 ```
 
-...and we can recover a key from chosen plaintext through SAT 
+...and we can recover a key from chosen plaintext through SAT
 solving...
 
 ```shell
