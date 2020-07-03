@@ -685,8 +685,8 @@ KWPAEPad P = S
 
 ## Concept 2: Oddly Typed `if-then-else` Statements
 
-Sometimes, though not often, cryptographic algorithms will contain if
-statements where the `then` and `else` branches return different
+Sometimes, though not often, cryptographic algorithms will contain
+`if` statements where the `then` and `else` branches return different
 types. You were exposed to this a bit already in the [Salsa20
 lab](../Salsa20/Salsa20.md). First off, this is always frustrating to
 deal with in Cryptol, and we want you to know that we feel your pain
