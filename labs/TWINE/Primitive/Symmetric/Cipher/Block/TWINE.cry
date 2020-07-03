@@ -1,0 +1,39 @@
+/* *
+ * TWINE: A Lightweight, Versatile Block Cipher
+ * Tomoyasu Suzaki, Kazuhiko Minematsu, Sumio Morioka, and Eita Kobayashi
+ * NEC Corporation, 1753 Shimonumabe, Nakahara-Ku, Kawasaki, Japan
+ * https://www.nec.com/en/global/rd/tg/code/symenc/pdf/twine_LC11.pdf
+ */
+module Primitive::Symmetric::Cipher::Block::TWINE = Primitive::Symmetric::Cipher::Block where
+
+import Primitive::Symmetric::Cipher::Block::TWINE_Common as Common
+
+parameter
+  /** indicates TWINE key length: 0 -> 80, 1 -> 128 */
+  type _k: #
+  /** key length must be 80 (_k=0) or 128 (_k=1) */
+  type constraint (1 >= _k)
+
+  /** expand key to round keys */
+  _keySchedule: _KeySchedule
+
+
+// Primitive::Symmetric::Cipher::Block parameters
+
+/** "TWINE is a 64-bit block cipher with two supported key lengths, 80 and 128 bits." */
+type _Key = Common::Key _k
+type _Block = Common::Block
+
+/** encrypt plaintext using key schedule generated from secret key */
+_encrypt: _Key -> Common::Block -> Common::Block
+_encrypt key pt = Common::Enc (_keySchedule key) pt
+
+/** decrypt ciphertext using key schedule generated from secret key */
+_decrypt: _Key -> Common::Block -> Common::Block
+_decrypt key ct = Common::Dec (_keySchedule key) ct
+
+
+// Non-exported non-parameters
+
+/** "Round key `RK:[32*36]` is derived from the secret key, `K:[n]` with `n ∈ {80, 128}`, using the key schedule." */
+type _KeySchedule = _Key -> Common::RoundKey

@@ -1,0 +1,9 @@
+module Primitive::Symmetric::Cipher::Block::TWINE_128_CBC = Primitive::Symmetric::Cipher::Block::Modes::CBC where
+
+import Primitive::Symmetric::Cipher::Block::TWINE_128 as TWINE_128
+
+// Primitive::Symmetric::Cipher::Block::Modes::CBC parameters
+type _Key = TWINE_128::Key
+type _Block = TWINE_128::Block
+_encryptBlock = TWINE_128::encrypt
+_decryptBlock = TWINE_128::decrypt

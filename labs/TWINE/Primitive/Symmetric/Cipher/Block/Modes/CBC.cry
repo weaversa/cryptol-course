@@ -1,0 +1,78 @@
+/* *
+ * Cipher Block Chaining Mode
+ * adapted from `Primitive::Symmetric::Cipher::Block::Modes::CBC` in
+ * `https://github.com/GaloisInc/cryptol-specs`
+ */
+module Primitive::Symmetric::Cipher::Block::Modes::CBC where
+
+import `Primitive::Symmetric::Cipher::Block as BlockCipher hiding (recovery)
+
+parameter
+  // Primitive::Symmetric::Cipher::Block parameters
+
+  /** symmetric en/decryption key */
+  type _Key: *
+  /** unit of text applied to block cipher */
+  type _Block: *
+  /** needed to prove decryption recovers encrypted block(s) */
+  type constraint Cmp Block
+
+  /** encrypt a block */
+  _encryptBlock: BlockOp
+  /** decrypt a block */
+  _decryptBlock: BlockOp
+
+
+  // CBC parameters
+
+  /** blocks must be XOR-able */
+  type constraint Logic Block
+
+
+/** symmetric en/decryption key */
+type Key = _Key
+
+/** unit of text applied to block cipher */
+type Block = _Block
+
+/** block en/decrypt signature */
+type BlockOp = BlockCipher::Op Key Block
+
+/** encrypt a block */
+encryptBlock: BlockOp
+encryptBlock = _encryptBlock
+
+/** decrypt a block */
+decryptBlock: BlockOp
+decryptBlock = _decryptBlock
+
+/** Decryption with same key recovers encrypted block. */
+blockRecovery: Key -> Block -> Bit
+property blockRecovery k t = 
+  decryptBlock k (encryptBlock k t) == t
+
+
+/** multi-block en/decrypt signature */
+type Op n = Key -> Block -> [n]Block -> [n]Block
+
+
+/** encrypt multiple blocks */
+encrypt: {n} Op n
+encrypt k iv ps = cs
+  where
+    cs = [ encryptBlock k (p ^ c')
+         | p <- ps
+         | c' <- [iv] # cs ]
+
+/** decrypt multiple blocks */
+decrypt: {n} Op n
+decrypt k iv cs = 
+    [ (decryptBlock k c) ^ c'
+    | c <- cs
+    | c' <- [iv] # cs ]
+
+
+/** Decryption with same key and IV recovers encrypted blocks. */
+recovery : {n} (fin n) => Key -> Block -> [n]Block -> Bit
+property recovery k iv t = 
+  decrypt k iv (encrypt k iv t) == t
