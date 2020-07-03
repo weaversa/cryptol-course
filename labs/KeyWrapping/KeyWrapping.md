@@ -508,12 +508,20 @@ TWStep CIPHk ([A] # Rs) t = undefined
 
 TW CIPHk S = undefined
 
+TKWAE :
+    {n}
+    (fin n, 2 <= n, n < 2^^28) =>
+    ([64] -> [64]) -> [n][32] -> [n+1][32]
 TKWAE CIPHk P = undefined
 
 TWStep' CIPHk' ([A] # Rs) t = undefined
 
 TW' CIPHk' C = undefined
 
+TKWAD :
+    {n}
+    (fin n, 2 <= n, n < 2^^28) =>
+    ([64] -> [64]) -> [n+1][32] -> (Bit, [n][32])
 TKWAD CIPHk' C = undefined
 ```
 

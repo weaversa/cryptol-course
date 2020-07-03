@@ -8,6 +8,7 @@
             "windows": {
                 "command": "Set-Variable -Name \"REL_PATH\" -Value \"${relativeFile}\" ; $REL_PATH = $REL_PATH.replace('\\', '/') ; docker run --rm --read-only --mount type=bind,src=${workspaceFolder},dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol /mnt/cryptol-course/$REL_PATH"
             },
+            "problemMatcher": []
         }
     ]
 }
