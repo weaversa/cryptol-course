@@ -508,7 +508,6 @@ TWStep CIPHk ([A] # Rs) t = undefined
 
 TW CIPHk S = undefined
 
-
 TKWAE :
     {n}
     (fin n, 2 <= n, n < 2^^28) =>
