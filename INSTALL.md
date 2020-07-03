@@ -271,3 +271,21 @@ Cryptol> :module labs::Demos::OneTimePad
 Loading module labs::Demos::OneTimePad
 labs::Demos::OneTimePad>
 ```
+
+
+## Editors & IDEs
+
+### Emacs
+
+...
+
+### VS Code
+
+The [Cryptol Highlighting](https://github.com/GaloisInc/cryptol-vscode.git)
+plugin provides syntax highlighting and an interface to a local 
+Cryptol installation (e.g. evaluate the current expression or get its 
+type).
+
+The `.vscode` configuration in the `cryptol-course` repo supports 
+running a `cryptolcourse/cryptol` Docker image via 
+`Terminal > Run Task... > cryptol-docker` in the VS Code menu bar.
