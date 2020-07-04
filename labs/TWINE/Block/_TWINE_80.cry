@@ -1,0 +1,22 @@
+module labs::TWINE::Block::_TWINE_80 = labs::TWINE::Block::_TWINE_ where
+
+import labs::TWINE::Block::TWINE_Common
+
+// labs::TWINE::Block::TWINE parameters
+
+/** indicates 80-bit key length */
+type _k = 0
+
+/** TWINE-80 key schedule */
+_keySchedule: (Key _k) -> RoundKey  // __KeySchedule; defined in `_TWINE_`; appears in `:b` but cannot be used here
+_keySchedule K = RK
+  where
+    WKs = [ groupBy`{4} K ]
+        # [ ((take`{4} WK' <<< 1) # (drop WK')) <<< 4
+              where
+                WK' = updateXORs WK ([1, 4, 7, 19:[5]]) [S (WK@0), S (WK@16), H, L]
+          | [H,L] <- CONS_HL
+          | WK <- WKs ]
+
+    RK = join [ join (WK @@ ([1, 3, 4, 6, 13, 14, 15, 16:[5]]))
+              | WK <- WKs ]

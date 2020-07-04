@@ -1,0 +1,15 @@
+module Scratch where
+
+import `labs::TWINE::Block_ as Block_
+import `labs::TWINE::Block::_TWINE_ as _TWINE_
+import labs::TWINE::Block::TWINE_Common as TWINE_Common
+import labs::TWINE::Block::_TWINE_80 as _TWINE_80
+import labs::TWINE::Block::TWINE_80_Tests as TWINE_80_Tests
+import labs::TWINE::Block::TWINE_80 as TWINE_80
+import labs::TWINE::Block::_TWINE_128 as _TWINE_128
+import labs::TWINE::Block::TWINE_128_Tests as TWINE_128_Tests
+import labs::TWINE::Block::TWINE_128 as TWINE_128
+
+import `labs::TWINE::Block::Mode::CBC_ as CBC_
+import labs::TWINE::Block::_TWINE_80_CBC as _TWINE_80_CBC
+import labs::TWINE::Block::_TWINE_128_CBC as _TWINE_128_CBC

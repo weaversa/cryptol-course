@@ -1,0 +1,30 @@
+module labs::TWINE::Block::_TWINE_128 = labs::TWINE::Block::_TWINE_ where
+
+import labs::TWINE::Block::TWINE_Common
+
+// labs::TWINE::Block::_TWINE parameters
+
+/** indicates 128-bit key length */
+type _k = 1
+
+/** TWINE-128 key schedule */
+_keySchedule: (Key _k) -> RoundKey
+_keySchedule K = RK
+  where
+    WKs = [ groupBy`{4} K ]
+        # [ ((take`{4} WK' <<< 1) # (drop WK')) <<< 4
+              where
+                WK' = updateXORs WK ([1, 4, 23, 7, 19]:[_][5]) [S (WK@0), S (WK@16), S (WK@30), H, L]
+          | [H,L] <- CONS_HL
+          | WK <- WKs ]
+
+    RK = join [ join (WK @@ ([2, 3, 12, 15, 17, 18, 28, 31]:[_][5]))
+              | WK <- WKs ]
+
+
+// non-parameters
+
+/** Encryption test vector from Appendix B of written spec passes. */
+property __test_128 = Enc (_keySchedule 0x_00112233_44556677_8899AABB_CCDDEEFF) 0x_01234567_89ABCDEF == 0x_979FF9B3_79B5A9B8
+/** Decryption test vector from Appendix B of written spec passes. */
+property __test_128' = Dec (_keySchedule 0x_00112233_44556677_8899AABB_CCDDEEFF) 0x_979FF9B3_79B5A9B8 == 0x_01234567_89ABCDEF

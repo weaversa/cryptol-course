@@ -1,0 +1,42 @@
+/*
+ * adapted from `labs::TWINE::Block::Cipher` in
+ * `https://github.com/GaloisInc/cryptol-specs`
+ */
+
+module labs::TWINE::Block_ where
+
+parameter
+  /** symmetric en/decryption key */
+  type _Key: *
+  /** unit of text applied to block cipher */
+  type _Block: *
+  /** needed to prove decryption recovers encrypted block(s) */
+  type constraint Cmp _Block
+
+  /** encrypt a block */
+  _encrypt: Op
+  /** decrypt a block */
+  _decrypt: Op
+
+
+// definitions exported by instantiating modules
+
+/** symmetric en/decryption key */
+type Key = _Key
+/** unit of text applied to block cipher */
+type Block = _Block
+
+/** encrypt a block */
+encrypt: Op
+encrypt = _encrypt
+/** decrypt a block */
+decrypt: Op
+decrypt = _decrypt
+
+/** en/decrypt signature */
+type Op = Key -> Block -> Block
+
+/** Decryption with same key recovers encrypted block. */
+recovery: Key -> Block -> Bit
+property recovery k t = 
+  decrypt k (encrypt k t) == t

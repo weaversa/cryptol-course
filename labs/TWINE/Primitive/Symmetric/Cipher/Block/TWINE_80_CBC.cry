@@ -1,9 +1,0 @@
-module Primitive::Symmetric::Cipher::Block::TWINE_80_CBC = Primitive::Symmetric::Cipher::Block::Modes::CBC where
-
-import Primitive::Symmetric::Cipher::Block::TWINE_80 as TWINE_80
-
-// Primitive::Symmetric::Cipher::Block::Modes::CBC parameters
-type _Key = TWINE_80::Key
-type _Block = TWINE_80::Block
-_encryptBlock = TWINE_80::encrypt
-_decryptBlock = TWINE_80::decrypt
