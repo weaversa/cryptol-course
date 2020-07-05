@@ -9,7 +9,7 @@ specification document describes Salsa20 as well as how to use it as a
 [counter
 mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Counter_(CTR)).
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
@@ -82,8 +82,8 @@ This document is interactive and literate. So, take some time now to
 open this document in the Cryptol interpreter.
 
 ```shell
-┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻  
-┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃  
+┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
+┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
 version 2.8.0
 
@@ -96,7 +96,7 @@ labs::Salsa20::Salsa20>
 Now that the document is open, let's prove `hexadecimalProp`:
 
 ```shell
-labs::Salsa20::Salsa20> :prove hexadecimalProp 
+labs::Salsa20::Salsa20> :prove hexadecimalProp
 Q.E.D.
 (Total Elapsed Time: 0.006s, using "Z3")
 ```
@@ -196,7 +196,7 @@ function we've specified in Cryptol does indeed work correctly on
 these examples.
 
 ```shell
-labs::Salsa20::Salsa20> :prove quarterroundExamplesProp 
+labs::Salsa20::Salsa20> :prove quarterroundExamplesProp
 Q.E.D.
 (Total Elapsed Time: 0.005s, using "Z3")
 ```
@@ -235,8 +235,8 @@ and range of quarterround are the same (`Word 4 -> Word 4`), we know
 that, if the function is injective, it must also be surjective. Hence,
 we only need to prove that quarterround is injective.
 
-Wikipedia defines an [injective 
-function](https://en.wikipedia.org/wiki/Bijection,_injection_and_surjection#Injection) 
+Wikipedia defines an [injective
+function](https://en.wikipedia.org/wiki/Bijection,_injection_and_surjection#Injection)
 as:
 
 ![](https://render.githubusercontent.com/render/math?math=\forall%20x,x'%20\in%20X,%20x%20\neq%20x'%20\Rightarrow%20f(x)%20\neq%20f(x'))
@@ -259,7 +259,7 @@ property quarterroundIsInjectiveProp x x' =
 And then prove that the property is true.
 
 ```shell
-labs::Salsa20::Salsa20> :prove quarterroundIsInjectiveProp 
+labs::Salsa20::Salsa20> :prove quarterroundIsInjectiveProp
 Q.E.D.
 (Total Elapsed Time: 0.430s, using "Z3")
 ```
@@ -270,7 +270,7 @@ theorem prover, the best one could do is run some tests. Cryptol does
 support automated testing with its `:check` command.
 
 ```shell
-labs::Salsa20::Salsa20> :check quarterroundIsInjectiveProp 
+labs::Salsa20::Salsa20> :check quarterroundIsInjectiveProp
 Using random testing.
 Passed 100 tests.
 Expected test coverage: 0.00% (100 of 2^^256 values)
@@ -286,7 +286,7 @@ you'd prefer to try, Cryptol's `:exhaust` is the command to use.
 ```shell
 labs::Salsa20::Salsa20> 2^^256 : Integer
 115792089237316195423570985008687907853269984665640564039457584007913129639936
-labs::Salsa20::Salsa20> :exhaust quarterroundIsInjectiveProp 
+labs::Salsa20::Salsa20> :exhaust quarterroundIsInjectiveProp
 Using exhaustive testing.
 Testing...     0%
 ```
@@ -728,7 +728,7 @@ Salsa20Expansion k n = undefined
 
 ```
 
-This last definition for `k0` and `k1` aren't as as nice because `k1
+This last definition for `k0` and `k1` aren't as nice because `k1
 == k0` when `a` is one. Not that it really makes any difference.
 
 
@@ -820,7 +820,7 @@ function but not for anything else.
 Turns out there were official test vectors on
 [ECRYPT](http://www.ecrypt.eu.org/stream/svn/viewcvs.cgi/ecrypt/trunk/submissions/salsa20/full/verified.test-vectors?logsort=rev&rev=210&view=markup),
 but that the link is now defunct. It doesn't seem to be that big of a
-loss because The test vectors really didn't test all the functionality
+loss because the test vectors really didn't test all the functionality
 of Salsa20Encrypt because they _all_ took a message of entirely zeroes
 as input. This makes it difficult to know if you're processing an
 actual message correctly.

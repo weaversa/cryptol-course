@@ -1,6 +1,6 @@
 # Salsa20 Security Properties
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
@@ -91,16 +91,16 @@ type signature (`Bytes 64 -> Bytes 64`). So, we'll work now to show
 that `Salsa20Core` collides.
 
 The security of many cryptographic algorithms relies on [collision
-resistance](https://en.wikipedia.org/wiki/Collision_resistance). 
-Collisions are actually OK in many types of cryptography (think hash 
-functions), but collisions should be _astronomically_ hard to find. 
-Here, Dr. Bernstein says that collisions exist in `Salsa20Core` and 
-are easy to find, though not so easy that `z3` just works out of the 
+resistance](https://en.wikipedia.org/wiki/Collision_resistance).
+Collisions are actually OK in many types of cryptography (think hash
+functions), but collisions should be _astronomically_ hard to find.
+Here, Dr. Bernstein says that collisions exist in `Salsa20Core` and
+are easy to find, though not so easy that `z3` just works out of the
 box.
 
-We know from the section above that `doubleround` is collision free. 
-Collision free functions remain so even when iterated (`Salsa20Core` 
-iterates `doubleround` ten times). The proof of this last statement 
+We know from the section above that `doubleround` is collision free.
+Collision free functions remain so even when iterated (`Salsa20Core`
+iterates `doubleround` ten times). The proof of this last statement
 is left to the reader -- we suggest the [100 prisoners
 problem](https://en.wikipedia.org/wiki/100_prisoners_problem) as a
 good starting place. Then, where do the collisions in `Salsa20Core`
@@ -111,7 +111,7 @@ specification states that
 
 > Salsa20Core x = x + doubleround10 x
 
-To demonstrate the potential for a collision here, consider what 
+To demonstrate the potential for a collision here, consider what
 would happen if `x` was a single bit and `doubleround10 0 == 1` and
 `doubleround10 1 == 0`. In this case, `doubleround10` is collision
 free, but `Salsa20Core` would return `1` when given `x = 0` and `x =
@@ -126,7 +126,7 @@ Theorem 6 states the collision property for `Salsa20Core`:
 > and `Z' = Z + 2^^31`, generate a collision for any number of rounds
 > of the `Salsa20` "hash" [core] function, producing `h` (defined
 > below) as a common hash value.
-> 
+>
 > ```
 > M =  [  Z , -Z ,  Z , -Z
 >      , -Z ,  Z , -Z ,  Z

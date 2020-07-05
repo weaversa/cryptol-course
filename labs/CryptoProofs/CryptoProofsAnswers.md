@@ -4,7 +4,7 @@ Cryptol and SAW allow users to rapidly and transparently deploy powerful theorem
 
 By the end of this lab, the student will be able to describe and demonstrate five powerful classes of proofs that can be applied to a wide variety of cryptographic algorithms.
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
@@ -71,7 +71,7 @@ For the rest of the lab, we'll be looking at some of the types of questions you 
 | Proof | Invocation |
 |-|-|
 | Function reversal | `:sat \x -> f x == y` |
-| Proof of inversion | `:prove \x -> g (f x) == x` | 
+| Proof of inversion | `:prove \x -> g (f x) == x` |
 | Collision detection | `:sat \x y -> f x == f y /\ x != y` |
 | Proof of injectivity | `:prove \x y -> x != y ==> f x != f y` |
 | Equivalence checking | `:prove \x -> f x == g x` |
@@ -163,10 +163,10 @@ To make this solvable, try it again with the first six bytes of key provided: `0
 >```shell
 >labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct
 >```
-> At this point, the solver hangs, unable to find a solution in any 
-> reasonable time. This is because DES is a well-designed cryptographic 
+> At this point, the solver hangs, unable to find a solution in any
+> reasonable time. This is because DES is a well-designed cryptographic
 > algorithm and is therefore designed to resist attacks on the key.
-> DES keys have been broken using specialized algorithms 
+> DES keys have been broken using specialized algorithms
 > and large amounts of compute power, but not by a single computer
 > running a SAT solver.
 >```shell
@@ -217,7 +217,7 @@ Our example proof showed that `g` inverts `f` for all inputs. Does this work the
 >(Total Elapsed Time: 0.003s, using Yices)
 >```
 >
->Here we see that Cryptol has found that not only is our theorem false, 
+>Here we see that Cryptol has found that not only is our theorem false,
 >but provides a counterexample that we can analyze to see why.
 >Let's look a little closer.
 >
@@ -227,7 +227,7 @@ Our example proof showed that `g` inverts `f` for all inputs. Does this work the
 >```
 >
 >The reason this doesn't work is because `g` is defined over the integers.
->Therefore, the division operator `(/)` computes integer division, 
+>Therefore, the division operator `(/)` computes integer division,
 >so the expected result of `1/3` is rounded down to `0`.
 
 **EXERCISE** 2.2.2 DES inversion
@@ -295,7 +295,7 @@ One of the most powerful uses of Cryptol's theorem proving technology is the abi
 
 **EXERCISE** 2.5.1 DES Equivalent Keys
 
-Attempt to prove that the two keys you just found are equivalent keys. That is, prove that these two keyed DES functions are equivalent for all plaintext inputs. *Hint: Use abc*
+Attempt to prove that the two keys you just found are equivalent keys. That is, prove that these two keyed DES functions are equivalent for all plaintext inputs. *Hint* Use the `abc` prover.
 
 > Solution:
 >```shell
@@ -319,7 +319,7 @@ DESFixParity key = join fixed_bytes
   where
     bytes = (split key):[8][8]
     fixed_bytes = [ nibble # [foldl (^) True nibble]
-                      where nibble = take`{7} byte 
+                      where nibble = take`{7} byte
                   | byte <- bytes ]
 ```
 

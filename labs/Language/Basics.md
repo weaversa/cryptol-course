@@ -503,7 +503,7 @@ property absNonnegative x = abs x >= 0
 * `abs : Integer -> Integer` is the type signature for `abs`.
 * `abs n = if n >= 0 then n else -n` is the definition for `abs` (or function body).
 * `property absNonnegative ...` is a property we expect the function to have.
-* `:check property absNonnegative` checks this property with
+* `:check absNonnegative` checks this property with
     random tests. It's super cheap unit testing!
   ```shell
   labs::Language::Basics> :check absNonnegative

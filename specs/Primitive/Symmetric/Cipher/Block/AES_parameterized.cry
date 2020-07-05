@@ -42,4 +42,3 @@ params = { encRound = AESRound, decRound = AESInvRound }
 
 private
   property test k pt = decrypt k (encrypt k pt) == pt
-

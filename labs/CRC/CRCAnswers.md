@@ -1,6 +1,6 @@
 # Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
@@ -141,7 +141,7 @@ parameters.
      initial fill into the high-order bits of the zero-expanded
      message before calculating the modulus.
 * Post-XOR (`post`)
-    * A sequence of bits that are XOR'd into the modulus to create the
+    * A sequence of bits that are XOR'd into the remainder to create the
       final output.
 * Reflect Input Bytes (`rib`)
     * Denotes whether or not the input (when viewed as a sequence of
@@ -253,7 +253,7 @@ property CRC_POSIXTest =
 CRC32_Q = CRC G 0x00000000 0x00000000 False False
   where G = <| x^^32 + x^^31 + x^^24 + x^^22 + x^^16 + x^^14 + x^^8 + x^^7 + x^^5 + x^^3 + x + 1 |>
 
-property CRC32_QTest = 
+property CRC32_QTest =
     CRC32_Q testM == 0xF4965FFC
 ```
 

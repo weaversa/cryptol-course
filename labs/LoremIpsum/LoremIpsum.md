@@ -1,6 +1,6 @@
 # Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
@@ -12,12 +12,13 @@ cryptol> :m labs::LoremIpsum::LoremIpsum
 # LoremIpsum Key
 
 During this lab you will use the results of previous labs to
-Cryptolize a *mock* key generation specification we're calling the
+Cryptolize a **bogus** key generation specification we're calling the
 LoremIpsum key. This document specifies the algorithm, but, like most
 specification documents it also contains reams of text unrelated to
-the algorithm. We've filled in these unhelpful portions with [lorem
-ipsum](http://www.lipsum.com/). You may happily skip over them to get
-to the important bits.
+the algorithm. We've replaced these unhelpful portions with [lorem
+ipsum](http://www.lipsum.com/), dummy text normally used for
+typesetting that you should happily skip over to get to the important
+bits.
 
 **EXERCISE** An important message has been encrypted using the
 [KLI20](KLI20.cry) end cryptographic unit, a completely made up device
