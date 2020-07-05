@@ -275,17 +275,30 @@ labs::Demos::OneTimePad>
 
 ## Editors & IDEs
 
+Support exists for Cryptol (such as syntax highlighting and
+interpreter bindings) in a number of popular software development
+tools.
+
+
 ### Emacs
 
-...
+A Cryptol major mode for Emacs can be found here:
+https://github.com/victoredwardocallaghan/cryptol.vim
+
+
+### Vim
+
+A Vim plugin for Cryptol can be found here:
+https://github.com/victoredwardocallaghan/cryptol.vim
+
 
 ### VS Code
 
-The [Cryptol Highlighting](https://github.com/GaloisInc/cryptol-vscode.git)
-plugin provides syntax highlighting and an interface to a local 
-Cryptol installation (e.g. evaluate the current expression or get its 
-type).
+The [Cryptol
+Highlighting](https://github.com/GaloisInc/cryptol-vscode.git) plugin
+provides syntax highlighting and an interface to a local Cryptol
+installation (e.g. evaluate the current expression or get its type).
 
-The `.vscode` configuration in the `cryptol-course` repo supports 
-running a `cryptolcourse/cryptol` Docker image via 
-`Terminal > Run Task... > cryptol-docker` in the VS Code menu bar.
+The local `.vscode` configuration in the `cryptol-course` repo
+supports running a `cryptolcourse/cryptol` Docker image via `Terminal
+> Run Task... > cryptol-docker` in the VS Code menu bar.
