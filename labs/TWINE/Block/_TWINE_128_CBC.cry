@@ -1,9 +1,0 @@
-module labs::TWINE::Block::_TWINE_128_CBC = labs::TWINE::Block::Mode::CBC_ where
-
-import labs::TWINE::Block::_TWINE_128 as _TWINE_128
-
-// labs::TWINE::Block::Mode::CBC parameters
-type _Key = _TWINE_128::Key
-type _Block = _TWINE_128::Block
-_encryptBlock = _TWINE_128::encrypt
-_decryptBlock = _TWINE_128::decrypt

@@ -1,8 +1,0 @@
-module labs::TWINE::Block::TWINE_128_Tests where
-
-import labs::TWINE::Block::_TWINE_128
-
-/** Encryption test vector from Appendix B of written spec passes. */
-property test_128 = encrypt 0x_00112233_44556677_8899AABB_CCDDEEFF 0x_01234567_89ABCDEF == 0x_979FF9B3_79B5A9B8
-/** Decryption test vector from Appendix B of written spec passes. */
-property test_128' = decrypt 0x_00112233_44556677_8899AABB_CCDDEEFF 0x_979FF9B3_79B5A9B8 == 0x_01234567_89ABCDEF

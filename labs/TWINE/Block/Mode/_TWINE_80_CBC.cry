@@ -1,0 +1,9 @@
+module labs::TWINE::Block::Mode::_TWINE_80_CBC = labs::TWINE::Block::Mode::CBC_ where
+
+import labs::TWINE::Block::_TWINE_80 as _TWINE_80
+
+// labs::TWINE::Block::Mode::CBC_ parameters
+type _BlockCipher_Key = _TWINE_80::Key
+type _BlockCipher_Block = _TWINE_80::Block
+_BlockCipher_encrypt = _TWINE_80::encrypt
+_BlockCipher_decrypt = _TWINE_80::decrypt

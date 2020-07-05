@@ -1,0 +1,4 @@
+module labs::TWINE::Block::Mode::TWINE_128_CBC where
+
+import labs::TWINE::Block::TWINE_128
+import labs::TWINE::Block::Mode::_TWINE_128_CBC

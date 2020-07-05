@@ -6,6 +6,9 @@ type Key _k = [80 + 48 * _k]
 /** "Given ... and a round key, `RK:[32×36]`, ..." */
 type RoundKey = [32*36]
 
+/** "Round key `RK:[32*36]` is derived from the secret key, `K:[n]` with `n ∈ {80, 128}`, using the key schedule." */
+type KeySchedule _k = Key _k -> RoundKey
+
 /** "Given a 64-bit plaintext, `P:[64]`, ... the cipher produces the ciphertext `C:[64]`." */
 type Block = [64]
 
@@ -50,11 +53,14 @@ pi_inverts_pi': [16][4] -> Bit
 property pi_inverts_pi' subblocks =
   subblocks @@ pi' @@ pi == subblocks
 
+/** type of cipher operation based on expanded round key */
+type RoundOp = RoundKey -> Block -> Block
+
 /**
  * "Given a 64-bit plaintext, `P:[64]`, and a round key, 
  * `RK:[32*36]`, the cipher produces the ciphertext `C(64)`."
  */
-Enc: RoundKey -> Block -> Block
+Enc: RoundOp
 Enc RK P = C
   where
     RKs = groupBy`{32} RK
@@ -72,7 +78,7 @@ Enc RK P = C
  * use the same S-box and key schedule as used in the encryption, 
  * with the inverse block shuffle."
  */
-Dec: RoundKey -> Block -> Block
+Dec: RoundOp
 Dec RK C = P
   where
     RKs = reverse (groupBy`{32} RK)
@@ -90,4 +96,13 @@ Dec RK C = P
  * the original plaintext
  */
 recovery: RoundKey -> Block -> Bit
-property recovery RK pt = Dec RK (Enc RK pt) == pt
+property recovery RK P =
+    Dec RK (Enc RK P) == P
+
+/**
+ * The same round key encrypts different plaintext to different 
+ * ciphertext.
+ */
+injectivity: RoundKey -> Block -> Block -> Bit
+property injectivity RK P1 P2 =
+    P1 != P2 ==> Enc RK P1 != Enc RK P2

@@ -40,3 +40,8 @@ type Op = Key -> Block -> Block
 recovery: Key -> Block -> Bit
 property recovery k t = 
   decrypt k (encrypt k t) == t
+
+/** The same key encrypts different plaintext as different ciphertext. */
+injectivity: Key -> Block -> Block -> Bit
+property injectivity k t1 t2 =
+    t1 != t2 ==> encrypt k t1 != encrypt k t2

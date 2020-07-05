@@ -8,48 +8,53 @@ module labs::TWINE::Block::Mode::CBC_ where
 import `labs::TWINE::Block_ as BlockCipher_
 
 parameter
-  // labs::TWINE::Block parameters
+    // labs::TWINE::Block parameters
 
-  /** symmetric en/decryption key */
-  type _Key: *
-  /** unit of text applied to block cipher */
-  type _Block: *
-  /** needed to prove decryption recovers encrypted block(s) */
-  type constraint Cmp Block
+    /** symmetric en/decryption key */
+    type _BlockCipher_Key: *
+    /** unit of text applied to block cipher */
+    type _BlockCipher_Block: *
+    /** needed to prove decryption recovers encrypted block(s) */
+    type constraint Cmp _BlockCipher_Block
 
-  /** encrypt a block */
-  _encryptBlock: BlockOp
-  /** decrypt a block */
-  _decryptBlock: BlockOp
+    /** encrypt a block */
+    _BlockCipher_encrypt: BlockCipher_Op
+    /** decrypt a block */
+    _BlockCipher_decrypt: BlockCipher_Op
 
 
-  // CBC parameters
+    // CBC parameters
 
-  /** blocks must be XOR-able */
-  type constraint Logic Block
+    /** blocks must be XOR-able */
+    type constraint Logic _BlockCipher_Block
 
 
 /** symmetric en/decryption key */
-type Key = _Key
+type Key = _BlockCipher_Key
 
 /** unit of text applied to block cipher */
-type Block = _Block
+type Block = _BlockCipher_Block
 
 /** block en/decrypt signature */
-type BlockOp = BlockCipher_::Op Key Block
+type BlockCipher_Op = BlockCipher_::Op Key Block
 
 /** encrypt a block */
-encryptBlock: BlockOp
-encryptBlock = _encryptBlock
+BlockCipher_encrypt: BlockCipher_Op
+BlockCipher_encrypt = _BlockCipher_encrypt
 
 /** decrypt a block */
-decryptBlock: BlockOp
-decryptBlock = _decryptBlock
+BlockCipher_decrypt: BlockCipher_Op
+BlockCipher_decrypt = _BlockCipher_decrypt
 
 /** Decryption with same key recovers encrypted block. */
-blockRecovery: Key -> Block -> Bit
-property blockRecovery k t = 
-  decryptBlock k (encryptBlock k t) == t
+BlockCipher_recovery: Key -> Block -> Bit
+property BlockCipher_recovery k t = 
+    BlockCipher_decrypt k (BlockCipher_encrypt k t) == t
+
+/** Decryption with same key recovers encrypted block. */
+BlockCipher_injective: Key -> Block -> Block -> Bit
+property BlockCipher_injective k t1 t2 = 
+    t1 != t2 ==> BlockCipher_encrypt k t1 != BlockCipher_encrypt k t2
 
 
 /** multi-block en/decrypt signature */
@@ -60,14 +65,14 @@ type Op n = Key -> Block -> [n]Block -> [n]Block
 encrypt: {n} Op n
 encrypt k iv ps = cs
   where
-    cs = [ encryptBlock k (p ^ c')
+    cs = [ BlockCipher_encrypt k (p ^ c')
          | p <- ps
          | c' <- [iv] # cs ]
 
 /** decrypt multiple blocks */
 decrypt: {n} Op n
 decrypt k iv cs = 
-    [ (decryptBlock k c) ^ c'
+    [ (BlockCipher_decrypt k c) ^ c'
     | c <- cs
     | c' <- [iv] # cs ]
 
@@ -75,4 +80,9 @@ decrypt k iv cs =
 /** Decryption with same key and IV recovers encrypted blocks. */
 recovery : {n} (fin n) => Key -> Block -> [n]Block -> Bit
 recovery k iv t = 
-  decrypt k iv (encrypt k iv t) == t
+    decrypt k iv (encrypt k iv t) == t
+
+/** The same key and IV encrypt different plaintext as different ciphertext. */
+injectivity : {n} (fin n) => Key -> Block -> [n]Block -> [n]Block -> Bit
+injectivity k iv t1 t2 = 
+    t1 != t2 ==> encrypt k iv t1 != encrypt k iv t2
