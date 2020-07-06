@@ -367,7 +367,7 @@ specification, but it's a good opportunity here to learn more about
 Cryptol's properties.
 
 ```
-property rowroundOpProp ys = undefined
+property rowroundOptProp ys = undefined
 ```
 
 ## 4 The columnround function
@@ -689,14 +689,14 @@ Salsa20Expansion :
 
 This definition is even trickier than the last because we have to
 account for the two different sizes of `k`. If `a` is two then we have
-to call Salsa20(s0, k0, s1, n, s2, k1, s3) where k0 are the low 16
+to call Salsa20Core(s0, k0, s1, n, s2, k1, s3) where k0 are the low 16
 bytes of k and k1 are the high 16 bytes of k. In the case where `a` is
-one then we have to call Salsa20(t0, k0, t1, n, t2, k0, t3), and k1 is
-undefined. There are a few different ways to define `k0` and
-`k1`. This is, admittedly, often the most frustrating part of this
-specifying Salsa20. If you're up for figuring it out, please do, but
-you won't be faulted for skipping the headache and checking the answer
-key (3 different definitions are provided there).
+one then we have to call Salsa20Core(t0, k0, t1, n, t2, k0, t3), and
+k1 is undefined. There are a few different ways to define `k0` and
+`k1`. This is, admittedly, often the most frustrating part of
+specifying `Salsa20Expansion`. If you're up for figuring it out,
+please do, but you won't be faulted for skipping the headache and
+checking the answer key (3 different definitions are provided there).
 
 The notation used here is also a little strange --- you'll notice that
 Salsa20Core doesn't actually take 7 different values as input. The
