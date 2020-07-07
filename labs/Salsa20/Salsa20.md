@@ -692,16 +692,27 @@ account for the two different sizes of `k`. If `a` is two then we have
 to call Salsa20Core(s0, k0, s1, n, s2, k1, s3) where k0 are the low 16
 bytes of k and k1 are the high 16 bytes of k. In the case where `a` is
 one then we have to call Salsa20Core(t0, k0, t1, n, t2, k0, t3), and
-k1 is undefined. There are a few different ways to define `k0` and
-`k1`. This is, admittedly, often the most frustrating part of
+k1 is undefined. There are a few different ways to define k0 and
+k1. This is, admittedly, often the most frustrating part of
 specifying `Salsa20Expansion`. If you're up for figuring it out,
 please do, but you won't be faulted for skipping the headache and
 checking the answer key (3 different definitions are provided there).
 
-The notation used here is also a little strange --- you'll notice that
-Salsa20Core doesn't actually take 7 different values as input. The
-author means, for example, when `a` is one that t0, k, t1, n, t2, k,
-and t3 should be concatenated together to make a sequence of 64-bytes.
+The notation the author used here is also a little strange --- you'll
+notice that Salsa20Core doesn't actually take 7 different values as
+input. The author means, for example, when `a` is one that t0, k, t1,
+n, t2, k, and t3 should be concatenated together to make a sequence of
+64-bytes.
+
+As well, you'll need to access the type variable `a`. Here we quote
+from Section 1.19.2 from [Programming
+Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf)
+
+> You have seen, in the discussion of type variables above, that Cryptol has two kinds of variables—type variables and value variables. Type variables normally show up in type signatures, and value variables normally show up in function definitions. Sometimes you may want to use a type variable in a context where value variables would normally be used. To do this, use the backtick character `` ` ``. The definition of the built-in length function is a good example of the use of backtick:
+```
+length : {n, a, b} (fin n, Literal n b) => [n]a -> b
+length _ = `n
+```
 
 You'll find sigma and tau defined in a kind of fancy way in the
 Comments section below.
