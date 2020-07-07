@@ -162,10 +162,11 @@ property Salsa20CoreEquivProp w =
     rejigger x = undefined
 ```
 
-Theorem 6 states that collisions should happen for any number of
-iterations of `Salsa20Core`. However, we're just going to ask that you
-prove it for one iteration. If you are highly motivated, feel free to
-attempt the more general proof (though don't expect any extra credit).
+Theorem 6 (from above) states that collisions should happen for any
+number of iterations of `Salsa20Core`. However, we're just going to
+ask that you prove it for one iteration. If you are highly motivated,
+feel free to attempt the more general proof (though don't expect any
+extra credit).
 
 **EXERCISE** Formalize Theorem 6:
 
@@ -188,7 +189,7 @@ Finally, we want to show that `Salsa20Encrypt` is invertible
 (i.e. there exists a `Salsa20Decrypt` function that inverts
 `Salsa20Encrypt` for a given key and nonce). It turns out that
 `Salsa20Encrypt` is its own inverse, a so-called
-[involution](https://en.wikipedia.org/wiki/Involution_(mathematics). That
+[involution](https://en.wikipedia.org/wiki/Involution_(mathematics)). That
 is, composing `Salsa20Encrypt` twice on a given key and nonce yields
 the original plaintext.
 
