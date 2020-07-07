@@ -56,7 +56,7 @@ of a degree `n` polynomial is a sequence of `n+1` bits where each
 monomial is represented by a `True` bit in the sequence.  We'll also
 need a message `M` which is simply a sequence of `m` bits. Notice that
 the definition from [2] tells us that `M` is extended (concatenated)
-with `n` zeroes prior to calculating the modulus.
+with `n` zeroes prior to performing the modulus operation.
 
 Cryptol supports multiplying (`pmul`), dividing (`pdiv`), and
 performing the modulus (`pmod`) of polynomials. This is more than we
@@ -71,17 +71,16 @@ CRCSimple :
     {n, m}
     (fin n, fin m) =>
     [n+1] -> [m] -> [n]
-CRCSimple G M = pmod M' G
-  where M' = M # (0 : [n])
+CRCSimple G M = R
+  where R  = pmod M' G
+        M' = M # (0 : [n])
 ```
 
 This test-case is from [1].
 
 ```
-property CRCSimpleTest =
-    CRCSimple G 0b11010011101100 == 0b100
-  where
-    G  = <| x^^3 + x + 1 |>
+property CRCSimpleTest = CRCSimple G 0b11010011101100 == 0b100
+  where G  = <| x^^3 + x + 1 |>
 ```
 
 
@@ -139,10 +138,10 @@ parameters.
      feedback shift register. Since we're implementing CRC here with
      polynomial arithmetic, we can add this parameter by XORing the
      initial fill into the high-order bits of the zero-expanded
-     message before calculating the modulus.
+     message before performing the modulus operation.
 * Post-XOR (`post`)
-    * A sequence of bits that are XOR'd into the remainder to create the
-      final output.
+    * A sequence of bits that are XOR'd into the remainder polynomial
+      to create the final output.
 * Reflect Input Bytes (`rib`)
     * Denotes whether or not the input (when viewed as a sequence of
       bytes) should have the bits inside each byte reversed.
@@ -282,12 +281,10 @@ property CRC32_XFERTest =
 
 ## Parting Exercises
 
-It would be nice for the `CRC` function to accept arbitrary
-bitvectors, rather than strings of bytes. As an exercise, try to do
-this. This lab defined the 32-bit CRCs from [3]. You might also
-consider defining the 8, 16, and 64-bit CRC's from [3] or any of the
-CRCs given in [1], Section "Polynomial representations of cyclic
-redundancy checks".
+This lab defined the 32-bit CRCs from [3]. You might also consider
+defining the 8, 16, and 64-bit CRC's from [3] or any of the CRCs given
+in [1], Section "Polynomial representations of cyclic redundancy
+checks".
 
 
 # Bibliography
