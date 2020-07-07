@@ -709,7 +709,8 @@ from Section 1.19.2 from [Programming
 Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf)
 
 > You have seen, in the discussion of type variables above, that Cryptol has two kinds of variables—type variables and value variables. Type variables normally show up in type signatures, and value variables normally show up in function definitions. Sometimes you may want to use a type variable in a context where value variables would normally be used. To do this, use the backtick character `` ` ``. The definition of the built-in length function is a good example of the use of backtick:
-```
+
+```comment
 length : {n, a, b} (fin n, Literal n b) => [n]a -> b
 length _ = `n
 ```
