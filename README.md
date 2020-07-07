@@ -132,15 +132,25 @@ reference:
 
 * [Programming
   Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf)
-  -- A good overview and reference for the Cryptol language. Contains
-  many examples and references for programming language
-  features. Especially see Appendix B on page 95 where you'll find a
-  listing of all of Cryptol's language constructs.
+  -- A comprehensive reference for the Cryptol language. Contains many
+  examples for programming language features including a full workup
+  of AES.
 
-* [Cryptol Version 2
+* [Cryptol
   Syntax](https://github.com/GaloisInc/cryptol/blob/master/docs/Syntax.pdf)
   -- A comprehensive guide to Cryptol Syntax.
 
+* [Cryptol
+  Primitives](https://github.com/GaloisInc/cryptol/blob/master/docs/CryptolPrims.pdf)
+  -- A simple list of all of the Cryptol language primitives.
+
+* [Cryptol Module System
+  Overview](https://github.com/GaloisInc/cryptol/blob/master/docs/AbstractValuesAndModuleParameters.md)
+  -- An overview of the Cryptol's parameterized module system. This
+  feature assists in creating parameterized algorithms such as AES
+  (which has three different variants with different key sizes,
+  namely, 128, 192, and 256).
+  
 * [Cryptol
   Semantics](https://github.com/GaloisInc/cryptol/blob/master/docs/Semantics.pdf)
   -- A guide to Cryptol language semantics and overview of the
