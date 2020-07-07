@@ -53,14 +53,16 @@ x^^3 + x + 1 |>` which is simply the four bit string `0b1011`. It's
 important to note that even though this is a degree three polynomial,
 it takes four bits to represent. Generally, Cryptol's representation
 of a degree `n` polynomial is a sequence of `n+1` bits where each
-monomial is represented by a `True` bit in the sequence.  We'll also
-need a message `M` which is simply a sequence of `m` bits. Notice that
-the definition from [2] tells us that `M` is extended (concatenated)
-with `n` zeroes prior to performing the modulus operation.
+monomial is represented by a `True` bit in the sequence. For more on
+polynomials in Cryptol, see Section 5.2 of [Programming
+Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf).
 
-Cryptol supports multiplying (`pmul`), dividing (`pdiv`), and
-performing the modulus (`pmod`) of polynomials. This is more than we
-need to define a simple CRC function.
+We'll also need a message `M` which is simply a sequence of `m`
+bits. Notice that the definition from [2] tells us that `M` is
+extended (concatenated) with `n` zeroes prior to performing the
+modulus operation. Cryptol supports multiplying (`pmul`), dividing
+(`pdiv`), and performing the modulus (`pmod`) of polynomials. This is
+more than we need to define a simple CRC function.
 
 **EXERCISE**: Here we provide a skeleton CRC for you to fill in
 according to the definition above. Use the `CRCSimpleTest` property to
