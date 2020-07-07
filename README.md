@@ -150,8 +150,3 @@ reference:
   feature assists in creating parameterized algorithms such as AES
   (which has three different variants with different key sizes,
   namely, 128, 192, and 256).
-  
-* [Cryptol
-  Semantics](https://github.com/GaloisInc/cryptol/blob/master/docs/Semantics.pdf)
-  -- A guide to Cryptol language semantics and overview of the
-  underlying representations of Cryptol's type system.
