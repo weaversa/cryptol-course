@@ -26,7 +26,7 @@ From [1],
 CRCs are important to cryptography because they are often used, in
 part, to protect the integrity of key material (see Section 6.1 of
 NIST's [Recommendation for Key
-Management](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf).
+Management](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf)).
 
 In this lab we will create Cryptol specifications for a family of
 different CRCs.
