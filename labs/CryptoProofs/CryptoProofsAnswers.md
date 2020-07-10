@@ -114,6 +114,10 @@ Let's take a closer look at this query, which makes use of a *lambda* (anonymous
 | "Hey SAT solver!" | "Does there exist an `x`" | "such that" | "`x` squared equals `1764`?" |
 |||||
 
+For more information on lambda functions in Cryptol, see Section
+1.13.3 of [Programming
+Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf).
+
 **EXERCISE** 2.1.1 Reverse DES.encrypt
 
 Given the following key and ciphertext, find the plaintext using only the solver and the `DES.encrypt` function. To do this, head over to the Cryptol interpreter, load up the module, and use the `:sat` command similar to the example above.
@@ -295,7 +299,7 @@ One of the most powerful uses of Cryptol's theorem proving technology is the abi
 
 **EXERCISE** 2.5.1 DES Equivalent Keys
 
-Attempt to prove that the two keys you just found are equivalent keys. That is, prove that these two keyed DES functions are equivalent for all plaintext inputs. *Hint: Use abc*
+Attempt to prove that the two keys you just found are equivalent keys. That is, prove that these two keyed DES functions are equivalent for all plaintext inputs. *Hint* Use the `abc` prover.
 
 > Solution:
 >```shell

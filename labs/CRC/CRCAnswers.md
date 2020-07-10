@@ -26,7 +26,7 @@ From [1],
 CRCs are important to cryptography because they are often used, in
 part, to protect the integrity of key material (see Section 6.1 of
 NIST's [Recommendation for Key
-Management](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf).
+Management](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf)).
 
 In this lab we will create Cryptol specifications for a family of
 different CRCs.
@@ -53,14 +53,16 @@ x^^3 + x + 1 |>` which is simply the four bit string `0b1011`. It's
 important to note that even though this is a degree three polynomial,
 it takes four bits to represent. Generally, Cryptol's representation
 of a degree `n` polynomial is a sequence of `n+1` bits where each
-monomial is represented by a `True` bit in the sequence.  We'll also
-need a message `M` which is simply a sequence of `m` bits. Notice that
-the definition from [2] tells us that `M` is extended (concatenated)
-with `n` zeroes prior to calculating the modulus.
+monomial is represented by a `True` bit in the sequence. For more on
+polynomials in Cryptol, see Section 5.2 of [Programming
+Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf).
 
-Cryptol supports multiplying (`pmul`), dividing (`pdiv`), and
-performing the modulus (`pmod`) of polynomials. This is more than we
-need to define a simple CRC function.
+We'll also need a message `M` which is simply a sequence of `m`
+bits. Notice that the definition from [2] tells us that `M` is
+extended (concatenated) with `n` zeroes prior to performing the
+modulus operation. Cryptol supports multiplying (`pmul`), dividing
+(`pdiv`), and performing the modulus (`pmod`) of polynomials. This is
+more than we need to define a simple CRC function.
 
 **EXERCISE**: Here we provide a skeleton CRC for you to fill in
 according to the definition above. Use the `CRCSimpleTest` property to
@@ -71,17 +73,16 @@ CRCSimple :
     {n, m}
     (fin n, fin m) =>
     [n+1] -> [m] -> [n]
-CRCSimple G M = pmod M' G
-  where M' = M # (0 : [n])
+CRCSimple G M = R
+  where R  = pmod M' G
+        M' = M # (0 : [n])
 ```
 
 This test-case is from [1].
 
 ```
-property CRCSimpleTest =
-    CRCSimple G 0b11010011101100 == 0b100
-  where
-    G  = <| x^^3 + x + 1 |>
+property CRCSimpleTest = CRCSimple G 0b11010011101100 == 0b100
+  where G  = <| x^^3 + x + 1 |>
 ```
 
 
@@ -139,10 +140,10 @@ parameters.
      feedback shift register. Since we're implementing CRC here with
      polynomial arithmetic, we can add this parameter by XORing the
      initial fill into the high-order bits of the zero-expanded
-     message before calculating the modulus.
+     message before performing the modulus operation.
 * Post-XOR (`post`)
-    * A sequence of bits that are XOR'd into the remainder to create the
-      final output.
+    * A sequence of bits that are XOR'd into the remainder polynomial
+      to create the final output.
 * Reflect Input Bytes (`rib`)
     * Denotes whether or not the input (when viewed as a sequence of
       bytes) should have the bits inside each byte reversed.
@@ -242,7 +243,7 @@ property CRC32_MPEG2Test =
 CRC32_POSIX = CRC G 0x00000000 0xffffffff False False
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
-property CRC_POSIXTest =
+property CRC32_POSIXTest =
     CRC32_POSIX testM == 0x36B78081
 ```
 
@@ -282,12 +283,10 @@ property CRC32_XFERTest =
 
 ## Parting Exercises
 
-It would be nice for the `CRC` function to accept arbitrary
-bitvectors, rather than strings of bytes. As an exercise, try to do
-this. This lab defined the 32-bit CRCs from [3]. You might also
-consider defining the 8, 16, and 64-bit CRC's from [3] or any of the
-CRCs given in [1], Section "Polynomial representations of cyclic
-redundancy checks".
+This lab defined the 32-bit CRCs from [3]. You might also consider
+defining the 8, 16, and 64-bit CRC's from [3] or any of the CRCs given
+in [1], Section "Polynomial representations of cyclic redundancy
+checks".
 
 
 # Bibliography

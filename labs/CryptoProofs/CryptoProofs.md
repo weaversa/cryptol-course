@@ -44,7 +44,7 @@ Loading module labs::CryptoProofs::CryptoProofs
 First, we'll take a look at the type of the DES encryption function.
 
 ```shell
-labs::CryptoProofs::CryptoProofsAnswers> :t DES.encrypt
+labs::CryptoProofs::CryptoProofs> :t DES.encrypt
 DES.encrypt : [64] -> [64] -> [64]
 ```
 
@@ -114,6 +114,10 @@ Let's take a closer look at this query, which makes use of a *lambda* (anonymous
 | "Hey SAT solver!" | "Does there exist an `x`" | "such that" | "`x` squared equals `1764`?" |
 |||||
 
+For more information on lambda functions in Cryptol, see Section
+1.13.3 of [Programming
+Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf).
+
 **EXERCISE** 2.1.1 Reverse DES.encrypt
 
 Given the following key and ciphertext, find the plaintext using only the solver and the `DES.encrypt` function. To do this, head over to the Cryptol interpreter, load up the module, and use the `:sat` command similar to the example above.
@@ -126,14 +130,14 @@ known_ct = 0xf2930290ea4db580
 Note: For whatever reason, the default Z3 solver has trouble with this one. Try one of the other solvers, such as yices:
 
 ```shell
-labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
+labs::CryptoProofs::CryptoProofs> :s prover=yices
 ```
 
 Or use all the installed solvers in a first-to-the-post race.
 *Caution! May exhaust system resources.*
 
 ```shell
-labs::CryptoProofs::CryptoProofsAnswers> :s prover=any
+labs::CryptoProofs::CryptoProofs> :s prover=any
 ```
 
 
@@ -165,7 +169,7 @@ g x = (x - 2) / 3
 We want to prove that function `g` inverts function `f`; that is, applying `g` to the result of `f x` gets `x` back. Here's the invocation:
 
 ```shell
-labs::CryptoProofs::CryptoProofsAnswers> :prove \x -> g (f x) == x
+labs::CryptoProofs::CryptoProofs> :prove \x -> g (f x) == x
 Q.E.D.
 (Total Elapsed Time: 0.023s, using "Z3")
 ```
@@ -210,7 +214,7 @@ Show that, for any given key, `DES.encrypt` is injective (collision-free) with r
 
 *Hint* Use the boolector theorem prover. (Even then, this proof may take a few minutes!)
 
-*Hint* Consider using the implication operator `==>`
+*Hint* Consider using the implication operator (Type `:h (==>)` for more information.)
 
 
 ## 2.5 Equivalence Checking
@@ -221,7 +225,7 @@ One of the most powerful uses of Cryptol's theorem proving technology is the abi
 
 **EXERCISE** 2.5.1 DES Equivalent Keys
 
-Attempt to prove that the two keys you just found are equivalent keys. That is, prove that these two keyed DES functions are equivalent for all plaintext inputs. *Hint: Use abc*
+Attempt to prove that the two keys you just found are equivalent keys. That is, prove that these two keyed DES functions are equivalent for all plaintext inputs. *Hint:* Use the abc prover.
 
 
 **EXERCISE** 2.5.2 DES Parity Bits
