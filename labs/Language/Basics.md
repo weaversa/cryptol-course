@@ -54,7 +54,7 @@ Preliminaries
 The following code declares the module name of this literate Cryptol
 document.
 
-```
+```cryptol
 module labs::Language::Basics where
 ```
 
@@ -183,19 +183,19 @@ Other data types include:
   `(True, [1, 0], 7625597484987) : (Bit, [2][1], Integer)`
   * Elements of tuples are accessed by `.0`, `.1`, ...
 
-    ```shell
+```shell
     labs::Language::Basics> (False, 0b11).0
     False
-    ```
+```
 
 * Records with named fields: E.g.,
   `{flag = True, x = 2} : {flag : Bit, x : [4]}`
   * Elements of records are accessed by `.` followed by the field name.
 
-    ```shell
+```shell
     labs::Language::Basics> {flag = True, x = 2}.flag
     True
-    ```
+```
 
 * Integers modulo _n_: Types of the form `[n]` already provide
   [least residue systems](https://en.wikipedia.org/wiki/Modular_arithmetic#Residue_systems)
@@ -360,18 +360,18 @@ by the name of the primitive.
 * `0` is a sequence of `False` bits whose type is determined by the
 context.
 
-  ```shell
+```shell
   labs::Language::Basics> 0 : [12]
   0x000
-  ```
+```
 
 * `zero` is an arbitrary collection of `False` bits whose type
 is determined by the context.
 
-  ```shell
+```shell
   labs::Language::Basics> zero: ([8], [4])
   (0x00, 0x0)
-  ```
+```
 
   Here we produce an ordered pair of a 0 octet and a 0 nibble.
 * `~0` and `~zero` produce all `True` bits correspondingly.
@@ -379,7 +379,7 @@ is determined by the context.
 
 ### List manipulation: `take`, `drop`, `tail`, `last` and `reverse`
 
-```
+```shell
 labs::Language::Basics> take "dogcow" : [3][8]
 "dog"
 labs::Language::Basics> drop [2, 3, 5, 7, 11] : [3]Integer
@@ -471,10 +471,10 @@ functions from other languages or documents.
   where an argument is fixed.  For instance, `gcdCurried 10` is a
   function itself!
 
-  ```shell
+```shell
   labs::Language::Basics> :type gcdCurried 10
   gcdCurried 10 : Integer -> Integer
-  ```
+```
 
   `gcdCurried 10` takes an integer and returns an integer. When it
   is applied to an integer it computes the gcd of 10 and that
@@ -518,22 +518,22 @@ property absNonnegative x = abs x >= 0
 * `:check absNonnegative` checks this property with random tests. It's
   super cheap unit testing!
 
-  ```shell
+```shell
   labs::Language::Basics> :check absNonnegative
   Using random testing.
   Passed 100 tests.
-  ```
+```
 
 * Cryptol's `if ... then ... else` is much like C's ternary operator
   `?`...`:`. It is not like the `if ... then ... else` control structure.
 * The reserved word `property` documents that definition's intention.
 * We can go a step further and `:prove` this property:
 
-  ```shell
+```shell
   labs::Language::Basics> :prove absNonnegative
   Q.E.D.
   (Total Elapsed Time: 0.032s, using Z3)
-  ```
+```
 
 * Also Cryptol's `:check` will check all functions marked as
   properties in one go and, you guessed it, `:prove` works similarly.
@@ -560,22 +560,22 @@ property gcdDividesBoth' x y
 * The function `gcd'` is recursive.
 * Let's check `gcdDividesBoth'`:
 
-  ```shell
+```shell
   labs::Language::Basics> :check gcdDividesBoth'
   Using random testing.
   Passed 100 tests.
-  ```
+```
 
 * It seems okay, yet `gcdDividesBoth' 0 0` gives a division by 0 error.
 
-  ```shell
+```shell
   labs::Language::Basics> gcdDividesBoth' 0 0
   division by 0
-  ```
+```
 
 * We could perhaps have found that with more testing:
 
-  ```shell
+```shell
   labs::Language::Basics> :set tests=1000
   labs::Language::Basics> :check gcdDividesBoth'
   Using random testing.
@@ -583,7 +583,7 @@ property gcdDividesBoth' x y
   0
   0
   division by 0
-  ```
+```
 
 * Since `:check` uses randomly generated tests the failing result may
   be intermittent.
