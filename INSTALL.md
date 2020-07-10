@@ -140,7 +140,7 @@ you downloaded should be placed in your system path.
 For CentOS, Ubuntu, or MacOS, the whole process would look something
 like (depending on the which OS variant you have):
 
-```
+```shell
 $ curl -fsSL https://github.com/GaloisInc/saw-script/releases/download/v0.5/saw-0.5-Ubuntu14.04-64.tar.gz | tar -xz
 $ export PATH=$(pwd)/saw-0.5-Ubuntu14.04-64/bin:${PATH}
 ```
@@ -171,7 +171,7 @@ your system path.
 For CentOS, Ubuntu, or MacOS, the whole process would look something
 like (depending on which OS build and version you download):
 
-```
+```shell
 $ curl -fsSL https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-osx-10.14.6.zip -o z3-4.8.8-x64-osx-10.14.6.zip
 $ unzip -j z3-4.8.8-x64-osx-10.14.6.zip -d z3-4.8.8
 $ export PATH=$(pwd)/z3-4.8.8:${PATH}
@@ -263,6 +263,7 @@ labs::Demos::OneTimePad>
 ```
 
 ### Using Docker on Windows 10
+
 ```shell
 ...\cryptol-course> docker run --rm --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
     ...
