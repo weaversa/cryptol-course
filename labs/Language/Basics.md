@@ -54,7 +54,7 @@ Preliminaries
 The following code declares the module name of this literate Cryptol
 document.
 
-```
+```cryptol
 module labs::Language::Basics where
 ```
 
@@ -103,7 +103,7 @@ Comments
 There is also a [docstring](https://en.wikipedia.org/wiki/Docstring)
 comment facility:
 
-```
+```cryptol
 /**
   * A totally made up identifier for pedagogical purposes. It is
   * used elsewhere for demonstration of something or other.
@@ -127,7 +127,7 @@ characters we'd like to use but are
 forbidden. [Camel case](https://en.wikipedia.org/wiki/Camel_case) is
 often used when other naming constraints aren't mandated.
 
-```
+```cryptol
 fooBar = 15
 fooBar' = fooBar && mask // mask defined elsewhere
 ```
@@ -370,7 +370,7 @@ is determined by the context.
 
 
 ### List manipulation: `take`, `drop`, `tail`, `last` and `reverse`
-```
+```shell
 labs::Language::Basics> take "dogcow" : [3][8]
 "dog"
 labs::Language::Basics> drop [2, 3, 5, 7, 11] : [3]Integer
@@ -428,13 +428,13 @@ Curried and Uncurried Style
 Cryptol functions are often written in the
 [curried](https://en.wikipedia.org/wiki/Currying) style:
 
-```
+```cryptol
 gcdCurried: Integer -> Integer -> Integer
 ```
 
 rather than:
 
-```
+```cryptol
 gcdUncurried: (Integer, Integer) -> Integer
 ```
 
@@ -492,7 +492,7 @@ advantageous:
 
 ### Examples
 
-```
+```cryptol
 abs : Integer -> Integer
 abs n = if n >= 0 then n else -n
 
@@ -524,7 +524,7 @@ property absNonnegative x = abs x >= 0
 
 A little more involved example follows.
 
-```
+```cryptol
 gcd : Integer -> Integer -> Integer
 gcd m n = gcd' (abs m) (abs n)
   where
@@ -581,7 +581,7 @@ Let's patch up that property. (You surely noticed the prime (`'`) in
 the property name which is a giveaway that is not quite the property
 I have in mind.)
 
-```
+```cryptol
 gcdDividesBoth : Integer -> Integer -> Bit
 property gcdDividesBoth x y
     = if z == 0
@@ -671,7 +671,7 @@ sequence comprehensions. The following example illustrates this.
 Simple Block Encryption Example
 -------------------------------
 
-```
+```cryptol
 keyExpand : [32] -> [10][32]
 keyExpand key = take roundKeys // take leverages the type signature
   where
@@ -712,7 +712,7 @@ Cryptol's evaluation strategy is
 [lazy](https://en.wikipedia.org/wiki/Lazy_evaluation)
 a.k.a. "call-by-need". I.e., computations are not performed until
 necessary. So
-```
+```cryptol
 lazyAbsMin : Integer -> Integer -> Integer
 lazyAbsMin x y = if x == 0 then 0 else min (abs x) (abs y)
 ```
@@ -732,7 +732,7 @@ Less Common Operators
 Function equality: `===` and `!==`. These are mostly used to state
 properties about functions over a finite domain.
 
-```
+```cryptol
 add8 : [4] -> [4]
 add8 x = x + 8
 sub8 : [4] -> [4]
@@ -811,7 +811,7 @@ The following code does serve to illustrate the type signature and
 function definitions can be separated within a file. A practice that
 is _**strongly**_ discouraged.
 
-```
+```cryptol
 gcdCurried = gcd
 gcdUncurried = uncurry gcdCurried
 ```

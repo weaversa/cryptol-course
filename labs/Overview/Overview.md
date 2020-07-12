@@ -30,9 +30,11 @@ More information about Cryptol is available at [http://www.cryptol.net](https://
 
 # First Steps: Hello, Cryptol!
 
-A grand tradition when learning a new programming language is to test the waters with a Hello World program. In this file we've defined a function `sayHello` which is specified as follows:
+A grand tradition when learning a new programming language is to test
+the waters with a Hello World program. In this file we've defined a
+function `sayHello` which is specified as follows:
 
-```
+```cryptol
 module labs::Overview::Overview where
 
 sayHello : {a} (fin a) => [a][8] -> [7+a][8]

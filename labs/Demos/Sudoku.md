@@ -31,7 +31,7 @@ introduced a [module
 system](https://cryptol.net/Version2Changes.html#module-system),
 demonstrated here:
 
-```
+```cryptol
 module labs::Demos::Sudoku where
 ```
 
@@ -68,7 +68,7 @@ Please excuse us for a second. Cryptol has introduced type aliases.
 Where the original blog represented a Sudoku number as `[4]`, we will
 substitute an alias, and similarly for other common structures:
 
-```
+```cryptol
 /** number in [1..9]; 0 reserved (e.g. for blank) */
 type SudokuNum = [4]
 
@@ -101,7 +101,7 @@ Sorry, you were saying...?
 > column, or a box? We should simply check that each number from 1 to
 > 9 appears precisely once in the sequence:
 
-```
+```cryptol
 check : SudokuGroup -> Bit
 check group = [ contains x | x <- [1 .. 9] ] == ~zero
   where contains x = [ x == y | y <- group ] != zero
@@ -130,7 +130,7 @@ functions, including these and more:
 So currently, this function could also be defined in terms of simple,
 reusable helpers as:
 
-```
+```cryptol
 /** whether finite sequence `G` contains element `x` */
 contains' :
     {a, n}
@@ -165,7 +165,7 @@ items in `H`.
 
 As a sanity check, we can confirm these are equivalent:
 
-```
+```cryptol
 /** `check` and `check'` are equivalent. */
 check_equiv : SudokuGroup -> Bit
 property check_equiv = check === check'
@@ -183,7 +183,7 @@ Anyway, sorry for the interruption.
 > them all, in the above sense. The following Cryptol function
 > accomplishes this task rather concisely:
 
-```
+```cryptol
 valid : SudokuBoard -> Bit
 valid rows = [ check grp | grp <- rows # columns # squares ] == ~zero
  where
@@ -206,7 +206,7 @@ valid rows = [ check grp | grp <- rows # columns # squares ] == ~zero
 
 We can use `all` and `map` here to simplify `valid`:
 
-```
+```cryptol
 valid' : SudokuBoard -> Bit
 valid' rows = all check (rows # columns # squares)
   where
@@ -246,7 +246,7 @@ Alright, enough out of us.
 > there is any `x` such that `f x = True`. Here is a simple example.
 > Let:
 
-```
+```cryptol
 f : [8] -> Bit
 f x = x*x - 7*x + 12 == 0
 ```
@@ -301,7 +301,7 @@ Unsatisfiable
 > they correspond exactly to the empty cells, and named them
 > row-by-row:
 
-```
+```cryptol
 /** This puzzle from the Cryptol blog has a solution. */
 puzzle :
     [_]SudokuNum -> Bit
@@ -369,7 +369,7 @@ puzzle
 For kicks and giggles, let's introduce a property saying the solution
 is unique:
 
-```
+```cryptol
 /** a solution to the easy puzzle */
 puzzle_solution :
     SudokuBoard
@@ -435,7 +435,7 @@ particular, fares...
 
 <img class="aligncenter" src="WHSudokuPuzzle.png" alt="World's Hardest Sudoku Puzzle (Arto Inkala)">
 
-```
+```cryptol
 /**
  * Arto Inkala's ["World's Hardest Sudoku"](
  * https://www.conceptispuzzles.com/index.aspx?uri=info/article/424)
@@ -480,7 +480,7 @@ hard_puzzle
 
 Not bad.  Finally, we should prove that this is unique as well...
 
-```
+```cryptol
 /** a solution to the "World's Hardest Sudoku" */
 hard_solution :
     SudokuBoard

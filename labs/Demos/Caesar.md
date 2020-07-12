@@ -16,8 +16,7 @@ simple shift cipher named after Julius Caesar. This cipher was...
 evidently effective against illiterate adversaries of ancient Rome,
 but will it protect its secrets from you and Cryptol...?
 
-```
-/* Simple Caesar cipher */
+```cryptol
 module labs::Demos::Caesar where
 ```
 
@@ -25,7 +24,7 @@ A Caesar cipher simply rotates characters in the alphabet by a fixed
 amount. (Caesar himself used a left rotation by 3, according to
 Suetonius.) We could define this simply and directly in Cryptol:
 
-```
+```cryptol
 caesar msg = map rot3 msg
   where
     rot3 c =
@@ -50,7 +49,7 @@ labs::Demos::Caesar> caesar "ATTACK AT DAWN"
 
 OK, we can explore this a little further. Let's generalize it:
 
-```
+```cryptol
 /** number of characters in alphabet */
 type w = 26
 
@@ -71,7 +70,7 @@ The above definition assumed a continguous character set, which does
 not necessarily hold in general. So we'll need a function to find a
 character in the alphabet:
 
-```
+```cryptol
 /**
  * index (from end) of first occurence (from start) of item `x` in
  * sequence `L`
@@ -84,7 +83,7 @@ index L x = if (or M) then (lg2 ((0b0 # M) + 1) - 1) else (length M)
 It's...not obvious how this function works, so let's establish a
 property to verify its correctness:
 
-```
+```cryptol
 /** `index` is correct for any sequence */
 indexCorrect L x = elem x L ==> L ! (index L x) == x
 
@@ -119,7 +118,7 @@ Our encryption strategy will mimic the Romans in preselecting a key
 and generating a cipher alphabet, then generating cipher characters
 by matching position:
 
-```
+```cryptol
 encrypt : {n} Key -> String n -> String n
 encrypt key msg = map rot msg
   where
@@ -160,7 +159,7 @@ labs::Demos::Caesar> :t (<<<)
 To decrypt, simply swap the plaintext and cipher alphabets in the
 search and output operations:
 
-```
+```cryptol
 decrypt : {n} Key -> String n -> String n
 decrypt key msg' = map rot msg'
   where
@@ -177,7 +176,7 @@ decrypt key msg' = map rot msg'
 
 For a sanity check, we can check some examples...
 
-```
+```cryptol
 /** classic test vector */
 property v1 = encrypt 3 "ATTACK AT DAWN" == "XQQXZH XQ AXTK"
 
@@ -214,7 +213,7 @@ Q.E.D.
 In addition to test vectors, we would like to know whether decryption
 with the same key recovers the original plaintext for all messages:
 
-```
+```cryptol
 /** Decryption with same key recovers original message */
 recovery : {n} fin n => Key -> String n -> Bit
 recovery key msg = decrypt key (encrypt key msg) == msg

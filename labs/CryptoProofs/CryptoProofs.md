@@ -18,7 +18,7 @@ The proofs in this lab require an array of different theorem provers supported b
 First, since we are creating a module, the first line needs to be the
 module definition.
 
-```
+```cryptol
 module labs::CryptoProofs::CryptoProofs where
 ```
 
@@ -28,7 +28,7 @@ To start, we'll analyze the DES (Data Encryption Standard) algorithm. Let's take
 
 First, we import it.
 
-```
+```cryptol
 import specs::Primitive::Symmetric::Cipher::Block::DES
 ```
 
@@ -88,11 +88,9 @@ It may be interesting to explore whether a particular cryptographic function can
 
 We'll start with an example where we reverse the following simple function:
 
-```
+```cryptol
 /** square - multiplies an Integer by itself */
-```
 
-```
 square : Integer -> Integer
 square x = x * x
 ```
@@ -122,7 +120,7 @@ Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCrypto
 
 Given the following key and ciphertext, find the plaintext using only the solver and the `DES.encrypt` function. To do this, head over to the Cryptol interpreter, load up the module, and use the `:sat` command similar to the example above.
 
-```
+```cryptol
 known_key = 0x752979387592cb70
 known_ct = 0xf2930290ea4db580
 ```
@@ -145,7 +143,7 @@ labs::CryptoProofs::CryptoProofs> :s prover=any
 
 Given the following matched plaintext and ciphertext, ask the solver to find the key. Will this work? Why or why not? (*Hint: see plaintext.*) Note that you can stop the solver at any time by hitting `ctrl-c`.
 
-```
+```cryptol
 matched_pt = join "tootough"
 matched_ct = 0x95d07f8a72707733
 ```
@@ -159,7 +157,7 @@ For symmetric ciphers, it is necessary that the decrypt function *inverts* the e
 
 Consider the following functions `f` and `g`:
 
-```
+```cryptol
 f: Integer -> Integer
 f x = 3 * x + 2
 g: Integer -> Integer

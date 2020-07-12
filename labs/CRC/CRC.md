@@ -11,7 +11,7 @@ cryptol> :m labs::CRC::CRC
 
 We start by defining a new module for this lab:
 
-```
+```cryptol
 module labs::CRC::CRC where
 ```
 
@@ -68,7 +68,7 @@ more than we need to define a simple CRC function.
 according to the definition above. Use the `CRCSimpleTest` property to
 help you get it right.
 
-```
+```cryptol
 CRCSimple :
     {n, m}
     (fin n, fin m) =>
@@ -80,7 +80,7 @@ CRCSimple G M = R
 
 This test-case is from [1].
 
-```
+```cryptol
 property CRCSimpleTest = CRCSimple G 0b11010011101100 == 0b100
   where G = <| x^^3 + x + 1 |>
 ```
@@ -112,16 +112,16 @@ are simple enough to be compatible with `CRCSimple`.
 Here we define a test message using the [canonical
 pangram](https://en.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog).
 
-```
+```cryptol
 testM = "The quick brown fox jumps over the lazy dog"
 ```
 
-```
+```cryptol
 property CRCSimple_QTest = CRCSimple G (join testM) == 0xf4965ffc
   where G = <| x^^32 + x^^31 + x^^24 + x^^22 + x^^16 + x^^14 + x^^8 + x^^7 + x^^5 + x^^3 + x + 1 |>
 ```
 
-```
+```cryptol
 property CRCSimple_XFERTest = CRCSimple G (join testM) == 0x140493e5
   where G = <| x^^32 + x^^7 + x^^5 + x^^3 + x^^2 + x + 1 |>
 ```
@@ -160,7 +160,7 @@ Note, since there is now a parameter that possibly reflects the input
 bytes, to make things a little easier here, we've reshaped the input
 `M` as a sequence of bytes.
 
-```
+```cryptol
 CRC :
     {n, m}
     (fin n, fin m) =>
@@ -176,7 +176,7 @@ CRC G fill post rib ro M =
 
 Here is a definition of CRC32, using the parameterized `CRC` function.
 
-```
+```cryptol
 CRC32 = CRC G 0xffffffff 0xffffffff True True
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
@@ -193,7 +193,7 @@ simulator](http://www.sunshine2k.de/coding/javascript/crc/crc_js.html)
 
 ### BZIP2
 
-```
+```cryptol
 CRC32_BZIP2 = CRC G undefined undefined undefined undefined
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
@@ -204,7 +204,7 @@ property CRC32_BZIP2Test =
 
 ### C
 
-```
+```cryptol
 CRC32_C = CRC G undefined undefined undefined undefined
   where G = <| x^^32 + x^^28 + x^^27 + x^^26 + x^^25 + x^^23 + x^^22 + x^^20 + x^^19 + x^^18 + x^^14 + x^^13 + x^^11 + x^^10 + x^^9 + x^^8 + x^^6 + 1 |>
 
@@ -216,7 +216,7 @@ property CRC32_CTest =
 
 ### D
 
-```
+```cryptol
 CRC32_D = CRC G undefined undefined undefined undefined
   where G = <| x^^32 + x^^31 + x^^29 + x^^27 + x^^21 + x^^20 + x^^17 + x^^16 + x^^15 + x^^12 + x^^11 + x^^5 + x^^3 + x + 1 |>
 
@@ -227,7 +227,7 @@ property CRC32_DTest =
 
 ### MPEG2
 
-```
+```cryptol
 CRC32_MPEG2 = CRC G undefined undefined undefined undefined
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
@@ -238,7 +238,7 @@ property CRC32_MPEG2Test =
 
 ### POSIX
 
-```
+```cryptol
 CRC32_POSIX = CRC G undefined undefined undefined undefined
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
@@ -249,7 +249,7 @@ property CRC32_POSIXTest =
 
 ### Q
 
-```
+```cryptol
 CRC32_Q = CRC G undefined undefined undefined undefined
   where G = <| x^^32 + x^^31 + x^^24 + x^^22 + x^^16 + x^^14 + x^^8 + x^^7 + x^^5 + x^^3 + x + 1 |>
 
@@ -260,7 +260,7 @@ property CRC32_QTest =
 
 ### JAMCRC
 
-```
+```cryptol
 CRC32_JAMCRC = CRC G undefined undefined undefined undefined
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
@@ -271,7 +271,7 @@ property CRC32_JAMCRCTest =
 
 ### XFER
 
-```
+```cryptol
 CRC32_XFER = CRC G undefined undefined undefined undefined
   where G = <| x^^32 + x^^7 + x^^5 + x^^3 + x^^2 + x + 1 |>
 

@@ -19,7 +19,7 @@ draws from and cites [Galois, Inc.'s
 example](https://github.com/GaloisInc/cryptol/blob/master/examples/funstuff/NQueens.cry)
 [1].
 
-```
+```cryptol
 module labs::Demos::NQueens where
 ```
 
@@ -28,7 +28,7 @@ the [Cartesian
 product](https://en.wikipedia.org/wiki/Cartesian_product) of two
 sequences:
 
-```
+```cryptol
 /** Cartesian product of sequences `X` and `Y` */
 product : {n, m, a, b} (fin m) => [n]a -> [m]b -> [n * m](a, b)
 product X Y = [ (i, j) | i <- X, j <- Y ]
@@ -40,7 +40,7 @@ sequence of column positions within each row of the board) are
 unique.  (If not, then at least two queens are in the same column,
 violating the N-Queens constraint.)
 
-```
+```cryptol
 /** whether sequence `X` comprises unique items */
 distinct : {a, n} (Cmp a, fin n, n >= 1) => [n]a -> Bit
 distinct X = U == zero
@@ -72,7 +72,7 @@ Next, we declare some type aliases to represent a chess `Board` and
 the `Position`s of queens on the board. A (proposed) `Solution` is a
 `Board` that meets (or violates) the N-Queens constraint.
 
-```
+```cryptol
 /** row or column position in [0, `n`) */
 type Position n = [width (n-1)]
 
@@ -90,7 +90,7 @@ dual use for sequence indexing severely hinders performance for
 Next, we define a function to check whether two queens on the board
 can "see" each other diagonally:
 
-```
+```cryptol
 /**
  * whether queens in rows `i` and `j` of `Q` can see each other
  * diagonally
@@ -113,7 +113,7 @@ Next, we follow suit from [1] and define a function to return all
 possible row/column positions on a board (the Cartesian product of
 board positions):
 
-```
+```cryptol
 /** board positions (Cartesian product of row `Position`s) */
 ijs : {n} (fin n, n >= 1) => [_](Position n, Position n)
 ijs = product P P
@@ -124,7 +124,7 @@ ijs = product P P
 As in [1], we define a function returning whether a `Position` within
 a row is actually on the board:
 
-```
+```cryptol
 /** whether `x` is in a valid row `Position` of `Board` `Q` */
 inRange : {n} (fin n, n >= 1) => Board n -> Position n -> Bit
 inRange Q x = x <= `(n - 1)
@@ -134,7 +134,7 @@ We can now define the N-Queens constraint: a `Board` is a `Solution`
 to N-Queens iff all queens are on the board and cannot see each
 other:
 
-```
+```cryptol
 /** whether `Board` `Q` satisfies the N-Queens constraint */
 nQueens : {n} (fin n, n >= 1, width (n-1) > 1) => Solution n
 nQueens Q =

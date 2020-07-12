@@ -43,7 +43,7 @@ unit. The KLI20 uses a mix of [CRC](../CRC/CRC.md),
 [KW-AE](../KeyWrapping/KeyWrapping.md), and
 [Salsa20](../Salsa20/Salsa20.md) to encrypt and decrypt messages.
 
-```
+```cryptol
 module labs::LoremIpsum::LoremIpsum where
 ```
 
@@ -397,7 +397,7 @@ key generation specification. First, wrap the `secretKey` with the
 `KEK`, both found below, using all approved issue numbers to create a
 suite of LoremIpsum keys.
 
-```
+```cryptol
 TestKEK = 0x3d43108b5b243b90dda78f75736cc629
 
 secretKey = 0x569b79f606aba26f4263b7147ba3c5e0
@@ -407,7 +407,7 @@ Then, feed the keys you create into the [KLI20](KLI20.cry) device
 (provided in this same repository) to decrypt the following secret
 messages:
 
-```
+```cryptol
 secretMessageIssue0 = 0x0d84af8336884da53714f6eafa2bf80f38e5028d208ce39c8d78a1f768738413aa577598816241adf3077e2587ffbd7456e8583a2155e6411dc64a15e414bafc2556184488a353c54d5f274c2b54eef4ef7ebd8d9a7f13137e6bacf1b7ff605dd55443d7a980e7ba298919fd432be0082699ece1d8c1f8e0849bcc1beb07a2c005c622ae1e5fe79e43ae31f0a1c13b9baa045ceeb9a43ee47a7d09702187c8f8ab51309c308f1b7d22ac2bc2da49487c88ebd527127a709da2418c35
 
 secretMessageIssue1 = 0x7f0f165e95c728ab1d1c07aa3c12cc10d5a975394c37eb5870be8b5495334ff472c5192b9f97faea063540b5f11d51fdbbdb4117ea9612cc0c6b42c3b70dab7615cd

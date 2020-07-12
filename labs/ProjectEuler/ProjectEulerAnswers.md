@@ -12,7 +12,7 @@ cryptol> :m labs::ProjectEuler::ProjectEulerAnswers
 We start by defining a new module for this lab and importing some accessory
 modules that we will use:
 
-```
+```cryptol
 module labs::ProjectEuler::ProjectEulerAnswers where
 
 import labs::ProjectEuler::cipher1
@@ -30,7 +30,7 @@ import labs::ProjectEuler::cipher2
 > There exists exactly one Pythagorean triplet for which a + b +
 > c = 1000. Find this triple.
 
-```
+```cryptol
 pythagoreantriple : Integer -> Integer -> Integer -> Bit
 property pythagoreantriple a b c =
     a^^2 + b^^2 == c^^2 /\
@@ -59,11 +59,7 @@ property pythagoreantriple a b c =
  representation. Finally, it can be shown that the most number of
  digits a factorion can have is 6.
 
-```
-factorial :
-    {b}
-    (Arith b, Cmp b, Literal 362880 b) =>
-    b -> b
+```cryptol
 factorial n = if n == 2 then      2 else
               if n == 3 then      6 else
               if n == 4 then     24 else
@@ -74,53 +70,25 @@ factorial n = if n == 2 then      2 else
               if n == 9 then 362880 else
               1
 
-powersoften :
-    {a}
-    (Arith a, Literal 10 a) =>
-    [inf]a
 powersoften = [1] # [ 10 * i | i <- powersoften ]
 
-alldigits :
-    {a, b}
-    (fin a, Arith b, Cmp b, Literal 10 b) =>
-    [a]b -> Bit
 alldigits l = [ 0 <= i /\ i < 10 | i <- l ] == ~0
 
-matchdigits :
-    {n, a}
-    (Arith a, Literal 10 a, fin n) =>
-    [n]a -> [n]a
 matchdigits l =
     [ i * t
     | i <- reverse l
     | t <- powersoften ]
 
-formnumber :
-    {a, b}
-    (fin a, Arith b, Literal 10 b) =>
-    [a]b -> b
 formnumber l =
     sum (matchdigits l)
 
-basetenrep :
-    {a, b}
-    (fin a, a >= 1, Arith b, Cmp b, Literal 10 b) =>
-    b -> [a]b -> Bit
 basetenrep n l =
     n == formnumber l /\
     alldigits l       /\
     head l != 0
 
-sumfactorial :
-    {a, b}
-    (fin a, Arith b, Cmp b, Literal 362880 b) =>
-    [a]b -> b
 sumfactorial l = sum [ factorial i | i <- l ]
 
-factorionprop :
-    {a, b}
-    (fin a, a >= 1, Arith b, Cmp b, Literal 362880 b) =>
-    b -> [a]b -> Bit
 property factorionprop n l =
     basetenrep n l       /\
     sumfactorial l == n
@@ -128,23 +96,30 @@ property factorionprop n l =
 
 ```shell
 labs::ProjectEuler::ProjectEulerAnswers> :s satNum=all
-labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop`{1, Integer}
-factorionprop`{1, Integer} 2 [2] = True
-factorionprop`{1, Integer} 1 [1] = True
-labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop`{2, Integer}
+labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [1]Integer -> _
+Satisfiable
+(factorionprop : _ -> [1]Integer -> _) 2 [2] = True
+(factorionprop : _ -> [1]Integer -> _) 1 [1] = True
+(Total Elapsed Time: 0.029s, using "Z3")
+labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [2]Integer -> _ :sat factorionprop : _ -> [2]Integer -> _
 Unsatisfiable
-labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop`{3, Integer}
-factorionprop`{3, Integer} 145 [1, 4, 5] = True
-labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop`{4, Integer}
+(Total Elapsed Time: 0.038s, using "Z3")
+labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [3]Integer -> _
+Satisfiable
+(factorionprop : _ -> [3]Integer -> _) 145 [1, 4, 5] = True
+(Total Elapsed Time: 0.048s, using "Z3")
+labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [4]Integer -> _
 Unsatisfiable
-labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop`{5, Integer}
-factorionprop`{5, Integer} 40585 [4, 0, 5, 8, 5] = True
-labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop`{6, Integer}
+(Total Elapsed Time: 0.136s, using "Z3")
+labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [5]Integer -> _
+Satisfiable
+(factorionprop : _ -> [5]Integer -> _) 40585 [4, 0, 5, 8, 5] = True
+(Total Elapsed Time: 0.404s, using "Z3")
+labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [6]Integer -> _
 Unsatisfiable
+Unsatisfiable
+(Total Elapsed Time: 53.026s, using "Z3")
 ```
-
-*Note*: The runtimes are not being reported correctly so we've removed
- them from the demonstration. Sorry!
 
 
 ### [Problem 36](https://projecteuler.net/problem=36)
@@ -155,7 +130,7 @@ Unsatisfiable
 > and base 2. (Please note that the palindromic number, in either
 > base, may not include leading zeros.)
 
-```
+```cryptol
 carrymult :
     {a}
     (fin a) =>
@@ -215,7 +190,7 @@ doublepalindrome`{3, 10} 717 [7, 1, 7] = True
 >
 > Find at least two 0 to 9 pandigital numbers with this property.
 
-```
+```cryptol
 listhasdigit :
     {a, b}
     (fin a, a >=1, Cmp b) =>
@@ -271,7 +246,7 @@ pandigital 1460357289 [1, 4, 6, 0, 3, 5, 7, 2, 8, 9] = True
 > Find the smallest positive integer, x, such that 2x, 3x, 4x, 5x, and
 > 6x, all contain the same digits.
 
-```
+```cryptol
 twolistssamedigits :
     {a, b}
     (fin a, a >=1, Cmp b) =>
@@ -279,10 +254,10 @@ twolistssamedigits :
 twolistssamedigits l1 l2 =
     [ listhasdigit l1 i | i <- l2 ] == ~0
 
-productdigits :
-    {a, b}
-    (fin a, a >= 1, Cmp b, Arith b, Literal 10 b) =>
-    b -> [6][a]b -> Bit
+//productdigits :
+//    {a, b}
+//    (fin a, a >= 1, Cmp b, Arith b, Literal 10 b) =>
+//    b -> [6][a]b -> Bit
 property productdigits n ls =
     basetenrep n l1                 /\
     alltwolists                     /\
@@ -343,7 +318,7 @@ Note: cipher1.cry contains a different cipher encrypted under a
 different key from the original. The original Project Euler problem
 can be found in cipher2.cry.
 
-```
+```cryptol
 containsWords :
     {a, b}
     (fin a, a >= 2, fin b) =>
@@ -408,7 +383,7 @@ labs::ProjectEuler::ProjectEulerAnswers> decrypt cipher1 "aba"
 > analyse the file so as to determine the shortest possible secret
 > passcode of unknown length.
 
-```
+```cryptol
 passcode :
     {a}
     (fin a, a >= 1) =>
@@ -456,7 +431,7 @@ labs::ProjectEuler::ProjectEulerAnswers> :sat \(x : [32]) -> x > 999 /\ x ^^ 2 %
 (\(x : [32]) -> x > 999 /\ x ^^ 2 % 10000 == x) 9376 = True
 ```
 
-```
+```cryptol
 squaredrop :
     {a}
     (fin a, a>=2, a%2 == 0) =>
