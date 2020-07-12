@@ -61,7 +61,7 @@ That was a pretty vague and long-winded bloviation about the humble
 one-time pad. We could use Cryptol to express this algorithm clearly
 and concisely (provided the audience can read the language).
 
-```
+```cryptol
 module labs::Demos::OneTimePad where
 
 /** Encrypt plaintext `pt` using pre-shared key `psk` */

@@ -11,7 +11,7 @@ cryptol> :m labs::saw::bittwiddling::bittwiddling_answers
 
 We start by defining a new module for this lab:
 
-```
+```cryptol
 module labs::saw::bittwiddling::bittwiddling_answers where
 ```
 
@@ -66,12 +66,12 @@ and one for a double word (64 bits).
 word. Use the three properties below to help you verify that your
 function works correctly.
 
-```
+```cryptol
 parity : {n} (fin n) => [n] -> Bit
 parity w = foldl (^) False w
 ```
 
-```
+```cryptol
 property parity8bitProp =
     parity 0x01 == True  /\
     parity 0x00 == False /\
@@ -79,7 +79,7 @@ property parity8bitProp =
     parity 0xef == True
 ```
 
-```
+```cryptol
 property parity32bitProp =
     parity 0x00000001 == True  /\
     parity 0x00000000 == False /\
@@ -87,7 +87,7 @@ property parity32bitProp =
     parity 0x7fffffff == True
 ```
 
-```
+```cryptol
 property parity64bitProp =
     parity 0x0000000000000001 == True  /\
     parity 0x0000000000000000 == False /\
@@ -101,12 +101,12 @@ property parity64bitProp =
 example, `0b10101010` should map to `0b01010101`. Use the property
 below to verify that your function works correctly.
 
-```
+```cryptol
 reverseByte : [8] -> [8]
 reverseByte b = reverse b
 ```
 
-```
+```cryptol
 property reverseByteProp =
     reverseByte 0x01 == 0x80 /\
     reverseByte 0xaa == 0x55
@@ -121,14 +121,14 @@ zero byte (the second byte) but `0x10011111` does not (the first byte
 is `0x10` while the second byte is `0x01`). Use the property below to
 help you verify that your function works correctly.
 
-```
+```cryptol
 anyZeroByte : {n} (fin n) => [n*8] -> Bit
 anyZeroByte w = any ((==) 0) bytes
   where
     bytes = groupBy`{8} w
 ```
 
-```
+```cryptol
 property anyZeroByteProp =
     anyZeroByte 0x10011001 == False /\
     anyZeroByte 0x00112233 == True

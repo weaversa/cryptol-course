@@ -12,7 +12,7 @@ cryptol> :m labs::ProjectEuler::ProjectEuler
 We start by defining a new module for this lab and importing some accessory
 modules that we will use:
 
-```
+```cryptol
 module labs::ProjectEuler::ProjectEuler where
 
 import labs::ProjectEuler::cipher1
@@ -28,7 +28,7 @@ refresher, let's look at a simple example.  Suppose we want to find
 the integer that is one less than 1001 (as we said, it's very simple).
 We do this by creating a function and a `property`:
 
-```
+```cryptol
 inc : Integer -> Integer
 inc x = x + 1
 
@@ -58,7 +58,7 @@ inc1001 1000 = True
 ```
 Let's do a more complicated example: use Cryptol to factor 3,000,013.
 
-```
+```cryptol
 factor3000013 : Integer -> Integer -> Bit
 factor3000013 x y =
     x * y == 3000013 /\

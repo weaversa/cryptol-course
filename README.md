@@ -22,26 +22,40 @@ alongside and edited while you work through the labs. For instance,
 you might be asked to fill in a portion of a Cryptol snippet:
 
 ```comment
-algebra_fact : Integer -> Integer -> Bit
-property algebra_fact x y =
-    //  Use the distributive law to write an equivalent statement
-    (x + y) * (x + y) == undefined
+CBCEncrypt : {n} (fin n) => ([128] -> [128]) -> [128] -> [n][128] -> [n][128]
+CBCEncrypt Ek iv pt = undefined
+    //  Implement a parameterized version of the CBC encryption mode
+
+CBCDecrypt : {n} (fin n) => ([128] -> [128]) -> [128] -> [n][128] -> [n][128]
+CBCDecrypt Dk iv ct = undefined
+    //  Implement a parameterized version of the CBC decryption mode
 ```
 
 A student might solve this problem by changing this snippet in their
 editor to the following:
 
-```
-algebra_fact : Integer -> Integer -> Bit
-property algebra_fact x y =
-    (x + y) * (x + y) == x^^2 + 2*x*y + y^^2
+```cryptol
+CBCEncrypt : {n} (fin n) => ([128] -> [128]) -> [128] -> [n][128] -> [n][128]
+CBCEncrypt Ek iv pt =
+    [ Ek (pi ^ ci) | pi <- pt | ci <- [iv] # CBCEncrypt Ek iv pt ]
+
+CBCDecrypt : {n} (fin n) => ([128] -> [128]) -> [128] -> [n][128] -> [n][128]
+CBCDecrypt Dk iv ct =
+    [ Dk ci ^ ci' | ci <- ct | ci' <- [iv] # ct ]
 ```
 
 and then reloading the module using `:reload` (`:r` for short).
 
 Exercises will often have checks that follow along with instructions
-for how to verify their work. Check your answer with the following
-command; your output should look similar to the following:
+for how to verify their work. For example:
+
+```cryptol
+property CBCInverts iv (pt : [100][128]) =
+    CBCDecrypt (\x -> x - 1) iv (CBCEncrypt (\x -> x + 1) iv pt) == pt
+```
+
+Check your answer with the following command; your output should look
+similar to the following:
 
 ```shell
  $ cryptol
@@ -54,9 +68,9 @@ command; your output should look similar to the following:
  Cryptol> :load README.md
  Loading module Cryptol
  Loading module Main
- Main> :prove algebra_fact
+ Main> :prove CBCInverts
  Q.E.D.
- (Total Elapsed Time: 0.056s, using Z3)
+ (Total Elapsed Time: 0.081s, using Z3)
 ```
 
 Don't worry if Cryptol is not on your system -- the first lab walks

@@ -27,7 +27,7 @@ have this lab and the specification document open side-by-side.
 First, since we are creating a module, the first line needs to be the
 module definition.
 
-```
+```cryptol
 module labs::Salsa20::Salsa20 where
 ```
 
@@ -45,7 +45,7 @@ This is an opportunity for us to specify a representation in our
 specification. Here, we define `Bytes` as a new type synonym for a
 sequence of `n` 8-bit words.
 
-```
+```cryptol
 type Bytes n = [n][8]
 ```
 
@@ -56,7 +56,7 @@ This section defines **word** to be an element of {0,1,...,2^32 -
 1}. Similarly to `Bytes` above, we define `Words` as a new type
 synonym for a sequence of `n` 32-bit words.
 
-```
+```cryptol
 type Words n = [n][32]
 ```
 
@@ -65,7 +65,7 @@ expressed in hexadecimal throughout the rest of the document. Here, we
 show that Cryptol natively agrees with this expression by encoding the
 example as a property.
 
-```
+```cryptol
 property hexadecimalProp =
     (0xc0a8787e == 12 * (2^^28)
                  +  0 * (2^^24)
@@ -110,7 +110,7 @@ This section then defines the **sum** of two words and provides an
 example. Here, we show that Cryptol's `+` operator agrees with this
 definition of sum by encoding the example as a property.
 
-```
+```cryptol
 property sumProp =
     0xc0a8787e + 0x9fd1161d == 0x60798e9b
 ```
@@ -120,7 +120,7 @@ examples provided. One small syntactic change is needed, namely, the
 exclusive-or symbol in Cryptol is `^` rather than ⊕. So, in Cryptol,
 these examples become:
 
-```
+```cryptol
 property exclusiveOrProp =
     0xc0a8787e ^ 0x9fd1161d == 0x5f796e63
 
@@ -140,7 +140,7 @@ This section begins by giving the type of the quarterround function as:
 
 In Cryptol, we would write this type as:
 
-```
+```cryptol
 quarterround : Words 4 -> Words 4
 ```
 
@@ -152,7 +152,7 @@ required, namely, sequences in Cryptol are book-ended by `[]` rather
 than `()` and commas are not needed after statements in a where
 clause.
 
-```
+```cryptol
 quarterround [y0, y1, y2, y3] = [z0, z1, z2, z3] where
     z1 = y1 ^ ((y0 + y3) <<< 7)
     z2 = y2 ^ ((z1 + y0) <<< 9)
@@ -167,7 +167,7 @@ to provide evidence that quarterround was implemented correctly. Here
 we create a property that will verify whether quarterround works
 correctly on the provided example pairs.
 
-```
+```cryptol
 property quarterroundExamplesProp =
     (quarterround [0x00000000, 0x00000000, 0x00000000, 0x00000000]
                == [0x00000000, 0x00000000, 0x00000000, 0x00000000]) /\
@@ -239,7 +239,7 @@ every pair of different inputs causes the function to produce
 different outputs. We can now encode this (almost verbatim) into a
 Cryptol property.
 
-```
+```cryptol
 property quarterroundIsInjectiveProp x x' =
     x != x' ==> quarterround x != quarterround x'
 ```
@@ -299,7 +299,7 @@ input-output pairs as property statements so you can check your work.
 
 ### Inputs and outputs
 
-```
+```cryptol
 rowround : Words 16 -> Words 16
 ```
 
@@ -312,7 +312,7 @@ the Salsa20 specification. You'll know you've gotten it right when it
 looks like the specification and when `:prove rowroundExamplesProp`
 gives `Q.E.D`.
 
-```
+```cryptol
 rowround [y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14, y15] =
     [z0, z1, z2, z3, z4, z5, z6, z7, z8, z9, z10, z11, z12, z13, z14, z15]
   where
@@ -325,7 +325,7 @@ rowround [y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14, y15] 
 
 ### Examples
 
-```
+```cryptol
 property rowroundExamplesProp =
     (rowround [0x00000001, 0x00000000, 0x00000000, 0x00000000,
                0x00000001, 0x00000000, 0x00000000, 0x00000000,
@@ -351,7 +351,7 @@ property rowroundExamplesProp =
 The comments in this section hint at an optimized way to perform
 `rowround`. Here is one such optimized function:
 
-```
+```cryptol
 rowroundOpt : Words 16 -> Words 16
 rowroundOpt ys =
     join [ quarterround (yi <<< i) >>> i
@@ -366,7 +366,7 @@ necessary to go through this exercise to create a complete Salsa20
 specification, but it's a good opportunity here to learn more about
 Cryptol's properties.
 
-```
+```cryptol
 property rowroundOptProp ys = undefined
 ```
 
@@ -375,7 +375,7 @@ property rowroundOptProp ys = undefined
 
 ### Inputs and outputs
 
-```
+```cryptol
 columnround : Words 16 -> Words 16
 ```
 
@@ -388,7 +388,7 @@ the Salsa20 specification. You'll know you've gotten it right when it
 looks like the specification and when `:prove columnroundExamplesProp`
 gives `Q.E.D`.
 
-```
+```cryptol
 columnround [x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15] =
     [y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14, y15]
   where
@@ -401,7 +401,7 @@ columnround [x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x1
 
 ### Examples
 
-```
+```cryptol
 property columnroundExamplesProp =
     (columnround [0x00000001, 0x00000000, 0x00000000, 0x00000000,
                   0x00000001, 0x00000000, 0x00000000, 0x00000000,
@@ -446,7 +446,7 @@ these three operations. Please replace the `undefined` symbol below
 with an appropriate rejigger function and use it to prove that
 `columnround` is the transpose of `rowround`.
 
-```
+```cryptol
 property columnroundIsTransposeOfRowround ys =
     columnround ys == rejigger (rowround (rejigger ys))
   where
@@ -459,7 +459,7 @@ property columnroundIsTransposeOfRowround ys =
 
 ### Inputs and outputs
 
-```
+```cryptol
 doubleround : Words 16 -> Words 16
 ```
 
@@ -472,14 +472,14 @@ the Salsa20 specification. You'll know you've gotten it right when it
 looks like the specification and when `:prove doubleroundExamplesProp`
 gives `Q.E.D`.
 
-```
+```cryptol
 doubleround xs = undefined
 ```
 
 
 ### Examples
 
-```
+```cryptol
 property doubleroundExamplesProp =
     (doubleround [0x00000001, 0x00000000, 0x00000000, 0x00000000,
                   0x00000000, 0x00000000, 0x00000000, 0x00000000,
@@ -511,7 +511,7 @@ we'll move on.
 
 ### Inputs and outputs
 
-```
+```cryptol
 littleendian : Bytes 4 -> [32]
 ```
 
@@ -532,14 +532,14 @@ create new 32-bit variables that are `b0` through `b3` each padded
 with 24 zeroes, and then do the arithmetic in the
 specification. However, there is a much simpler solution. Good luck!
 
-```
+```cryptol
 littleendian [b0, b1, b2, b3] = undefined
 ```
 
 
 ### Examples
 
-```
+```cryptol
 property littleendianExamplesProp =
     (littleendian [  0,   0,   0,   0] == 0x00000000) /\
     (littleendian [ 86,  75,  30,   9] == 0x091e4b56) /\
@@ -562,12 +562,12 @@ inverse to `littleendian`. Please replace the `undefined` symbol with
 the appropriate logic such that `:prove littleendianInverseProp` gives
 `Q.E.D`.
 
-```
+```cryptol
 littleendian' : {n} (fin n) => [n*8] -> Bytes n
 littleendian' w = undefined
 ```
 
-```
+```cryptol
 property littleendianInverseProp b = littleendian' (littleendian b) == b
 ```
 
@@ -589,7 +589,7 @@ the times and name this function `Salsa20Core`.
 
 ### Inputs and outputs
 
-```
+```cryptol
 Salsa20Core : Bytes 64 -> Bytes 64
 ```
 
@@ -611,7 +611,7 @@ operation can be simply described in four steps:
 replace the `undefined` symbol with the appropriate logic such that
 `:prove Salsa20CoreExamplesProp` gives `Q.E.D`.
 
-```
+```cryptol
 Salsa20Core x = x'
   where
     //Step 1
@@ -627,7 +627,7 @@ Salsa20Core x = x'
 
 ### Examples
 
-```
+```cryptol
 property Salsa20CoreExamplesProp =
     (Salsa20Core [  0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
                     0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,   0,
@@ -677,7 +677,7 @@ it's two, the function expects a 32-byte `k`. We also constrain `k`
 (using _type constraints_) to only be able to take on the value one or
 two.
 
-```
+```cryptol
 Salsa20Expansion :
     {a}
     (a >= 1, 2 >= a) =>
@@ -723,14 +723,13 @@ fill in the definition of the function such that `:prove
 Salsa20ExpansionExamplesProp` gives `Q.E.D`. You'll likely want to add
 a `where` clause as well.
 
-```
+```cryptol
 Salsa20Expansion k n = undefined
-
 ```
 
 ### Examples
 
-```
+```cryptol
 property Salsa20ExpansionExamplesProp =
     (Salsa20Expansion (k0#k1) n ==
     [ 69,  37,  68,  39,  41,  15, 107, 193, 255, 139, 122,   6, 170, 233, 217,  98,
@@ -756,7 +755,7 @@ it's possible to write them out that way, but it looks much nicer to
 define them according to the ASCII values given in this Comment
 section.
 
-```
+```cryptol
 [s0, s1, s2, s3] = split "expand 32-byte k"
 [t0, t1, t2, t3] = split "expand 16-byte k"
 ```
@@ -773,7 +772,7 @@ specification language. Cryptol isn't powerful enough to actually run
 `2^^70` bytes through this function, but the constraint can still be
 expressed, if only for documentation purposes.
 
-```
+```cryptol
 Salsa20Encrypt :
     {a, l}
     (a >= 1, 2 >= a, l <= 2^^70) =>
@@ -799,7 +798,7 @@ Some hints:
   * `v` and `i` should be concatenated to be passed to
     `Salsa20Expansion`.
 
-```
+```cryptol
 Salsa20Encrypt k v m = c
   where
     c = m ^ undefined
@@ -825,7 +824,7 @@ So, here we decided to take two of the test vectors from the defunct
 site and rework them with a random message, simply so that you can
 test your `Salsa20Encrypt` function against them.
 
-```
+```cryptol
 property Salsa20EncryptExamplesProp =
     (Salsa20Encrypt [0x00, 0x53, 0xa6, 0xf9, 0x4c, 0x9f, 0xf2, 0x45,
                      0x98, 0xeb, 0x3e, 0x91, 0xe4, 0x37, 0x8a, 0xdd]

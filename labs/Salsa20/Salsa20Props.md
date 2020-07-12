@@ -13,7 +13,7 @@ In this lab, we consider additional properties of the [Salsa20 stream
 cipher](Salsa20Spec.md) [5], which has undergone much scrutiny since
 being proposed for [eSTREAM, the ECRYPT Stream Cipher Project](https://www.ecrypt.eu.org/stream).
 
-```
+```cryptol
 module labs::Salsa20::Salsa20Props where
 
 import labs::Salsa20::Salsa20Answers
@@ -36,14 +36,14 @@ property for each that attempts to prove invertibility.
 
 ### rowround
 
-```
+```cryptol
 property rowroundIsInvertibleProp y y' = undefined
 ```
 
 
 ### columnround
 
-```
+```cryptol
 property columnroundIsInvertibleProp x x' = undefined
 ```
 
@@ -55,7 +55,7 @@ the `z3` solver. It may also seem a bit frustrating to have to wait,
 but please keep in mind that the solver is searching over a space of
 about `2^^1024` possibilities.
 
-```
+```cryptol
 property doubleroundIsInvertibleProp xs xs' = undefined
 ```
 
@@ -127,7 +127,7 @@ Theorem 6 states the collision property for `Salsa20Core`:
 > of the `Salsa20` "hash" [core] function, producing `h` (defined
 > below) as a common hash value.
 >
-> ```
+> ```comment
 > M =  [  Z , -Z ,  Z , -Z
 >      , -Z ,  Z , -Z ,  Z
 >      ,  Z , -Z ,  Z , -Z
@@ -147,7 +147,7 @@ Bytes 64`.  Thus, we will reshape `Salsa20Core` before proceeding:
 `Words 16` rather than `Bytes 64`: (Hint: This can be defined in one
 line with `doubleround`, `iterate`, and basic Cryptol operators.)
 
-```
+```cryptol
 /** `Salsa20Core` equivalent over `Words 16` */
 Salsa20Core' : Words 16 -> Words 16
 Salsa20Core' x = undefined
@@ -155,7 +155,7 @@ Salsa20Core' x = undefined
 
 **EXERCISE**: Verify that `Salsa20Core'` agrees with `Salsa20Core`:
 
-```
+```cryptol
 property Salsa20CoreEquivProp w =
     Salsa20Core' (rejigger w) == rejigger (Salsa20Core w)
   where
@@ -170,7 +170,7 @@ extra credit).
 
 **EXERCISE** Formalize Theorem 6:
 
-```
+```cryptol
 Salsa20CoreCollidesProp : [32] -> Bit
 property Salsa20CoreCollidesProp Z =
     h == h'
@@ -197,7 +197,7 @@ the original plaintext.
 **EXERCISE**: Specify that `Salsa20_encrypt` is an involution and use
 the myriad of properties below to help verify your work.
 
-```
+```cryptol
 Salsa20EncryptInvolutionProp :
     {a, l}
     (a >= 1, 2 >= a, l <= 2^^70) =>
@@ -206,7 +206,7 @@ Salsa20EncryptInvolutionProp k v m = undefined
 ```
 
 
-```
+```cryptol
 property Salsa20EncryptInvolutionProp_1_1 = Salsa20EncryptInvolutionProp`{1,1}
 property Salsa20EncryptInvolutionProp_1_8 = Salsa20EncryptInvolutionProp`{1,8}
 property Salsa20EncryptInvolutionProp_1_64 = Salsa20EncryptInvolutionProp`{1,64}
