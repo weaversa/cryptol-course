@@ -5,18 +5,14 @@ powerful theorem proving tools to explore their code.
 
 ## Prerequisites
 
-Before working through this lab, you'll need Cryptol to be installed
-and this module to load succesfully. You'll also need
-
+Before working through this lab, you'll need 
+  * Cryptol to be installed,
+  * this module to load succesfully,
   * an editor for completing the exercises in this file,
-
   * basic knowledge of using the Cryptol interpreter to load this
     module and evaluate functions,
-
   * basic knowledge about Cryptol's bitvector and `Integer` types,
-
   * basic knowledge about using functions with curried parameters, and
-
   * experience with Cryptol's `/\`, `\/`, `#`, `foldl`, `join`,
     `split`, and `take` operators.
 
@@ -27,13 +23,9 @@ five powerful classes of proofs that can be applied to a wide variety
 of cryptographic algorithms.
 
 You'll also learn
-
   * basic knowledge of lambda functions,
-
   * advanced knowledge of Cryptol's `:prove` and `:sat`,
-
   * experience with different provers, and
-
   * experience with `==>`.
   
 ## Load This Module
