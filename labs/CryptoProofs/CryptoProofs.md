@@ -15,9 +15,9 @@ and this module to load succesfully. You'll also need
 
   * basic knowledge about Cryptol's bitvector and `Integer` types,
 
-  * basic knowledge about using functions with curried parameters,
+  * basic knowledge about using functions with curried parameters, and
 
-  * and experience with Cryptol's `/\`, `\/`, `#`, `foldl`, `join`,
+  * experience with Cryptol's `/\`, `\/`, `#`, `foldl`, `join`,
     `split`, and `take` operators.
 
 ## Skills You'll Learn
@@ -32,9 +32,9 @@ You'll also learn
 
   * advanced knowledge of Cryptol's `:prove` and `:sat`,
 
-  * experience with different provers,
+  * experience with different provers, and
 
-  * and experience with `==>`.
+  * experience with `==>`.
   
 ## Load This Module
 
