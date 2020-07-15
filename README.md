@@ -90,22 +90,22 @@ you through [installing and running Cryptol](INSTALL.md).
     * [Demos](labs/Demos/Demos.md): Lightweight walkthroughs with no
       exercises that demonstrate common concepts.
 5. [Cyclic Redundancy Checks](labs/CRC/CRC.md): Create your first
-   specification!
+   specification.
 6. [Salsa20](labs/Salsa20/Salsa20.md): Create your second
-   specification!
-7. [Salsa20 Properties](labs/Salsa20/Salsa20Props.md): Learn how to
-   prove some properties about your Salsa20 specification.
-8. [Prove Cryptographic
+   specification.
+7. [Prove Cryptographic
    Properties](labs/CryptoProofs/CryptoProofs.md): Learn about common
    cryptographic properties and how to prove them with Cryptol.
+    * [Salsa20 Properties](labs/Salsa20/Salsa20Props.md): Prove some
+      cryptographic properties about Salsa20.
     * [Project Euler](labs/ProjectEuler/ProjectEuler.md): If you
-      enjoyed the last lab, why not try you hand at using Cryptol's
+      enjoyed the last lab, why not try your hand at using Cryptol's
       connection to automated provers (SMT solvers) to solve some
       computational puzzles.
-9. [Methods for Key Wrapping](labs/KeyWrapping/KeyWrapping.md):
+8. [Methods for Key Wrapping](labs/KeyWrapping/KeyWrapping.md):
    Create a Cryptol specification of NIST's [SP800-38F key wrap
    standard](https://csrc.nist.gov/publications/detail/sp/800-38f/final).
-10. [Capstone: Putting it all
+9. [Capstone: Putting it all
    together](labs/LoremIpsum/LoremIpsum.md): Decrypt a series of
    secret messages by feeding wrapped keys into the anomalous KLI20
    cryptographic engine. Success here requires use of modules and concepts
@@ -114,8 +114,9 @@ you through [installing and running Cryptol](INSTALL.md).
 
 ## Graphical View of the Course
 
-Our suggested flow would be to follow the red line. Dependencies are
-given by black lines.
+The suggested flow is to follow the red line. The black lines indicate
+labs designed to give you more opportunities to practice Cryptol, but
+are not strictly necessary for course completion.
 
 <img class="center" src="https://raw.githubusercontent.com/weaversa/cryptol-course/master/misc/deps.svg" alt="Dependencies and Suggested Course Flow">
 
