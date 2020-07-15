@@ -9,8 +9,8 @@ Before working through this lab, you'll need
   * Cryptol to be installed,
   * this module to load succesfully,
   * an editor for completing the exercises in this file,
-  * basic knowledge of using the Cryptol interpreter to load this
-    module and evaluate functions,
+  * basic knowledge of using the Cryptol interpreter to load
+    modules and evaluate functions,
   * basic knowledge about Cryptol's bitvector and `Integer` types,
   * basic knowledge about using functions with curried parameters, and
   * experience with Cryptol's `/\`, `\/`, `#`, `foldl`, `join`,
@@ -18,13 +18,13 @@ Before working through this lab, you'll need
 
 ## Skills You'll Learn
 
-By the end of this lab, you will be able to describe and demonstrate
+By the end of this lab you will be able to describe and demonstrate
 five powerful classes of proofs that can be applied to a wide variety
 of cryptographic algorithms.
 
-You'll also learn
-  * basic knowledge of lambda functions,
-  * advanced knowledge of Cryptol's `:prove` and `:sat`,
+You'll also gain
+  * intermediate knowledge of lambda functions,
+  * intermediate knowledge of Cryptol's `:prove` and `:sat` commands,
   * experience with different provers, and
   * experience with `==>`.
   
