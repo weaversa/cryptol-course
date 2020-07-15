@@ -19,6 +19,20 @@ import labs::ProjectEuler::cipher1
 import labs::ProjectEuler::keylog
 import labs::ProjectEuler::cipher2
 ```
+## Prerequisites
+
+Before working through this lab, you'll need 
+  * Cryptol to be installed,
+  * this module to load succesfully,
+  * an editor for completing the exercises in this file,
+  * basic knowledge of using the Cryptol interpreter to load
+    modules and evaluate functions,
+  * basic knowledge about Cryptol's bitvector and `Integer` types,
+  * basic knowledge of Cryptol's `:sat` and `:prove` properties,
+  * basic knowledge of list comprehensions,
+  * basic knowledge about using functions with curried parameters, and
+  * experience with Cryptol's `/\`, `\/`, `#`, `@@`, `join`,
+    `split`, and `take` operators.
 
 # Properties in Cryptol, or How I Learned to Stop Worrying and Love SAT Solvers
 
@@ -126,12 +140,14 @@ hand at.
 > included.
 
 (Aside: these numbers are called
-[factorions](https://en.wikipedia.org/wiki/Factorion).
+[factorions](https://en.wikipedia.org/wiki/Factorion))
 
-*Hints*: the factorial function is usually defined recursively, but
+*Hints*: 
+ * the factorial function is usually defined recursively, but
  that tends to make SAT solving difficult. Since you only need to
  calculate the factorial of the numbers 0-9, make your function just
- do a case by case calculation. To get the digital representation of
+ do a case by case calculation.
+ * To get the digital representation of
  the number, create a function which takes in a number and a list of
  numbers and returns `True` exactly when the list is the base 10
  representation. Finally, it can be shown that the most number of
