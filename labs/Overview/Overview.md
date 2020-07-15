@@ -20,8 +20,8 @@ Cryptol (such as the Software Analysis Workbench).
 You'll also gain
   * basic knowledge of using the Cryptol interpreter to load
     modules, evaluate functions, and browse symbols,
-  * basic knowledge of Cryptol's sequence, `Integer`, tuple, and
-    record types,
+  * basic knowledge of Cryptol's `Bit`, sequence, `Integer`, tuple,
+    and record types,
   * basic knowledge of Cryptol's `:prove` command,
   * basic knowledge of how to manipulate sequences using `take`,
     `drop`, `split`, `groupBy`, `sum`, `min`, `max`, `tail`, `last`,
