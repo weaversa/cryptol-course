@@ -1,9 +1,43 @@
 # Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
-Cryptol document --- that is, it can be loaded directly into the Cryptol
-interpreter. Load this module from within the Cryptol interpreter running
-in the `cryptol-course` directory with:
+This lab provides you an opportunity to test your mettle against some
+challenging computational puzzles. These puzzles were selected from
+[Project Euler](https://projecteuler.net/) and can be solved using
+Cryptol's automated theorem proving interface.
+
+## Prerequisites
+
+Before working through this lab, you'll need 
+  * Cryptol to be installed,
+  * this module to load succesfully,
+  * an editor for completing the exercises in this file,
+  * intermediate knowledge of using the Cryptol interpreter to load
+    modules and evaluate functions,
+  * intermediate knowledge about Cryptol's types,
+  * intermediate knowledge of Cryptol's `:sat` and `:prove` commands,
+  * intermediate knowledge of how to manipulate sequences using
+    `#`, `take`, `split`, `join`, `head`, `tail`, and `reverse`.
+  * intermediate knowledge of how to write functions and properties,
+  * intermediate knowledge of sequence comprehensions,
+  * basic knowledge about using functions with curried parameters,
+  * experience with `sum` and `carry`, and
+  * experience with logical, comparison, arithmetic, indexing,
+    slicing, and conditional operators
+
+
+## Skills You'll Learn
+
+By the end of this lab you will be a puzzle master! You'll also gain
+  * advanced knowledge of Cryptol's `:sat` and `:prove` commands, and
+  * advanced knowledge of how to write functions and properties.
+
+## Load This Module
+
+This lab is a
+[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
+document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter
+running in the `cryptol-course` directory with:
 
 ```shell
 cryptol> :m labs::ProjectEuler::ProjectEuler
@@ -19,20 +53,6 @@ import labs::ProjectEuler::cipher1
 import labs::ProjectEuler::keylog
 import labs::ProjectEuler::cipher2
 ```
-## Prerequisites
-
-Before working through this lab, you'll need 
-  * Cryptol to be installed,
-  * this module to load succesfully,
-  * an editor for completing the exercises in this file,
-  * basic knowledge of using the Cryptol interpreter to load
-    modules and evaluate functions,
-  * basic knowledge about Cryptol's bitvector and `Integer` types,
-  * basic knowledge of Cryptol's `:sat` and `:prove` properties,
-  * basic knowledge of list comprehensions,
-  * basic knowledge about using functions with curried parameters, and
-  * experience with Cryptol's `/\`, `\/`, `#`, `@@`, `join`,
-    `split`, and `take` operators.
 
 # Properties in Cryptol, or How I Learned to Stop Worrying and Love SAT Solvers
 
