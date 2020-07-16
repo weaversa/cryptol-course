@@ -1,19 +1,4 @@
-# Bit Twiddling Exercises.
-
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
-Cryptol document --- that is, it can be loaded directly into the Cryptol
-interpreter. Load this module from within the Cryptol interpreter running
-in the `cryptol-course` directory with:
-
-```shell
-cryptol> :m labs::saw::bittwiddling::bittwiddling
-```
-
-We start by defining a new module for this lab:
-
-```cryptol
-module labs::saw::bittwiddling::bittwiddling where
-```
+# Introduction
 
 Sean Eron Anderson, a former graduate student at Stanford, collected a
 large set of [Bit Twiddling
@@ -39,6 +24,46 @@ already exists in Cryptol), and they should all be relatively easy to
 read. We also included some properties to help test your code. After
 you have completed this code, you should write (from scratch) a
 SAWscript to compare the two.
+
+## Prerequisites
+
+Before working through this lab, you'll need 
+  * Cryptol and SAW to be installed,
+  * this module to load succesfully,
+  * an editor for completing the exercises in this file,
+  * intermediate knowledge of using the Cryptol interpreter to load
+    modules and evaluate functions,
+  * intermediate knowledge about Cryptol's types,
+  * intermediate knowledge of how to manipulate sequences using
+    `#`, `take`, `split`, `join`, `head`, `tail`, and `reverse`.
+  * intermediate knowledge of how to write functions and properties,
+  * intermediate knowledge of sequence comprehensions,
+  * basic knowledge about using functions with curried parameters,
+  * experience with logical, comparison, arithmetic, indexing,
+    slicing, and conditional operators
+  * a basic knowledge of C programming
+
+
+## Skills You'll Learn
+
+By the end of this lab you will gain
+  * advanced knowledge of how to write functions, and
+  * basic knowledge of writing SAWscripts.
+
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
+Cryptol document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter running
+in the `cryptol-course` directory with:
+
+```shell
+cryptol> :m labs::saw::bittwiddling::bittwiddling
+```
+
+We start by defining a new module for this lab:
+
+```cryptol
+module labs::saw::bittwiddling::bittwiddling where
+```
 
 ## Parity Exercise
 
