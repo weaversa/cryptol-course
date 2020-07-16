@@ -136,4 +136,3 @@ private
         Ps = split P
         Ks = KeySchedule K
         Cs = [Ps] # [ Rk k xy | k <- Ks | xy <- Cs]
-
