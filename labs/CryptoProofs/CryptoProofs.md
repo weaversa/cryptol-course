@@ -11,8 +11,8 @@ Before working through this lab, you'll need
   * an editor for completing the exercises in this file,
   * basic knowledge of using the Cryptol interpreter to load
     modules and evaluate functions,
-  * basic knowledge about Cryptol's bitvector and `Integer` types,
-  * basic knowledge about using functions with curried parameters, and
+  * basic knowledge of Cryptol's bitvector and `Integer` types,
+  * experience using functions with curried parameters, and
   * experience with Cryptol's `/\`, `\/`, `#`, `foldl`, `join`,
     `split`, and `take` operators.
 

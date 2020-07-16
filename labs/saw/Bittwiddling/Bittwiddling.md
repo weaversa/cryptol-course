@@ -33,12 +33,12 @@ Before working through this lab, you'll need
   * an editor for completing the exercises in this file,
   * intermediate knowledge of using the Cryptol interpreter to load
     modules and evaluate functions,
-  * intermediate knowledge about Cryptol's types,
+  * intermediate knowledge of Cryptol's types,
   * intermediate knowledge of how to manipulate sequences using
     `#`, `take`, `split`, `join`, `head`, `tail`, and `reverse`.
   * intermediate knowledge of how to write functions and properties,
   * intermediate knowledge of sequence comprehensions,
-  * basic knowledge about using functions with curried parameters,
+  * experience using functions with curried parameters,
   * experience with logical, comparison, arithmetic, indexing,
     slicing, and conditional operators
   * a basic knowledge of C programming

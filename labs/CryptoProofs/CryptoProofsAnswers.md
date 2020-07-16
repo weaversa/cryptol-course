@@ -1,8 +1,34 @@
 # Exploring Cryptography with Cryptol's Proof Tools
 
-Cryptol and SAW allow users to rapidly and transparently deploy powerful theorem proving tools to explore their code.
+Cryptol and SAW allow users to rapidly and transparently deploy
+powerful theorem proving tools to explore their code.
 
-By the end of this lab, the student will be able to describe and demonstrate five powerful classes of proofs that can be applied to a wide variety of cryptographic algorithms.
+## Prerequisites
+
+Before working through this lab, you'll need 
+  * Cryptol to be installed,
+  * this module to load succesfully,
+  * an editor for completing the exercises in this file,
+  * basic knowledge of using the Cryptol interpreter to load
+    modules and evaluate functions,
+  * basic knowledge of Cryptol's bitvector and `Integer` types,
+  * experience using functions with curried parameters, and
+  * experience with Cryptol's `/\`, `\/`, `#`, `foldl`, `join`,
+    `split`, and `take` operators.
+
+## Skills You'll Learn
+
+By the end of this lab you will be able to describe and demonstrate
+five powerful classes of proofs that can be applied to a wide variety
+of cryptographic algorithms.
+
+You'll also gain
+  * intermediate knowledge of lambda functions,
+  * intermediate knowledge of Cryptol's `:prove` and `:sat` commands,
+  * experience with different provers, and
+  * experience with `==>`.
+  
+## Load This Module
 
 This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
