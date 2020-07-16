@@ -48,7 +48,7 @@ Before working through this lab, you'll need
 
 By the end of this lab you will gain
   * advanced knowledge of how to write functions, and
-  * basic knowledge of writing SAWscripts.
+  * basic knowledge of writing SAWs.
 
 This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
