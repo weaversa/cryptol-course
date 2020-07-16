@@ -1,4 +1,26 @@
-# Introduction
+# Writing Key Wrapping Routines in Cryptol
+
+Key Wrapping is an important technique for storing and transimitting
+cryptographic keys. This module introduces a family of general purpose Key
+Wrapping algorithms.
+
+## Prerequisites
+
+Before working through this lab you should be able to
+
+ * Have familiarity with Cryptol's primitive routines and be comfortable with 
+   tools such as `:t` and `:h` and navigating the [Programming Cryptol](https://cryptol.net/files/ProgrammingCryptol.pdf) document
+ * Read and write small Cryptol methods and routines
+ * Know the difference between function parameters and type parameters
+
+## Skills You Will Learn
+
+  * Reading through a NIST standard and extracting relevant details to write a spec
+  * Implementing a block cipher mode for authenticated encryption / decryption
+  * More on type parameters and type constraints
+  * Pattern matching with function parameters
+  * Using pre-written cryptographic routines from another module
+  * How to navigate some nuances of Cryptol's type checking system
 
 This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
