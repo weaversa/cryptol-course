@@ -6,7 +6,7 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::CRC::CRCAnswers
+Cryptol> :m labs::CRC::CRCAnswers
 ```
 
 We start by defining a new module for this lab:

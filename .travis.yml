@@ -42,7 +42,7 @@ language: c
 script:
   - export CRYPTOLPATH=$(pwd)
 # Interpreter lab tests
-  - cryptol -e -c ":m labs::Interpreter::test" -c ":s base=10" -c "x + 2"
+  - cryptol -e -c ":m labs::Interpreter::Interpreter" -c ":s base=10" -c "x + 2"
 #  - cryptol -e -b labs/Interpreter/test.sry
 # Arithmetic verification tests
   - "! command -v saw >/dev/null 2>&1 || make -C labs/saw/ArithmeticVerifications"

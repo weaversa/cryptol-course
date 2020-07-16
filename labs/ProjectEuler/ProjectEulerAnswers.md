@@ -24,7 +24,6 @@ Before working through this lab, you'll need
   * experience with logical, comparison, arithmetic, indexing,
     slicing, and conditional operators
 
-
 ## Skills You'll Learn
 
 By the end of this lab you will be a puzzle master! You'll also gain
@@ -40,7 +39,7 @@ interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::ProjectEuler::ProjectEulerAnswers
+Cryptol> :m labs::ProjectEuler::ProjectEulerAnswers
 ```
 
 We start by defining a new module for this lab and importing some accessory

@@ -36,7 +36,7 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::CryptoProofs::CryptoProofs
+Cryptol> :m labs::CryptoProofs::CryptoProofs
 ```
 
 The proofs in this lab require an array of different theorem provers supported by Cryptol. In order to solve them, we recommend using the Cryptol Docker container described in the README.md for this course.

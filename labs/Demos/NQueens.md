@@ -6,7 +6,7 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::Demos::NQueens
+Cryptol> :m labs::Demos::NQueens
 ```
 
 ## Overview

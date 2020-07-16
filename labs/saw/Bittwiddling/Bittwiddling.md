@@ -43,7 +43,6 @@ Before working through this lab, you'll need
     slicing, and conditional operators
   * a basic knowledge of C programming
 
-
 ## Skills You'll Learn
 
 By the end of this lab you will gain
@@ -56,7 +55,7 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::saw::Bittwiddling::Bittwiddling
+Cryptol> :m labs::saw::Bittwiddling::Bittwiddling
 ```
 
 We start by defining a new module for this lab:

@@ -28,7 +28,7 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::KeyWrapping::KeyWrapping
+Cryptol> :m labs::KeyWrapping::KeyWrapping
 ```
 
 This lab will take the student through developing wrapping algorithms

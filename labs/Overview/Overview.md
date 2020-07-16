@@ -50,7 +50,7 @@ interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::Overview::Overview
+Cryptol> :m labs::Overview::Overview
 ```
 
 Cryptol is a domain specific language and tool suite created by
