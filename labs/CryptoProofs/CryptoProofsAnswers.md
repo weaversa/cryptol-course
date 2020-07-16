@@ -1,4 +1,4 @@
-# Exploring Cryptography with Cryptol's Proof Tools
+# Introduction
 
 Cryptol and SAW allow users to rapidly and transparently deploy
 powerful theorem proving tools to explore their code.
@@ -48,7 +48,9 @@ module definition.
 module labs::CryptoProofs::CryptoProofsAnswers where
 ```
 
-# 1. DES
+# Exploring Cryptography with Cryptol's Proof Tools
+
+## 1. DES
 
 To start, we'll analyze the DES (Data Encryption Standard) algorithm. Let's take a moment to familiarize ourselves with how it works.
 
@@ -90,7 +92,7 @@ labs::CryptoProofs::CryptoProofs> DES.decrypt 0x752979387592cb70 0xb5219ee81aa74
 
 Now that we have DES working, let's analyze it!
 
-# 2. Five Killer Apps
+## 2. Five Killer Apps
 
 For the rest of the lab, we'll be looking at some of the types of questions you can ask (and often answer!) using Cryptol's powerful automated theorem proving capabilities. These are important questions that one might ask about a cryptographic algorithm along with a generic "one-liner" Cryptol invocation. (Don't worry if you don't understand these yet.)
 
@@ -104,7 +106,7 @@ For the rest of the lab, we'll be looking at some of the types of questions you 
 
 Each subsection below will explore one of these questions in-depth.
 
-## 2.1 Function Reversal
+### 2.1 Function Reversal
 
 It may be interesting to explore whether a particular cryptographic function can be reversed. Some examples of usage:
 
@@ -204,7 +206,7 @@ To make this solvable, try it again with the first six bytes of key provided: `0
 >  0x1236 = True
 >(Total Elapsed Time: 4.764s, using "Yices")
 
-## 2.2 Proof of Inversion
+### 2.2 Proof of Inversion
 
 For symmetric ciphers, it is necessary that the decrypt function *inverts* the encrypt function. (That is, it restores the ciphertext to the original plaintext.) It is easy to express this property in Cryptol.
 
@@ -278,7 +280,7 @@ Use Cryptol to prove that `DES.encrypt` and `DES.decrypt` are inverses for all p
 >(Total Elapsed Time: 3.582s, using "ABC")
 >```
 
-## 2.3 Collision Detection
+### 2.3 Collision Detection
 
 In cryptography, a *collision* occurs when two different inputs produce the same output. For some cryptographic functions, such as pseudo-random number generators (PRNGs), it may be desirable to demonstrate an absence of collisions. In other functions, such as cryptographic hash functions, collisions are inevitable, but should be difficult to discover. It is easy in Cryptol to ask the solver to search for collisions. (Though finding a solution may not be possible.)
 
@@ -295,7 +297,7 @@ Use the solver to find two different keys and a plaintext such that both keys en
 >(Total Elapsed Time: 1.258s, using "Yices")
 >```
 
-## 2.4 Proof of Injectivity
+### 2.4 Proof of Injectivity
 
 The flipside of collision detection is proving an absence of collisions. That is, proving that every input generates a distinct output. A function with this property is referred to in mathematics as *injective* or *one-to-one*.
 
@@ -315,7 +317,7 @@ Show that, for any given key, `DES.encrypt` is injective (collision-free) with r
 >(Total Elapsed Time: 58.598s, using "Boolector")
 >```
 
-## 2.5 Equivalence Checking
+### 2.5 Equivalence Checking
 
 It's inevitable that there are collisions over the set of all key/plaintext pairs in DES, but it may be surprising that they're easy to find with Cryptol's solver. We now know that the two keys you just found encrypt one particular plaintext to the same ciphertext; more concerning would be if they perform the same transformation on *all* plaintexts. Such keys are called *equivalent* keys.
 
@@ -368,5 +370,5 @@ Given that this proof passes, what is the actual maximum key strength of DES in 
 # The end
 
 How was your experience with this lab? Suggestions are welcome in the
-form of a ticket on the course Github page:
+form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues

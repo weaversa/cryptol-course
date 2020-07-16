@@ -1,4 +1,4 @@
-# Using the Cryptol interpreter
+# Introduction
 
 This lab provides an overview of Cryptol's interpreter.
 
@@ -19,7 +19,7 @@ You'll also gain basic knowledge of
   * browsing symbols,
   * chaining commands with `let` and `it`,
   * loading and reloading modules,
-  * evaluating experssions,
+  * evaluating expressions,
   * using the built-in editor, and
   * issuing batch commands.
     
@@ -46,6 +46,8 @@ module definition.
 ```cryptol
 module labs::Interpreter::Interpreter where
 ```
+
+# Using the Cryptol interpreter
 
 ## Interpreter State
 
