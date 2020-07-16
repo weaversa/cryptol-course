@@ -53,6 +53,14 @@ running in the `cryptol-course` directory with:
 Cryptol> :m labs::Overview::Overview
 ```
 
+We start by defining a new module for this lab:
+
+```cryptol
+module labs::Overview::Overview where
+```
+
+# Overview of Cryptol
+
 Cryptol is a domain specific language and tool suite created by
 Galois, Inc., with support from NSA cryptographers. The language has
 lots of cool programming language features that make it well suited
@@ -76,8 +84,6 @@ the waters with a Hello World program. In this file we've defined a
 function `sayHello` which is specified as follows:
 
 ```cryptol
-module labs::Overview::Overview where
-
 sayHello : {a} (fin a) => [a][8] -> [7+a][8]
 sayHello name = greeting
   where

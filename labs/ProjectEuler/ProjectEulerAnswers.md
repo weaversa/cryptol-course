@@ -16,7 +16,7 @@ Before working through this lab, you'll need
   * intermediate knowledge of Cryptol's types,
   * intermediate knowledge of Cryptol's `:sat` and `:prove` commands,
   * intermediate knowledge of how to manipulate sequences using
-    `#`, `take`, `split`, `join`, `head`, `tail`, and `reverse`.
+    `#`, `take`, `split`, `join`, `head`, `tail`, and `reverse`,
   * intermediate knowledge of how to write functions and properties,
   * intermediate knowledge of sequence comprehensions,
   * experience using functions with curried parameters,

@@ -40,8 +40,7 @@ in the `cryptol-course` directory with:
 Cryptol> :m labs::Interpreter::Interpreter
 ```
 
-First, since we are creating a module, the first line needs to be the
-module definition.
+We start by defining a new module for this lab:
 
 ```cryptol
 module labs::Interpreter::Interpreter where

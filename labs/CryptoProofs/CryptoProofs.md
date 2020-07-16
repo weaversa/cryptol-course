@@ -11,10 +11,14 @@ Before working through this lab, you'll need
   * an editor for completing the exercises in this file,
   * basic knowledge of using the Cryptol interpreter to load
     modules and evaluate functions,
-  * basic knowledge of Cryptol's bitvector and `Integer` types,
-  * experience using functions with curried parameters, and
-  * experience with Cryptol's `/\`, `\/`, `#`, `foldl`, `join`,
-    `split`, and `take` operators.
+  * basic knowledge of Cryptol's sequence and `Integer` types,
+  * basic knowledge of Cryptol's `:prove` and `:sat` commands,
+  * intermediate knowledge of how to manipulate sequences using
+    `#`, `take`, `split`, and `join`,
+  * intermediate knowledge of how to write functions and properties,
+  * basic knowledge of lambda functions,
+  * basic knowledge of sequence comprehensions, and
+  * experience with logical, comparison, and arithmetic operators.
 
 ## Skills You'll Learn
 

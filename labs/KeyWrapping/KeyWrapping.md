@@ -51,6 +51,12 @@ in the `cryptol-course` directory with:
 Cryptol> :m labs::KeyWrapping::KeyWrapping
 ```
 
+We start by defining a new module for this lab:
+
+```cryptol
+module labs::KeyWrapping::KeyWrapping where
+```
+
 # Writing Key Wrapping Routines in Cryptol
 
 This lab takes the student through developing wrapping algorithms
@@ -79,13 +85,6 @@ subcomponents. In fact each of these is a family of algorithms: `KW`
 is composed of an *authenticated encryption* component `KW-AE` and an
 *authenticated decryption* component `KW-AD`; similarly for `TKW` and
 `KWP`.
-
-Since we are creating a new module, the first line needs to be the
-module definition:
-
-```cryptol
-module labs::KeyWrapping::KeyWrapping where
-```
 
 # Preliminaries
 

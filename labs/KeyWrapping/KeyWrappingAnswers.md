@@ -48,7 +48,13 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-Cryptol> :m labs::KeyWrapping::KeyWrapping
+Cryptol> :m labs::KeyWrapping::KeyWrappingAnswers
+```
+
+We start by defining a new module for this lab:
+
+```cryptol
+module labs::KeyWrapping::KeyWrappingAnswers where
 ```
 
 # Writing Key Wrapping Routines in Cryptol
@@ -79,13 +85,6 @@ subcomponents. In fact each of these is a family of algorithms: `KW`
 is composed of an *authenticated encryption* component `KW-AE` and an
 *authenticated decryption* component `KW-AD`; similarly for `TKW` and
 `KWP`.
-
-Since we are creating a new module, the first line needs to be the
-module definition:
-
-```cryptol
-module labs::KeyWrapping::KeyWrappingAnswers where
-```
 
 # Preliminaries
 
