@@ -1,16 +1,45 @@
-# N-Queens
+# Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
-Cryptol document --- that is, it can be loaded directly into the Cryptol
-interpreter. Load this module from within the Cryptol interpreter running
-in the `cryptol-course` directory with:
+This demo gives an overview of the N-Queens problem.
+
+## Prerequisites
+
+Before working through this lab, you'll need 
+  * Cryptol to be installed, and
+  * this module to load successfully.
+
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter, and
+  * the `:sat` command.
+
+## Skills You'll Learn
+
+By the end of this demo you'll understand a bit more about how Cryptol
+can use it's interface to automated theorem provers to perform
+computation. Rather than write a search algorithm in Cryptol, one only
+needs to write a solution checker in Cryptol (much easier) and then
+let the automated theorem prover carry out the search.
+
+## Load This Module
+
+This lab is a
+[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
+document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter
+running in the `cryptol-course` directory with:
 
 ```shell
 Cryptol> :m labs::Demos::NQueens
 ```
 
-## Overview
+We start by defining a new module for this lab and importing some accessory
+modules that we will use:
 
+```cryptol
+module labs::Demos::NQueens where
+```
+
+# N-Queens
 
 Cryptol is not just for crypto. Here, we demonstrate how Cryptol can
 solve the [N-Queens
@@ -18,10 +47,6 @@ puzzle](https://en.wikipedia.org/wiki/Eight_queens_puzzle). This demo
 draws from and cites [Galois, Inc.'s
 example](https://github.com/GaloisInc/cryptol/blob/master/examples/funstuff/NQueens.cry)
 [1].
-
-```cryptol
-module labs::Demos::NQueens where
-```
 
 Before proceeding, we define some helper functions. `product` returns
 the [Cartesian

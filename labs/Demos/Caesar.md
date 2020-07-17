@@ -1,24 +1,48 @@
-# Caesar Cipher
+# Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
-Cryptol document --- that is, it can be loaded directly into the Cryptol
-interpreter. Load this module from within the Cryptol interpreter running
-in the `cryptol-course` directory with:
+This demo gives an overview of the famous Caesar cipher.
+
+## Prerequisites
+
+Before working through this lab, you'll need 
+  * Cryptol to be installed, and
+  * this module to load successfully.
+
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter, and
+  * the `:prove` and `:sat` commands.
+
+## Skills You'll Learn
+
+By the end of this demo you'll understand a bit more about the Cryptol
+language and how to use the interpreter to prove properties or find
+bugs in Cryptol specifications.
+
+## Load This Module
+
+This lab is a
+[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
+document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter
+running in the `cryptol-course` directory with:
 
 ```shell
 Cryptol> :m labs::Demos::Caesar
 ```
 
-## Overview
+We start by defining a new module for this lab and importing some accessory
+modules that we will use:
+
+```cryptol
+module labs::Demos::Caesar where
+```
+
+# Caesar Cipher
 
 The [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher) is a
 simple shift cipher named after Julius Caesar. This cipher was...
 evidently effective against illiterate adversaries of ancient Rome,
 but will it protect its secrets from you and Cryptol...?
-
-```cryptol
-module labs::Demos::Caesar where
-```
 
 A Caesar cipher simply rotates characters in the alphabet by a fixed
 amount. (Caesar himself used a left rotation by 3, according to

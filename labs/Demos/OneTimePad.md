@@ -1,15 +1,44 @@
-# One-Time Pad
+# Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
-Cryptol document --- that is, it can be loaded directly into the Cryptol
-interpreter. Load this module from within the Cryptol interpreter running
-in the `cryptol-course` directory with:
+This demo gives an overview of a simple cryptographic operation, the
+one-time pad.
+
+## Prerequisites
+
+Before working through this lab, you'll need 
+  * Cryptol to be installed, and
+  * this module to load successfully.
+
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter, and
+  * the `:prove` and `:sat` commands.
+
+## Skills You'll Learn
+
+By the end of this demo you'll understand a bit more about the Cryptol
+language and how to use the interpreter to prove properties or find
+bugs in Cryptol specifications.
+
+## Load This Module
+
+This lab is a
+[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
+document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter
+running in the `cryptol-course` directory with:
 
 ```shell
 Cryptol> :m labs::Demos::OneTimePad
 ```
 
-## Overview
+We start by defining a new module for this lab and importing some accessory
+modules that we will use:
+
+```cryptol
+module labs::Demos::OneTimePad where
+```
+
+# One-Time Pad
 
 Cryptol's documentation includes the excellent [Programming Cryptol](
 https://cryptol.net/files/ProgrammingCryptol.pdf), a comprehensive
@@ -35,7 +64,7 @@ perfect but impractical technique in which plaintext is paired with a
 [pre-shared key](https://en.wikipedia.org/wiki/Pre-shared_key) that
 is at least as long as the plaintext and only used once.
 
-### Example
+## Example
 
 Suppose Alice wishes to encipher the message `HELLO` using the
 pre-shared key `ZUGESAGT` with [ASCII](https://ascii.cl) encoding and
@@ -62,8 +91,6 @@ one-time pad. We could use Cryptol to express this algorithm clearly
 and concisely (provided the audience can read the language).
 
 ```cryptol
-module labs::Demos::OneTimePad where
-
 /** Encrypt plaintext `pt` using pre-shared key `psk` */
 encrypt :
     {k, m}
@@ -96,23 +123,7 @@ property decrypt_of_encrypt_yields_original_plaintext_8_5 (psk, pt) =
 embellish upon this by interspersing Cryptol with Markdown and shell
 logs, but that's too complicated; here it's all in one place.)
 
-### The Cryptol Interpreter
-
-We'll figure out what all this means later. First, let's make sure
-Cryptol successfully loads the module. Start a terminal (Linux),
-command prompt (Windows), or Cryptol image (Docker) per
-[instructions](../../INSTALL.md) and load this module into a
-Cryptol interpreter:
-
-```shell
-> cryptol labs/Demos/OneTimePad.cry
-...
-Loading module Cryptol
-Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad>
-```
-
-### Setting and Reading Variables
+## Setting and Reading Variables
 
 Great. Now let's try applying the module to the previous example:
 
@@ -171,7 +182,7 @@ warnDefaulting = on
 warnShadowing = on
 ```
 
-### Help!!!
+## Help!!!
 
 If a symbol's name isn't descriptive enough, we can use `:h` to display
 help text for it:
@@ -185,7 +196,7 @@ labs::Demos::OneTimePad> :h encrypt
 `(encrypt psk pt)` encrypts plaintext `pt` using pre-shared key `psk`.
 ```
 
-### Function Evaluation
+## Function Evaluation
 
 Cool. Let's do a quick sanity check:
 
@@ -194,7 +205,7 @@ labs::Demos::OneTimePad> (decrypt psk ct)
 "HELLO"
 ```
 
-### Previous Result
+## Previous Result
 
 It matches! Our sanity is intact. Well, maybe not -- let's make
 sure:
@@ -204,7 +215,7 @@ labs::Demos::OneTimePad> it == pt
 True
 ```
 
-### Test Vectors
+## Test Vectors
 
 Nice! So that one example checks out, as expressed by the `test`
 property in our module. Let's prove it:
@@ -220,7 +231,7 @@ bill and is marginally faster...but it's important to remember to do
 this only for static test vectors and properties that `:prove` can't
 finish in the time you are willing to wait.)
 
-### Properties
+## Properties
 
 That's just one test vector, but Cryptol is not just a test runner.
 We can apply SMT solving to prove it for all cases (of a particular
@@ -237,7 +248,7 @@ Q.E.D.
 (Total Elapsed Time: 0.028s, using Z3)
 ```
 
-### Satisfiability
+## Satisfiability
 
 Good to know. Another use of SMT solving is to find an input
 satisfying a property. We could apply this to our one-time pad by

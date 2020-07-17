@@ -1,15 +1,46 @@
 # Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
-Cryptol document --- that is, it can be loaded directly into the Cryptol
-interpreter. Load this module from within the Cryptol interpreter running
-in the `cryptol-course` directory with:
+This demo gives an overview of how to solve Sudoku puzzles using
+Cryptol's interface to automated theorem provers.
+
+## Prerequisites
+
+Before working through this lab, you'll need 
+  * Cryptol to be installed, and
+  * this module to load successfully.
+
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter, and
+  * the `:prove` and `:sat` commands.
+
+## Skills You'll Learn
+
+By the end of this demo you'll understand a bit more about how Cryptol
+can use it's interface to automated theorem provers to perform
+computation. Rather than write a search algorithm in Cryptol, one only
+needs to write a solution checker in Cryptol (much easier) and then
+let the automated theorem prover carry out the search.
+
+## Load This Module
+
+This lab is a
+[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
+document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter
+running in the `cryptol-course` directory with:
 
 ```shell
 Cryptol> :m labs::Demos::Sudoku
 ```
 
-## Overview
+We start by defining a new module for this lab and importing some accessory
+modules that we will use:
+
+```cryptol
+module labs::Demos::Sudoku where
+```
+
+## Sudoku in Cryptol
 
 On 18 Mar 2009, Galois, Inc.
 [blogged](https://galois.com/blog/2009/03/solving-sudoku-using-cryptol/)
@@ -20,20 +51,6 @@ still be straightforwardly applied toward Sudoku. Here, we port the
 original blog entry to a Markdown-Literate Cryptol file, updating the
 code for syntax and new features and interjecting occasionally. We
 hope to have done justice to the original.
-
-
-## Module System
-
-Cryptol Version 2 was [released](https://github.com/GaloisInc/cryptol/tree/v2.0.0)
-to GitHub on April 24, 2014. Among [many
-improvements](https://cryptol.net/Version2Changes.html), it
-introduced a [module
-system](https://cryptol.net/Version2Changes.html#module-system),
-demonstrated here:
-
-```cryptol
-module labs::Demos::Sudoku where
-```
 
 On with the program...
 
