@@ -7,7 +7,7 @@ powerful theorem proving tools to explore their code.
 
 Before working through this lab, you'll need 
   * Cryptol to be installed,
-  * this module to load succesfully,
+  * this module to load succesfully, and
   * an editor for completing the exercises in this file.
 
 You'll also need experience with

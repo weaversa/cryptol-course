@@ -5,7 +5,7 @@ This lab provides an overview of Cryptol's interpreter.
 ## Prerequisites
 
 Before working through this lab, you'll need
-  * Cryptol to be installed,
+  * Cryptol to be installed and
   * this module to load succesfully.
 
 ## Skills You'll Learn
@@ -13,8 +13,8 @@ Before working through this lab, you'll need
 By the end of this lab you will have gained experience using Cryptol's
 interpreter.
 
-You'll also gain basic knowledge of
-  * using the Cryptol interpreter to change the display base,
+You'll also gain experience with
+  * changing the display base in the interpreter,
   * querying the built-in help system,
   * browsing symbols,
   * chaining commands with `let` and `it`,
