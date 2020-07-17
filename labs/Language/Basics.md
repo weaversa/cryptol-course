@@ -70,13 +70,6 @@ Enjoy getting addicted to this level of assurance!
 
 ## Preliminaries
 
-The following code declares the module name of this literate Cryptol
-document.
-
-```cryptol
-module labs::Language::Basics where
-```
-
 For examples in this lab I have turned off the warning messages you
 get when not specifying bit sizes of numbers. This is **not**
 something you should do when you're new at Cryptol. (In fact, I don't
