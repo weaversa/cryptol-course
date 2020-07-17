@@ -1,5 +1,4 @@
-Preface
--------
+# Preface
 
 This lab is a
 [literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
@@ -11,12 +10,10 @@ running in the `cryptol-course` directory with:
 Cryptol> :m labs::Language::Basics
 ```
 
-Basic Use of the Cryptol Language
-=================================
+# Basic Use of the Cryptol Language
 
 
-Introduction
-------------
+## Introduction
 
 In you've programmed in a variety of languages (not just different
 [procedural languages](https://en.wikipedia.org/wiki/Procedural_programming)
@@ -46,8 +43,7 @@ In some ways this requires a new mind-set:
 Enjoy getting addicted to this level of assurance!
 
 
-Preliminaries
--------------
+## Preliminaries
 
 The following code declares the module name of this literate Cryptol
 document.
@@ -92,8 +88,8 @@ appropriate, not unlike using `:set base = 10` to see numbers in
 base 10.
 
 
-Comments
---------
+## Comments
+
 
 * `//` to end of line
 * `/*` ... `*/` block comment
@@ -113,8 +109,7 @@ Now when issuing `:help mask`, the above comments are displayed along
 with other information about `mask`.
 
 
-Identifiers
------------
+## Identifiers
 
 Cryptol identifiers consist of alphanumeric characters plus `'`
 (apostrophe, but read "prime") and `_` (underscore). They must begin
@@ -135,8 +130,7 @@ Technically, Cryptol supports
 am pretending that it doesn't.
 
 
-Data
-----
+## Data
 
 Cryptol's "basic" data type is an _n_-dimensional array whose base
 type is bits.
@@ -203,8 +197,7 @@ Other data types include:
   `4 + 4 : Z 7` evaluates to `1`.
 
 
-Operators
----------
+## Operators
 
 Cryptol's `:help` command will provide a brief description of the
 operators in this section by issuing `:help ` followed
@@ -346,8 +339,7 @@ True
 ```
 
 
-Common Primitives
------------------
+## Common Primitives
 
 Cryptol's `:help` command will provide a brief description of the
 primitives in the section by issuing `:help ` followed
@@ -413,10 +405,7 @@ In most Cryptol programs, the context will enforce the size of things,
 so the type annotations shown in these examples need not be present.
 
 
-
-
-The Types of Functions
-----------------------
+## The Types of Functions
 
 The Cryptol interpreter command `:type` is very useful for helping you
 understand types. For instance the type of the `abs` function which we
@@ -430,8 +419,7 @@ abs : Integer -> Integer
 indicating that it takes an integer and returns an integer.
 
 
-Curried and Uncurried Style
----------------------------
+## Curried and Uncurried Style
 
 Cryptol functions are often written in the
 [curried](https://en.wikipedia.org/wiki/Currying) style:
@@ -486,8 +474,7 @@ functions from other languages or documents.
   like a two argument function in many languages.
 
 
-Small Functions
----------------
+## Small Functions
 
 Cryptol programs are just sequences of appropriate functions applied
 in the correct order. Good Cryptol features small, easy to understand
@@ -622,8 +609,7 @@ property gcdDividesBoth x y
   `Control-C`) on your computer.
 
 
-Writing Loops
--------------
+## Writing Loops
 
 ### Or not...
 
@@ -688,9 +674,7 @@ Loops that modify an accumulator in place become self-referential
 sequence comprehensions. The following example illustrates this.
 
 
-
-Simple Block Encryption Example
--------------------------------
+## Simple Block Encryption Example
 
 ```cryptol
 keyExpand : [32] -> [10][32]
@@ -726,8 +710,7 @@ Notice that both `roundKeys` in `keyExpand` and `roundResults` in
 occur when coding up cryptography.
 
 
-Laziness
---------
+## Laziness
 
 Cryptol's evaluation strategy is
 [lazy](https://en.wikipedia.org/wiki/Lazy_evaluation)
@@ -751,8 +734,7 @@ labs::Language::Basics> lazyAbsMin 0 (0/0)
 ```
 
 
-Less Common Operators
----------------------
+## Less Common Operators
 
 Function equality: `===` and `!==`. These are mostly used to state
 properties about functions over a finite domain.
@@ -791,9 +773,7 @@ Passed 16 tests.
 Q.E.D.
 ```
 
-
-Judicious Type System Usage
----------------------------
+## Judicious Type System Usage
 
 ### Don't let the type system do your work
 
@@ -825,8 +805,7 @@ search)
 * can get you to notice where you blew it
 
 
-Here Abide Monsters
--------------------
+# Here Abide Monsters
 
 Following is some code that is needed to make the Cryptol within this
 document valid, but is not discussed for pedagogical reasons. You may
@@ -848,7 +827,6 @@ takes a two argument curried function and returns an uncurried version
 (a one argument function operating on an ordered pair).
 
 
-Postface
---------
+# Postface
 
 Go forth and write correct cryptographic algorithms!
