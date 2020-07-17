@@ -1,7 +1,19 @@
-Introduction
-============
+# Introduction
 
 These files are a set of examples meant to demonstrate simple verifications of arithmetic implemented in C using Cryptol and SAW. These examples are not meant to be especially deep, but may be useful as a reference and also to demonstrate some limitations of these techniques.
+
+# Prerequisites
+
+ * SAW installed
+ * Clang installed
+ * Some familiarity with C
+
+## What You Will Learn
+
+ * Simple invocations of SAW to prove C implementation equivalence
+ * Limitations to this technique
+
+# Getting Started
 
 The file *arithmetic.c* contains definitions for the following functions:
 
@@ -29,8 +41,7 @@ The file *arithmetic.c* contains definitions for the following functions:
 This set of examples demonstrates how to use Cryptol and SAW to verify that the implementations of these familiar functions are correct and equivalent to one another.
 
 
-Software Requirements
-=====================
+# Software Requirements
 
 This examples requires the following software to operate:
 
@@ -41,8 +52,7 @@ This examples requires the following software to operate:
 These should be configured so that these programs and their components work from your command line.
 
 
-Walkthrough
-===========
+# Walkthrough
 
 The Makefile provided has four targets which drive this set of examples. Running the following commands will drive different portions of this set of examples.
 
@@ -89,7 +99,6 @@ This output resulted from running the provided script on a relatively modest des
 This cleans up the workspace and unnecessary generated files.
 
 
-References
-==========
+# References
 
 [[1](https://ieeexplore.ieee.org/document/73590)] Bryant, Randall E. "On the Complexity of VLSI Implementations and Graph Representations of Boolean Functions with Application to Integer Multiplication". Carnegie Mellon University, July 1998.
