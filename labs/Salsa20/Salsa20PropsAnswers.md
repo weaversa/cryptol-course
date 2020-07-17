@@ -37,14 +37,14 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-Cryptol> :m labs::Salsa20::Salsa20Props
+Cryptol> :m labs::Salsa20::Salsa20PropsAnswers
 ```
 
 We start by defining a new module for this lab and importing the
 Salsa20 specification from a prior lab:
 
 ```cryptol
-module labs::Salsa20::Salsa20Props where
+module labs::Salsa20::Salsa20PropsAnswers where
 
 import labs::Salsa20::Salsa20Answers
 ```
