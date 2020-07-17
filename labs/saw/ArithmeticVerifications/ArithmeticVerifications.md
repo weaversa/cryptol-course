@@ -10,9 +10,7 @@ these techniques.
 
 Before working through this lab, you'll need
   * Cryptol to be installed,
-  * the Software Analysis Workbench (SAW) to be installed,
-  * this module to load successfully, and
-  * an editor for completing the exercises in this file.
+  * the Software Analysis Workbench (SAW) to be installed.
   
 A pre-compiled bitcode file is provided so that you don't need to
 compile the sample C code. If you want to compile the C code yourself,
@@ -28,9 +26,7 @@ By the end of this lab you will understand how to use SAW to prove
 equivalence between Cryptol specifications and simple C functions, and
 know some of the limitations of this technique.
 
-You'll also gain experience
-  * writing functions and properties, and
-  * the Software Analysis Workbench.
+You'll also gain experience with the Software Analysis Workbench.
 
 # Getting Started
 

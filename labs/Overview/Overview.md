@@ -24,7 +24,6 @@ You'll also gain experience with
   * the `:prove` command,
   * manipulating sequences using `take`, `drop`, `split`, `groupBy`,
     `sum`, `min`, `max`, `tail`, `last`, and `foldl`,
-  * writing functions and properties,
   * lambda functions,
   * enumerations and sequence comprehensions,
   * `/\`, `\/`, `==>` -- single bit logical operations,
