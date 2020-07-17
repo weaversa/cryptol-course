@@ -237,7 +237,7 @@ supports running a `cryptolcourse/cryptol` Docker image via `Terminal
 ## Emacs
 
 A Cryptol major mode for Emacs can be found here:
-https://github.com/victoredwardocallaghan/cryptol.vim
+https://github.com/thoughtpolice/cryptol-mode
 
 ## Vim
 
