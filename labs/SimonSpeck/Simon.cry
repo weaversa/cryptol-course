@@ -5,9 +5,12 @@ parameter
   type n : #    // word size
   type m : #    // words in key
   type T : #    // rounds in the key schedule
-  type j : #    // index of z-sequence used
-  type constraint (fin n, fin m, fin T, fin j, m <= 4, 0 <= j, j <= 4, T-1 >= m,  n >= width T, m >= 2, T >= 22)
-
+  type j : #    // index of z-sequence used (i.e. use sequence z_j)
+  type constraint (fin n, fin m, fin T, fin j, 
+                   2 <= m, m <= 4, 
+                   0 <= j, j <= 4, 
+                   m <= T-1, T >= 22, 
+                   n >= width T)
 type blockSize = 2 * n
 type keySize   = m * n
 
@@ -18,6 +21,7 @@ type keySize   = m * n
   * Block Ciphers". e-print-2013-404.pdf.
   *    
   */
+encrypt : [keySize] -> [blockSize] -> [blockSize]
 encrypt K P = join (last (encryptList K P))
 
 /**
@@ -27,6 +31,7 @@ encrypt K P = join (last (encryptList K P))
   * Block Ciphers". e-print-2013-404.pdf.
   *    
   */
+decrypt : [keySize] -> [blockSize] -> [blockSize]
 decrypt K P = join (last (decryptList K P))
 
 /**
@@ -53,14 +58,9 @@ property EncryptDecryptIdentity k x =
 property DecryptEncryptIdentity k x = 
   encrypt k (decrypt k x) == x
 
-
-/* TODO Try to clean up this claim from the paper
-repeats_62 S i = S@i == S@(i+62)
-property period_62_z3 i = repeats_62 z3 i
-*/
-
 private
 
+    // We define the sequences u, v, w, and z_j following the paper
     u = join(repeat`{inf} 0b1111101000100101011000011100110)
     v = join(repeat`{inf} 0b1000111011111001001100001011010)
     w = join(repeat`{inf} 0b1000010010110011111000110111010)
@@ -71,44 +71,49 @@ private
     z3 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} v ])
     z4 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} w ])
 
+    // Z will be the sequence selected by the module parameter j
+    Z = [z0, z1, z2, z3, z4]@(`j:[width j])
 
-    /**
-      * The Simon round function
-      */
+    // 
+    // Round Functions and Auxilliary 
+    //
+    
+    // f is used in the round function and appears on page 8 of [1]
+    f x = (x <<< 1) && (x <<< 8) ^ (x <<< 2)
+    
+    //
+    // The Simon round function
+    // 
     Rk : [n] -> [2][n] -> [2][n]
     Rk k [x, y] = [x', y']
       where
         x'  = y ^ (f x) ^ k
         y'  = x
 
-    /**
-      * The Simon inverse round function
-      */
+    //
+    // The Simon inverse round function
+    //
     Rk' : [n] -> [2][n] -> [2][n]
     Rk' k [x, y] = [x', y']
       where
         x'  = y
         y'  = x ^ (f y) ^ k
-
-    f x = (x <<< 1) && (x <<< 8) ^ (x <<< 2)
-
-
-
-    Z = [z0, z1, z2, z3, z4]@(`j:[width j])
-
+              
     // tmp
     //
     // "tmp" shows up as the name of a variable in the Simon key schedule example
-    // implementation. This function is meant to capture what final values this
-    // portion of the expression has, depending on the value of `m
-    //
+    // implementation. This function is captures the final values this
+    // portion of the expression has, depending on the value number of key words `m
     tmp: [n] -> [n] -> [n]
     tmp k1 k2 = r
       where 
         r  = t ^ (t >>> 1)
         t  = if `m == 0x4 then (t' ^ k2) else t'
         t' = (k1 >>> 3)
-                
+
+    // KeySchedule
+    //
+    // The Simon Key Schedule.                
     KeySchedule : [keySize] -> [T][n]
     KeySchedule K = take Ks
       where
@@ -118,9 +123,14 @@ private
         Ks = Kis # [ ~k0 ^ (tmp k1 k2) ^ (zext [z]) ^ (zext 0x3) 
                    | k0 <- Ks
                    | k1 <- drop`{m-1} Ks
-                   | k2 <- drop`{max m 3 - 3} Ks // kludge to typecheck "drop`{m-3}"
+                   | k2 <- drop`{max m 3 - 3} Ks // gadget to typecheck "drop`{m-3}"
                    | z <- Z ]
 
+    // decryptList
+    //
+    // Simon decryption with intermediate values for each round produced as a
+    // list. Some test vectors are available to compare these intermediate
+    // values.
     decryptList:
         [keySize] -> [blockSize] -> [T+1][2][n]
     decryptList K C = Ps
@@ -129,6 +139,11 @@ private
         Ks = reverse(KeySchedule K)
         Ps = [Cs] # [ Rk' k xy | k <- Ks | xy <- Ps]
 
+    // encryptList
+    //
+    // Simon encryption with intermediate values for each round produced as a
+    // list. Some test vectors are available to compare these intermediate
+    // values.
     encryptList:
         [keySize] -> [blockSize] -> [T+1][2][n]
     encryptList K P = Cs
