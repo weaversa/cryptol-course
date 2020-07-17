@@ -1,12 +1,49 @@
 # Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
-Cryptol document --- that is, it can be loaded directly into the Cryptol
-interpreter. Load this module from within the Cryptol interpreter running
-in the `cryptol-course` directory with:
+This lab is the capstone project for the course. It requires you to
+use the results of previous labs to build and use keys to decrypt
+secret messages.
+
+## Prerequisites
+
+Before working through this lab, you'll need 
+  * Cryptol to be installed,
+  * this module to load succesfully, and
+  * an editor for completing the exercises in this file.
+
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter,
+  * Cryptol's sequence type,
+  * manipulating sequences using `#`, `split`, and `join`, and
+  * writing functions.
+
+## Skills You'll Learn
+
+Once you finish this lab you will have graduated from the Cryptol
+course!
+
+## Load This Module
+
+This lab is a
+[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
+document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter
+running in the `cryptol-course` directory with:
 
 ```shell
 Cryptol> :m labs::LoremIpsum::LoremIpsumAnswers
+```
+
+We start by defining a new module for this lab and importing some
+accessory modules that we will use:
+
+```cryptol
+module labs::LoremIpsum::LoremIpsumAnswers where
+
+import labs::CRC::CRCAnswers
+import labs::KeyWrapping::KeyWrappingAnswers
+import labs::Salsa20::Salsa20Answers
+import labs::LoremIpsum::KLI20
 ```
 
 # LoremIpsum Key
@@ -34,7 +71,6 @@ out and placed them at the bottom of this document.
 
 Let's begin.
 
-
 # Lorem Ipsum Key Generation Specification
 
 This document specifies how to generate key material for
@@ -42,17 +78,6 @@ interoperability with the [KLI20](KLI20.cry) end cryptographic
 unit. The KLI20 uses a mix of [CRC](../CRC/CRC.md),
 [KW-AE](../KeyWrapping/KeyWrapping.md), and
 [Salsa20](../Salsa20/Salsa20.md) to encrypt and decrypt messages.
-
-> Here we define the module name and import required modules.
-
-```cryptol
-module labs::LoremIpsum::LoremIpsumAnswers where
-
-import labs::CRC::CRCAnswers
-import labs::KeyWrapping::KeyWrappingAnswers
-import labs::Salsa20::Salsa20Answers
-import labs::LoremIpsum::KLI20
-```
 
 ## Abstract
 
@@ -283,7 +308,7 @@ KW-AE 128 (KEK, k) = [0x1fa68b0a8112b447, 0xaef34bd8fb5a7b82, 0x9d3e862371d2cfe5
 > We've already defined `KWAE` in the KeyWrapping lab. Let's test it.
 
 ```shell
-labs::LoremIpsum::LoremIpsumAnswers> split`{3} (TestKWAE (join [0x0001020304050607, 0x08090A0B0C0D0E0F]) (join [0x0011223344556677, 0x8899AABBCCDDEEFF]))
+labs::LoremIpsum::LoremIpsumAnswers> split (TestKWAE (join [0x0001020304050607, 0x08090A0B0C0D0E0F]) (join [0x0011223344556677, 0x8899AABBCCDDEEFF]))
 [0x1fa68b0a8112b447, 0xaef34bd8fb5a7b82, 0x9d3e862371d2cfe5]
 ```
 
@@ -381,7 +406,7 @@ LoremIpsumKey KEK k Issue = CRCTK
 ### Valid Issue Numbers
 
 The KLI20 will accept any 24-bit issue number. However, this key
-specification issue only uses numbers that correspond to the ASCII
+specification only uses issue numbers that correspond to the ASCII
 strings between and including "000" to "999". Specifically, this key
 specification follows a special schedule that is comprised entirely of
 the three issue numbers corresponding to the Pythagorean triplet for
