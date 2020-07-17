@@ -1,12 +1,44 @@
 # Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
-Cryptol document --- that is, it can be loaded directly into the Cryptol
-interpreter. Load this module from within the Cryptol interpreter running
-in the `cryptol-course` directory with:
+This lab provides you an opportunity to test your mettle against some
+challenging computational puzzles. These puzzles were selected from
+[Project Euler](https://projecteuler.net/) and can be solved using
+Cryptol's automated theorem proving interface.
+
+## Prerequisites
+
+Before working through this lab, you'll need 
+  * Cryptol to be installed,
+  * this module to load successfully, and
+  * an editor for completing the exercises in this file.
+
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter,
+  * Cryptol's sequence and `Integer` types,
+  * the `:prove` command,
+  * manipulating sequences using `#`, `take`, `split`, `join`,
+    `head`, `tail`, and `reverse`,
+  * writing functions and properties,
+  * sequence comprehensions,
+  * functions with curried parameters,
+  * logical, comparison, arithmetic, indexing, slicing, and
+    conditional operators, and
+  * the `sum` and `carry` operators.
+
+## Skills You'll Learn
+
+By the end of this lab you will be a puzzle master!
+
+## Load This Module
+
+This lab is a
+[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
+document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter
+running in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::ProjectEuler::ProjectEulerAnswers
+Cryptol> :m labs::ProjectEuler::ProjectEulerAnswers
 ```
 
 We start by defining a new module for this lab and importing some accessory
@@ -48,12 +80,14 @@ property pythagoreantriple a b c =
 > included.
 
 (Aside: these numbers are called
-[factorions](https://en.wikipedia.org/wiki/Factorion).
+[factorions](https://en.wikipedia.org/wiki/Factorion))
 
-*Hints*: the factorial function is usually defined recursively, but
+*Hints*: 
+ * the factorial function is usually defined recursively, but
  that tends to make SAT solving difficult. Since you only need to
  calculate the factorial of the numbers 0-9, make your function just
- do a case by case calculation. To get the digital representation of
+ do a case by case calculation. 
+ * To get the digital representation of
  the number, create a function which takes in a number and a list of
  numbers and returns `True` exactly when the list is the base 10
  representation. Finally, it can be shown that the most number of
@@ -292,7 +326,7 @@ productdigits`{6, [32]}
 > to ASCII, then XOR each byte with a given value, taken from a secret
 > key. The advantage with the XOR function is that using the same
 > encryption key on the cipher text, restores the plain text; for
-> example, 65 ⊕ 42 = 107, then 107 ⊕ 42 = 65.
+> example, 65 ^ 42 = 107, then 107 ^ 42 = 65.
 >
 > For unbreakable encryption, the key is the same length as the
 > plaintext message, and the key is made up of random bytes. The user
@@ -380,7 +414,7 @@ labs::ProjectEuler::ProjectEulerAnswers> decrypt cipher1 "aba"
 > The text file, keylog.cry, contains fifty successful login attempts.
 >
 > Given that the three characters are always asked for in order,
-> analyse the file so as to determine the shortest possible secret
+> analyze the file so as to determine the shortest possible secret
 > passcode of unknown length.
 
 ```cryptol

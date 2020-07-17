@@ -1,4 +1,35 @@
-# Salsa20 Security Properties
+# Introduction
+
+This lab provides a series of exercises focused on security proofs
+about a cryptographic algorithm called Salsa20, by Daniel
+J. Bernstein.
+
+## Prerequisites
+
+Before working through this lab, you'll need 
+  * Cryptol to be installed,
+  * this module to load successfully, and
+  * an editor for completing the exercises in this file.
+  
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter,
+  * Cryptol's sequence types,
+  * the `:prove` command,
+  * manipulating sequences using `map`, `iterate`,
+  * writing functions and properties, and
+  * logical, comparison, arithmetic, and indexing operators.
+
+## Skills You'll Learn
+
+By the end of this lab you will have proven some security properties
+about Salsa20.
+
+You'll also gain experience with
+  * type parameters and type constraints,
+  * manipulating sequences, and
+  * writing functions and properties.
+
+## Load This Module
 
 This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
@@ -6,12 +37,11 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::Salsa20::Salsa20Props
+Cryptol> :m labs::Salsa20::Salsa20Props
 ```
 
-In this lab, we consider additional properties of the [Salsa20 stream
-cipher](Salsa20Spec.md) [5], which has undergone much scrutiny since
-being proposed for [eSTREAM, the ECRYPT Stream Cipher Project](https://www.ecrypt.eu.org/stream).
+We start by defining a new module for this lab and importing the
+Salsa20 specification from a prior lab:
 
 ```cryptol
 module labs::Salsa20::Salsa20Props where
@@ -19,9 +49,16 @@ module labs::Salsa20::Salsa20Props where
 import labs::Salsa20::Salsa20Answers
 ```
 
+# Salsa20 Security Properties
+
+In this lab, we consider additional properties of the [Salsa20 stream
+cipher](Salsa20Spec.md) [5], which has undergone much scrutiny since
+being proposed for [eSTREAM, the ECRYPT Stream Cipher
+Project](https://www.ecrypt.eu.org/stream).
+
 ## Invertibility
 
-Throughout [the original spec](Salsa20Spec.pdf) [5], various functions
+Throughout [the Salsa20 spec](Salsa20Spec.pdf) [5], various functions
 are noted as being "invertible". In the [Salsa20
 lab](Salsa20Answers.md), we proved that the `quarterround` and
 `littleendian` functions are invertible. We did this because the

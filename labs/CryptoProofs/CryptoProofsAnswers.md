@@ -1,19 +1,51 @@
-# Exploring Cryptography with Cryptol's Proof Tools
+# Introduction
 
-Cryptol and SAW allow users to rapidly and transparently deploy powerful theorem proving tools to explore their code.
+Cryptol and SAW allow users to rapidly and transparently deploy
+powerful theorem proving tools to explore their code.
 
-By the end of this lab, the student will be able to describe and demonstrate five powerful classes of proofs that can be applied to a wide variety of cryptographic algorithms.
+## Prerequisites
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
-Cryptol document --- that is, it can be loaded directly into the Cryptol
-interpreter. Load this module from within the Cryptol interpreter running
-in the `cryptol-course` directory with:
+Before working through this lab, you'll need 
+  * Cryptol to be installed,
+  * this module to load successfully, and
+  * an editor for completing the exercises in this file.
+
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter,
+  * sequence and `Integer` types,
+  * the `:prove` and `:sat` commands,
+  * manipulating sequences using `#`, `take`, `split`, and `join`,
+  * writing functions and properties,
+  * lambda functions,
+  * sequence comprehensions, and
+  * logical, comparison, and arithmetic operators.
+
+## Skills You'll Learn
+
+By the end of this lab you will be able to describe and demonstrate
+five powerful classes of proofs that can be applied to a wide variety
+of cryptographic algorithms.
+
+You'll also gain experience with
+  * lambda functions,
+  * `:prove` and `:sat` commands, and
+  * different provers.
+  
+## Load This Module
+
+This lab is a
+[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
+document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter
+running in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::CryptoProofs::CryptoProofsAnswers
+Cryptol> :m labs::CryptoProofs::CryptoProofsAnswers
 ```
 
-The proofs in this lab require an array of different theorem provers supported by Cryptol. In order to solve them, we recommend using the Cryptol Docker container described in the README.md for this course.
+The proofs in this lab require an array of different theorem provers
+supported by Cryptol. In order to solve them, we recommend using the
+Cryptol Docker container described in the README.md for this course.
 
 First, since we are creating a module, the first line needs to be the
 module definition.
@@ -22,7 +54,9 @@ module definition.
 module labs::CryptoProofs::CryptoProofsAnswers where
 ```
 
-# 1. DES
+# Exploring Cryptography with Cryptol's Proof Tools
+
+## 1. DES
 
 To start, we'll analyze the DES (Data Encryption Standard) algorithm. Let's take a moment to familiarize ourselves with how it works.
 
@@ -64,7 +98,7 @@ labs::CryptoProofs::CryptoProofs> DES.decrypt 0x752979387592cb70 0xb5219ee81aa74
 
 Now that we have DES working, let's analyze it!
 
-# 2. Five Killer Apps
+## 2. Five Killer Apps
 
 For the rest of the lab, we'll be looking at some of the types of questions you can ask (and often answer!) using Cryptol's powerful automated theorem proving capabilities. These are important questions that one might ask about a cryptographic algorithm along with a generic "one-liner" Cryptol invocation. (Don't worry if you don't understand these yet.)
 
@@ -78,7 +112,7 @@ For the rest of the lab, we'll be looking at some of the types of questions you 
 
 Each subsection below will explore one of these questions in-depth.
 
-## 2.1 Function Reversal
+### 2.1 Function Reversal
 
 It may be interesting to explore whether a particular cryptographic function can be reversed. Some examples of usage:
 
@@ -125,7 +159,7 @@ known_key = 0x752979387592cb70
 known_ct = 0xf2930290ea4db580
 ```
 
-Note: For whatever reason, the default Z3 solver has trouble with this one. Try one of the other solvers, such as yices:
+Note: For whatever reason, the default Z3 solver has trouble with this one. Try one of the other solvers, such as YICES:
 
 ```shell
 labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
@@ -178,7 +212,7 @@ To make this solvable, try it again with the first six bytes of key provided: `0
 >  0x1236 = True
 >(Total Elapsed Time: 4.764s, using "Yices")
 
-## 2.2 Proof of Inversion
+### 2.2 Proof of Inversion
 
 For symmetric ciphers, it is necessary that the decrypt function *inverts* the encrypt function. (That is, it restores the ciphertext to the original plaintext.) It is easy to express this property in Cryptol.
 
@@ -252,7 +286,7 @@ Use Cryptol to prove that `DES.encrypt` and `DES.decrypt` are inverses for all p
 >(Total Elapsed Time: 3.582s, using "ABC")
 >```
 
-## 2.3 Collision Detection
+### 2.3 Collision Detection
 
 In cryptography, a *collision* occurs when two different inputs produce the same output. For some cryptographic functions, such as pseudo-random number generators (PRNGs), it may be desirable to demonstrate an absence of collisions. In other functions, such as cryptographic hash functions, collisions are inevitable, but should be difficult to discover. It is easy in Cryptol to ask the solver to search for collisions. (Though finding a solution may not be possible.)
 
@@ -269,15 +303,15 @@ Use the solver to find two different keys and a plaintext such that both keys en
 >(Total Elapsed Time: 1.258s, using "Yices")
 >```
 
-## 2.4 Proof of Injectivity
+### 2.4 Proof of Injectivity
 
-The flipside of collision detection is proving an absence of collisions. That is, proving that every input generates a distinct output. A function with this property is referred to in mathematics as *injective* or *one-to-one*.
+The flip-side of collision detection is proving an absence of collisions. That is, proving that every input generates a distinct output. A function with this property is referred to in mathematics as *injective* or *one-to-one*.
 
 **EXERCISE** 2.4.1 DES Injectivity
 
 Show that, for any given key, `DES.encrypt` is injective (collision-free) with respect to plaintext.
 
-*Hint* Use the boolector theorem prover. (Even then, this proof may take a few minutes!)
+*Hint* Use the Boolector theorem prover. (Even then, this proof may take a few minutes!)
 
 *Hint* Consider using the implication operator `==>`
 
@@ -289,7 +323,7 @@ Show that, for any given key, `DES.encrypt` is injective (collision-free) with r
 >(Total Elapsed Time: 58.598s, using "Boolector")
 >```
 
-## 2.5 Equivalence Checking
+### 2.5 Equivalence Checking
 
 It's inevitable that there are collisions over the set of all key/plaintext pairs in DES, but it may be surprising that they're easy to find with Cryptol's solver. We now know that the two keys you just found encrypt one particular plaintext to the same ciphertext; more concerning would be if they perform the same transformation on *all* plaintexts. Such keys are called *equivalent* keys.
 
@@ -342,5 +376,5 @@ Given that this proof passes, what is the actual maximum key strength of DES in 
 # The end
 
 How was your experience with this lab? Suggestions are welcome in the
-form of a ticket on the course Github page:
+form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues

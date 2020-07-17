@@ -1,19 +1,4 @@
-# Bit Twiddling Exercises.
-
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
-Cryptol document --- that is, it can be loaded directly into the Cryptol
-interpreter. Load this module from within the Cryptol interpreter running
-in the `cryptol-course` directory with:
-
-```shell
-cryptol> :m labs::saw::bittwiddling::bittwiddling_answers
-```
-
-We start by defining a new module for this lab:
-
-```cryptol
-module labs::saw::bittwiddling::bittwiddling_answers where
-```
+# Introduction
 
 Sean Eron Anderson, a former graduate student at Stanford, collected a
 large set of [Bit Twiddling
@@ -40,25 +25,56 @@ read. We also included some properties to help test your code. After
 you have completed this code, you should write (from scratch) a
 SAWscript to compare the two.
 
-## Parity Exercise
+## Prerequisites
 
-In mathematics, the
-[parity](https://en.wikipedia.org/wiki/Parity_(mathematics)) of an
-integer simply says whether it is even or odd. For a set of bits, we
-extend this definition to finding the parity of the sum of the
-bits. For example, the parity `0b0011` is even (the sum of the bits is
-2) while `0b1110` is odd (the sum of the bits is 3). Rather than
-returning "even" or "odd", we can return "0" if it's even or "1" if
-it's odd; since "0" often represents "false" on a computer and "1"
-represents "true", the parity function may return one of the Boolean
-values.
+Before working through this lab, you'll need
+  * Cryptol to be installed,
+  * the Software Analysis Workbench (SAW) to be installed,
+  * this module to load successfully, and
+  * an editor for completing the exercises in this file.
 
-A straightforward way to calculate the parity of a set of bits is to
-XOR all of the bits together: if there's an even number of 1s, the
-result is 0, and if there's an odd number of 1s, the result is 1. We
-will write a generic parity function and then compare it to three
-different lengths: one for a byte (8 bits), one for a word (32 bits),
-and one for a double word (64 bits).
+A pre-compiled bitcode file is provided so that you don't need to
+compile the sample C code. If you want to compile the C code yourself,
+you'll need to install the [Clang C
+compiler](https://clang.llvm.org/). **SAW usually lags behind Clang
+releases. Check here
+(https://github.com/GaloisInc/saw-script#notes-on-llvm) for a list of
+supported versions of Clang.**
+  
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter,
+  * Cryptol's sequence types,
+  * manipulating sequences using `#`, `take`, `split`, `join`, `head`,
+    `tail`, and `reverse,
+  * writing functions and properties,
+  * sequence comprehensions,
+  * functions with curried parameters,
+  * logical, comparison, arithmetic, indexing, slicing, and
+    conditional operators, and
+  * C programming.
+
+## Skills You'll Learn
+
+By the end of this lab you will gain experience with
+  * writing functions and properties, and
+  * the Software Analysis Workbench.
+
+## Load This Module
+
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
+Cryptol document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter running
+in the `cryptol-course` directory with:
+
+```shell
+Cryptol> :m labs::saw::Bittwiddling::BittwiddlingAnswers
+```
+
+We start by defining a new module for this lab:
+
+```cryptol
+module labs::saw::Bittwiddling::BittwiddlingAnswers where
+```
 
 ### Parity
 

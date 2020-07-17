@@ -1,32 +1,76 @@
 # Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
-Cryptol document --- that is, it can be loaded directly into the Cryptol
-interpreter. Load this module from within the Cryptol interpreter running
-in the `cryptol-course` directory with:
+This lab will provide a quick overview of Cryptol, some motivating
+applications where the language and technology have been deployed, and
+to the language features which make Cryptol an excellent choice for
+these applications.
+
+## Prerequisites
+
+Before working through this lab, you'll need
+  * Cryptol to be installed,
+  * this module to load successfully.
+
+## Skills You'll Learn
+
+By the end of this lab you will have gained a basic understanding of
+the utility of Cryptol and some of the tools that interact with
+Cryptol (such as the Software Analysis Workbench).
+
+You'll also gain experience with
+  * loading modules, evaluating functions, and browsing symbols in the
+    interpreter,
+  * Cryptol's `Bit`, sequence, `Integer`, tuple, and record types,
+  * the `:prove` command,
+  * manipulating sequences using `take`, `drop`, `split`, `groupBy`,
+    `sum`, `min`, `max`, `tail`, `last`, and `foldl`,
+  * lambda functions,
+  * enumerations and sequence comprehensions,
+  * `/\`, `\/`, `==>` -- single bit logical operations,
+  * `~`, `&&`, `||`, `^` -- logical operations for sequences,
+  * `==`, `!=` -- structural comparison,
+  * `==`, `>=`, `>`, `<=`, `<` -- nonnegative word comparisons,
+  * `+`, `-`, `*`, `/`, `%`, `**` -- wordwise modular arithmetic,
+  * `>>`, `<<`, `>>>`, `<<<` -- shifts and rotates,
+  * `#` -- concatenation,
+  * `@` -- sequence indexing, and
+  * `if then else` -- conditional expressions.
+
+## Load This Module
+
+This lab is a
+[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
+document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter
+running in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::Overview::Overview
+Cryptol> :m labs::Overview::Overview
 ```
 
-Cryptol is a domain specific language and tool suite created by Galois, Inc.,
-with support from NSA cryptographers. The language has lots of cool programming
-language features that make it well suited for applications in high assurance
-systems and cryptographic development, including:
+We start by defining a new module for this lab:
+
+```cryptol
+module labs::Overview::Overview where
+```
+
+# Overview of Cryptol
+
+Cryptol is a domain specific language and tool suite created by
+Galois, Inc., with support from NSA cryptographers. The language has
+lots of cool programming language features that make it well suited
+for applications in high assurance systems and cryptographic
+development, including:
 
  * strong, static typing
  * type inference
  * parametric size-polymorphism
  * higher-order functions
 
-Cryptol is used to create gold-standard algorithm specifications and provides
-access to tools that facilitate their exploration and evaluation.
-
-This lab will provide a quick overview of Cryptol, some motivating applications
-where the language and technology have been deployed, and to the language
-features which make Cryptol an excellent choice for these applications.
-
-More information about Cryptol is available at [http://www.cryptol.net](https://cryptol.net).
+Cryptol is used to create gold-standard algorithm specifications and
+provides access to tools that facilitate their exploration and
+evaluation. More information about Cryptol is available at
+[http://www.cryptol.net](https://cryptol.net).
 
 # First Steps: Hello, Cryptol!
 
@@ -35,15 +79,13 @@ the waters with a Hello World program. In this file we've defined a
 function `sayHello` which is specified as follows:
 
 ```cryptol
-module labs::Overview::Overview where
-
 sayHello : {a} (fin a) => [a][8] -> [7+a][8]
 sayHello name = greeting
   where
     greeting = "Hello, " # name
 ```
 
-If you have Cryptol installed, you should be able to do the following from the terminal:
+If you have Cryptol installed, you should be able to do the following:
 
 ```shell
 $ cryptol
@@ -328,7 +370,7 @@ labs::Overview::Overview> point.y
 
 Cryptol provides a collection of built-in operators to build expressions and perform computations. Some operators which frequently appear in cryptographic applications include:
 
-* `/\`, `\/` -- single bit logical operations
+* `/\`, `\/`, `==>` -- single bit logical operations
 * `~`, `&&`, `||`, `^` -- logical operations for sequences
 * `==`, `!=` -- structural comparison
 * `==`, `>=`, `>`, `<=`, `<` -- nonnegative word comparisons

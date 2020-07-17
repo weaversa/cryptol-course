@@ -42,15 +42,15 @@ language: c
 script:
   - export CRYPTOLPATH=$(pwd)
 # Interpreter lab tests
-  - cryptol -e -c ":m labs::Interpreter::test" -c ":s base=10" -c "x + 2"
+  - cryptol -e -c ":m labs::Interpreter::Interpreter" -c ":s base=10" -c "x + 2"
 #  - cryptol -e -b labs/Interpreter/test.sry
 # Arithmetic verification tests
   - "! command -v saw >/dev/null 2>&1 || make -C labs/saw/ArithmeticVerifications"
 # Bittwiddling lab tests
-  - cryptol -e -c ":m labs::saw::bittwiddling::bittwiddling"
-  - clang -emit-llvm -c labs/saw/bittwiddling/bittwiddling.c -o labs/saw/bittwiddling/bittwiddling.bc
-  - cryptol -e -c ":m labs::saw::bittwiddling::bittwiddling_answers"
-  - "! command -v saw >/dev/null 2>&1 || saw labs/saw/bittwiddling/bittwiddling_answers.saw"
+  - cryptol -e -c ":m labs::saw::Bittwiddling::Bittwiddling"
+  - clang -emit-llvm -c labs/saw/Bittwiddling/bittwiddling.c -o labs/saw/Bittwiddling/bittwiddling.bc
+  - cryptol -e -c ":m labs::saw::Bittwiddling::BittwiddlingAnswers"
+  - "! command -v saw >/dev/null 2>&1 || saw labs/saw/Bittwiddling/BittwiddlingAnswers.saw"
 # Salsa20 lab tests
   - cryptol -e -c ":m labs::Salsa20::Salsa20"
   - cryptol -e -c ":m labs::Salsa20::Salsa20Answers"

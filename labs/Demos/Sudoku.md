@@ -1,15 +1,46 @@
 # Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
-Cryptol document --- that is, it can be loaded directly into the Cryptol
-interpreter. Load this module from within the Cryptol interpreter running
-in the `cryptol-course` directory with:
+This demo gives an overview of how to solve Sudoku puzzles using
+Cryptol's interface to automated theorem provers.
+
+## Prerequisites
+
+Before working through this lab, you'll need 
+  * Cryptol to be installed, and
+  * this module to load successfully.
+
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter, and
+  * the `:prove` and `:sat` commands.
+
+## Skills You'll Learn
+
+By the end of this demo you'll understand a bit more about how Cryptol
+can use it's interface to automated theorem provers to perform
+computation. Rather than write a search algorithm in Cryptol, one only
+needs to write a solution checker in Cryptol (much easier) and then
+let the automated theorem prover carry out the search.
+
+## Load This Module
+
+This lab is a
+[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
+document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter
+running in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::Demos::Sudoku
+Cryptol> :m labs::Demos::Sudoku
 ```
 
-## Overview
+We start by defining a new module for this lab and importing some accessory
+modules that we will use:
+
+```cryptol
+module labs::Demos::Sudoku where
+```
+
+## Sudoku in Cryptol
 
 On 18 Mar 2009, Galois, Inc.
 [blogged](https://galois.com/blog/2009/03/solving-sudoku-using-cryptol/)
@@ -20,20 +51,6 @@ still be straightforwardly applied toward Sudoku. Here, we port the
 original blog entry to a Markdown-Literate Cryptol file, updating the
 code for syntax and new features and interjecting occasionally. We
 hope to have done justice to the original.
-
-
-## Module System
-
-Cryptol Version 2 was [released](https://github.com/GaloisInc/cryptol/tree/v2.0.0)
-to GitHub on April 24, 2014. Among [many
-improvements](https://cryptol.net/Version2Changes.html), it
-introduced a [module
-system](https://cryptol.net/Version2Changes.html#module-system),
-demonstrated here:
-
-```cryptol
-module labs::Demos::Sudoku where
-```
 
 On with the program...
 
@@ -47,8 +64,8 @@ On with the program...
 > Cryptol is a language tailored for cryptographic algorithms. Sudoku
 > is a popular puzzle the reader is no-doubt already familiar with.
 > We will offer no deep reason why anyone should try to solve Sudoku
-> in Cryptol; other than the very fact that it’d be a shame if we
-> couldn’t! Needless to say, Cryptol has not been designed for
+> in Cryptol; other than the very fact that it'd be a shame if we
+> couldn't! Needless to say, Cryptol has not been designed for
 > encoding search algorithms. Nonetheless, some of the features of
 > Cryptol and its associated toolset make it extremely suitable for
 > expressing certain constraint satisfaction problems very concisely;
@@ -90,7 +107,7 @@ Sorry, you were saying...?
 > precisely 9 elements, each of which is a sequence of 9 elements
 > themselves, each of which are 4-bit words. (Technically, the type
 > `[4]` also represents a sequence of precisely 4 elements, each of
-> which are bits. But it’s easier to read that as 4-bit words. The
+> which are bits. But it's easier to read that as 4-bit words. The
 > type `[4]` and `[4]Bit` are synonymous in Cryptol, and can be used
 > interchangeably in all contexts.)
 >
@@ -178,7 +195,7 @@ Anyway, sorry for the interruption.
 
 > ### Recognizing a full board
 >
-> Given a full Sudoku board, checking it’s a valid solution simply
+> Given a full Sudoku board, checking it's a valid solution simply
 > amounts to identifying rows, columns, and squares; and `check`-ing
 > them all, in the above sense. The following Cryptol function
 > accomplishes this task rather concisely:
@@ -194,11 +211,11 @@ valid rows = [ check grp | grp <- rows # columns # squares ] == ~zero
 
 > The function `valid` receives 9 rows; and calls check on all these
 > rows, columns, and the squares. Columns are easy to compute: we
-> simply use Cryptol’s `transpose` primitive. The squares are
+> simply use Cryptol's `transpose` primitive. The squares are
 > slightly more tricky, but not particularly hard. We first group all
 > the rows in length 3 segments, and transpose these to align them,
 > thus forming the regions. Then the squares are simply grouping of
-> the regions 3 elements at a time. It’s a good exercise to precisely
+> the regions 3 elements at a time. It's a good exercise to precisely
 > work out how the squares are formed using the above code, something
 > we encourage the interested reader to do on a rainy afternoon..
 
@@ -234,12 +251,12 @@ Alright, enough out of us.
 >
 > What if I told you that recognizing a valid Sudoku board is
 > sufficient to actually solve one that has empty squares on it,
-> using Cryptol’s formal-methods toolbox? The idea is rather simple.
+> using Cryptol's formal-methods toolbox? The idea is rather simple.
 > But before we get there, we need to take a detour into the Cryptol
 > toolbox.
 >
 > ### Checking satisfiability
-> Cryptol’s formal-methods tools can perform equivalence, safety, and
+> Cryptol's formal-methods tools can perform equivalence, safety, and
 > satisfiability checking. We have talked about the former two in an
 > earlier post. Today, we will look at satisfiability checking only.
 > Given a function `f`, the satisfiability checking problem asks if
@@ -252,7 +269,7 @@ f x = x*x - 7*x + 12 == 0
 ```
 
 > The function `f` returns `True` if its given 8-bit argument is a
-> solution to the quadratic equation `x^2 – 7x + 12 = 0`. We have:
+> solution to the quadratic equation `x^^2 - 7x + 12 = 0`. We have:
 
 ```shell
 labs::Demos::Sudoku> :sat f
@@ -271,7 +288,7 @@ labs::Demos::Sudoku> :sat (\x -> f x && (x != 4))
 ```
 
 > Cryptol tells us 3 is a solution as well! There happen to only be two
-> solutions to this equation; let’s verify:
+> solutions to this equation; let's verify:
 
 ```shell
 labs::Demos::Sudoku> :sat (\x -> f x && (x != 4) && (x != 3))
@@ -280,7 +297,7 @@ Unsatisfiable
 ```
 
 > Indeed, Cryptol confirms that 3 and 4 are the only 8-bit
-> values that satisfy the equation `x^2 – 7x + 12 = 0`. (I should
+> values that satisfy the equation `x^^2 - 7x + 12 = 0`. (I should
 > mention that the `:sat` command is available only in the `symbolic`
 > and `sbv` backends of Cryptol; the two main backends of Cryptol
 > that are capable of performing formal-verification.)
@@ -296,7 +313,7 @@ Unsatisfiable
 >
 > How do we encode a board with empty cells in Cryptol? One simple
 > idea is to represent the board as a function: It will take the
-> values of its “empty” cells, and return the full board. In the
+> values of its "empty" cells, and return the full board. In the
 > Cryptol encoding below I have tried to align the variables so that
 > they correspond exactly to the empty cells, and named them
 > row-by-row:
@@ -342,10 +359,10 @@ Ahem...sorry.
 > instead of just returning the final board, I simply pass it to the
 > function `valid`; so that the function `puzzle` will return `True`
 > precisely when it is given the correct numbers that solve it! By
-> now, it must be obvious how we’ll solve Sudoku in Cryptol: All we
+> now, it must be obvious how we'll solve Sudoku in Cryptol: All we
 > need to do is to ask Cryptol to find the right input value to make
 > the function return `True`, i.e., we need to find a satisfying
-> assignment. Here’s the response from Cryptol:
+> assignment. Here's the response from Cryptol:
 
 ```shell
 labs::Demos::Sudoku> :sat puzzle
@@ -359,7 +376,7 @@ puzzle
 
 > If we plug-in the numbers we get from Cryptol back into the grid,
 > we get the full solution depicted below. (I used italic for the
-> numbers found by Cryptol.) Well; that’s what we set out to do
+> numbers found by Cryptol.) Well; that's what we set out to do
 > originally; so mission accomplished!
 >
 > <img class="aligncenter" src="SudokuSolution.png" alt="Solution to Sudoku Puzzle">
@@ -543,9 +560,9 @@ Okay then. Let's defer to the original for some closing remarks...
 > written a single line of code that tried to deduce what must go in
 > the empty cells, nor have we implemented a search algorithm. We
 > merely viewed Sudoku as a satisfiability problem, and asked
-> Cryptol’s formal-methods tools to find the missing values for us.
+> Cryptol's formal-methods tools to find the missing values for us.
 > The necessary search is all done by the underlying formal-methods
 > engine, freeing us from the labor. Yet another instance of telling
-> the computer “what” to do, instead of “how.”
+> the computer "what" to do, instead of "how."
 
 > [`Download` section with broken link removed]

@@ -1,24 +1,19 @@
-Preface
--------
+# Preface
 
 This lab is a
 [literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
-document—that is, it can be loaded directly into the Cryptol
+document, that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::Language::Basics
+Cryptol> :m labs::Language::Basics
 ```
 
+# Basic Use of the Cryptol Language
 
 
-Basic Use of the Cryptol Language
-=================================
-
-
-Introduction
-------------
+## Introduction
 
 In you've programmed in a variety of languages (not just different
 [procedural languages](https://en.wikipedia.org/wiki/Procedural_programming)
@@ -40,7 +35,7 @@ such! To throw out the buzzwords:
   are harder to do in Cryptol, but they pay off in code that can be
   proven correct!
 
-In some ways this requires a new mindset:
+In some ways this requires a new mind-set:
 * Write properties about your functions.
 * `:check` them.
 * Invest in `:prove` when your function's definition has settled down.
@@ -48,8 +43,7 @@ In some ways this requires a new mindset:
 Enjoy getting addicted to this level of assurance!
 
 
-Preliminaries
--------------
+## Preliminaries
 
 The following code declares the module name of this literate Cryptol
 document.
@@ -94,8 +88,8 @@ appropriate, not unlike using `:set base = 10` to see numbers in
 base 10.
 
 
-Comments
---------
+## Comments
+
 
 * `//` to end of line
 * `/*` ... `*/` block comment
@@ -115,8 +109,7 @@ Now when issuing `:help mask`, the above comments are displayed along
 with other information about `mask`.
 
 
-Identifiers
------------
+## Identifiers
 
 Cryptol identifiers consist of alphanumeric characters plus `'`
 (apostrophe, but read "prime") and `_` (underscore). They must begin
@@ -137,8 +130,7 @@ Technically, Cryptol supports
 am pretending that it doesn't.
 
 
-Data
-----
+## Data
 
 Cryptol's "basic" data type is an _n_-dimensional array whose base
 type is bits.
@@ -162,11 +154,11 @@ Things to note:
 * Lengths of sequences may be zero. Zero length sequences act as an
   identity for concatenation and are useful in padding.
 * The possible values by type:
-  * `[0]`—`0`
-  * `[1]`—`0` and `1`
-  * `[2]`—`0`, `1`, `2` and `3`
+  * `[0]` --- `0`
+  * `[1]` --- `0` and `1`
+  * `[2]` --- `0`, `1`, `2` and `3`
   * ...
-  * `[n]`—`0` through `2^^n - 1`
+  * `[n]` --- `0` through `2^^n - 1`
 
   There are 2<sup>_n_</sup> values of type `[n]`. There are
   2<sup>_mn_</sup> values of type `[m][n]`, etc.
@@ -205,8 +197,7 @@ Other data types include:
   `4 + 4 : Z 7` evaluates to `1`.
 
 
-Operators
----------
+## Operators
 
 Cryptol's `:help` command will provide a brief description of the
 operators in this section by issuing `:help ` followed
@@ -218,7 +209,7 @@ for signed operations which are indicated by a suffixed `$`. Most of
 the time you don't need them as cryptography tends to use nonnegative
 numbers.
 
-Where appropriate, operators act elementwise (or "blast through")
+Where appropriate, operators act element-wise (or "blast through")
 typing constructs like sequences, tuples and records.
 
 ```shell
@@ -348,8 +339,7 @@ True
 ```
 
 
-Common Primitives
------------------
+## Common Primitives
 
 Cryptol's `:help` command will provide a brief description of the
 primitives in the section by issuing `:help ` followed
@@ -415,10 +405,7 @@ In most Cryptol programs, the context will enforce the size of things,
 so the type annotations shown in these examples need not be present.
 
 
-
-
-The Types of Functions
-----------------------
+## The Types of Functions
 
 The Cryptol interpreter command `:type` is very useful for helping you
 understand types. For instance the type of the `abs` function which we
@@ -432,8 +419,7 @@ abs : Integer -> Integer
 indicating that it takes an integer and returns an integer.
 
 
-Curried and Uncurried Style
----------------------------
+## Curried and Uncurried Style
 
 Cryptol functions are often written in the
 [curried](https://en.wikipedia.org/wiki/Currying) style:
@@ -488,17 +474,16 @@ functions from other languages or documents.
   like a two argument function in many languages.
 
 
-Small Functions
----------------
+## Small Functions
 
 Cryptol programs are just sequences of appropriate functions applied
 in the correct order. Good Cryptol features small, easy to understand
 functions composed into conceptually bigger ones. This is good
 computer science in general, but in Cryptol it is even more
 advantageous:
-* Easy to test—Cryptol's interpreter makes it very cheap to try your
+* Easy to test --- Cryptol's interpreter makes it very cheap to try your
   functions out.
-* Encourages programming with properties—Properties can be tested
+* Encourages programming with properties --- Properties can be tested
   easily and, as we'll see, proven to provide guarantees about
   code. Moreover, properties serve as another kind of documentation!
 
@@ -624,8 +609,7 @@ property gcdDividesBoth x y
   `Control-C`) on your computer.
 
 
-Writing Loops
--------------
+## Writing Loops
 
 ### Or not...
 
@@ -690,9 +674,7 @@ Loops that modify an accumulator in place become self-referential
 sequence comprehensions. The following example illustrates this.
 
 
-
-Simple Block Encryption Example
--------------------------------
+## Simple Block Encryption Example
 
 ```cryptol
 keyExpand : [32] -> [10][32]
@@ -721,15 +703,14 @@ labs::Language::Basics> encrypt 0 0xdabbad00
 0xdabbad00
 ```
 
-The latter shows that you can still write bad crypto with Cryptol! 😉
+The latter shows that you can still write bad crypto with Cryptol!
 
 Notice that both `roundKeys` in `keyExpand` and `roundResults` in
 `encrypt` are self-referential sequences, a paradigm that will often
 occur when coding up cryptography.
 
 
-Laziness
---------
+## Laziness
 
 Cryptol's evaluation strategy is
 [lazy](https://en.wikipedia.org/wiki/Lazy_evaluation)
@@ -753,8 +734,7 @@ labs::Language::Basics> lazyAbsMin 0 (0/0)
 ```
 
 
-Less Common Operators
----------------------
+## Less Common Operators
 
 Function equality: `===` and `!==`. These are mostly used to state
 properties about functions over a finite domain.
@@ -793,9 +773,7 @@ Passed 16 tests.
 Q.E.D.
 ```
 
-
-Judicious Type System Usage
----------------------------
+## Judicious Type System Usage
 
 ### Don't let the type system do your work
 
@@ -827,8 +805,7 @@ search)
 * can get you to notice where you blew it
 
 
-Here Abide Monsters
--------------------
+# Here Abide Monsters
 
 Following is some code that is needed to make the Cryptol within this
 document valid, but is not discussed for pedagogical reasons. You may
@@ -850,7 +827,6 @@ takes a two argument curried function and returns an uncurried version
 (a one argument function operating on an ordered pair).
 
 
-Postface
---------
+# Postface
 
 Go forth and write correct cryptographic algorithms!
