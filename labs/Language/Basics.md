@@ -1,8 +1,29 @@
-# Preface
+# Introduction
+
+This lab will provide a mostly comprehensive overview of those
+components of the Cryptol language needed to complete this course.
+
+## Prerequisites
+
+Before working through this lab, you'll need
+  * Cryptol to be installed,
+  * this module to load successfully, and
+  * an editor for completing the exercises in this file.
+
+## Skills You'll Learn
+
+By the end of this lab you will have a pretty good understanding of
+Cryptol's language constructs. At least good enough that you can come
+back here for reference as you work through the labs.
+
+Specifically, you'll also gain experience with
+  * ??? <See experience.txt>
+
+## Load This Module
 
 This lab is a
 [literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
-document, that is, it can be loaded directly into the Cryptol
+document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
@@ -10,13 +31,17 @@ running in the `cryptol-course` directory with:
 Cryptol> :m labs::Language::Basics
 ```
 
+We start by defining a new module for this lab:
+
+```cryptol
+module labs::Language::Basics where
+```
+
 # Basic Use of the Cryptol Language
 
-
-## Introduction
-
-In you've programmed in a variety of languages (not just different
-[procedural languages](https://en.wikipedia.org/wiki/Procedural_programming)
+If you've programmed in a variety of languages (not just different
+[procedural
+languages](https://en.wikipedia.org/wiki/Procedural_programming)
 descending from C), you'll find that, for the most part, Cryptol is
 just another language with a different vocabulary and a funky type
 system. After a little study you'll be able to do most anything

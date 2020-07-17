@@ -8,7 +8,7 @@ these applications.
 ## Prerequisites
 
 Before working through this lab, you'll need
-  * Cryptol to be installed,
+  * Cryptol to be installed and
   * this module to load successfully.
 
 ## Skills You'll Learn
