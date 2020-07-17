@@ -13,7 +13,7 @@ Before working through this lab, you'll need
 You'll also need experience with
   * loading modules and evaluating functions in the interpreter,
   * sequence and `Integer` types,
-  * `:prove` and `:sat` commands,
+  * the `:prove` and `:sat` commands,
   * manipulating sequences using `#`, `take`, `split`, and `join`,
   * writing functions and properties,
   * lambda functions,

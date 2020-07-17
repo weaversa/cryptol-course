@@ -21,7 +21,7 @@ You'll also need experience with
   * writing functions and properties,
   * sequence comprehensions,
   * functions with curried parameters,
-  * logical, comparison, arithmetic, and conditional operators
+  * logical, comparison, arithmetic, and conditional operators.
 
 ## Skills You Will Learn
 

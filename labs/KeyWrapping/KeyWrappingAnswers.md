@@ -6,24 +6,22 @@ purpose Key Wrapping algorithms.
 
 ## Prerequisites
 
-Before working through this lab, you'll need 
+Before working through this lab, you'll need
   * Cryptol to be installed,
-  * this module to load succesfully,
-  * an editor for completing the exercises in this file,
-  * intermediate knowledge of using the Cryptol interpreter to load
-    modules and evaluate functions,
-  * intermediate knowledge of Cryptol's types,
-  * to know the difference between value variables and type
-    variables,
-  * experience demoting types variables to value variables,
-  * basic knowledge of Cryptol's `:sat` and `:prove` commands,
-  * intermediate knowledge of how to manipulate sequences using
-    `#`, `take`, `drop`, `split`, `join`, `head`, `tail`.
-  * intermediate knowledge of how to write functions and properties,
-  * intermediate knowledge of sequence comprehensions,
-  * experience using functions with curried parameters,
-  * experience with logical, comparison, arithmetic, and conditional
-    operators
+  * this module to load succesfully, and
+  * an editor for completing the exercises in this file.
+  
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter,
+  * Cryptol's sequence and `Integer` types,
+  * demoting types variables to value variables,
+  * the `:prove` command,
+  * manipulating sequences using `#`, `take`, `drop`, `split`, `join`,
+    `head`, and `tail`,
+  * writing functions and properties,
+  * sequence comprehensions,
+  * functions with curried parameters,
+  * logical, comparison, arithmetic, and conditional operators.
 
 ## Skills You Will Learn
 
@@ -31,14 +29,12 @@ By the end of this lab you will have read through a NIST standard and
 implemented a few real-world block cipher modes for authenticated
 encryption and decryption.
 
-You'll also gain
-  * experience using type parameters and type constraints,
-  * experience using pattern matching,
-  * experience using pre-written cryptographic routines from other
-    modules,
-  * experience navigating some nuances of Cryptol's type checking
-    system, and
-  * experience with `foldl`.
+You'll also gain experience with
+  * type parameters and type constraints,
+  * pattern matching,
+  * the use of pre-written cryptographic routines from other modules,
+  * navigating some nuances of Cryptol's type checking system, and
+  * the `foldl` operator.
 
 ## Load This Module
 

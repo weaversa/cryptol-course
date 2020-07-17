@@ -17,29 +17,25 @@ By the end of this lab you will have gained a basic understanding of
 the utility of Cryptol and some of the tools that interact with
 Cryptol (such as the Software Analysis Workbench).
 
-You'll also gain
-  * basic knowledge of using the Cryptol interpreter to load
-    modules, evaluate functions, and browse symbols,
-  * basic knowledge of Cryptol's `Bit`, sequence, `Integer`, tuple,
-    and record types,
-  * basic knowledge of Cryptol's `:prove` command,
-  * basic knowledge of how to manipulate sequences using `take`,
-    `drop`, `split`, `groupBy`, `sum`, `min`, `max`, `tail`, `last`,
-    and `foldl`,
-  * basic knowledge of how to write functions and properties,
-  * basic knowledge of lambda functions,
-  * basic knowledge of enumerations and sequence comprehensions,
-  * experience with
-     * `/\`, `\/`, `==>` -- single bit logical operations
-     * `~`, `&&`, `||`, `^` -- logical operations for sequences
-     * `==`, `!=` -- structural comparison
-     * `==`, `>=`, `>`, `<=`, `<` -- nonnegative word comparisons
-     * `+`, `-`, `*`, `/`, `%`, `**` -- wordwise modular arithmetic
-     * `>>`, `<<`, `>>>`, `<<<` -- shifts and rotates
-     * `#` -- concatenation
-     * `@` -- sequence indexing
-     * `if then else` -- conditional expressions
-
+You'll also gain experience with
+  * loading modules, evaluating functions, and browsing symbols in the
+    interpreter,
+  * Cryptol's `Bit`, sequence, `Integer`, tuple, and record types,
+  * the `:prove` command,
+  * manipulating sequences using `take`, `drop`, `split`, `groupBy`,
+    `sum`, `min`, `max`, `tail`, `last`, and `foldl`,
+  * writing functions and properties,
+  * lambda functions,
+  * enumerations and sequence comprehensions,
+  * `/\`, `\/`, `==>` -- single bit logical operations,
+  * `~`, `&&`, `||`, `^` -- logical operations for sequences,
+  * `==`, `!=` -- structural comparison,
+  * `==`, `>=`, `>`, `<=`, `<` -- nonnegative word comparisons,
+  * `+`, `-`, `*`, `/`, `%`, `**` -- wordwise modular arithmetic,
+  * `>>`, `<<`, `>>>`, `<<<` -- shifts and rotates,
+  * `#` -- concatenation,
+  * `@` -- sequence indexing, and
+  * `if then else` -- conditional expressions.
 
 ## Load This Module
 
