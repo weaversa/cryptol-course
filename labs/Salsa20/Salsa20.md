@@ -1,3 +1,54 @@
+# Introduction
+
+This lab provides a series of exercises focused on a cryptographic
+algorithm called Salsa20, by Daniel J. Bernstein.
+
+## Prerequisites
+
+Before working through this lab, you'll need 
+  * Cryptol to be installed,
+  * this module to load successfully, and
+  * an editor for completing the exercises in this file.
+  
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter,
+  * Cryptol's sequence types,
+  * the `:prove` command,
+  * manipulating sequences using `#`, `split`, `join`, `take`, `drop`,
+    `map`, `iterate`, `transpose`, and `reverse`,
+  * writing functions and properties,
+  * sequence comprehensions, and
+  * logical, comparison, arithmetic, indexing, and conditional
+    operators.
+
+## Skills You'll Learn
+
+By the end of this lab you will have implemented Salsa20.
+
+You'll also gain experience with
+  * type parameters and type constraints,
+  * demoting types variables to value variables,
+  * manipulating sequences,
+  * writing functions and properties, and
+  * navigating some nuances of Cryptol's type checking system.
+  
+## Load This Module
+
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
+Cryptol document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter running
+in the `cryptol-course` directory with:
+
+```shell
+Cryptol> :m labs::Salsa20::Salsa20
+```
+
+We start by defining a new module for this lab:
+
+```cryptol
+module labs::Salsa20::Salsa20 where
+```
+
 # Salsa20
 
 Salsa20 is a cryptographic algorithm created by Daniel
@@ -9,27 +60,11 @@ specification document describes Salsa20 as well as how to use it as a
 [counter
 mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Counter_(CTR)).
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
-Cryptol document --- that is, it can be loaded directly into the Cryptol
-interpreter. Load this module from within the Cryptol interpreter running
-in the `cryptol-course` directory with:
-
-```shell
-Cryptol> :m labs::Salsa20::Salsa20
-```
-
-
 This lab goes through the [Salsa20 specification
 document](Salsa20Spec.pdf) section by section, showing how to write a
 fairly pedantic Cryptol specification of Salsa20. We recommend you
-have this lab and the specification document open side-by-side.
-
-First, since we are creating a module, the first line needs to be the
-module definition.
-
-```cryptol
-module labs::Salsa20::Salsa20 where
-```
+either print the specification document, or have this lab and the
+specification document open side-by-side.
 
 Now we can begin to dig into the specification document!
 
@@ -78,22 +113,7 @@ property hexadecimalProp =
     (0xc0a8787e == 3232266366)
 ```
 
-This document is interactive and literate. So, take some time now to
-open this document in the Cryptol interpreter.
-
-```shell
-┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
-┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
-┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
-version 2.8.0
-
-Loading module Cryptol
-Cryptol> :m labs::Salsa20::Salsa20
-Loading module labs::Salsa20::Salsa20
-labs::Salsa20::Salsa20>
-```
-
-Now that the document is open, let's prove `hexadecimalProp`:
+Let's prove `hexadecimalProp`:
 
 ```shell
 labs::Salsa20::Salsa20> :prove hexadecimalProp

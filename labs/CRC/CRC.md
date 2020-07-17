@@ -15,7 +15,7 @@ You'll also need experience with
   * Cryptol's sequence types,
   * the `:prove` command,
   * manipulating sequences using `#`, `join`, and `reverse`,
-  * writing functions
+  * writing functions,
   * sequence comprehensions, and
   * logical, comparison, arithmetic, and conditional operators.
 
