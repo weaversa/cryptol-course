@@ -180,17 +180,21 @@ Other data types include:
 * Heterogeneous tuples: E.g.: `(False, 0b11) : (Bit, [2])` and
   `(True, [1, 0], 7625597484987) : (Bit, [2][1], Integer)`
   * Elements of tuples are accessed by `.0`, `.1`, ...
-    ```shell
+
+```shell
     labs::Language::Basics> (False, 0b11).0
     False
-    ```
+```
+
 * Records with named fields: E.g.,
   `{flag = True, x = 2} : {flag : Bit, x : [4]}`
   * Elements of records are accessed by `.` followed by the field name.
-    ```shell
+
+```shell
     labs::Language::Basics> {flag = True, x = 2}.flag
     True
-    ```
+```
+
 * Integers modulo _n_: Types of the form `[n]` already provide
   [least residue systems](https://en.wikipedia.org/wiki/Modular_arithmetic#Residue_systems)
   for
@@ -353,21 +357,26 @@ by the name of the primitive.
 
 * `0` is a sequence of `False` bits whose type is determined by the
 context.
-  ```shell
+
+```shell
   labs::Language::Basics> 0 : [12]
   0x000
-  ```
+```
+
 * `zero` is an arbitrary collection of `False` bits whose type
 is determined by the context.
-  ```shell
+
+```shell
   labs::Language::Basics> zero: ([8], [4])
   (0x00, 0x0)
-  ```
-  Here we produce an order pair of a 0 octet and a 0 nibble.
+```
+
+  Here we produce an ordered pair of a 0 octet and a 0 nibble.
 * `~0` and `~zero` produce all `True` bits correspondingly.
 
 
 ### List manipulation: `take`, `drop`, `tail`, `last` and `reverse`
+
 ```shell
 labs::Language::Basics> take "dogcow" : [3][8]
 "dog"
@@ -390,6 +399,7 @@ sequences, so that the type annotations (`: [3][8]` and `: [3]Integer`
 above) will be unnecessary.
 
 ### List shape manipulation: `split`, `join`, `transpose`
+
 ```shell
 labs::Language::Basics> split 0xdeadbeef : [8][4]
 [0xd, 0xe, 0xa, 0xd, 0xb, 0xe, 0xe, 0xf]
@@ -458,10 +468,12 @@ functions from other languages or documents.
 * Partial application lets one form a new function from an old one
   where an argument is fixed.  For instance, `gcdCurried 10` is a
   function itself!
-  ```shell
+
+```shell
   labs::Language::Basics> :type gcdCurried 10
   gcdCurried 10 : Integer -> Integer
-  ```
+```
+
   `gcdCurried 10` takes an integer and returns an integer. When it
   is applied to an integer it computes the gcd of 10 and that
   integer. Other examples to illustrate partial application:
@@ -501,22 +513,26 @@ property absNonnegative x = abs x >= 0
 * `abs : Integer -> Integer` is the type signature for `abs`.
 * `abs n = if n >= 0 then n else -n` is the definition for `abs` (or function body).
 * `property absNonnegative ...` is a property we expect the function to have.
-* `:check absNonnegative` checks this property with
-    random tests. It's super cheap unit testing!
-  ```shell
+* `:check absNonnegative` checks this property with random tests. It's
+  super cheap unit testing!
+
+```shell
   labs::Language::Basics> :check absNonnegative
   Using random testing.
   Passed 100 tests.
-  ```
+```
+
 * Cryptol's `if ... then ... else` is much like C's ternary operator
   `?`...`:`. It is not like the `if ... then ... else` control structure.
 * The reserved word `property` documents that definition's intention.
 * We can go a step further and `:prove` this property:
-  ```shell
+
+```shell
   labs::Language::Basics> :prove absNonnegative
   Q.E.D.
   (Total Elapsed Time: 0.032s, using Z3)
-  ```
+```
+
 * Also Cryptol's `:check` will check all functions marked as
   properties in one go and, you guessed it, `:prove` works similarly.
 
@@ -541,18 +557,23 @@ property gcdDividesBoth' x y
 * The function `gcd'` is scoped within `gcd`.
 * The function `gcd'` is recursive.
 * Let's check `gcdDividesBoth'`:
-  ```shell
+
+```shell
   labs::Language::Basics> :check gcdDividesBoth'
   Using random testing.
   Passed 100 tests.
-  ```
+```
+
 * It seems okay, yet `gcdDividesBoth' 0 0` gives a division by 0 error.
-  ```shell
+
+```shell
   labs::Language::Basics> gcdDividesBoth' 0 0
   division by 0
-  ```
+```
+
 * We could perhaps have found that with more testing:
-  ```shell
+
+```shell
   labs::Language::Basics> :set tests=1000
   labs::Language::Basics> :check gcdDividesBoth'
   Using random testing.
@@ -560,7 +581,8 @@ property gcdDividesBoth' x y
   0
   0
   division by 0
-  ```
+```
+
 * Since `:check` uses randomly generated tests the failing result may
   be intermittent.
 * Properties are useful and sometimes may be proven, but you must
@@ -607,6 +629,7 @@ Writing Loops
 
 * Many of Cryptol's operators naturally extend elementwise over nested
   sequences to any depth.
+
 ```shell
 labs::Language::Basics> [[[2, 3], [5, 7]], [[11, 13], [17, 19]]] + [[[0, 1], [1, 2]], [[3, 5], [8, 13]]]
 [[[2, 4], [6, 9]], [[14, 18], [25, 32]]]
@@ -710,11 +733,15 @@ Cryptol's evaluation strategy is
 [lazy](https://en.wikipedia.org/wiki/Lazy_evaluation)
 a.k.a. "call-by-need". I.e., computations are not performed until
 necessary. So
+
 ```cryptol
 lazyAbsMin : Integer -> Integer -> Integer
 lazyAbsMin x y = if x == 0 then 0 else min (abs x) (abs y)
 ```
-Does not produce an error when `x` is zero, regardless of the value of `y`. For instance:
+
+Does not produce an error when `x` is zero, regardless of the value of
+`y`. For instance:
+
 ```shell
 labs::Language::Basics> lazyAbsMin 1 (0/0)
 
