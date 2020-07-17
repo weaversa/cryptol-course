@@ -8,17 +8,17 @@ powerful theorem proving tools to explore their code.
 Before working through this lab, you'll need 
   * Cryptol to be installed,
   * this module to load succesfully,
-  * an editor for completing the exercises in this file,
-  * basic knowledge of using the Cryptol interpreter to load
-    modules and evaluate functions,
-  * basic knowledge of Cryptol's sequence and `Integer` types,
-  * basic knowledge of Cryptol's `:prove` and `:sat` commands,
-  * intermediate knowledge of how to manipulate sequences using
-    `#`, `take`, `split`, and `join`,
-  * intermediate knowledge of how to write functions and properties,
-  * basic knowledge of lambda functions,
-  * basic knowledge of sequence comprehensions, and
-  * experience with logical, comparison, and arithmetic operators.
+  * an editor for completing the exercises in this file.
+
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter,
+  * sequence and `Integer` types,
+  * `:prove` and `:sat` commands,
+  * manipulating sequences using `#`, `take`, `split`, and `join`,
+  * writing functions and properties,
+  * lambda functions,
+  * sequence comprehensions, and
+  * logical, comparison, and arithmetic operators.
 
 ## Skills You'll Learn
 
@@ -26,24 +26,26 @@ By the end of this lab you will be able to describe and demonstrate
 five powerful classes of proofs that can be applied to a wide variety
 of cryptographic algorithms.
 
-You'll also gain
-  * intermediate knowledge of lambda functions,
-  * intermediate knowledge of Cryptol's `:prove` and `:sat` commands,
-  * experience with different provers, and
-  * experience with `==>`.
+You'll also gain experience with
+  * lambda functions,
+  * `:prove` and `:sat` commands, and
+  * different provers.
   
 ## Load This Module
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
-Cryptol document --- that is, it can be loaded directly into the Cryptol
-interpreter. Load this module from within the Cryptol interpreter running
-in the `cryptol-course` directory with:
+This lab is a
+[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
+document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter
+running in the `cryptol-course` directory with:
 
 ```shell
 Cryptol> :m labs::CryptoProofs::CryptoProofsAnswers
 ```
 
-The proofs in this lab require an array of different theorem provers supported by Cryptol. In order to solve them, we recommend using the Cryptol Docker container described in the README.md for this course.
+The proofs in this lab require an array of different theorem provers
+supported by Cryptol. In order to solve them, we recommend using the
+Cryptol Docker container described in the README.md for this course.
 
 First, since we are creating a module, the first line needs to be the
 module definition.
