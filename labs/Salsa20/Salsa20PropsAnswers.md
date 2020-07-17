@@ -58,7 +58,7 @@ Project](https://www.ecrypt.eu.org/stream).
 
 ## Invertibility
 
-Throughout [the original spec](Salsa20Spec.pdf) [5], various functions
+Throughout [the Salsa20 spec](Salsa20Spec.pdf) [5], various functions
 are noted as being "invertible". In the [Salsa20
 lab](Salsa20Answers.md), we proved that the `quarterround` and
 `littleendian` functions are invertible. We did this because the
