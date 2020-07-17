@@ -1,15 +1,61 @@
 # Introduction
 
+Key Wrapping is an important technique for storing and transmitting
+cryptographic keys. This module introduces a family of NIST's general
+purpose Key Wrapping algorithms.
+
+## Prerequisites
+
+Before working through this lab, you'll need
+  * Cryptol to be installed,
+  * this module to load successfully, and
+  * an editor for completing the exercises in this file.
+  
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter,
+  * Cryptol's sequence and `Integer` types,
+  * demoting types variables to value variables,
+  * the `:prove` command,
+  * manipulating sequences using `#`, `take`, `drop`, `split`, `join`,
+    `head`, and `tail`,
+  * writing functions and properties,
+  * sequence comprehensions,
+  * functions with curried parameters,
+  * logical, comparison, arithmetic, and conditional operators.
+
+## Skills You Will Learn
+
+By the end of this lab you will have read through a NIST standard and
+implemented a few real-world block cipher modes for authenticated
+encryption and decryption.
+
+You'll also gain experience with
+  * type parameters and type constraints,
+  * pattern matching,
+  * the use of pre-written cryptographic routines from other modules,
+  * navigating some nuances of Cryptol's type checking system, and
+  * the `foldl` operator.
+
+## Load This Module
+
 This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::KeyWrapping::KeyWrapping
+Cryptol> :m labs::KeyWrapping::KeyWrapping
 ```
 
-This lab will take the student through developing wrapping algorithms
+We start by defining a new module for this lab:
+
+```cryptol
+module labs::KeyWrapping::KeyWrapping where
+```
+
+# Writing Key Wrapping Routines in Cryptol
+
+This lab takes the student through developing wrapping algorithms
 described in [NIST Special Publication
 800-38F](https://csrc.nist.gov/publications/detail/sp/800-38f/final)
 "Recommendation for Block Cipher Modes of Operation: Methods for Key
@@ -19,7 +65,7 @@ document open side-by-side.
 Here is the abstract from this document:
 
 > This publication describes cryptographic methods that are approved
-> for “key wrapping,” i.e., the protection of the confidentiality and
+> for "key wrapping," i.e., the protection of the confidentiality and
 > integrity of cryptographic keys. In addition to describing existing
 > methods, this publication specifies two new, deterministic
 > authenticated-encryption modes of operation of the Advanced
@@ -35,13 +81,6 @@ subcomponents. In fact each of these is a family of algorithms: `KW`
 is composed of an *authenticated encryption* component `KW-AE` and an
 *authenticated decryption* component `KW-AD`; similarly for `TKW` and
 `KWP`.
-
-Since we are creating a new module, the first line needs to be the
-module definition:
-
-```
-module labs::KeyWrapping::KeyWrapping where
-```
 
 # Preliminaries
 
@@ -94,7 +133,7 @@ primitives. The algorithms are found under the `specs/` directory in
 `specs/Primitive/Symmetric/Cipher/Block` and we import them into our
 module with the following:
 
-```
+```cryptol
 import specs::Primitive::Symmetric::Cipher::Block::AES_parameterized as AES
 import specs::Primitive::Symmetric::Cipher::Block::TripleDES as TDEA
 ```
@@ -126,7 +165,7 @@ are defined to have special values. Since we are working inside of a
 module we can define these variables without fear of polluting another
 namespace by placing them in a `private` code block:
 
-```
+```cryptol
 private
     ICV1 = 0xA6A6A6A6A6A6A6A6
     ICV2 = 0xA65959A6
@@ -240,7 +279,7 @@ counter found in step 2 of `Algorithm 1`.
   `A'` and `Rs'` found in the body of the function. *Hint*: R2 mentioned
   in the spec is actually the first (`head`) semi-block from Rs.
 
-```
+```cryptol
 WStep:
     {n}
     (fin n, n >= 3) =>
@@ -312,7 +351,7 @@ definition for `W`.
 **EXERCISE**: Complete the definition of `W` below by filling in the
   function skeleton provided.
 
-```
+```cryptol
 W :
     {n}
     (fin n, 3 <= n, n <= 2^^54) =>
@@ -321,7 +360,7 @@ W CIPHk S = C
   where
     type s = 0
     ts     = undefined : [s][64]
-    C      = foldl (WStep CIPHk) undefined undefined
+    C      = foldl (WStep CIPHk) undefined ts
 ```
 
 With `W` in hand there it isn't much more work to complete the `KW-AE`
@@ -333,7 +372,7 @@ algorithm.
   module. Also, notice that the bounds from Table 1 (Section 5.3.1,
   page 10) are included as type constraints.
 
-```
+```cryptol
 KWAE :
     {n}
     (fin n, 2 <= n, n < 2^^54) =>
@@ -374,7 +413,7 @@ special attention to the order of the index variable for the main
 loop, the sequence of operations, and how the sequence of `Rs`
 transforms:
 
-```
+```cryptol
 WStep' :
     {n}
     (fin n, n >= 3) =>
@@ -413,7 +452,7 @@ These two properties state that for a fixed, dummy CIPHk and S of
 length 3 semiblocks, `WStep` and `WStep'` are inverses and `W` and
 `W'` are inverses. Here are the definitions of these properties:
 
-```
+```cryptol
 property WStep'Prop ARs t =
     WStep'`{3} (\a -> a-1) (WStep (\a -> a+1) ARs t) t == ARs
 
@@ -439,7 +478,7 @@ authenticate.
 
 *Hint:* Review the Cryptol primitives `head` and `tail`.
 
-```
+```cryptol
 KWAD :
     {n}
     (fin n, 2 <= n, n < 2^^54) =>
@@ -458,7 +497,7 @@ least for a dummy CIPHk and P of length 3 semiblocks) using the
 by using the property `KWADTests` (this is defined later on
 in this document).
 
-```
+```cryptol
 property KWAEInvProp S =
     KWAD`{3} (\a -> a-1) (KWAE (\a -> a+1) S) == (False, S)
 ```
@@ -503,7 +542,7 @@ You can test your work with the `TKWAETests` and `TKWADTests`
 properties. Though, if you want to use them, you'll have to uncomment
 them after finishing your work here. Good luck!
 
-```
+```cryptol
 TWStep CIPHk ([A] # Rs) t = undefined
 
 TW CIPHk S = undefined
@@ -546,7 +585,7 @@ want to pad it to fit into some number of 32-bit words. Well, the next
 largest multiple of `32` is `64`, and `64 - 37` is `27`, so we'll need
 to pad with `27` zeros. We can demonstrate this using Cryptol:
 
-```
+```cryptol
 bits = 0b1001100101110011111010000001110011011 : [37]
 bits_padded = bits # (0 : [27]) : [64]
 ```
@@ -595,7 +634,7 @@ labs::KeyWrapping::KeyWrapping> `(37 %^ 32)
 Now we can revisit creating a function that pads any size input
 into a bitvector with a size that is a multiple of 32.
 
-```
+```cryptol
 pad32 : {a} (fin a) => [a] -> [a + a %^ 32]
 pad32 x = x # 0
 ```
@@ -634,7 +673,7 @@ use that instead.
   standard and complete the definition of `KWPAEPad` below by filling
   in the function skeleton provided with appropriate logic.
 
-```
+```cryptol
 KWPAEPad :
     {k, l}               // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
@@ -675,7 +714,7 @@ thing, we can either give up, or try and unify the two cases.
 Here is a silly example that closely models the behavior we'll see in
 `KWP-AE` and `KWP-AD`:
 
-```
+```cryptol
 g : [32] -> [32]
 g x = x + 1
 
@@ -740,7 +779,7 @@ bits to `64` bits, and shrink the result back down to `48` bits. To
 help us do this resizing work, we'll introduce `shrink` and `widen`
 functions.
 
-```
+```cryptol
 widen : {a, b} (fin a, fin b) => [b] -> [a + b]
 widen a = 0 # a
 
@@ -752,7 +791,7 @@ shrink a = drop a
 bits. `shrink` takes any sized input and removes `0` or more bits from
 the front. Using these two functions, we can fix our `f` from above:
 
-```
+```cryptol
 f : {a} (32 <= a, a <= 64) => [a] -> [48]
 f x = if `a <= 0x30 then
         widen (g (shrink x))
@@ -789,7 +828,7 @@ and type constraints from `W` and relate `n` and `l` (the type of both
 variable `n` is the same type variable that it uses. This can be
 achieved by calling `W` like so: ```W`{n=n}```.
 
-```
+```cryptol
 KWPAE :
     {k, l, n}            // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
@@ -823,7 +862,7 @@ previously defined `W'`.
   FAIL can be a Boolean expression, that is, it does not need to be an
   `if-then-else` statement.
 
-```
+```cryptol
 KWPADUnpad :
     {k, l}               // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
@@ -840,7 +879,7 @@ KWPADUnpad S = (FAIL, split P)
     FAIL = undefined
 ```
 
-```
+```cryptol
 KWPAD :
     {k, l, n}            // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
@@ -932,7 +971,7 @@ Recall that you can check individual properties with the `:check`
 command in the interpreter.  Here are some test vectors from [RFC
 3394](rfc3394.pdf) that are useful for testing `KW-AE` and `KW-AD`.
 
-```
+```cryptol
 TestKWAE :
    {a, n}
    (a >= 2, 4 >= a, n >= 2, 2^^54-1 >= n) =>
@@ -954,7 +993,7 @@ property KWAETests =
      join [ 0x64e8c3f9ce0f5ba2, 0x63e9777905818a2a, 0x93c8191e7d6e8ae7 ])
 ```
 
-```
+```cryptol
 TestKWAD :
    {a, n}
    (a >= 2, 4 >= a, n >= 2, 2^^54-1 >= n) =>
@@ -983,7 +1022,7 @@ property KWADTests =
                    0x3a6d614e94ba1ac5, 0xfe957c5963100091]))
 ```
 
-```
+```cryptol
 TestTKWAE :
    {n}
    (n >= 2, 2^^28-1 >= n) =>
@@ -998,7 +1037,7 @@ property TKWAETests =
             == 0x7a72bbca3aa323aa1ac231ba)
 ```
 
-```
+```cryptol
 TestTKWAD :
    {n}
    (n >= 2, 2^^28-1 >= n) =>
@@ -1016,7 +1055,7 @@ property TKWADTests =
             == True)
 ```
 
-```
+```cryptol
 TestKWPAE :
    {a, k, l, n}
    ( a >= 2, 4 >= a
@@ -1064,7 +1103,7 @@ property KWPADTests =
 # The end
 
 How was your experience with this lab? Suggestions are welcome in the
-form of a ticket on the course Github page:
+form of a ticket on the course GitHub page:
 [https://github.com/weaversa/cryptol-course/issues](https://github.com/weaversa/cryptol-course/issues)
 
 # References

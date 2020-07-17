@@ -26,7 +26,7 @@ with *4 spaces*. Indent the `where` keyword two spaces to set it apart
 from the rest of the code and indent the definitions in a `where`
 clause 2 spaces. Some examples:
 
-```haskell
+```cryptol
 sayHello : {a} (fin a) => [a][8] -> [a+7][8]
 sayHello name = greeting
   where
@@ -41,7 +41,7 @@ type signatures and function definitions.
 ### Whitespace
 
 Surround binary operators with a single space on either side. Use your
-best judgement for the insertion of spaces around arithmetic
+best judgment for the insertion of spaces around arithmetic
 operators, but always be consistent about whitespace on either side of
 a binary operator. Don't insert a space after a lambda (the `\`
 symbol).
@@ -53,7 +53,7 @@ argument types on one line iff they fit on one line. It is always
 acceptable to place type variables, type constraints, and argument
 types on separate lines.
 
-```haskell
+```cryptol
 sayHello :
      {a}
      (fin a) =>
@@ -64,7 +64,7 @@ The `:` should always be surrounded by a single space on either
 side. This aligns type definitions with value definitions (where the
 `=` is also surrounded by a single space on either side). For example,
 
-```haskell
+```cryptol
 x : [32]
 x = 10
 y : [4][32]
@@ -76,7 +76,7 @@ y = [1, 2, 3, 4]
 Type constraints should always be tupleized. The following is
 incorrect:
 
-```haskell
+```cryptol
 func :
    {a, b}
    fin a => fin b =>
@@ -85,7 +85,7 @@ func :
 
 `func` should be:
 
-```haskell
+```cryptol
 func :
    {a, b}
    (fin a, fin b)
@@ -98,7 +98,7 @@ The basecase for `=` should be surrounded by a single space on either
 side. This aligns value definitions with type definitions (where the
 `:` is also surrounded by a single space on either side). For example,
 
-```haskell
+```cryptol
 fish : [32]
 fish = 10
 ```
@@ -106,7 +106,7 @@ fish = 10
 When multiple definitions are in the same where clause, align the
 `=` with the longest definition. For example,
 
-```haskell
+```cryptol
 horse    : [4][32]
 horse    = [1, 2, 3, 4]
 elephant : [2]
@@ -115,7 +115,7 @@ elephant = [False, True]
 
 Format records as follows:
 
-```haskell
+```cryptol
 Person =
     { firstName : String 10
     , lastName  : String 10
@@ -125,7 +125,7 @@ Person =
 
 Align the elements in a list. For example,
 
-```haskell
+```cryptol
 exceptions =
     [ InvalidStatusCode
     , MissingContentHeader
@@ -133,10 +133,10 @@ exceptions =
     ]
 ```
 
-Optionally, you can skip the first newline. Use your judgement or try
+Optionally, you can skip the first newline. Use your judgment or try
 to match the specification you're working from.
 
-```haskell
+```cryptol
 directions = [ North
              , East
              , South
@@ -149,14 +149,14 @@ directions = [ North
 Shortcircuit logical operators are preferred to if-then-else in
 properties. For example,
 
-```
+```cryptol
 property myProperty x =
     x != 0 ==> (100/x) <= 100
 ```
 
 is superior to
 
-```
+```cryptol
 property myProperty x =
     if x != 0
     then (100/x) <= 100
@@ -167,7 +167,7 @@ property myProperty x =
 
 Align if-then-else clauses like you would normal expressions:
 
-```haskell
+```cryptol
 foo = if ...
       then ...
       else ...
@@ -175,7 +175,7 @@ foo = if ...
 
 The same rule applies in nested where clauses:
 
-```haskell
+```cryptol
 foo a b = c
   where
     c = if a == 0x0000
@@ -191,7 +191,7 @@ foo a b = c
 
 Align the `=` symbols in a where clause when it helps readability.
 
-```haskell
+```cryptol
 foo = ...
   where
     cat   = ...
@@ -226,7 +226,7 @@ good practice provided it does not become too verbose.
 
 Separate end-of-line comments from the code using two spaces.
 
-```haskell
+```cryptol
 /**
  * Here is a docstring comment for the function named foo.
  * This comment will appear in the Cryptol interpreter
@@ -258,7 +258,7 @@ Haskell's style:
 As well, an apostrophe (`'`) can be appended to a function name to
 denote a relationship.
 
-```haskell
+```cryptol
 encrypt key plainText = f  key plainText
 
 decrypt key plainText = f' key plainText
@@ -281,13 +281,13 @@ Argument Order
 Order arguments so that partial application is most advantageous. For
 example,
 
-```haskell
+```cryptol
 encrypt key plainText = ...
 ```
 
 is superior to
 
-```haskell
+```cryptol
 encrypt plainText key = ...
 ```
 

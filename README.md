@@ -22,26 +22,40 @@ alongside and edited while you work through the labs. For instance,
 you might be asked to fill in a portion of a Cryptol snippet:
 
 ```comment
-algebra_fact : Integer -> Integer -> Bit
-property algebra_fact x y =
-    //  Use the distributive law to write an equivalent statement
-    (x + y) * (x + y) == undefined
+CBCEncrypt : {n} (fin n) => ([128] -> [128]) -> [128] -> [n][128] -> [n][128]
+CBCEncrypt Ek iv pt = undefined
+    //  Implement a parameterized version of the CBC encryption mode
+
+CBCDecrypt : {n} (fin n) => ([128] -> [128]) -> [128] -> [n][128] -> [n][128]
+CBCDecrypt Dk iv ct = undefined
+    //  Implement a parameterized version of the CBC decryption mode
 ```
 
 A student might solve this problem by changing this snippet in their
 editor to the following:
 
-```
-algebra_fact : Integer -> Integer -> Bit
-property algebra_fact x y =
-    (x + y) * (x + y) == x^^2 + 2*x*y + y^^2
+```cryptol
+CBCEncrypt : {n} (fin n) => ([128] -> [128]) -> [128] -> [n][128] -> [n][128]
+CBCEncrypt Ek iv pt =
+    [ Ek (pi ^ ci) | pi <- pt | ci <- [iv] # CBCEncrypt Ek iv pt ]
+
+CBCDecrypt : {n} (fin n) => ([128] -> [128]) -> [128] -> [n][128] -> [n][128]
+CBCDecrypt Dk iv ct =
+    [ Dk ci ^ ci' | ci <- ct | ci' <- [iv] # ct ]
 ```
 
 and then reloading the module using `:reload` (`:r` for short).
 
 Exercises will often have checks that follow along with instructions
-for how to verify their work. Check your answer with the following
-command; your output should look similar to the following:
+for how to verify their work. For example:
+
+```cryptol
+property CBCInverts iv (pt : [100][128]) =
+    CBCDecrypt (\x -> x - 1) iv (CBCEncrypt (\x -> x + 1) iv pt) == pt
+```
+
+Check your answer with the following command; your output should look
+similar to the following:
 
 ```shell
  $ cryptol
@@ -54,9 +68,9 @@ command; your output should look similar to the following:
  Cryptol> :load README.md
  Loading module Cryptol
  Loading module Main
- Main> :prove algebra_fact
+ Main> :prove CBCInverts
  Q.E.D.
- (Total Elapsed Time: 0.056s, using Z3)
+ (Total Elapsed Time: 0.081s, using Z3)
 ```
 
 Don't worry if Cryptol is not on your system -- the first lab walks
@@ -76,22 +90,22 @@ you through [installing and running Cryptol](INSTALL.md).
     * [Demos](labs/Demos/Demos.md): Lightweight walkthroughs with no
       exercises that demonstrate common concepts.
 5. [Cyclic Redundancy Checks](labs/CRC/CRC.md): Create your first
-   specification!
+   specification.
 6. [Salsa20](labs/Salsa20/Salsa20.md): Create your second
-   specification!
-7. [Salsa20 Properties](labs/Salsa20/Salsa20Props.md): Learn how to
-   prove some properties about your Salsa20 specification.
-8. [Prove Cryptographic
+   specification.
+7. [Prove Cryptographic
    Properties](labs/CryptoProofs/CryptoProofs.md): Learn about common
    cryptographic properties and how to prove them with Cryptol.
+    * [Salsa20 Properties](labs/Salsa20/Salsa20Props.md): Prove some
+      cryptographic properties about Salsa20.
     * [Project Euler](labs/ProjectEuler/ProjectEuler.md): If you
-      enjoyed the last lab, why not try you hand at using Cryptol's
+      enjoyed the last lab, why not try your hand at using Cryptol's
       connection to automated provers (SMT solvers) to solve some
       computational puzzles.
-9. [Methods for Key Wrapping](labs/KeyWrapping/KeyWrapping.md):
+8. [Methods for Key Wrapping](labs/KeyWrapping/KeyWrapping.md):
    Create a Cryptol specification of NIST's [SP800-38F key wrap
    standard](https://csrc.nist.gov/publications/detail/sp/800-38f/final).
-10. [Capstone: Putting it all
+9. [Capstone: Putting it all
    together](labs/LoremIpsum/LoremIpsum.md): Decrypt a series of
    secret messages by feeding wrapped keys into the anomalous KLI20
    cryptographic engine. Success here requires use of modules and concepts
@@ -100,8 +114,9 @@ you through [installing and running Cryptol](INSTALL.md).
 
 ## Graphical View of the Course
 
-Our suggested flow would be to follow the red line. Dependencies are
-given by black lines.
+The suggested flow is to follow the red line. The black lines indicate
+labs designed to give you more opportunities to practice Cryptol, but
+are not strictly necessary for course completion.
 
 <img class="center" src="https://raw.githubusercontent.com/weaversa/cryptol-course/master/misc/deps.svg" alt="Dependencies and Suggested Course Flow">
 
@@ -132,16 +147,21 @@ reference:
 
 * [Programming
   Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf)
-  -- A good overview and reference for the Cryptol language. Contains
-  many examples and references for programming language
-  features. Especially see Appendix B on page 95 where you'll find a
-  listing of all of Cryptol's language constructs.
+  -- A comprehensive reference for the Cryptol language. Contains many
+  examples for programming language features including a full workup
+  of AES.
 
-* [Cryptol Version 2
+* [Cryptol
   Syntax](https://github.com/GaloisInc/cryptol/blob/master/docs/Syntax.pdf)
   -- A comprehensive guide to Cryptol Syntax.
 
 * [Cryptol
-  Semantics](https://github.com/GaloisInc/cryptol/blob/master/docs/Semantics.pdf)
-  -- A guide to Cryptol language semantics and overview of the
-  underlying representations of Cryptol's type system.
+  Primitives](https://github.com/GaloisInc/cryptol/blob/master/docs/CryptolPrims.pdf)
+  -- A simple list of all of the Cryptol language primitives.
+
+* [Cryptol Module System
+  Overview](https://github.com/GaloisInc/cryptol/blob/master/docs/AbstractValuesAndModuleParameters.md)
+  -- An overview of the Cryptol's parameterized module system. This
+  feature assists in creating parameterized algorithms such as AES
+  (which has three different variants with different key sizes,
+  namely, 128, 192, and 256).

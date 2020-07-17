@@ -13,6 +13,7 @@ digraph G {
     Overview;
     Interpreter;
     LanguageBasics;
+//    CRC;
 //    Demos;
   }
 
@@ -32,7 +33,7 @@ digraph G {
   ArithmeticVerifications [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/saw/ArithmeticVerifications/ArithmeticVerifications.md"];
 
   // Fixing up node labels for ones that need a space
-  LanguageBasics        [label="Language\nBasics"];
+  LanguageBasics          [label="Language\nBasics"];
   Salsa20Properties       [label="Salsa20\nProperties"];
   CryptographicProperties [label="Cryptographic\nProperties"];
   KeyWrapping             [label="Key Wrapping"];
@@ -47,25 +48,24 @@ digraph G {
   Interpreter -> LanguageBasics;
   LanguageBasics -> CRC;
   CRC -> Salsa20;
-  Salsa20 -> Salsa20Properties;
-  Salsa20Properties -> CryptographicProperties;
+  Salsa20 -> CryptographicProperties;
   CryptographicProperties -> KeyWrapping;
   KeyWrapping -> Capstone;
 
   // Logical Dependencies with Black Arrows
   edge [color=black];
+  CryptographicProperties -> Salsa20Properties;
   CryptographicProperties -> ProjectEuler;
-  CRC -> Capstone;
-  LanguageBasics -> Salsa20;
-  LanguageBasics -> KeyWrapping;
+  //CRC -> Capstone;
+  //LanguageBasics -> Salsa20;
+  //LanguageBasics -> KeyWrapping;
   LanguageBasics -> Demos;
-  Salsa20 -> Capstone;
+  //Salsa20 -> Capstone;
   LanguageBasics -> BitTwiddling;
   LanguageBasics -> ArithmeticVerifications;
 
-//  ArithmeticVerifications -> Demos;
-//  Demos -> ArithmeticVerifications;
+  {rank=same; Salsa20Properties -> ProjectEuler [style=invis];};
 
-//  BitTwiddling -> Demos;
-//  Demos -> BitTwiddling;
+  {rank=same; Demos -> ArithmeticVerifications [style=invis]; ArithmeticVerifications -> BitTwiddling [style=invis];}
+
 }
