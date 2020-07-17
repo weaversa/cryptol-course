@@ -8,10 +8,8 @@ interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::Language::Basics
+Cryptol> :m labs::Language::Basics
 ```
-
-
 
 Basic Use of the Cryptol Language
 =================================

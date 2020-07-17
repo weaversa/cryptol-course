@@ -1,12 +1,47 @@
 # Introduction
 
+This lab provides a series of exercises focused on Cyclic Redundancy
+Checks.
+
+## Prerequisites
+
+Before working through this lab, you'll need 
+  * Cryptol to be installed,
+  * this module to load succesfully,
+  * an editor for completing the exercises in this file,
+  * basic knowledge of using the Cryptol interpreter to load
+    modules and evaluate functions,
+  * basic knowledge of Cryptol's sequence types,
+  * basic knowledge of Cryptol's `:prove` command,
+  * basic knowledge of how to manipulate sequences using
+    `#`, `join`, and `reverse`.
+  * basic knowledge of how to write functions,
+  * basic knowledge of sequence comprehensions, and
+  * experience with logical, comparison, arithmetic, and conditional
+    operators.
+
+## Skills You'll Learn
+
+By the end of this lab you will be able to...
+
+You'll also gain
+  * experience with Cryptol's support for polynomials including
+    expressing polynomials and using `pmod`.
+  * experience using functions with curried parameters,
+  * more experience writing functions,
+  * more experience manipulating sequence comprehensions,
+  * more experience with logical, comparison, arithmetic, and
+    conditional operators
+  
+## Load This Module
+
 This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::CRC::CRCAnswers
+Cryptol> :m labs::CRC::CRCAnswers
 ```
 
 We start by defining a new module for this lab:

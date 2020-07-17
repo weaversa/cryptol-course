@@ -6,13 +6,13 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::Salsa20::Salsa20PropsAnswers
+Cryptol> :m labs::Salsa20::Salsa20PropsAnswers
 ```
 
 In this lab, we consider additional properties of the [Salsa20 stream
 cipher](Salsa20Spec.md) [5], which has undergone much scrutiny since
-being proposed for [eSTREAM, the ECRYPT Stream Cipher Project]
-(https://www.ecrypt.eu.org/stream).
+being proposed for [eSTREAM, the ECRYPT Stream Cipher
+Project](https://www.ecrypt.eu.org/stream).
 
 ```cryptol
 module labs::Salsa20::Salsa20PropsAnswers where

@@ -1,9 +1,0 @@
-module labs::Interpreter::test where
-
-type uint32_t = [32]
-
-x = 1 : uint32_t
-
-y = x + 10
-
-f a = a + y

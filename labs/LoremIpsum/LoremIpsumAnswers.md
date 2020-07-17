@@ -6,13 +6,13 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::LoremIpsum::LoremIpsumAnswers
+Cryptol> :m labs::LoremIpsum::LoremIpsumAnswers
 ```
 
 # LoremIpsum Key
 
 During this lab you will use the results of previous labs to
-Cryptolize a *bogus* key generation specification we're calling the
+Cryptolize a **bogus** key generation specification we're calling the
 LoremIpsum key. This document specifies the algorithm, but, like most
 specification documents it also contains reams of text unrelated to
 the algorithm. We've replaced these unhelpful portions with [lorem

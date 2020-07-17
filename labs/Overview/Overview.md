@@ -17,29 +17,25 @@ By the end of this lab you will have gained a basic understanding of
 the utility of Cryptol and some of the tools that interact with
 Cryptol (such as the Software Analysis Workbench).
 
-You'll also gain
-  * basic knowledge of using the Cryptol interpreter to load
-    modules, evaluate functions, and browse symbols,
-  * basic knowledge of Cryptol's `Bit`, sequence, `Integer`, tuple,
-    and record types,
-  * basic knowledge of Cryptol's `:prove` command,
-  * basic knowledge of how to manipulate sequences using `take`,
-    `drop`, `split`, `groupBy`, `sum`, `min`, `max`, `tail`, `last`,
-    and `foldl`,
-  * basic knowledge of how to write functions and properties,
-  * basic knowledge of lambda functions,
-  * basic knowledge of enumerations and sequence comprehensions,
-  * experience with
-     * `/\`, `\/`, `==>` -- single bit logical operations
-     * `~`, `&&`, `||`, `^` -- logical operations for sequences
-     * `==`, `!=` -- structural comparison
-     * `==`, `>=`, `>`, `<=`, `<` -- nonnegative word comparisons
-     * `+`, `-`, `*`, `/`, `%`, `**` -- wordwise modular arithmetic
-     * `>>`, `<<`, `>>>`, `<<<` -- shifts and rotates
-     * `#` -- concatenation
-     * `@` -- sequence indexing
-     * `if then else` -- conditional expressions
-
+You'll also gain experience with
+  * loading modules, evaluating functions, and browsing symbols in the
+    interpreter,
+  * Cryptol's `Bit`, sequence, `Integer`, tuple, and record types,
+  * the `:prove` command,
+  * manipulating sequences using `take`, `drop`, `split`, `groupBy`,
+    `sum`, `min`, `max`, `tail`, `last`, and `foldl`,
+  * writing functions and properties,
+  * lambda functions,
+  * enumerations and sequence comprehensions,
+  * `/\`, `\/`, `==>` -- single bit logical operations,
+  * `~`, `&&`, `||`, `^` -- logical operations for sequences,
+  * `==`, `!=` -- structural comparison,
+  * `==`, `>=`, `>`, `<=`, `<` -- nonnegative word comparisons,
+  * `+`, `-`, `*`, `/`, `%`, `**` -- wordwise modular arithmetic,
+  * `>>`, `<<`, `>>>`, `<<<` -- shifts and rotates,
+  * `#` -- concatenation,
+  * `@` -- sequence indexing, and
+  * `if then else` -- conditional expressions.
 
 ## Load This Module
 
@@ -50,8 +46,16 @@ interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::Overview::Overview
+Cryptol> :m labs::Overview::Overview
 ```
+
+We start by defining a new module for this lab:
+
+```cryptol
+module labs::Overview::Overview where
+```
+
+# Overview of Cryptol
 
 Cryptol is a domain specific language and tool suite created by
 Galois, Inc., with support from NSA cryptographers. The language has
@@ -76,8 +80,6 @@ the waters with a Hello World program. In this file we've defined a
 function `sayHello` which is specified as follows:
 
 ```cryptol
-module labs::Overview::Overview where
-
 sayHello : {a} (fin a) => [a][8] -> [7+a][8]
 sayHello name = greeting
   where

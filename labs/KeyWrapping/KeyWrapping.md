@@ -1,15 +1,61 @@
 # Introduction
 
+Key Wrapping is an important technique for storing and transmitting
+cryptographic keys. This module introduces a family of NIST's general
+purpose Key Wrapping algorithms.
+
+## Prerequisites
+
+Before working through this lab, you'll need
+  * Cryptol to be installed,
+  * this module to load succesfully, and
+  * an editor for completing the exercises in this file.
+  
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter,
+  * Cryptol's sequence and `Integer` types,
+  * demoting types variables to value variables,
+  * the `:prove` command,
+  * manipulating sequences using `#`, `take`, `drop`, `split`, `join`,
+    `head`, and `tail`,
+  * writing functions and properties,
+  * sequence comprehensions,
+  * functions with curried parameters,
+  * logical, comparison, arithmetic, and conditional operators.
+
+## Skills You Will Learn
+
+By the end of this lab you will have read through a NIST standard and
+implemented a few real-world block cipher modes for authenticated
+encryption and decryption.
+
+You'll also gain experience with
+  * type parameters and type constraints,
+  * pattern matching,
+  * the use of pre-written cryptographic routines from other modules,
+  * navigating some nuances of Cryptol's type checking system, and
+  * the `foldl` operator.
+
+## Load This Module
+
 This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::KeyWrapping::KeyWrapping
+Cryptol> :m labs::KeyWrapping::KeyWrapping
 ```
 
-This lab will take the student through developing wrapping algorithms
+We start by defining a new module for this lab:
+
+```cryptol
+module labs::KeyWrapping::KeyWrapping where
+```
+
+# Writing Key Wrapping Routines in Cryptol
+
+This lab takes the student through developing wrapping algorithms
 described in [NIST Special Publication
 800-38F](https://csrc.nist.gov/publications/detail/sp/800-38f/final)
 "Recommendation for Block Cipher Modes of Operation: Methods for Key
@@ -35,13 +81,6 @@ subcomponents. In fact each of these is a family of algorithms: `KW`
 is composed of an *authenticated encryption* component `KW-AE` and an
 *authenticated decryption* component `KW-AD`; similarly for `TKW` and
 `KWP`.
-
-Since we are creating a new module, the first line needs to be the
-module definition:
-
-```cryptol
-module labs::KeyWrapping::KeyWrapping where
-```
 
 # Preliminaries
 
