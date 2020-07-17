@@ -263,6 +263,7 @@ labs::Demos::OneTimePad>
 ```
 
 ### Using Docker on Windows 10
+
 ```shell
 ...\cryptol-course> docker run --rm --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol
     ...
