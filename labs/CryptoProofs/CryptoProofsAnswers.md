@@ -7,7 +7,7 @@ powerful theorem proving tools to explore their code.
 
 Before working through this lab, you'll need 
   * Cryptol to be installed,
-  * this module to load succesfully, and
+  * this module to load successfully, and
   * an editor for completing the exercises in this file.
 
 You'll also need experience with
@@ -159,7 +159,7 @@ known_key = 0x752979387592cb70
 known_ct = 0xf2930290ea4db580
 ```
 
-Note: For whatever reason, the default Z3 solver has trouble with this one. Try one of the other solvers, such as yices:
+Note: For whatever reason, the default Z3 solver has trouble with this one. Try one of the other solvers, such as YICES:
 
 ```shell
 labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
@@ -305,13 +305,13 @@ Use the solver to find two different keys and a plaintext such that both keys en
 
 ### 2.4 Proof of Injectivity
 
-The flipside of collision detection is proving an absence of collisions. That is, proving that every input generates a distinct output. A function with this property is referred to in mathematics as *injective* or *one-to-one*.
+The flip-side of collision detection is proving an absence of collisions. That is, proving that every input generates a distinct output. A function with this property is referred to in mathematics as *injective* or *one-to-one*.
 
 **EXERCISE** 2.4.1 DES Injectivity
 
 Show that, for any given key, `DES.encrypt` is injective (collision-free) with respect to plaintext.
 
-*Hint* Use the boolector theorem prover. (Even then, this proof may take a few minutes!)
+*Hint* Use the Boolector theorem prover. (Even then, this proof may take a few minutes!)
 
 *Hint* Consider using the implication operator `==>`
 

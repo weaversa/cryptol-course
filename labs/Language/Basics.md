@@ -3,7 +3,7 @@ Preface
 
 This lab is a
 [literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
-document—that is, it can be loaded directly into the Cryptol
+document, that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
@@ -38,7 +38,7 @@ such! To throw out the buzzwords:
   are harder to do in Cryptol, but they pay off in code that can be
   proven correct!
 
-In some ways this requires a new mindset:
+In some ways this requires a new mind-set:
 * Write properties about your functions.
 * `:check` them.
 * Invest in `:prove` when your function's definition has settled down.
@@ -160,11 +160,11 @@ Things to note:
 * Lengths of sequences may be zero. Zero length sequences act as an
   identity for concatenation and are useful in padding.
 * The possible values by type:
-  * `[0]`—`0`
-  * `[1]`—`0` and `1`
-  * `[2]`—`0`, `1`, `2` and `3`
+  * `[0]` --- `0`
+  * `[1]` --- `0` and `1`
+  * `[2]` --- `0`, `1`, `2` and `3`
   * ...
-  * `[n]`—`0` through `2^^n - 1`
+  * `[n]` --- `0` through `2^^n - 1`
 
   There are 2<sup>_n_</sup> values of type `[n]`. There are
   2<sup>_mn_</sup> values of type `[m][n]`, etc.
@@ -212,7 +212,7 @@ for signed operations which are indicated by a suffixed `$`. Most of
 the time you don't need them as cryptography tends to use nonnegative
 numbers.
 
-Where appropriate, operators act elementwise (or "blast through")
+Where appropriate, operators act element-wise (or "blast through")
 typing constructs like sequences, tuples and records.
 
 ```shell
@@ -482,9 +482,9 @@ in the correct order. Good Cryptol features small, easy to understand
 functions composed into conceptually bigger ones. This is good
 computer science in general, but in Cryptol it is even more
 advantageous:
-* Easy to test—Cryptol's interpreter makes it very cheap to try your
+* Easy to test --- Cryptol's interpreter makes it very cheap to try your
   functions out.
-* Encourages programming with properties—Properties can be tested
+* Encourages programming with properties --- Properties can be tested
   easily and, as we'll see, proven to provide guarantees about
   code. Moreover, properties serve as another kind of documentation!
 
@@ -696,7 +696,7 @@ labs::Language::Basics> encrypt 0 0xdabbad00
 0xdabbad00
 ```
 
-The latter shows that you can still write bad crypto with Cryptol! 😉
+The latter shows that you can still write bad crypto with Cryptol!
 
 Notice that both `roundKeys` in `keyExpand` and `roundResults` in
 `encrypt` are self-referential sequences, a paradigm that will often

@@ -8,7 +8,7 @@ secret messages.
 
 Before working through this lab, you'll need 
   * Cryptol to be installed,
-  * this module to load succesfully, and
+  * this module to load successfully, and
   * an editor for completing the exercises in this file.
 
 You'll also need experience with

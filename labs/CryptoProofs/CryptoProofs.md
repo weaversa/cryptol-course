@@ -7,7 +7,7 @@ powerful theorem proving tools to explore their code.
 
 Before working through this lab, you'll need 
   * Cryptol to be installed,
-  * this module to load succesfully, and
+  * this module to load successfully, and
   * an editor for completing the exercises in this file.
 
 You'll also need experience with
@@ -238,7 +238,7 @@ Use the solver to find two different keys and a plaintext such that both keys en
 
 ### 2.4 Proof of Injectivity
 
-The flipside of collision detection is proving an absence of collisions. That is, proving that every input generates a distinct output. A function with this property is referred to in mathematics as *injective* or *one-to-one*.
+The flip-side of collision detection is proving an absence of collisions. That is, proving that every input generates a distinct output. A function with this property is referred to in mathematics as *injective* or *one-to-one*.
 
 **EXERCISE** 2.4.1 DES Injectivity
 

@@ -6,7 +6,7 @@ This lab provides an overview of Cryptol's interpreter.
 
 Before working through this lab, you'll need
   * Cryptol to be installed and
-  * this module to load succesfully.
+  * this module to load successfully.
 
 ## Skills You'll Learn
 
@@ -27,7 +27,7 @@ You'll also gain experience with
 
 The first thing you should do is start up the Cryptol
 interpreter. Instructions on installing and running the interpreter
-can be found in this repo's [INSTALL.md](../../INSTALL.md) file. Once
+can be found in this repository's [INSTALL.md](../../INSTALL.md) file. Once
 you've got the interpreter started, follow along with this lab by
 entering the commands found here into the interpreter.
 

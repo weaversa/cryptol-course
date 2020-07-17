@@ -8,7 +8,7 @@ purpose Key Wrapping algorithms.
 
 Before working through this lab, you'll need
   * Cryptol to be installed,
-  * this module to load succesfully, and
+  * this module to load successfully, and
   * an editor for completing the exercises in this file.
   
 You'll also need experience with
@@ -65,7 +65,7 @@ document open side-by-side.
 Here is the abstract from this document:
 
 > This publication describes cryptographic methods that are approved
-> for “key wrapping,” i.e., the protection of the confidentiality and
+> for "key wrapping," i.e., the protection of the confidentiality and
 > integrity of cryptographic keys. In addition to describing existing
 > methods, this publication specifies two new, deterministic
 > authenticated-encryption modes of operation of the Advanced
@@ -1103,7 +1103,7 @@ property KWPADTests =
 # The end
 
 How was your experience with this lab? Suggestions are welcome in the
-form of a ticket on the course Github page:
+form of a ticket on the course GitHub page:
 [https://github.com/weaversa/cryptol-course/issues](https://github.com/weaversa/cryptol-course/issues)
 
 # References

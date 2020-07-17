@@ -66,13 +66,13 @@ alphabet = ['A'..'Z'] : Alphabet
 
 ## Aside: A confounding search
 
-The above definition assumed a continguous character set, which does
+The above definition assumed a contiguous character set, which does
 not necessarily hold in general. So we'll need a function to find a
 character in the alphabet:
 
 ```cryptol
 /**
- * index (from end) of first occurence (from start) of item `x` in
+ * index (from end) of first occurrence (from start) of item `x` in
  * sequence `L`
  */
 index L x = if (or M) then (lg2 ((0b0 # M) + 1) - 1) else (length M)

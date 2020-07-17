@@ -41,7 +41,7 @@ type signatures and function definitions.
 ### Whitespace
 
 Surround binary operators with a single space on either side. Use your
-best judgement for the insertion of spaces around arithmetic
+best judgment for the insertion of spaces around arithmetic
 operators, but always be consistent about whitespace on either side of
 a binary operator. Don't insert a space after a lambda (the `\`
 symbol).
@@ -133,7 +133,7 @@ exceptions =
     ]
 ```
 
-Optionally, you can skip the first newline. Use your judgement or try
+Optionally, you can skip the first newline. Use your judgment or try
 to match the specification you're working from.
 
 ```cryptol

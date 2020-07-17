@@ -11,10 +11,10 @@ these techniques.
 Before working through this lab, you'll need
   * Cryptol to be installed,
   * the Software Analysis Workbench (SAW) to be installed,
-  * this module to load succesfully, and
+  * this module to load successfully, and
   * an editor for completing the exercises in this file.
   
-A precompiled bitcode file is provided so that you don't need to
+A pre-compiled bitcode file is provided so that you don't need to
 compile the sample C code. If you want to compile the C code yourself,
 you'll need to install the [Clang C
 compiler](https://clang.llvm.org/). **SAW usually lags behind Clang
@@ -59,7 +59,7 @@ The file *arithmetic.c* contains definitions for the following functions:
 
 This set of examples demonstrates how to use Cryptol and SAW to verify that the implementations of these familiar functions are correct and equivalent to one another.
 
-# Walkthrough
+# Walk through
 
 The `Makefile` provided has four targets which drive this set of examples. Running the following commands will drive different portions of this set of examples.
 

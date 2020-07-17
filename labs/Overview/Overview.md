@@ -9,7 +9,7 @@ these applications.
 
 Before working through this lab, you'll need
   * Cryptol to be installed,
-  * this module to load succesfully.
+  * this module to load successfully.
 
 ## Skills You'll Learn
 

@@ -9,7 +9,7 @@ Cryptol's automated theorem proving interface.
 
 Before working through this lab, you'll need 
   * Cryptol to be installed,
-  * this module to load succesfully, and
+  * this module to load successfully, and
   * an editor for completing the exercises in this file.
 
 You'll also need experience with
@@ -220,7 +220,7 @@ hand at.
 > to ASCII, then XOR each byte with a given value, taken from a secret
 > key. The advantage with the XOR function is that using the same
 > encryption key on the cipher text, restores the plain text; for
-> example, 65 ⊕ 42 = 107, then 107 ⊕ 42 = 65.
+> example, 65 ^ 42 = 107, then 107 ^ 42 = 65.
 >
 > For unbreakable encryption, the key is the same length as the
 > plaintext message, and the key is made up of random bytes. The user
@@ -257,7 +257,7 @@ can be found in cipher2.cry.
 > The text file, keylog.cry, contains fifty successful login attempts.
 >
 > Given that the three characters are always asked for in order,
-> analyse the file so as to determine the shortest possible secret
+> analyze the file so as to determine the shortest possible secret
 > passcode of unknown length.
 
 

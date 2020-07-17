@@ -38,22 +38,22 @@ is at least as long as the plaintext and only used once.
 ### Example
 
 Suppose Alice wishes to encipher the message `HELLO` using the
-pre-shared key `ZUGESAGT` with [ASCII](https://ascii.cl) encoding
-and the [XOR](
-https://en.wikipedia.org/wiki/Exclusive_or) pairing operation. Then
-she encodes `HELLO` as the ASCII hexadecimal sequence
-`[48 45 4C 4C 4F]` and `ZUGES` (the letters needed from the one-time
-pad to cover the plaintext) as `[5A 55 47 45 53]`. Pairing these
-yields the ciphertext `[48⊕5A 45⊕55 4C⊕47 4C⊕45 4F⊕53] =
-[12 10 0B 09 1C]`, which she sends to Bob. Bob, also knowing the pre-
-shared key `ZUGESAGT`, observes that the ciphertext
-`[12 10 0B 09 1C]` has length `5`, likewise encodes enough of the
-pre-shared key (`ZUGES`) as `[5A 55 47 45 53]`, applies
-the reverse pairing operation (which is also `XOR`), yielding the
-original plaintext `[12⊕5A 10⊕55 0B⊕47 09⊕45 1C⊕53] =
-[48 45 4C 4C 4F]` (`"HELLO"`). Both parties must then unfortunately
-discard `ZUGES` so attackers can't exploit it -- one-time pad and all
-that.
+pre-shared key `ZUGESAGT` with [ASCII](https://ascii.cl) encoding and
+the [XOR]( https://en.wikipedia.org/wiki/Exclusive_or) pairing
+operation. Then she encodes `HELLO` as the ASCII hexadecimal sequence
+`[0x48, 0x45, 0x4C, 0x4C, 0x4F]` and `ZUGES` (the letters needed from
+the one-time pad to cover the plaintext) as `[0x5A, 0x55, 0x47, 0x45,
+0x53]`. Pairing these yields the ciphertext `[0x48^0x5A, 0x45^0x55,
+0x4C^0x47, 0x4C^0x45, 0x4F^0x53] == [0x12, 0x10, 0x0B, 0x09, 0x1C]`,
+which she sends to Bob. Bob, also knowing the pre- shared key
+`ZUGESAGT`, observes that the ciphertext `[0x12, 0x10, 0x0B, 0x09,
+0x1C]` has length `5`, likewise encodes enough of the pre-shared key
+(`ZUGES`) as `[0x5A, 0x55, 0x47, 0x45, 0x53]`, applies the reverse
+pairing operation (which is also `XOR`), yielding the original
+plaintext `[0x12^0x5A, 0x10^0x55, 0x0B^0x47, 0x09^0x45, 0x1C^0x53] ==
+[0x48, 0x45, 0x4C, 0x4C, 0x4F]` (`"HELLO"`). Both parties must then
+unfortunately discard `ZUGES` so attackers can't exploit it --
+one-time pad and all that.
 
 ## Hello Cryptol
 

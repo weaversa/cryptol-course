@@ -8,7 +8,7 @@ secret messages.
 
 Before working through this lab, you'll need 
   * Cryptol to be installed,
-  * this module to load succesfully, and
+  * this module to load successfully, and
   * an editor for completing the exercises in this file.
 
 You'll also need experience with
@@ -31,14 +31,14 @@ interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```shell
-Cryptol> :m labs::LoremIpsum::LoremIpsumAnswers
+Cryptol> :m labs::LoremIpsum::LoremIpsum
 ```
 
 We start by defining a new module for this lab and importing some
 accessory modules that we will use:
 
 ```cryptol
-module labs::LoremIpsum::LoremIpsumAnswers where
+module labs::LoremIpsum::LoremIpsum where
 
 import labs::LoremIpsum::KLI20
 
