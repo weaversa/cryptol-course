@@ -97,17 +97,17 @@ Enjoy getting addicted to this level of assurance!
 
 ## Preliminaries
 
-For examples in this lab I have turned off the warning messages you
-get when not specifying bit sizes of numbers. This is **not**
-something you should do when you're new at Cryptol. (In fact, I don't
-do it except when teaching.)
+For examples in this lab, the warning messages about specifying bit
+sizes of numbers have been turned off. This is **not** something you
+should do when you're new at Cryptol. (it's only done here for
+teaching purposes.)
 
 ```shell
 labs::Language::Basics> :set warnDefaulting = off
 ```
 
 Also some examples have octets as outputs that are easier to see as
-characters so I use:
+characters. To see octets as characters, turn on ASCII mode:
 
 ```shell
 labs::Language::Basics> :set ascii = on
@@ -288,9 +288,9 @@ labs::Language::Basics> 2^^127 - 1 // a 33 digit Mersenne prime
 170141183460469231731687303715884105727
 ```
 
-The first example defaults to type `Integer`. In the second, I
-explicitly state that I want 1 bit addition and so the computation is
-modular addition. The third shows that `^^` is exponentiation.
+The first example defaults to type `Integer`. In the second, 1-bit
+addition is explicitly stateed so that the computation is essentially
+modular addition (XOR). The third shows that `^^` is exponentiation.
 
 The division (`/`) operation is not what a mathematician imagines in
 modular arithmetic. For instance `3 * 3 == 1 : [3]` so a mathematician
@@ -651,7 +651,7 @@ property gcdDividesBoth' x y
 
 Let's patch up that property. (You surely noticed the prime (`'`) in
 the property name which is a giveaway that is not quite the property
-I have in mind.)
+we want.)
 
 ```cryptol
 gcdDividesBoth : Integer -> Integer -> Bit
