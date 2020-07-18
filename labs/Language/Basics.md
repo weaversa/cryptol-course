@@ -518,7 +518,7 @@ functions from other languages or documents.
   gcdCurried 10 : Integer -> Integer
 ```
 
-    `gcdCurried 10` takes an integer and returns an integer. When it
+   `gcdCurried 10` takes an integer and returns an integer. When it
     is applied to an integer it computes the gcd of 10 and that
     integer. Other examples to illustrate partial application:
   * Incrementing is addition partially applied to 1. Notionally: `inc
