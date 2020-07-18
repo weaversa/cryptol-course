@@ -358,7 +358,7 @@ varType12 = [1, 2, 0x7]
 
 varType13 = (1, 2, 0x7)
 
-varType14 = [ (1, 2), (3, 4 : [3]), (5 : [10], 6) ]
+varType14 = [ (1, 2), (3, 4 : Integer), (5 : [10], 6) ]
 
 varType15 = [ 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12 : [8], 13, 14, 15 ]
 
@@ -513,7 +513,7 @@ funType6 (a : [3][10]) = [a@0, a@1, a@2]
 //Fun fact! funType5 and funType6 compute the same function.
 //Try, :prove funType5 === funType6
 
-funType7 (x : [7]) = (x, x, [ [1, x], [x, x], [2, 3] ])
+funType7 x = (x, x, [ [[False, True], x], [x, x], [x, x] ])
 
 funType8 = funType2 10
 
@@ -576,13 +576,14 @@ reload this file to check that you've gotten them correct.
 funType10 x = x + x : [10]
 
 
-funType11 a b = a : Bit
+funType11 a b = [a : Bit, b, b]
 
 
-funType12 (a, b) = a : Bit
+funType12 [a, b] = [a : Bit, b, b]
 
 
-funType13 [a, b] = a : Bit
+funType13 (a, b) = [a : Bit, b, b]
+
 
 funType14 a b ([c, d], e) = [ (a     , [b, b, b]),
                               ([d, d], [c, c, c]),
