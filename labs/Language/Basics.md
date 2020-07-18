@@ -17,7 +17,34 @@ Cryptol's language constructs. At least good enough that you can come
 back here for reference as you work through the labs.
 
 Specifically, you'll also gain experience with
-  * ??? <See experience.txt>
+  * commenting,
+  * Cryptol's `Bit`, sequence, `Integer`, tuple, and record types,
+  * evaluating expressions,
+  * the `:check`, `:prove`, and `:sat` commands,
+  * demoting types variables to value variables,
+  * manipulating sequences using `#`, `take`, `drop`, `split`, `join`,
+    `head`, `last`, `tail`, `reverse`, `groupBy`, `map`, `iterate`,
+    and `foldl`,
+  * the `sum`, `carry`, and `pmod` operators,
+  * writing functions and properties,
+  * enumerations and sequence comprehensions,
+  * functions with curried parameters,
+  * `/\`, `\/`, `==>` -- single bit logical operations,
+  * `~`, `&&`, `||`, `^` -- logical operations for sequences,
+  * `==`, `!=` -- structural comparison,
+  * `==`, `>=`, `>`, `<=`, `<` -- nonnegative word comparisons,
+  * `+`, `-`, `*`, `/`, `%`, `**` -- wordwise modular arithmetic,
+  * `>>`, `<<`, `>>>`, `<<<` -- shifts and rotates,
+  * `#` -- concatenation,
+  * `@`, `!`-- sequence indexing,
+  * `@@`, `!!` -- sequence indexing,
+  * `if then else` -- conditional expressions,
+  * type parameters and type constraints,
+  * pattern matching,
+  * `import` -- using cryptographic routines from other modules,
+  * navigating some nuances of Cryptol's type checking system,
+  * lambda functions, and
+  * polynomial expressions.
 
 ## Load This Module
 
@@ -50,20 +77,20 @@ cryptographic realm. But once you are accustomed to Cryptol you will
 find that it is much easier to write correct cryptographic programs
 than with conventional languages. That's 'cause it's been tuned for
 such! To throw out the buzzwords:
-* Cryptol is a
-  [domain-specific language](https://en.wikipedia.org/wiki/Domain-specific_language). Not
-  only does it have things to support its domain, but also it elides a
-  lot of junk that makes programming and analyzing the programs
-  difficult.
-* Cryptol has been designed with automated reasoning about its code as
-  a priority, so that we can leverage it for verification. Some things
-  are harder to do in Cryptol, but they pay off in code that can be
-  proven correct!
+  * Cryptol is a [domain-specific
+    language](https://en.wikipedia.org/wiki/Domain-specific_language). Not
+    only does it have things to support its domain, but also it elides
+    a lot of junk that makes programming and analyzing the programs
+    difficult.
+  * Cryptol has been designed with automated reasoning about its code
+    as a priority, so that we can leverage it for verification. Some
+    things are harder to do in Cryptol, but they pay off in code that
+    can be proven correct!
 
 In some ways this requires a new mind-set:
-* Write properties about your functions.
-* `:check` them.
-* Invest in `:prove` when your function's definition has settled down.
+  * Write properties about your functions.
+  * `:check` them.
+  * Invest in `:prove` when your function's definition has settled down.
 
 Enjoy getting addicted to this level of assurance!
 
@@ -105,12 +132,10 @@ the display of output to be ASCII strings or characters when
 appropriate, not unlike using `:set base = 10` to see numbers in
 base 10.
 
-
 ## Comments
 
-
-* `//` to end of line
-* `/*` ... `*/` block comment
+  * `//` to end of line
+  * `/*` ... `*/` block comment
 
 There is also a [docstring](https://en.wikipedia.org/wiki/Docstring)
 comment facility:
@@ -129,14 +154,14 @@ with other information about `mask`.
 
 ## Identifiers
 
-Cryptol identifiers consist of alphanumeric characters plus `'`
-(apostrophe, but read "prime") and `_` (underscore). They must begin
-with an alphabetic character or an underscore. The notational
-convention for `'` is to indicate a related definition, while
-underscore is mostly used to separate words or as a catch all for
-characters we'd like to use but are
-forbidden. [Camel case](https://en.wikipedia.org/wiki/Camel_case) is
-often used when other naming constraints aren't mandated.
+Cryptol identifiers (variable and function names) consist of
+alphanumeric characters plus `'` (apostrophe, but read "prime") and
+`_` (underscore). They must begin with an alphabetic character or an
+underscore. The notational convention for `'` is to indicate a related
+definition, while underscore is mostly used to separate words or as a
+catch all for characters we'd like to use but are forbidden. [Camel
+case](https://en.wikipedia.org/wiki/Camel_case) is often used when
+other naming constraints aren't mandated.
 
 ```cryptol
 fooBar = 15
@@ -144,75 +169,80 @@ fooBar' = fooBar && mask // mask defined elsewhere
 ```
 
 Technically, Cryptol supports
-[Unicode](https://en.wikipedia.org/wiki/Unicode), but for simplicity I
-am pretending that it doesn't.
+[Unicode](https://en.wikipedia.org/wiki/Unicode), but this course
+doesn't make use of that feature.
 
+## Data Types
 
-## Data
-
-Cryptol's "basic" data type is an _n_-dimensional array whose base
-type is bits.
-* 0-d: `False : Bit` and `True: Bit`
-* 1-d: Think bytes, words, nibbles, etc., i.e., a sequence of bits of
-  any length usually thought of as a number. E.g., `0x2a : [8]`,
-  `0b101010 : [6]` and
-  `[False, True, False, True, False, True, False] : [7]`. These all
-  compare as 42 in type appropriate contexts.
-* 2-d: Think sequences of 1-d objects all of the same size. E.g.,
-  `[42, 0b010101010101, 0xa5a, 0o5757] : [4][12]`
-* 3-d: Sequences of 2-d objects all of the same size. E.g.,
-  `[[0, 1], [1, 2], [3, 5], [8, 13]] : [4][2][4]`
-* ...
+Cryptol's "basic" data type is an _n_-dimensional array (called a
+sequence) whose base type is bits.
+  * 0-d: `False : Bit` and `True: Bit`
+  * 1-d: Think bytes, words, nibbles, etc., i.e., a sequence of bits
+    of any length usually thought of as a number. E.g., `0x2a : [8]`,
+    `0b101010 : [6]` and `[False, True, False, True, False, True,
+    False] : [7]`. These all compare as 42 in type appropriate
+    contexts.
+  * 2-d: Think sequences of 1-d objects all of the same size. E.g.,
+    `[42, 0b010101010101, 0xa5a, 0o5757] : [4][12]`
+  * 3-d: Sequences of 2-d objects all of the same size. E.g., `[[0,
+    1], [1, 2], [3, 5], [8, 13]] : [4][2][4]`
+  * ...
 
 Things to note:
-* There are no privileged bit widths in Cryptol. `[13]` is just as
-  good a type as `[8]`, `[16]`, `[32]` or `[64]`.
-* There's `0b...` for binary, `0o...` for octal and `0x...` for
-  hexadecimal.
-* Lengths of sequences may be zero. Zero length sequences act as an
-  identity for concatenation and are useful in padding.
-* The possible values by type:
-  * `[0]` --- `0`
-  * `[1]` --- `0` and `1`
-  * `[2]` --- `0`, `1`, `2` and `3`
-  * ...
-  * `[n]` --- `0` through `2^^n - 1`
+  * There are no privileged bit widths in Cryptol. `[13]` is just as
+    good a type as `[8]`, `[16]`, `[32]` or `[64]`.
+  * There's `0b...` for binary, `0o...` for octal and `0x...` for
+    hexadecimal.
+  * Lengths of sequences may be zero. Zero length sequences act as an
+    identity for concatenation and are useful in padding.
+  * The possible values by type:
+    * `[0]` --- `0`
+    * `[1]` --- `0` and `1`
+    * `[2]` --- `0`, `1`, `2` and `3`
+    * ...
+    * `[n]` --- `0` through `2^^n - 1`
 
-  There are 2<sup>_n_</sup> values of type `[n]`. There are
-  2<sup>_mn_</sup> values of type `[m][n]`, etc.
-* 1-d sequences of bits are treated as numbers by arithmetic and
-  comparison operators. So for instance, `[False, True] == (1 : [2])`
-  and `[True, False, True] > 4` both hold.
-* Cryptol distinguishes between the different dimensions. In
-  particular, `True` and `[True]` are type incompatible.
-* The number of bracket pairs in a type gives its dimension.
+  * There are 2<sup>_n_</sup> values of type `[n]`. There are
+    2<sup>_mn_</sup> values of type `[m][n]`, etc.
+  * 1-d sequences of bits are treated as numbers by arithmetic and
+    comparison operators. So for instance, `[False, True] == (1 :
+    [2])` and `[True, False, True] > 4` both hold.
+  * Cryptol distinguishes between the different dimensions. In
+    particular, `True` and `[True]` are type incompatible.
+  * The number of bracket pairs in a type gives its dimension.
 
 Other data types include:
-* Arbitrary-precision integers: E.g., `2^^1023 - 347835479 : Integer`
-* Heterogeneous tuples: E.g.: `(False, 0b11) : (Bit, [2])` and
-  `(True, [1, 0], 7625597484987) : (Bit, [2][1], Integer)`
-  * Elements of tuples are accessed by `.0`, `.1`, ...
+  * Arbitrary-precision integers: E.g., `2^^1023 - 347835479 :
+    Integer`
+  * Heterogeneous tuples: E.g.: `(False, 0b11) : (Bit, [2])` and
+    `(True, [1, 0], 7625597484987) : (Bit, [2][1], Integer)`
+    * Elements of tuples are accessed by `.0`, `.1`, ...
 
 ```shell
     labs::Language::Basics> (False, 0b11).0
     False
 ```
 
-* Records with named fields: E.g.,
-  `{flag = True, x = 2} : {flag : Bit, x : [4]}`
-  * Elements of records are accessed by `.` followed by the field name.
+  * Records with named fields: E.g., `{flag = True, x = 2} : {flag :
+    Bit, x : [4]}`
+    * Elements of records are accessed by `.` followed by the field
+      name.
 
 ```shell
     labs::Language::Basics> {flag = True, x = 2}.flag
     True
 ```
 
-* Integers modulo _n_: Types of the form `[n]` already provide
-  [least residue systems](https://en.wikipedia.org/wiki/Modular_arithmetic#Residue_systems)
-  for
-  [integers modulo 2<sup>n</sup>](https://en.wikipedia.org/wiki/Modular_arithmetic#Integers_modulo_n).
-  Types of the form `Z n` provide that for any positive _n_. E.g.,
-  `4 + 4 : Z 7` evaluates to `1`.
+  * Integers modulo _n_: Types of the form `[n]` already provide
+    [least residue
+    systems](https://en.wikipedia.org/wiki/Modular_arithmetic#Residue_systems)
+    for [integers modulo
+    2<sup>n</sup>](https://en.wikipedia.org/wiki/Modular_arithmetic#Integers_modulo_n).
+    Types of the form `Z n` provide that for any positive _n_. E.g.,
+    `4 + 4 : Z 7` evaluates to `1`.
+
+
+**EXERCISE**:
 
 
 ## Operators
@@ -356,6 +386,8 @@ labs::Language::Basics> False ==> 1 == 5 /\ 1 != 5
 True
 ```
 
+**EXERCISE**:
+
 
 ## Common Primitives
 
@@ -365,24 +397,24 @@ by the name of the primitive.
 
 ### Collections of all `False` or all `True` bits
 
-* `0` is a sequence of `False` bits whose type is determined by the
-context.
+  * `0` is a sequence of `False` bits whose type is determined by the
+    context.
 
 ```shell
   labs::Language::Basics> 0 : [12]
   0x000
 ```
 
-* `zero` is an arbitrary collection of `False` bits whose type
-is determined by the context.
+  * `zero` is an arbitrary collection of `False` bits whose type is
+    determined by the context.
 
 ```shell
   labs::Language::Basics> zero: ([8], [4])
   (0x00, 0x0)
 ```
 
-  Here we produce an ordered pair of a 0 octet and a 0 nibble.
-* `~0` and `~zero` produce all `True` bits correspondingly.
+Here we produce an ordered pair of a 0 octet and a 0 nibble.
+  * `~0` and `~zero` produce all `True` bits correspondingly.
 
 
 ### List manipulation: `take`, `drop`, `tail`, `last` and `reverse`
@@ -423,6 +455,9 @@ In most Cryptol programs, the context will enforce the size of things,
 so the type annotations shown in these examples need not be present.
 
 
+**EXERCISE**:
+
+
 ## The Types of Functions
 
 The Cryptol interpreter command `:type` is very useful for helping you
@@ -435,6 +470,9 @@ abs : Integer -> Integer
 ```
 
 indicating that it takes an integer and returns an integer.
+
+
+**EXERCISE**:
 
 
 ## Curried and Uncurried Style
@@ -467,29 +505,32 @@ as it affords
 but the latter can be useful for explicating the correspondence to
 functions from other languages or documents.
 
-* If it helps you, mentally read curried functions like this: input
-  argument types are all prior to the last arrow and the
-  result type follows the last arrow. Pictorially: `in -> in -> ... ->
-  in -> out`
-* Partial application lets one form a new function from an old one
-  where an argument is fixed.  For instance, `gcdCurried 10` is a
-  function itself!
+  * If it helps you, mentally read curried functions like this: input
+    argument types are all prior to the last arrow and the result type
+    follows the last arrow. Pictorially: `in -> in -> ... -> in ->
+    out`.
+  * Partial application lets one form a new function from an old one
+    where an argument is fixed.  For instance, `gcdCurried 10` is a
+    function itself!
 
 ```shell
   labs::Language::Basics> :type gcdCurried 10
   gcdCurried 10 : Integer -> Integer
 ```
 
-  `gcdCurried 10` takes an integer and returns an integer. When it
-  is applied to an integer it computes the gcd of 10 and that
-  integer. Other examples to illustrate partial application:
-  * Incrementing is addition partially applied to 1. Notionally:
-    `inc x = (add 1) x`
+    `gcdCurried 10` takes an integer and returns an integer. When it
+    is applied to an integer it computes the gcd of 10 and that
+    integer. Other examples to illustrate partial application:
+  * Incrementing is addition partially applied to 1. Notionally: `inc
+    x = (add 1) x`.
   * The reciprocal is division partially applied to 1. Notionally:
-    `recip x = (div 1) x`
-* Really `gcdUncurried` is a function of one argument. That argument
-  is an ordered pair which makes `gcdUncurried (28, 20)` look just
-  like a two argument function in many languages.
+    `recip x = (div 1) x`.
+  * Really `gcdUncurried` is a function of one argument. That argument
+    is an ordered pair which makes `gcdUncurried (28, 20)` look just
+    like a two argument function in many languages.
+
+
+**EXERCISE**:
 
 
 ## Small Functions
@@ -499,11 +540,12 @@ in the correct order. Good Cryptol features small, easy to understand
 functions composed into conceptually bigger ones. This is good
 computer science in general, but in Cryptol it is even more
 advantageous:
-* Easy to test --- Cryptol's interpreter makes it very cheap to try your
-  functions out.
-* Encourages programming with properties --- Properties can be tested
-  easily and, as we'll see, proven to provide guarantees about
-  code. Moreover, properties serve as another kind of documentation!
+  * Easy to test --- Cryptol's interpreter makes it very cheap to try
+    your functions out.
+  * Encourages programming with properties --- Properties can be
+    tested easily and, as we'll see, proven to provide guarantees
+    about code. Moreover, properties serve as another kind of
+    documentation!
 
 ### Examples
 
@@ -515,11 +557,13 @@ absNonnegative : Integer -> Bit
 property absNonnegative x = abs x >= 0
 ```
 
-* `abs : Integer -> Integer` is the type signature for `abs`.
-* `abs n = if n >= 0 then n else -n` is the definition for `abs` (or function body).
-* `property absNonnegative ...` is a property we expect the function to have.
-* `:check absNonnegative` checks this property with random tests. It's
-  super cheap unit testing!
+  * `abs : Integer -> Integer` is the type signature for `abs`.
+  * `abs n = if n >= 0 then n else -n` is the definition for `abs` (or
+    function body).
+  * `property absNonnegative ...` is a property we expect the function
+    to have.
+  * `:check absNonnegative` checks this property with random
+    tests. It's super cheap unit testing!
 
 ```shell
   labs::Language::Basics> :check absNonnegative
@@ -527,10 +571,12 @@ property absNonnegative x = abs x >= 0
   Passed 100 tests.
 ```
 
-* Cryptol's `if ... then ... else` is much like C's ternary operator
-  `?`...`:`. It is not like the `if ... then ... else` control structure.
-* The reserved word `property` documents that definition's intention.
-* We can go a step further and `:prove` this property:
+  * Cryptol's `if ... then ... else` is much like C's ternary operator
+    `?`...`:`. It is not like the `if ... then ... else` control
+    structure.
+  * The reserved word `property` documents that definition's
+    intention.
+  * We can go a step further and `:prove` this property:
 
 ```shell
   labs::Language::Basics> :prove absNonnegative
@@ -538,8 +584,9 @@ property absNonnegative x = abs x >= 0
   (Total Elapsed Time: 0.032s, using Z3)
 ```
 
-* Also Cryptol's `:check` will check all functions marked as
-  properties in one go and, you guessed it, `:prove` works similarly.
+  * Also Cryptol's `:check` will check all functions marked as
+    properties in one go and, you guessed it, `:prove` works
+    similarly.
 
 A little more involved example follows.
 
@@ -557,11 +604,11 @@ property gcdDividesBoth' x y
     /\ y % (gcd x y) == 0
 ```
 
-* `where` introduces locally scoped definitions. (Mathematicians use
-  the word "where" in a similar fashion.)
-* The function `gcd'` is scoped within `gcd`.
-* The function `gcd'` is recursive.
-* Let's check `gcdDividesBoth'`:
+  * `where` introduces locally scoped definitions. (Mathematicians use
+    the word "where" in a similar fashion.)
+  * The function `gcd'` is scoped within `gcd`.
+  * The function `gcd'` is recursive.
+  * Let's check `gcdDividesBoth'`:
 
 ```shell
   labs::Language::Basics> :check gcdDividesBoth'
@@ -569,14 +616,14 @@ property gcdDividesBoth' x y
   Passed 100 tests.
 ```
 
-* It seems okay, yet `gcdDividesBoth' 0 0` gives a division by 0 error.
+  * It seems okay, yet `gcdDividesBoth' 0 0` gives a division by 0 error.
 
 ```shell
   labs::Language::Basics> gcdDividesBoth' 0 0
   division by 0
 ```
 
-* We could perhaps have found that with more testing:
+  * We could perhaps have found that with more testing:
 
 ```shell
   labs::Language::Basics> :set tests=1000
@@ -588,19 +635,19 @@ property gcdDividesBoth' x y
   division by 0
 ```
 
-* Since `:check` uses randomly generated tests the failing result may
-  be intermittent.
-* Properties are useful and sometimes may be proven, but you must
-  remember that _**properties that pass `:check` are not
-  guarantees!**_ That is: _**`:check` is evidence, `:prove` is
-  proof!**_
-* Properties may be partially applied: `:check gcdDividesBoth' 0`
-  finds the problem faster since it only is using random values for
-  the second argument.
-* **Warning**: `:prove gcdDividesBoth'` will never complete. If you
-  issue that command, you'll need to issue the abort sequence (often
-  `Control-C`) once or twice to interrupt and regain control. The
-  reason this proof won't complete is too technical for the moment.
+  * Since `:check` uses randomly generated tests the failing result
+    may be intermittent.
+  * Properties are useful and sometimes may be proven, but you must
+    remember that _**properties that pass `:check` are not
+    guarantees!**_ That is: _**`:check` is evidence, `:prove` is
+    proof!**_
+  * Properties may be partially applied: `:check gcdDividesBoth' 0`
+    finds the problem faster since it only is using random values for
+    the second argument.
+  * **Warning**: `:prove gcdDividesBoth'` will never complete. If you
+    issue that command, you'll need to issue the abort sequence (often
+    `Control-C`) once or twice to interrupt and regain control. The
+    reason this proof won't complete is too technical for the moment.
 
 Let's patch up that property. (You surely noticed the prime (`'`) in
 the property name which is a giveaway that is not quite the property
@@ -616,33 +663,35 @@ property gcdDividesBoth x y
     z = gcd x y
 ```
 
-* Functions may have many associated properties.
-* Properties can have locally scoped definitions.
-* Property corner-cases are handled with `if ... then ... else`.
-* Another way to write the conditional part of the property that's a
-  bit cooler: `z != 0 ==> x % z == 0 /\ y % z == 0`. You can read that
-  as, "nonzero _z_ implies _z_ divides both _x_ and _y_".
-* WARNING: `:prove gcdDividesBoth` will never complete. Don't try it
-  unless your favorite key combination is the abort sequence (often
-  `Control-C`) on your computer.
+  * Functions may have many associated properties.
+  * Properties can have locally scoped definitions.
+  * Property corner-cases are handled with `if ... then ... else`.
+  * Another way to write the conditional part of the property that's a
+    bit cooler: `z != 0 ==> x % z == 0 /\ y % z == 0`. You can read
+    that as, "nonzero _z_ implies _z_ divides both _x_ and _y_".
+  * WARNING: `:prove gcdDividesBoth` will never complete. Don't try it
+    unless your favorite key combination is the abort sequence (often
+    `Control-C`) on your computer.
+
+**EXERCISE**:
 
 
 ## Writing Loops
 
 ### Or not...
 
-* Many of Cryptol's operators naturally extend elementwise over nested
-  sequences to any depth.
+  * Many of Cryptol's operators naturally extend elementwise over
+    nested sequences to any depth.
 
 ```shell
 labs::Language::Basics> [[[2, 3], [5, 7]], [[11, 13], [17, 19]]] + [[[0, 1], [1, 2]], [[3, 5], [8, 13]]]
 [[[2, 4], [6, 9]], [[14, 18], [25, 32]]]
 ```
 
-* So we don't have to write loops within loops to process these sorts
-of multidimensional arrays.
-* All the arithmetic, bitwise logical and comparison operators work
-  elementwise over nested sequences!
+  * So we don't have to write loops within loops to process these
+    sorts of multidimensional arrays.
+  * All the arithmetic, bitwise logical and comparison operators work
+    elementwise over nested sequences!
 
 ### Loop indices
 
@@ -692,6 +741,9 @@ Loops that modify an accumulator in place become self-referential
 sequence comprehensions. The following example illustrates this.
 
 
+**EXERCISE**:
+
+
 ## Simple Block Encryption Example
 
 ```cryptol
@@ -728,6 +780,9 @@ Notice that both `roundKeys` in `keyExpand` and `roundResults` in
 occur when coding up cryptography.
 
 
+**EXERCISE**:
+
+
 ## Laziness
 
 Cryptol's evaluation strategy is
@@ -750,6 +805,8 @@ division by 0
 labs::Language::Basics> lazyAbsMin 0 (0/0)
 0
 ```
+
+**EXERCISE**:
 
 
 ## Less Common Operators
@@ -791,6 +848,9 @@ Passed 16 tests.
 Q.E.D.
 ```
 
+**EXERCISE**:
+
+
 ## Judicious Type System Usage
 
 ### Don't let the type system do your work
@@ -798,9 +858,9 @@ Q.E.D.
 Cryptol's type system tries to infer the types of functions lacking a
 type signature. Sometimes it comes up with a more general type than
 you were imagining. This causes problems:
-* Perhaps you only want your function to be applicable on a smaller
-  set of types (usually minor, but occasionally major).
-* Error messages can become even more incomprehensible! (Major)
+  * Perhaps you only want your function to be applicable on a smaller
+    set of types (usually minor, but occasionally major).
+  * Error messages can become even more incomprehensible! (Major)
 
 ### Do let the type system work for you
 
@@ -808,19 +868,22 @@ Type signatures for functions are wonderful bits of documentation. It
 is much easier to see what's going on if you use type synonyms and
 signatures.
 
-* cleaner code
-* easier for other tools to consume/reason about
+  * cleaner code
+  * easier for other tools to consume/reason about
 
 ### Provide additional types to aid in debugging
 
 Many of the errors in coding Cryptol will be instances of type
 mismatching. If you can't see your problem based on the error message,
 try adding more type annotations. This:
-* makes the interpreter do less work trying alternative possibilities
-and, consequently, can make error messages more comprehensible
-* reduces the body of code to examine for bugs (a sort of binary bug
-search)
-* can get you to notice where you blew it
+  * makes the interpreter do less work trying alternative
+    possibilities and, consequently, can make error messages more
+    comprehensible
+  * reduces the body of code to examine for bugs (a sort of binary bug
+    search)
+  * can get you to notice where you blew it
+
+**EXERCISE**:
 
 
 # Here Abide Monsters

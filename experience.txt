@@ -1,37 +1,39 @@
 * Cryptol to be installed and
 * this module to load successfully
-* changing the display base in the interpreter,
-* querying the built-in help system,
-* browsing symbols,
-* chaining commands with `let` and `it`,
-* loading and reloading modules,
-* evaluating expressions,
-* using the built-in editor, and
-* issuing batch commands.
-* an editor for completing the exercises in this file.
-* Cryptol's `Bit`, sequence, `Integer`, tuple, and record types, We don't ever use records.
-* demoting types variables to value variables,
-* the `:prove` and `:sat` commands,
-* manipulating sequences using `#`, `take`, `drop`, `split`, `join`, `head`, `reverse`, `groupBy`, `map`, `iterate`, `foldl`
-* the `sum`, `carry`, and `pmod` operators.
-* writing functions and properties,
-* enumerations and sequence comprehensions,
-* functions with curried parameters,
-* `/\`, `\/`, `==>` -- single bit logical operations,
-* `~`, `&&`, `||`, `^` -- logical operations for sequences,
-* `==`, `!=` -- structural comparison,
-* `==`, `>=`, `>`, `<=`, `<` -- nonnegative word comparisons,
-* `+`, `-`, `*`, `/`, `%`, `**` -- wordwise modular arithmetic,
-* `>>`, `<<`, `>>>`, `<<<` -- shifts and rotates,
-* `#` -- concatenation,
-* `@` -- sequence indexing, and
-* `if then else` -- conditional expressions.
-* type parameters and type constraints,
-* pattern matching,
-* the use of pre-written cryptographic routines from other modules,
-* navigating some nuances of Cryptol's type checking system, and
-* lambda functions,
-* different provers.
+* an editor for completing the exercises in this file
+* changing the display base in the interpreter
+* querying the built-in help system
+* browsing symbols
+* chaining commands with `let` and `it`
+* loading and reloading modules
+* using the built-in editor
+* issuing batch commands
+
+* evaluating expressions
+* Cryptol's `Bit`, sequence, `Integer`, tuple, and record types, We don't ever use records
+* the `:check`, `:prove`, and `:sat` commands,
+* demoting types variables to value variables
+* manipulating sequences using `#`, `take`, `drop`, `split`, `join`, `head`, `last`, `tail`, `reverse`, `groupBy`, `map`, `iterate`, `foldl`
+* the `sum`, `carry`, and `pmod` operators
+* writing functions and properties
+* enumerations and sequence comprehensions
+* functions with curried parameters
+* `/\`, `\/`, `==>` -- single bit logical operations
+* `~`, `&&`, `||`, `^` -- logical operations for sequences
+* `==`, `!=` -- structural comparison
+* `==`, `>=`, `>`, `<=`, `<` -- nonnegative word comparisons
+* `+`, `-`, `*`, `/`, `%`, `**` -- wordwise modular arithmetic
+* `>>`, `<<`, `>>>`, `<<<` -- shifts and rotates
+* `#` -- concatenation
+* `@`, `!`-- sequence indexing
+* `@@`, `!!` -- sequence indexing
+* `if then else` -- conditional expressions
+* type parameters and type constraints
+* pattern matching
+* `import` -- using cryptographic routines from other modules
+* navigating some nuances of Cryptol's type checking system
+* lambda functions
+* different provers
 * Cryptol's support for polynomials including expressing polynomials
 
 

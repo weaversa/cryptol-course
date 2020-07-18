@@ -17,7 +17,7 @@ interpreter. This README.md is no exception!
 
 Labs have exercises that look like this:
 
-**EXERCISE:** Literate Cryptol documents are meant to be opened up
+**EXERCISE**: Literate Cryptol documents are meant to be opened up
 alongside and edited while you work through the labs. For instance,
 you might be asked to fill in a portion of a Cryptol snippet:
 
