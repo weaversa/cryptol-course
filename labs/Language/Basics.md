@@ -145,7 +145,7 @@ comment facility:
   * A totally made up identifier for pedagogical purposes. It is
   * used elsewhere for demonstration of something or other.
   */
-mask = 7
+mask = 7 : [32]
 ```
 
 Now, when issuing `:help mask`, the above comments are displayed along
@@ -154,7 +154,7 @@ with other information about `mask`.
 ```shell
 labs::Language::Basics> :help mask
 
-    mask : {a} (Literal 7 a) => a
+    mask : [32]
 
 A totally made up identifier for pedagogical purposes. It is
 used elsewhere for demonstration of something or other.
@@ -172,8 +172,8 @@ case](https://en.wikipedia.org/wiki/Camel_case) is often used when
 other naming constraints aren't mandated.
 
 ```cryptol
-fooBar = 15
-fooBar' = fooBar && mask // mask defined elsewhere
+myValue  = 15 : [32]
+myValue' = myValue && mask  // mask defined elsewhere
 ```
 
 Feel free to take a quick look at the [the Cryptol style
@@ -184,7 +184,7 @@ Technically, Cryptol supports
 [Unicode](https://en.wikipedia.org/wiki/Unicode), but this course
 doesn't make use of that feature.
 
-## Data Types
+## Types of Variables
 
 Cryptol's "basic" data type is an _n_-dimensional array (called a
 sequence) whose base type is bits.
@@ -227,6 +227,17 @@ Things to note:
   * Cryptol distinguishes between the different dimensions. In
     particular, `True` and `[True]` are type incompatible.
   * The number of bracket pairs in a type gives its dimension.
+  * Cryptol supports **holes** in types via the `_` character. When
+    Cryptol encounters a hole, it will try to infer a value. Notice in
+    the example below how Cryptol *fills in* the `3` where we left an
+    underscore.
+
+```shell
+    labs::Language::Basics> [1, 2, 3] : [_][32]
+    [0x00000001, 0x00000002, 0x00000003]
+    labs::Language::Basics> :t [1, 2, 3] : [_][32]
+    ([1, 2, 3] : [_][32]) : [3][32]
+```
 
 Other data types include:
   * Arbitrary-precision integers: E.g., `2^^1023 - 347835479 :
@@ -258,8 +269,388 @@ Other data types include:
     Types of the form `Z n` provide that for any positive _n_. E.g.,
     `4 + 4 : Z 7` evaluates to `1`.
 
+Though Cryptol supports a slew of different data types, most are not
+needed to be successful in this course. Specifically, this course
+makes heavy use sequences, with the occasional tuple and `Integer`
+thrown in.
+
+**EXERCISE**: The Cryptol interpreter command `:type` (or `:t` for
+short) is very useful for helping understand types. Use this command
+in the interpreter to discover the types of the following
+variables.
+
+```
+varType0 = False
+
+varType1 = [False]
+
+varType2 = [False, False, True]
+
+varType3 = 0b001
+
+varType4 = [0x1, 2, 3]
+
+varType5 = [ [1, 2, 3 : [8]] , [4, 5, 6], [7, 8, 9] ]
+
+varType6 = [ [1, 2, 3] : [3][8], [4, 5, 6], [7, 8, 9] ]
+
+varType7 = [ [1, 2, 3], [4, 5, 6], [7, 8, 9] ] : [_][_][8]
+
+varType8 = (0b1010, 0xff)
+
+varType9 = [ (10 : [12], [1, 2 : [4], 3], ([0b101, 7], 0xab)),
+             (18 : [12], [0, 1 : [4], 2], ([0b100, 3], 0xcd)) ]
+```
+
+For this next set, challenging yourself by filling in your guesses
+ahead of time, writing your answers inline below. If you fill in the
+wrong type, Cryptol will complain when reloading the file in the
+interpreter. For example, say you provided the following type to the
+previous `varType0` variable:
+
+```comment
+varType0 = False : [10]
+```
+
+When you reload this file in the interpreter, you will see the
+following error:
+
+```shell
+  Type mismatch:
+    Expected type: [10]
+    Inferred type: Bit
+```
+
+Here, Cryptol is telling you that it **expected** the value (`False`)
+which is attached to your type to be a 10-bit sequence. However,
+Cryptol **inferred** that the type of `False` is actually `Bit`.
+
+All of the types of the variables you view above were monomorphic,
+meaning, there was only a single valid type for each
+variable. Remember from above that numbers can be represented using a
+lot of different types. For instance, the number `5` can be an
+`Integer`, a 32-bit bitvector, or even a 12039780-bit bitvector. So,
+when you ask for the type of `5` in the interpreter, you'll see:
+
+```shell
+labs::Language::Basics> :t 5
+5 : {a} (Literal 5 a) => a
+```
+
+That letter `a` inside curly braces is a type variable. When you see a
+number (or a function) with a type variable (here, `a`), it means
+there is some freedom in the type of the value variable (here,
+`5`). For the next set of exercises, you'll be asked to type some
+variables monomorphically, that is, you shouldn't need any curly
+braces or `=>` symbols when you specify the types. That's all stuff
+that's gone over later on in this section.
+
+**EXERCISE**: Fill in *any valid monomorphic* type for each of the
+values below. Some will have multiple correct answers. Once done,
+reload this file to check that you've gotten them correct.
+
+```
+varType10 = 0x1234
+
+varType11 = 10
+
+varType12 = [1, 2, 0x7]
+
+varType13 = (1, 2, 0x7)
+
+varType14 = [ (1, 2), (3, 4 : [3]), (5 : [10], 6) ]
+
+varType15 = [ 1, 2, 3, 4, 5, 6, 7, 9, 10, 11, 12 : [8], 13, 14, 15 ]
+
+varType16 = ([10, 9, 8], [7, 6, 5, 0b0100])
+
+varType17 = []
+
+varType18 = ()
+
+varType19 = ([((),()), ((),())], [[[]]], ([[]], [[]]))
+```
+
+That last one is a really good demonstration of what to avoid when
+writing specifications! Honestly, most of those look such a mess that
+it's now obligatory to point out that:
+
+**Specifications are supposed to be easily understood**. It's simply
+bad form to mix numerical representations, put type parameters in the
+middle of sequences, and so on. Please don't take these exercises to
+be considered *good* Cryptol. They were crafted to challenge you,
+something you should **never** do to someone who wants to make use the
+specifications you write. Always strive to make elegant
+specifications. There is no reason to optimize, and certainly don't
+write a spec "just to get it done" --- making something that loads and
+runs isn't good enough. Aim for creating specifications that *look*
+like the mathematics you're specifying. < rant over >
+
+## Types of Functions
+
+What would a programming language be without the ability to write
+functions? Since Cryptol is a pure functional language, functions are
+stateless (side-effect free) definitions that map inputs to an output.
+
+Here is an example of a function called `add` that takes two arguments
+`x` and `y` and adds them together.
+
+```comment
+add x y = x + y
+```
+
+As it stands, this function works with many different types of `x` and
+`y`. For instance, it will work with `x` and `y` both `Integers`, both
+13-bit bitvectors, and (believe it or not) even with both as tuples of
+sequences. Since this function accepts many different types of
+arguments, it's called
+[polymorphic](https://en.wikipedia.org/wiki/Polymorphism_(computer_science))
+> the provision of a single interface to entities of different types.
+
+Often times, cryptographic functions are written to only work with
+specified types (such as having a 256-bit key), and we want to capture
+that information in our specifications. Hence, Cryptol functions can
+be typed, much the same way as typing variables (in the previous
+section). To do so, we add a type definition to the function we're
+defining. For an example, here we make our `add` function only work on
+32-bit bitvectors:
+
+```comment
+add : [32] -> [32] -> [32]
+add x y = x + y
+```
+
+Type definitions start with the name of the function followed by a
+colon. Next, one can *optionally* define some type variables and levy
+constraints on them (we describe this later). Then the types of the
+input variables are given, separated by `->`. Finally the type of the
+output is given.
+
+And we can ask for the type of functions using `:type`, just like we
+asked for the types of variables.
+
+```shell
+labs::Language::Basics> :type add
+add : [32] -> [32] -> [32]
+```
+
+### Curried and Uncurried Style
+
+Cryptol functions are often written in the
+[curried](https://en.wikipedia.org/wiki/Currying) style:
+
+```cryptol
+add : [32] -> [32] -> [32]
+add x y = x + y
+```
+
+rather than:
+
+```cryptol
+addUncurried : ([32], [32]) -> [32]
+addUncurried (x, y) = x + y
+```
+
+These two functions would be applied as shown:
+
+```shell
+labs::Language::Basics> add 20 28
+48
+labs::Language::Basics> addUncurried (20, 28)
+48
+```
+
+These two styles are equivalent at some level. The former is preferred
+as it affords [partial
+application](https://en.wikipedia.org/wiki/Partial_application), but
+the latter can be useful for explicating the correspondence to
+functions from other languages or documents.
+
+  * If it helps you, mentally read curried functions like this: input
+    argument types are all prior to the last arrow and the result type
+    follows the last arrow. Pictorially: `in -> in -> ... -> in ->
+    out`.
+  * Partial application lets one form a new function from an old one
+    where an argument is fixed.  For instance, `add 1` is a
+    function itself!
+
+```cryptol
+increment = add 1
+```
+
+```shell
+labs::Language::Basics> :t increment
+increment : [32] -> [32]
+labs::Language::Basics> increment 10
+11
+```
+
+   `add 1` takes a 32-bit bitvector and returns a 32-bit
+    bitvector. When it is applied to a 32-bit bitvector it adds one to
+    that bitvector. Other examples to illustrate partial application:
+  * Really `addUncurried` is a function of one argument. That argument
+    is a tuple which makes `addUncurried (28, 20)` look just like a
+    two argument function in many languages.
+
+**EXERCISE**: Use the `:type` command in the interpreter to discover
+the types of the following functions.
+
+```
+funType0 a = a + 7 : [5]
+
+funType1 a b = a + b + 0b0011100
+
+funType2 a b = (a + 0x12, b + 0x1234)
+
+funType3 (a, b) = (a + 0x12, b + 0x1234)
+
+funType4 ((a, b), c) = c + 10 : [32]
+
+funType5 [a, b, c : [10]] = [a, b, c]
+
+funType6 (a : [3][10]) = [a@0, a@1, a@2]
+
+//Fun fact! funType5 and funType6 compute the same function.
+//Try, :prove funType5 === funType6
+
+funType7 (x : [7]) = (x, x, [ [1, x], [x, x], [2, 3] ])
+
+funType8 = funType2 10
+
+funType9 = False  //Is this a function with no arguments, or a variable? Hmmmm...is there a difference? Nope!
+```
+
+Now that you have some experience *viewing* function types, you're
+about to be asked to write some. Here are a few common mistakes, and
+what the error messages look like in the interpreter:
+
+Say we accidentially added a two input type to `funType0`:
+
+```comment
+funType0 : [5] -> [5] -> [5]
+funType0 a = a + 7 : [5]
+```
+
+Upon reloading this file, we would see:
+
+```shell
+  Type mismatch:
+    Expected type: [5] -> [5]
+    Inferred type: [5]
+```
+
+Here Cryptol is telling us that (from the type definition) Cryptol
+**expected** the type of input `a` to take two 5-bit bitvectors. But,
+Cryptol **inferred** (from the value definition) that the function
+just takes a single 5-bit bitvector.
+
+Say we accidentially added the wrong type:
+
+```comment
+funType0 : [4] -> [12]
+funType0 a = a + 7 : [5]
+```
+
+Upon reloading this file, we would see:
+
+```shell
+  Type mismatch:
+    Expected type: 5
+    Inferred type: 4
+
+  Type mismatch:
+    Expected type: 12
+    Inferred type: 5
+```
+
+Now we get two error messages. One is complaining about the input
+type, and one about the output type.
+
+**EXERCISE**: Just like in the previous section, you're now being
+asked to fill in *any valid monomorphic* type for each of the
+functions below. Some will have multiple correct answers. Once done,
+reload this file to check that you've gotten them correct.
+
+```
+
+funType10 x = x + x : [10]
+
+
+funType11 a b = a : Bit
+
+
+funType12 (a, b) = a : Bit
+
+
+funType13 [a, b] = a : Bit
+
+funType14 a b ([c, d], e) = [ (a     , [b, b, b]),
+                              ([d, d], [c, c, c]),
+                              (a     , e) ]
+
+funType15 a b = [ a, b, a, b, a, b,
+                  a, b, a, b, a, b,
+                  a, b, a, b, a, b,
+                  a, b, a, b, a, b,
+                  a, b, a, b, a, b,
+                  a, b, a, b, a, b,
+                  a, b, a, b, a, b ]
+
+
+funType16 a b = [ [ a, b, a, b, a, b ],
+                  [ a, b, a, b, a, b ],
+                  [ a, b, a, b, a, b ],
+                  [ a, b, a, b, a, b ],
+                  [ a, b, a, b, a, b ],
+                  [ a, b, a, b, a, b ],
+                  [ a, b, a, b, a, b ] ]
+
+
+funType17 a b = ( [ a, b, a, b, a, b ],
+                  [ a, b, a, b, a, b ],
+                  [ a, b, a, b, a, b ],
+                  [ a, b, a, b, a, b ],
+                  [ a, b, a, b, a, b ],
+                  [ a, b, a, b, a, b ],
+                  [ a, b, a, b, a, b ] )
+
+funType18 a b = [ ( a, b, a, b, a, b ),
+                  ( a, b, a, b, a, b ),
+                  ( a, b, a, b, a, b ),
+                  ( a, b, a, b, a, b ),
+                  ( a, b, a, b, a, b ),
+                  ( a, b, a, b, a, b ),
+                  ( a, b, a, b, a, b ) ]
+
+
+funType19 a b = ( ( a, b, a, b, a, b ),
+                  ( a, b, a, b, a, b ),
+                  ( a, b, a, b, a, b ),
+                  ( a, b, a, b, a, b ),
+                  ( a, b, a, b, a, b ),
+                  ( a, b, a, b, a, b ),
+                  ( a, b, a, b, a, b ) )  // We're so sorry
+```
+
+After that set of exercises you likely see the conciseness of the
+sequence type over the tuple type (it was hammered in pretty hard
+there at the end). Lesson: don't use tuples unless you really really
+have to. Curry your parameters and group heterogeneous elements
+together in sequences. Tuples are only really useful when you want to
+function to output multiple values that have different types.
+
+### Polymorphic Functions
+
+
+
+
+
+
+
 
 **EXERCISE**:
+
+
 
 
 ## Operators
@@ -426,7 +817,7 @@ by the name of the primitive.
     determined by the context.
 
 ```shell
-  labs::Language::Basics> zero: ([8], [4])
+  labs::Language::Basics> zero : ([8], [4])
   (0x00, 0x0)
 ```
 
@@ -470,81 +861,6 @@ labs::Language::Basics> transpose [[1, 2], [3, 4]]
 
 In most Cryptol programs, the context will enforce the size of things,
 so the type annotations shown in these examples need not be present.
-
-
-**EXERCISE**:
-
-
-## The Types of Functions
-
-The Cryptol interpreter command `:type` is very useful for helping you
-understand types. For instance the type of the `abs` function which we
-will define later is displayed by:
-
-```shell
-labs::Language::Basics> :type abs
-abs : Integer -> Integer
-```
-
-indicating that it takes an integer and returns an integer.
-
-
-**EXERCISE**:
-
-
-## Curried and Uncurried Style
-
-Cryptol functions are often written in the
-[curried](https://en.wikipedia.org/wiki/Currying) style:
-
-```cryptol
-gcdCurried: Integer -> Integer -> Integer
-```
-
-rather than:
-
-```cryptol
-gcdUncurried: (Integer, Integer) -> Integer
-```
-
-These two functions would be applied as shown:
-
-```shell
-labs::Language::Basics> gcdCurried 20 28
-4
-labs::Language::Basics> gcdUncurried (20, 28)
-4
-```
-
-These two styles are equivalent at some level. The former is preferred
-as it affords
-[partial application](https://en.wikipedia.org/wiki/Partial_application),
-but the latter can be useful for explicating the correspondence to
-functions from other languages or documents.
-
-  * If it helps you, mentally read curried functions like this: input
-    argument types are all prior to the last arrow and the result type
-    follows the last arrow. Pictorially: `in -> in -> ... -> in ->
-    out`.
-  * Partial application lets one form a new function from an old one
-    where an argument is fixed.  For instance, `gcdCurried 10` is a
-    function itself!
-
-```shell
-  labs::Language::Basics> :type gcdCurried 10
-  gcdCurried 10 : Integer -> Integer
-```
-
-   `gcdCurried 10` takes an integer and returns an integer. When it
-    is applied to an integer it computes the gcd of 10 and that
-    integer. Other examples to illustrate partial application:
-  * Incrementing is addition partially applied to 1. Notionally: `inc
-    x = (add 1) x`.
-  * The reciprocal is division partially applied to 1. Notionally:
-    `recip x = (div 1) x`.
-  * Really `gcdUncurried` is a function of one argument. That argument
-    is an ordered pair which makes `gcdUncurried (28, 20)` look just
-    like a two argument function in many languages.
 
 
 **EXERCISE**:
