@@ -134,8 +134,8 @@ base 10.
 
 ## Comments
 
-  * `//` to end of line
-  * `/*` ... `*/` block comment
+  * `//` comments to the to end of a line
+  * `/*` ... `*/` comments a block of code
 
 There is also a [docstring](https://en.wikipedia.org/wiki/Docstring)
 comment facility:
@@ -148,11 +148,19 @@ comment facility:
 mask = 7
 ```
 
-Now when issuing `:help mask`, the above comments are displayed along
+Now, when issuing `:help mask`, the above comments are displayed along
 with other information about `mask`.
 
+```shell
+labs::Language::Basics> :help mask
 
-## Identifiers
+    mask : {a} (Literal 7 a) => a
+
+A totally made up identifier for pedagogical purposes. It is
+used elsewhere for demonstration of something or other.
+```
+
+## Variable and Function Naming
 
 Cryptol identifiers (variable and function names) consist of
 alphanumeric characters plus `'` (apostrophe, but read "prime") and
@@ -167,6 +175,10 @@ other naming constraints aren't mandated.
 fooBar = 15
 fooBar' = fooBar && mask // mask defined elsewhere
 ```
+
+Feel free to take a quick look at the [the Cryptol style
+guide](../../cryptol-style.md) we used for creating the material in
+this course.
 
 Technically, Cryptol supports
 [Unicode](https://en.wikipedia.org/wiki/Unicode), but this course
@@ -189,6 +201,11 @@ sequence) whose base type is bits.
   * ...
 
 Things to note:
+  * The type of the lowest dimension of every sequence given above is
+    `Bit`. It's correct to write `0x2a : [8]Bit`, but the `Bit` part
+    of a sequence is implicit in Cryptol, otherwise we'd be writting
+    the word `Bit` at the end of just about every type. So, `Bit` it
+    is often left off when writing the types of sequences.
   * There are no privileged bit widths in Cryptol. `[13]` is just as
     good a type as `[8]`, `[16]`, `[32]` or `[64]`.
   * There's `0b...` for binary, `0o...` for octal and `0x...` for
