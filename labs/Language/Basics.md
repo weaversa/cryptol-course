@@ -636,14 +636,17 @@ After that set of exercises you likely see the conciseness of the
 sequence type over the tuple type (it was hammered in pretty hard
 there at the end). Lesson: don't use tuples unless you really really
 have to. Curry your parameters and group heterogeneous elements
-together in sequences. Tuples are only really useful when you want to
+together in sequences. Tuples are only really useful when you want a
 function to output multiple values that have different types.
 
 ### Polymorphic Functions
 
-
-
-
+```comment
+functionName :
+    {typeVariable, typeVariable, ...}
+    (typeConstraint, typeConstraint, ...) =>
+    Input -> ... Input -> Output
+```
 
 
 
