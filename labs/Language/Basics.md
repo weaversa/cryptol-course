@@ -664,28 +664,27 @@ Let's make an example to work with:
 ```comment
 sayHello:
     {n}
-	(fin n, n > 0) =>
+	(fin n) =>
 	[n][8] -> [7+n][8]
 sayHello name = "Hello, " # name
 ```
 
 This function's name is `sayHello`, it takes in a sequence called
 `name` that is `n` octets long and produces a sequence that is `7+n`
-octets long, where `n` is finite and greater than zero. The function
-itself outputs the concatenation (using the `#` operator) of the
-string "Hello, " with `name`. If we wanted to enforce that the length
-of `n` was less than some value, we could add another constraint, like
-so:
+octets long, where `n` is finite. The function itself outputs the
+concatenation (using the `#` operator) of the string "Hello, " with
+`name`. If we wanted to enforce that the length of `n` was less than
+some value, we could add another constraint, like so:
 
 ```cryptol
 sayHello:
     {n}
-	(n > 0, n <= 20) =>
+	(n <= 12) =>
 	[n][8] -> [7+n][8]
 sayHello name = "Hello, " # name
 ```
 
-Now, since `n` is less than or equal to twenty, it's clearly finite,
+Now, since `n` is less than or equal to twelve, it's clearly finite,
 so the `fin n` constraint is extraneous. We could leave it, Cryptol
 won't complain, but it's nice to be as concise as possible when typing
 functions. A list of all available type constraints can be found by
@@ -699,6 +698,77 @@ labs::Language::Basics> :h fin
     primitive type fin : # -> Prop
 
 Assert that a numeric type is a proper natural number (not 'inf').
+```
+
+Let's use the interpreter to send a few values through `sayHello` and
+see what happens.
+
+```shell
+labs::Language::Basics> :s ascii=on
+labs::Language::Basics> sayHello "Munkustrap"
+"Hello, Munkustrap"
+labs::Language::Basics> sayHello "Skimbleshanks"
+
+[error] at <interactive>:1:1--1:25:
+  Unsolvable constraint: 12 >= 13
+```
+
+Here we see that `sayHello` happily accepts a 10-octect sequence but
+wholeheartedly rejects a 13-octect sequence. This is the type system
+in action! Let's also briefly take a look at the type for the
+concatenation operator `#`.
+
+```shell
+:t (#)
+(#) : {front, back, a} (fin front) =>
+        [front]a -> [back]a -> [front + back]a
+```
+
+We can pretty accurately guess what this function is doing just by
+looking at its type. Here we see that `#` takes two arguments. The
+first is a sequence of `front` many elements of type `a`. The second
+is a sequence of `back` many elements, also of type `a`. The function
+returns a sequence of `front + back` many elements, again of type
+`a`. The type variable `a` is unconstrainted (there are no type
+constraints levied on it) and so `#` will accept sequences of any type
+--- a sequence of bits, a sequence of sequences, a sequence of tuples,
+etc. The `fin front` constraint tells us that the first sequence has
+to have a finite number of elements, and the absence of constraints on
+`back` means that the second argument can have any number (even an
+infinite number) of elements. Since sequences (in some sense) start
+from the left, it doesn't make sense to concatenate something onto the
+back of an infinite sequence, but it seems perfectly fine to
+concatenate something onto the front of an infinite sequence.
+
+All that aside, the `sayHello` example above is a bit silly, but, when
+utilized fully, the type system acts to protect functions from being
+called in a way that is potentially harmful. For example, let's say we
+had a function that accesses the 12th bit of a bitvector. This can be
+acheived using Cryptol's `@` operator which performs 0-based indexing
+from the left (indexing sequences is explained in more detail later
+on). The type system should be used to make sure that such a function
+can only be called with bitvectors with at least 13 bits, like so:
+
+```cryptol
+bitTwelve :
+    {n}
+	(fin n, n >=13) =>
+	[n] -> Bit
+bitTwelve x = x@12
+```
+
+Let's use the interpreter to send a few values through `bitTwelve` and
+see what happens.
+
+```shell
+labs::Language::Basics> bitTwelve 0b101100101001
+
+[error] at <interactive>:1:1--1:25:
+  Unsolvable constraint: 12 >= 13
+labs::Language::Basics> bitTwelve 0b1010111001011
+True
+labs::Language::Basics> bitTwelve 0b1010101010100100101010101010101010101
+False
 ```
 
 **EXERCISE**:
