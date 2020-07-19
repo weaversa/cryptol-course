@@ -204,8 +204,8 @@ Things to note:
   * The type of the lowest dimension of every sequence given above is
     `Bit`. It's correct to write `0x2a : [8]Bit`, but the `Bit` part
     of a sequence is implicit in Cryptol, otherwise we'd be writting
-    the word `Bit` at the end of just about every type. So, `Bit` it
-    is often left off when writing the types of sequences.
+    the word `Bit` at the end of just about every type. So, `Bit` is
+    often left off when writing the types of sequences.
   * There are no privileged bit widths in Cryptol. `[13]` is just as
     good a type as `[8]`, `[16]`, `[32]` or `[64]`.
   * There's `0b...` for binary, `0o...` for octal and `0x...` for
@@ -235,7 +235,7 @@ Things to note:
 ```shell
     labs::Language::Basics> [1, 2, 3] : [_][32]
     [0x00000001, 0x00000002, 0x00000003]
-    labs::Language::Basics> :t [1, 2, 3] : [_][32]
+    labs::Language::Basics> :type [1, 2, 3] : [_][32]
     ([1, 2, 3] : [_][32]) : [3][32]
 ```
 
@@ -302,9 +302,9 @@ varType9 = [ (10 : [12], [1, 2 : [4], 3], ([0b101, 7], 0xab)),
              (18 : [12], [0, 1 : [4], 2], ([0b100, 3], 0xcd)) ]
 ```
 
-For this next set, challenging yourself by filling in your guesses
-ahead of time, writing your answers inline below. If you fill in the
-wrong type, Cryptol will complain when reloading the file in the
+For this next set, challenge yourself by filling in your guesses ahead
+of time, writing your answers inline below. If you fill in the wrong
+type, Cryptol will complain when reloading the file in the
 interpreter. For example, say you provided the following type to the
 previous `varType0` variable:
 
@@ -321,16 +321,16 @@ following error:
     Inferred type: Bit
 ```
 
-Here, Cryptol is telling you that it **expected** the value (`False`)
-which is attached to your type to be a 10-bit sequence. However,
+Here, Cryptol is telling you that it **expected** the value `False` to
+be a 10-bit sequence (because that's what we told Cryptol). However,
 Cryptol **inferred** that the type of `False` is actually `Bit`.
 
-All of the types of the variables you view above were monomorphic,
-meaning, there was only a single valid type for each
-variable. Remember from above that numbers can be represented using a
-lot of different types. For instance, the number `5` can be an
-`Integer`, a 32-bit bitvector, or even a 12039780-bit bitvector. So,
-when you ask for the type of `5` in the interpreter, you'll see:
+The types of the variables you viewed above were all *monomorphic*,
+meaning, there was only a single valid type for each variable. Recall
+that numbers can be represented using a lot of different types. For
+instance, the number `5` can be an `Integer`, a 32-bit bitvector, or
+even a 12039780-bit bitvector. So, when you ask for the type of `5` in
+the interpreter, you'll see:
 
 ```shell
 labs::Language::Basics> :t 5
