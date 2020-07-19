@@ -965,7 +965,7 @@ from a 32-bit bitvector into a sequence of one 32-bit bitvector (a
 ## Operators
 
 Cryptol's `:help` command will provide a brief description of the
-operators in this section by issuing `:help ` (or `:h` for short)
+operators in this section by issuing `:help` (`:h` for short)
 followed by the name of the operator in parentheses. For example:
 `:help (@)`
 
@@ -973,7 +973,9 @@ Many languages differentiate signed and unsigned numbers at the type
 level (e.g. C's `uint32` and `int32`). Cryptol has separate operators
 for signed operations which are indicated by a suffixed `$`. Most of
 the time you don't need them as cryptography tends to use nonnegative
-numbers.
+numbers. In case you do, Cryptol also has `carry`, `scarry`, and
+`sborrow` operators for computing overflow and underflow of addition
+and subtraction.
 
 Where appropriate, operators act element-wise (or "blast through")
 typing constructs like sequences, tuples and records.
@@ -1111,6 +1113,17 @@ labs::Language::Basics> False ==> 1 == 5 /\ 1 != 5
 True
 ```
 
+### `if ... then ... else`
+
+Cryptol's `if ... then ... else` is much like C's ternary operator
+`?`...`:`. It is not like the `if ... then ... else` control
+structure.
+
+```shell
+labs::Language::Basics> 2 + (if 10 < 7 then 12 else 4) + 2 : Integer
+8
+```
+
 **EXERCISE**: Specify the Speck2n round function from page 14 of the
 Simon and Speck specification document
 [https://eprint.iacr.org/2013/404.pdf](https://eprint.iacr.org/2013/404.pdf). Here
@@ -1169,7 +1182,7 @@ Q.E.D.
 ## Common Primitives
 
 Cryptol's `:help` command will provide a brief description of the
-primitives in the section by issuing `:help ` followed
+primitives in the section by issuing `:help` (`:h` for short) followed
 by the name of the primitive.
 
 ### Collections of all `False` or all `True` bits
@@ -1194,13 +1207,15 @@ Here we produce an ordered pair of a 0 octet and a 0 nibble.
   * `~0` and `~zero` produce all `True` bits correspondingly.
 
 
-### List manipulation: `take`, `drop`, `tail`, `last` and `reverse`
+### List manipulation: `take`, `drop`, `head`, `tail`, `last` and `reverse`
 
 ```shell
 labs::Language::Basics> take "dogcow" : [3][8]
 "dog"
 labs::Language::Basics> drop [2, 3, 5, 7, 11] : [3]Integer
 [5, 7, 11]
+labs::Language::Basics> head [1, 2, 3]
+1
 labs::Language::Basics> tail [0, 1, 1]
 [1, 1]
 labs::Language::Basics> last [2, 3, 5, 7, 11]
@@ -1210,17 +1225,19 @@ labs::Language::Basics> reverse [0, 0, 1]
 ```
 
 Of course the sizes of lists have to be big enough. Also, notice that
-`last` (which is equivalent to `! 0`) returns an element while the
-others return lists.
+`head` (which is equivalent to `@0` and `last` (which is equivalent to
+`!0`) return an element while the others return lists.
 
 Often in a Cryptol program, the context will determine the shapes of
 sequences, so that the type annotations (`: [3][8]` and `: [3]Integer`
 above) will be unnecessary.
 
-### List shape manipulation: `split`, `join`, `transpose`
+### List shape manipulation: `split`, `groupBy`, `join`, `transpose`
 
 ```shell
-labs::Language::Basics> split 0xdeadbeef : [8][4]
+labs::Language::Basics> split`{8} 0xdeadbeef
+[0xd, 0xe, 0xa, 0xd, 0xb, 0xe, 0xe, 0xf]
+labs::Language::Basics> groupBy`{4} 0xdeadbeef
 [0xd, 0xe, 0xa, 0xd, 0xb, 0xe, 0xe, 0xf]
 labs::Language::Basics> join [0xca, 0xfe]
 0xcafe
@@ -1228,12 +1245,75 @@ labs::Language::Basics> transpose [[1, 2], [3, 4]]
 [[1, 3], [2, 4]]
 ```
 
+### Functional programming operators: `sum`, `map`, `iterate`, `foldl`
+
+Cryptol supports a few common idioms in functional programming. This
+section briefly touches upon four.
+
+The `sum` operator takes a sequence of elements and sums them all
+up. Similar to other operators, `sum` acts element-wise and as such
+accepts sequences of any type that arithmetic can be applied to.
+
+```shell
+labs::Language::Basics> sum [1, 2, 3, 4, 5]
+15
+labs::Language::Basics> sum [ [1, 2], [3, 4], [5, 6] ]
+[9, 12]
+labs::Language::Basics> sum (sum [ [1, 2], [3, 4], [5, 6] ])
+21
+```
+
+The `map` operator applies an operation to each element in a sequence.
+
+```shell
+labs::Language::Basics> :s base=10
+labs::Language::Basics> map increment [1, 2, 3, 4, 5]
+[2, 3, 4, 5, 6]
+labs::Language::Basics> let sum (a, b) = a + b
+labs::Language::Basics> map sum [ (1, 2), (3, 4), (4, 5) ]
+[3, 7, 9]
+labs::Language::Basics> :s base=2
+labs::Language::Basics> map reverse [0b10110, 0b00101, 0b00111]
+[0b01101, 0b10100, 0b11100]
+```
+
+The `iterate` operator maps a function iteratively over an initial
+value, producing an infinite list of successive function applications.
+
+```shell
+labs::Language::Basics> :s base=10
+labs::Language::Basics> iterate increment 0
+[0, 1, 2, 3, 4, ...]
+labs::Language::Basics> let skipBy a x = x + a
+labs::Language::Basics> iterate (skipBy 3) 0
+[0, 3, 6, 9, 12, ...]
+```
+
+The `foldl` operator transitions an initial state given a 'next state'
+function and a list of elements to act on at each transition. `scanl`
+works just like `foldl`, but returns the state at each transition,
+rather than the final state. In fact, `foldl == last scanl`.
+
+```shell
+labs::Language::Basics> let step state c = if c == True then state+1 else state-1
+labs::Language::Basics> foldl step 0 [True, True, False, False, True]
+1
+labs::Language::Basics>  scanl step 0 [True, True, False, False, True]
+[0, 1, 2, 1, 0, 1]
+labs::Language::Basics> foldl (+) 0 [1, 2, 3, 4, 5]
+15
+labs::Language::Basics> scanl (+) 0 [1, 2, 3, 4, 5]
+[0, 1, 3, 6, 10, 15]
+labs::Language::Basics> :s base=2
+labs::Language::Basics> foldl (<<) 1 [1, 2, 3, 4] : [12]
+0b010000000000
+labs::Language::Basics> scanl (<<) 1 [1, 2, 3, 4] : [5][12]
+[0b000000000001, 0b000000000010, 0b000000001000, 0b000001000000,
+ 0b010000000000]
+```
+
 In most Cryptol programs, the context will enforce the size of things,
 so the type annotations shown in these examples need not be present.
-
-
-**EXERCISE**:
-
 
 ## Small Functions
 
@@ -1249,134 +1329,9 @@ advantageous:
     about code. Moreover, properties serve as another kind of
     documentation!
 
-### Examples
+## Where clauses
 
-```cryptol
-abs : Integer -> Integer
-abs n = if n >= 0 then n else -n
-
-absNonnegative : Integer -> Bit
-property absNonnegative x = abs x >= 0
-```
-
-  * `abs : Integer -> Integer` is the type signature for `abs`.
-  * `abs n = if n >= 0 then n else -n` is the definition for `abs` (or
-    function body).
-  * `property absNonnegative ...` is a property we expect the function
-    to have.
-  * `:check absNonnegative` checks this property with random
-    tests. It's super cheap unit testing!
-
-```shell
-  labs::Language::Basics> :check absNonnegative
-  Using random testing.
-  Passed 100 tests.
-```
-
-  * Cryptol's `if ... then ... else` is much like C's ternary operator
-    `?`...`:`. It is not like the `if ... then ... else` control
-    structure.
-  * The reserved word `property` documents that definition's
-    intention.
-  * We can go a step further and `:prove` this property:
-
-```shell
-  labs::Language::Basics> :prove absNonnegative
-  Q.E.D.
-  (Total Elapsed Time: 0.032s, using Z3)
-```
-
-  * Also Cryptol's `:check` will check all functions marked as
-    properties in one go and, you guessed it, `:prove` works
-    similarly.
-
-A little more involved example follows.
-
-```cryptol
-gcd : Integer -> Integer -> Integer
-gcd m n = gcd' (abs m) (abs n)
-  where
-    gcd' : Integer -> Integer -> Integer
-    gcd' x y = if y == 0 then x else gcd' y (x % y)
-
-/* This property states that gcd x y is a divisor of both x and y */
-gcdDividesBoth' : Integer -> Integer -> Bit
-property gcdDividesBoth' x y
-    =  x % (gcd x y) == 0
-    /\ y % (gcd x y) == 0
-```
-
-  * `where` introduces locally scoped definitions. (Mathematicians use
-    the word "where" in a similar fashion.)
-  * The function `gcd'` is scoped within `gcd`.
-  * The function `gcd'` is recursive.
-  * Let's check `gcdDividesBoth'`:
-
-```shell
-  labs::Language::Basics> :check gcdDividesBoth'
-  Using random testing.
-  Passed 100 tests.
-```
-
-  * It seems okay, yet `gcdDividesBoth' 0 0` gives a division by 0 error.
-
-```shell
-  labs::Language::Basics> gcdDividesBoth' 0 0
-  division by 0
-```
-
-  * We could perhaps have found that with more testing:
-
-```shell
-  labs::Language::Basics> :set tests=1000
-  labs::Language::Basics> :check gcdDividesBoth'
-  Using random testing.
-  ERROR for the following inputs:
-  0
-  0
-  division by 0
-```
-
-  * Since `:check` uses randomly generated tests the failing result
-    may be intermittent.
-  * Properties are useful and sometimes may be proven, but you must
-    remember that _**properties that pass `:check` are not
-    guarantees!**_ That is: _**`:check` is evidence, `:prove` is
-    proof!**_
-  * Properties may be partially applied: `:check gcdDividesBoth' 0`
-    finds the problem faster since it only is using random values for
-    the second argument.
-  * **Warning**: `:prove gcdDividesBoth'` will never complete. If you
-    issue that command, you'll need to issue the abort sequence (often
-    `Control-C`) once or twice to interrupt and regain control. The
-    reason this proof won't complete is too technical for the moment.
-
-Let's patch up that property. (You surely noticed the prime (`'`) in
-the property name which is a giveaway that is not quite the property
-we want.)
-
-```cryptol
-gcdDividesBoth : Integer -> Integer -> Bit
-property gcdDividesBoth x y
-    = if z == 0
-       then True
-       else x % z == 0 /\ y % z == 0
-  where
-    z = gcd x y
-```
-
-  * Functions may have many associated properties.
-  * Properties can have locally scoped definitions.
-  * Property corner-cases are handled with `if ... then ... else`.
-  * Another way to write the conditional part of the property that's a
-    bit cooler: `z != 0 ==> x % z == 0 /\ y % z == 0`. You can read
-    that as, "nonzero _z_ implies _z_ divides both _x_ and _y_".
-  * WARNING: `:prove gcdDividesBoth` will never complete. Don't try it
-    unless your favorite key combination is the abort sequence (often
-    `Control-C`) on your computer.
-
-**EXERCISE**:
-
+## Properties
 
 ## Writing Loops
 
@@ -1493,6 +1448,9 @@ a.k.a. "call-by-need". I.e., computations are not performed until
 necessary. So
 
 ```cryptol
+abs : Integer -> Integer
+abs n = if n >= 0 then n else -n
+
 lazyAbsMin : Integer -> Integer -> Integer
 lazyAbsMin x y = if x == 0 then 0 else min (abs x) (abs y)
 ```
@@ -1597,18 +1555,6 @@ read on, but you have been warned...
 The following code does serve to illustrate the type signature and
 function definitions can be separated within a file. A practice that
 is _**strongly**_ discouraged.
-
-```cryptol
-gcdCurried = gcd
-gcdUncurried = uncurry gcdCurried
-```
-
-These also illustrate higher order functions. We define the _function_
-`gcdCurried` in terms of the _function_ `gcd` without mentioning
-arguments. We use the built in `uncurry` higher-order function which
-takes a two argument curried function and returns an uncurried version
-(a one argument function operating on an ordered pair).
-
 
 # Postface
 
