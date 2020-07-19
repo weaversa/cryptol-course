@@ -20,15 +20,10 @@ Specifically, you'll also gain experience with
   * commenting,
   * Cryptol's `Bit`, sequence, `Integer`, tuple, and record types,
   * evaluating expressions,
-  * the `:check`, `:prove`, and `:sat` commands,
-  * demoting types variables to value variables,
-  * manipulating sequences using `#`, `take`, `drop`, `split`, `join`,
-    `head`, `last`, `tail`, `reverse`, `groupBy`, `map`, `iterate`,
-    and `foldl`,
-  * the `sum`, `carry`, and `pmod` operators,
-  * writing functions and properties,
-  * enumerations and sequence comprehensions,
+  * writing functions and properties, 
   * functions with curried parameters,
+  * type parameters and type constraints,
+  * demoting types variables to value variables,
   * `/\`, `\/`, `==>` -- single bit logical operations,
   * `~`, `&&`, `||`, `^` -- logical operations for sequences,
   * `==`, `!=` -- structural comparison,
@@ -39,12 +34,15 @@ Specifically, you'll also gain experience with
   * `@`, `!`-- sequence indexing,
   * `@@`, `!!` -- sequence indexing,
   * `if then else` -- conditional expressions,
-  * type parameters and type constraints,
+  * manipulating sequences using `#`, `take`, `drop`, `split`, `join`,
+    `head`, `last`, `tail`, `reverse`, `groupBy`, `map`, `iterate`,
+    and `foldl`,
+  * the `sum`, `carry`, and `pmod` operators,
+  * enumerations and sequence comprehensions,
   * pattern matching,
   * `import` -- using cryptographic routines from other modules,
-  * navigating some nuances of Cryptol's type checking system,
-  * lambda functions, and
-  * polynomial expressions.
+  * the `:check`, `:prove`, and `:sat` commands, and
+  * lambda functions.
 
 ## Load This Module
 
@@ -967,8 +965,9 @@ from a 32-bit bitvector into a sequence of one 32-bit bitvector (a
 ## Operators
 
 Cryptol's `:help` command will provide a brief description of the
-operators in this section by issuing `:help ` followed
-by the name of the operator in parentheses. For example: `:help (@)`
+operators in this section by issuing `:help ` (or `:h` for short)
+followed by the name of the operator in parentheses. For example:
+`:help (@)`
 
 Many languages differentiate signed and unsigned numbers at the type
 level (e.g. C's `uint32` and `int32`). Cryptol has separate operators
@@ -993,7 +992,8 @@ labs::Language::Basics> [{x = 1, y = 3}, {y = 6, x = 10}].y
 ```
 
 Following are some really quick examples of operators to remind you
-and show some tricks of Cryptol.
+and show some tricks of Cryptol. Feel free to follow along by running
+these examples in the interpreter yourself.
 
 ### Arithmetic: `+`, `-`, `*`, `/`, `%` and `^^`
 #### Signed versions: `/$` and `%$`
@@ -1019,13 +1019,19 @@ multiplication. However, in Cryptol `1 / 3 == 0 :
 respectively, in
 [Euclidean division](https://en.wikipedia.org/wiki/Euclidean_division).
 
-### Bitwise logical: `~`, `&&`, `||` and `^`
+### Bitwise logical: negation `~`, conjunction `&&`, disjunction `||` and exclusive or `^`
 
 ```shell
-labs::Language::Basics> ~0b000011001101 && 0o4115 || 0x0d0 ^ 9
-0x8d9
+labs::Language::Basics> :s base=2
+labs::Language::Basics> ~0b000011001101
+0b111100110010
+labs::Language::Basics> 0b111100110010 && 0b100001001101
+0b100000000000
+labs::Language::Basics> 0b000011010000 ^ 0b000000001001
+0b000011011001
+labs::Language::Basics> 0b100000000000 || 0b000011011001
+0b100011011001
 ```
-
 
 ### Comparison:`==`, `!=`, `<` , `<=`, `>` and `>=`
 #### Signed versions: `<$`, `<=$`, `>$` and `>=$`
@@ -1060,7 +1066,7 @@ labs::Language::Basics> [1, 2] < [1, 2]
 False
 ```
 
-### Shifts: `<<`, `>>`, `<<<` and `>>>`
+### Shifts and Rotates: `<<`, `>>`, `<<<` and `>>>`
 #### Signed version: `>>$`
 
 ```shell
@@ -1105,8 +1111,60 @@ labs::Language::Basics> False ==> 1 == 5 /\ 1 != 5
 True
 ```
 
-**EXERCISE**:
+**EXERCISE**: Specify the Speck2n round function from page 14 of the
+Simon and Speck specification document
+[https://eprint.iacr.org/2013/404.pdf](https://eprint.iacr.org/2013/404.pdf). Here
+we provide you with the S (rotate) functions and the inverse round
+function `R'`. There are also two properties that you can use to prove
+your work. An example of how to do this follows below.
 
+```cryptol
+S amount value = value <<< amount
+
+S' amount value = value >>> amount
+
+//Uncomment and fill in this definition according to the Speck specification:
+//R :
+//  {?}
+//	(?) =>
+//	?
+R k (x, y) =
+    undefined
+	
+R' :
+    {n}
+	(fin n) =>
+	[n] -> ([n], [n]) -> ([n], [n])
+R' k (x, y) =
+    (S a ((x ^ k) - S' b (x ^ y)), S' b (x ^ y))
+  where
+    n = `n : Integer
+    a = if n == 16 then 7 else 8 : [4]
+    b = if n == 16 then 2 else 3 : [2]
+
+RInverseProperty :
+    {n}
+	(fin n) =>
+	[n] -> ([n], [n]) -> Bit
+property RInverseProperty k (x, y) =
+    R' k (R k (x, y)) == (x, y)
+```
+
+Here we demonstrate proving `RInverseProperty` for 32-bit inputs and
+64-bit inputs. You should run the following commands after writing
+your specification of `R`. Cryptol will tell you when your `R` is
+correct by printing `Q.E.D.`. This means Cryptol has proven that your
+`R` is correct for all possible inputs (which is either `2^^96` for
+the 32-bit proof or `2^^192` for the 64-bit proof).
+
+```shell
+labs::Language::Basics> :prove RInverseProperty`{64}
+Q.E.D.
+(Total Elapsed Time: 0.008s, using "Z3")
+labs::Language::Basics> :prove RInverseProperty`{64}
+Q.E.D.
+(Total Elapsed Time: 0.008s, using "Z3")
+```
 
 ## Common Primitives
 
