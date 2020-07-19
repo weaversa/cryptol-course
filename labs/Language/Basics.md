@@ -589,6 +589,7 @@ funType14 a b ([c, d], e) = [ (a     , [b, b, b]),
                               ([d, d], [c, c, c]),
                               (a     , e) ]
 
+
 funType15 a b = [ a, b, a, b, a, b,
                   a, b, a, b, a, b,
                   a, b, a, b, a, b,
@@ -614,6 +615,7 @@ funType17 a b = ( [ a, b, a, b, a, b ],
                   [ a, b, a, b, a, b ],
                   [ a, b, a, b, a, b ],
                   [ a, b, a, b, a, b ] )
+
 
 funType18 a b = [ ( a, b, a, b, a, b ),
                   ( a, b, a, b, a, b ),
@@ -642,6 +644,14 @@ function to output multiple values that have different types.
 
 ### Polymorphic Functions
 
+Sometimes, though not often, cryptographic functions are parameterized
+on the type of an input. For example, the [Advanced Encryption
+Standard
+(AES)](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
+accepts key sizes of 128, 192, and 256 bits. Also, stream ciphers and
+hash functions work over arbitrary sized streams of input. So, in
+general, the full type of a function looks something like this:
+
 ```comment
 functionName :
     {typeVariable, typeVariable, ...}
@@ -649,8 +659,47 @@ functionName :
     Input -> ... Input -> Output
 ```
 
+Let's make an example to work with:
 
+```comment
+sayHello:
+    {n}
+	(fin n, n > 0) =>
+	[n][8] -> [7+n][8]
+sayHello name = "Hello, " # name
+```
 
+This function's name is `sayHello`, it takes in a sequence called
+`name` that is `n` octets long and produces a sequence that is `7+n`
+octets long, where `n` is finite and greater than zero. The function
+itself outputs the concatenation (using the `#` operator) of the
+string "Hello, " with `name`. If we wanted to enforce that the length
+of `n` was less than some value, we could add another constraint, like
+so:
+
+```cryptol
+sayHello:
+    {n}
+	(n > 0, n <= 20) =>
+	[n][8] -> [7+n][8]
+sayHello name = "Hello, " # name
+```
+
+Now, since `n` is less than or equal to twenty, it's clearly finite,
+so the `fin n` constraint is extraneous. We could leave it, Cryptol
+won't complain, but it's nice to be as concise as possible when typing
+functions. A list of all available type constraints can be found by
+typing `:browse` into the interpreter and looking for the "Primitive
+Types" section. You can also ask for `:help` on any of these, for
+example:
+
+```
+labs::Language::Basics> :h fin
+
+    primitive type fin : # -> Prop
+
+Assert that a numeric type is a proper natural number (not 'inf').
+```
 
 **EXERCISE**:
 
