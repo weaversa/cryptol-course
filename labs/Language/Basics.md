@@ -33,7 +33,7 @@ Specifically, you'll also gain experience with
   * `~`, `&&`, `||`, `^` -- logical operations for sequences,
   * `==`, `!=` -- structural comparison,
   * `==`, `>=`, `>`, `<=`, `<` -- nonnegative word comparisons,
-  * `+`, `-`, `*`, `/`, `%`, `**` -- wordwise modular arithmetic,
+  * `+`, `-`, `*`, `/`, `%`, `**` -- word-wise modular arithmetic,
   * `>>`, `<<`, `>>>`, `<<<` -- shifts and rotates,
   * `#` -- concatenation,
   * `@`, `!`-- sequence indexing,
@@ -203,7 +203,7 @@ sequence) whose base type is bits.
 Things to note:
   * The type of the lowest dimension of every sequence given above is
     `Bit`. It's correct to write `0x2a : [8]Bit`, but the `Bit` part
-    of a sequence is implicit in Cryptol, otherwise we'd be writting
+    of a sequence is implicit in Cryptol, otherwise we'd be writing
     the word `Bit` at the end of just about every type. So, `Bit` is
     often left off when writing the types of sequences.
   * There are no privileged bit widths in Cryptol. `[13]` is just as
@@ -524,7 +524,7 @@ Now that you have some experience *viewing* function types, you're
 about to be asked to write some. Here are a few common mistakes, and
 what the error messages look like in the interpreter:
 
-Say we accidentially added a two input type to `funType0`:
+Say we accidentally added a two input type to `funType0`:
 
 ```comment
 funType0 : [5] -> [5] -> [5]
@@ -544,7 +544,7 @@ Here Cryptol is telling us that (from the type definition) Cryptol
 Cryptol **inferred** (from the value definition) that the function
 just takes a single 5-bit bitvector.
 
-Say we accidentially added the wrong type:
+Say we accidentally added the wrong type:
 
 ```comment
 funType0 : [4] -> [12]
@@ -713,8 +713,8 @@ labs::Language::Basics> sayHello "Skimbleshanks"
   Unsolvable constraint: 12 >= 13
 ```
 
-Here we see that `sayHello` happily accepts a 10-octect sequence but
-wholeheartedly rejects a 13-octect sequence. This is the type system
+Here we see that `sayHello` happily accepts a 10-octet sequence but
+wholeheartedly rejects a 13-octet sequence. This is the type system
 in action! Let's also briefly take a look at the type for the
 concatenation operator `#`.
 
@@ -729,7 +729,7 @@ looking at its type. Here we see that `#` takes two arguments. The
 first is a sequence of `front` many elements of type `a`. The second
 is a sequence of `back` many elements, also of type `a`. The function
 returns a sequence of `front + back` many elements, again of type
-`a`. The type variable `a` is unconstrainted (there are no type
+`a`. The type variable `a` is unconstrained (there are no type
 constraints levied on it) and so `#` will accept sequences of any type
 --- a sequence of bits, a sequence of sequences, a sequence of tuples,
 etc. The `fin front` constraint tells us that the first sequence has
@@ -744,7 +744,7 @@ All that aside, the `sayHello` example above is a bit silly, but, when
 utilized fully, the type system acts to protect functions from being
 called in a way that is potentially harmful. For example, let's say we
 had a function that accesses the 12th bit of a bitvector. This can be
-acheived using Cryptol's `@` operator which performs 0-based indexing
+achieved using Cryptol's `@` operator which performs 0-based indexing
 from the left (indexing sequences is explained in more detail later
 on). The type system should be used to make sure that such a function
 can only be called with bitvectors with at least 13 bits, like so:
@@ -771,10 +771,198 @@ labs::Language::Basics> bitTwelve 0b1010101010100100101010101010101010101
 False
 ```
 
-**EXERCISE**:
+As expected, the type constraint forces the function to only accept
+bitvectors with more than 12 bits.
 
+For this course, we restrict ourselves to type variables and
+constraints involved with sequences. This means (while you work
+through the material here) you can always think about type variables
+as representing the **sizes** (or length) of sequences, and type
+constraints as constraints on those sizes. Type variables and
+constraints can represent more, but these extensions are not used or
+covered in this course.
 
+With this idea in mind (type variables as sizes), many procedural
+programming languages treat the sizes of sequences as variable
+values. For example, in C, one needs to pass the length of an array as
+a value variable, like so:
 
+```C
+int F (int *array, int size)
+```
+
+And `F` has to trust that the length of `array` really is
+`size`. Whereas in Cryptol we would write `F` as:
+
+```comment
+F : {size} (fin size) => [size][32] -> [32]
+```
+
+In Cryptol `array` and `size` are different classes of variables and
+strongly linked so that `F` doesn't have to trust that the length of
+`array` really is `size`. This kind of linkage is called [Strong
+typing](https://en.wikipedia.org/wiki/Strong_and_weak_typing) and >
+generally refers to use of programming language types in order to both
+capture invariants of the code, and ensure its correctness, and
+definitely exclude certain classes of programming errors.
+
+Now, because there are two classes of variables, there are distinct
+ways of passing type variables and value variables to a function. The
+material above demonstrated passing value variables. We'll now
+demonstrate how to pass type variables using the backtick `` ` ``
+character (usually on a key shared with `~` positioned in the upper
+left of the keyboard) and curly braces `{}`.
+
+Let's make a function that repeats a value of type `a` exactly `n`
+times, where `a` and `n` are type variables. To create a repeating sequence,
+this function uses what's called a **sequence comprehension**, but you
+can ignore that for now; it gets covered later.
+
+```cryptol
+repeat :
+    {n, a}
+	() =>
+	a -> [n]a
+repeat value = [ value | _ <- zero : [n] ]
+```
+
+**EXERCISE**: Here are a few examples demonstrating how to pass type
+and value variables to this function. Please typing these examples
+into the interpreter and consider the output, and trying your own
+examples as curiosity strikes you.
+
+```cryptol
+polyType0 = repeat`{a=[64], n=2} 7
+
+polyType1 = repeat`{n=4, a=[64]} 7
+
+polyType2 = repeat`{a=Bit, n=20} True
+
+polyType3 = repeat`{n=20, a=Bit} True
+
+polyType4 = repeat`{n=20} True
+
+polyType5 = repeat`{n=4, a=[2][3]} zero
+
+polyType6 = repeat`{n=4, a=[3][7]} [1, 2, 3]
+
+polyType7 = repeat`{n=4} ([1, 2, 3] : [3][7])
+
+polyType8 = repeat 7 : [5][16]
+
+polyType9 = repeat`{a=[16]} 7 : [5][_]
+
+polyType10 = repeat`{n=5} 7 : [_][16]
+
+polyType11 = repeat`{a=[16], n=5} 7
+
+polyType12 = repeat`{5, [16]} 7
+
+polyType13 = repeat`{5} (7 : [16])
+```
+
+You'll see that you can either pass type variables or let Cryptol infer
+the type variables from the type of the output. Also, those last two
+are demonstrating that you can pass type parameters based on position,
+that is, since the type of repeat declares `{n, a}` as type variables
+**in that order** (`n` first, then `a` second), Cryptol will infer
+which value goes with which type variable based on its position inside
+the curly braces, so you don't need to provide the `name=` part.
+
+**EXERCISE**: Write a function called `zeroPrepend` that prepends `n`
+`False` bits onto the beginning of an `m`-bit bitvector called
+`input`. You'll need to use the `#` operator. Feel free to use the
+`repeat` function we wrote above, though there are solutions that
+don't require it.
+
+```cryptol
+// Uncomment and fill in
+//zeroPrepend : {?} (?) => ? -> ?
+zeroPrepend input = undefined
+```
+
+Check your function by running these tests in the interpreter and
+seeing that you get the same results:
+
+```shell
+labs::Language::Basics> :s base=2
+labs::Language::Basics> zeroPrepend`{n=7} 0b111
+0b0000000111
+labs::Language::Basics> zeroPrepend`{n=3, m=inf} zero
+[False, False, False, False, False, ...]
+labs::Language::Basics> zeroPrepend`{m=6} 5 : [10]
+0b0000000101
+labs::Language::Basics> zeroPrepend`{5, 6} 15
+0b00000001111
+labs::Language::Basics> :s base=16
+```
+
+### Demoting Types to Values
+
+Because type values and variable values are different classes of
+variables, they cannot interact directly. If we think of these two
+classes being in a hierarchy, type variables would be above value
+variables. With this hierarchy mind, Cryptol does allow type variables
+to be **demoted** to value variables, but value variables cannot be
+promoted to type variables. For example, the following is not
+possible.
+
+```comment
+notPossible size = 0 : [size]
+```
+
+We cannot go from a value variable (`size`) up to a type
+variable. However, we can go down by using the backtick `` ` ``
+character. For example:
+
+```cryptol
+appendSize :
+    {size}
+	(fin size, 32 >= width size) =>
+	[size][32] -> [size+1][32]
+appendSize input = input # [`size]
+```
+
+Here we concatenate the size of a sequence onto the end. To read the
+function definition more verbatim: `appendSize` takes an input named
+`input` that is a sequence of `size` number of 32-bit elements and
+outputs a sequence of `size+1` 32-bit elements where the first `size`
+elements are `input` and the last element is the size of the input
+sequence. When type variables are demoted into value variables, they
+must take on a type. Cryptol usually infers the correct type, and in
+this case `` `size `` becomes a 32-bit value. It is because of this
+that the function has `32 >= width size` as a type constraint. If
+`size` were greater than `2^^32`, it couldn't be demoted into a 32-bit
+value because it wouldn't fit! So, the demotion here forces us to add
+this extra type constraint. Luckily, if you forget to add such things,
+Cryptol will generally complain and let you know what you forgot. For
+example, if we remove that constraint and reload this file we see:
+
+```shell
+  Failed to validate user-specified signature.
+    in the definition of 'appendSize', at Basics.md:923:1--923:11,
+    we need to show that
+      for any type size
+      assuming
+        • fin size
+      the following constraints hold:
+        • 32 >= width size
+            arising from
+            use of literal or demoted expression
+```
+
+This essentially says that Cryptol won't accept the function unless we
+add the constraint that `32 >= width size`, or some stronger
+constraint --- we could, if we wanted, add that `size < 7` as it
+subsumes the more general constraint that Cryptol is inferring.
+
+As a quick aside, you may be wondering why `` `size `` is inside
+brackets (`[]`). This is due to the fact that Cryptol can only
+concatenate sequences that are the same dimension. `input` is a
+2-dimensional sequence, and `` `size `` is a 1-dimensional
+sequence. So we surround it in brackets (`` [`size] ``) to turn it
+from a 32-bit bitvector into a sequence of one 32-bit bitvector (a
+2-dimensional sequence).
 
 ## Operators
 
@@ -820,7 +1008,7 @@ labs::Language::Basics> 2^^127 - 1 // a 33 digit Mersenne prime
 ```
 
 The first example defaults to type `Integer`. In the second, 1-bit
-addition is explicitly stateed so that the computation is essentially
+addition is explicitly stated so that the computation is essentially
 modular addition (XOR). The third shows that `^^` is exponentiation.
 
 The division (`/`) operation is not what a mathematician imagines in
@@ -1136,7 +1324,7 @@ property gcdDividesBoth x y
 
 ### Or not...
 
-  * Many of Cryptol's operators naturally extend elementwise over
+  * Many of Cryptol's operators naturally extend element-wise over
     nested sequences to any depth.
 
 ```shell
@@ -1147,7 +1335,7 @@ labs::Language::Basics> [[[2, 3], [5, 7]], [[11, 13], [17, 19]]] + [[[0, 1], [1,
   * So we don't have to write loops within loops to process these
     sorts of multidimensional arrays.
   * All the arithmetic, bitwise logical and comparison operators work
-    elementwise over nested sequences!
+    element-wise over nested sequences!
 
 ### Loop indices
 
