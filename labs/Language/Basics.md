@@ -693,7 +693,7 @@ typing `:browse` into the interpreter and looking for the "Primitive
 Types" section. You can also ask for `:help` on any of these, for
 example:
 
-```
+```shell
 labs::Language::Basics> :h fin
 
     primitive type fin : # -> Prop
