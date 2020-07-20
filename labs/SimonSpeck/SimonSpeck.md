@@ -103,11 +103,11 @@ parameter
   type m : #    // words in key
   type T : #    // rounds in the key schedule
   type j : #    // index of z-sequence used (i.e. use sequence z_j)
-  type constraint (fin n, fin m, fin T, fin j, 
+  type constraint (fin n, fin m, fin T, fin j,
+                   16 <= n, n <= 64,
                    2 <= m, m <= 4, 
                    0 <= j, j <= 4, 
-                   m <= T-1, T >= 22, 
-                   n >= width T)
+                   32 <= T, T <= 72)
 type blockSize = 2 * n
 type keySize   = m * n
 
@@ -118,7 +118,32 @@ type keySize   = m * n
 // for the remainder of the Simon specificaiton.
 ```
 
-Note that four module parameters are declared (`n`, `m`, `T`, and `j`) which reflect the four from page 10 of the specification document. We are also able to declare `blockSize` and `keySize` types using these variables that match the definitions in the specification.
+Note that four module parameters are declared (`n`, `m`, `T`, and `j`) which reflect the four from page 10 of the specification document. We are also able to declare `blockSize` and `keySize` types using these variables that match the definitions in the specification. Note that we use `j` to indicate the index of the sequence `z_j` we will use.
+
+We are also able to specify general type constraints for these parameters. The line that begins `type constraints` places some general bounds on the ranges of values that are possible for each parameter.
+
+We can create a concrete module by specifying values for the module type parameters as follows:
+
+```example
+module labs::SimonSpeck::Simon::simon_32_64 = labs::SimonSpeck::Simon::Simon where
+
+  type n = 16
+  type m = 4
+  type T = 32
+  type j = 0
+```
+This code appears in the file `[CRYPTOLCOURSE]/labs/SimonSpeck/Simon/simon_32_64.cry` and defines a new module `labs::SimonSpeck::Simon::simon_32_64` with concrete values for the `simon32/64` block cipher according to the specification. The user can import this module and use the concretized `encrypt` function as follows:
+
+```
+import labs::SimonSpeck::Simon::simon_32_64 as simon_32_64
+
+test_K = join[0x1918, 0x1110, 0x0908, 0x0100]
+test_P = join[0x6565, 0x6877]
+test_C = join[0xc69b, 0xe9bb]
+property test_32_64 = simon_32_64::encrypt test_K test_P == test_C
+```
+
+You can check that this test vector passes by running `:check test_32_64`.
 
 # Writing a Parameterized Module for Speck
 
@@ -138,7 +163,7 @@ Q.E.D.
 
 ## Speck Test Vectors
 
-```
+```example
 import labs::SimonSpeck::Speck::speck_32_64   as speck_32_64
 import labs::SimonSpeck::Speck::speck_48_72   as speck_48_72
 import labs::SimonSpeck::Speck::speck_48_96   as speck_48_96

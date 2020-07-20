@@ -6,11 +6,11 @@ parameter
   type m : #    // words in key
   type T : #    // rounds in the key schedule
   type j : #    // index of z-sequence used (i.e. use sequence z_j)
-  type constraint (fin n, fin m, fin T, fin j, 
+  type constraint (fin n, fin m, fin T, fin j,
+                   16 <= n, n <= 64,
                    2 <= m, m <= 4, 
                    0 <= j, j <= 4, 
-                   m <= T-1, T >= 22, 
-                   n >= width T)
+                   32 <= T, T <= 72)
 type blockSize = 2 * n
 type keySize   = m * n
 
