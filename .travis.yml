@@ -1,10 +1,10 @@
 ---
 services:
   - docker
-jobs: 
-  include: 
+jobs:
+  include:
     -
-      before_install: 
+      before_install:
         - wget https://saw.galois.com/builds/nightly/saw-0.4.0.99-2020-05-21-OSX-64.tar.gz
         - tar -xzf saw-0.4.0.99-2020-05-21-OSX-64.tar.gz
         - export PATH=$PATH:$(pwd)/saw-0.4.0.99-2020-05-21-OSX-64/bin
@@ -16,12 +16,17 @@ jobs:
       compiler: clang
       os: osx
     -
-      before_install: 
+      before_install:
         - brew install cryptol
       compiler: clang
       os: osx
-    - 
-      before_install: 
+    -
+      before_install:
+        - docker pull cryptolcourse/cryptol:latest
+        - shopt -s expand_aliases
+        - alias cryptol='docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol'
+    -
+      before_install:
         - wget https://saw.galois.com/builds/nightly/saw-0.4.0.99-2020-05-21-Ubuntu14.04-64.tar.gz
         - tar -xzf saw-0.4.0.99-2020-05-21-Ubuntu14.04-64.tar.gz
         - export PATH=$PATH:$(pwd)/saw-0.4.0.99-2020-05-21-Ubuntu14.04-64/bin
@@ -34,26 +39,28 @@ jobs:
       dist: bionic
       os: linux
 language: c
-script: 
+script:
   - export CRYPTOLPATH=$(pwd)
 # Interpreter lab tests
-  - cryptol -e -c ":m labs::Interpreter::test" -c ":s base=10" -c "x + 2"
-  - cryptol -e -b labs/Interpreter/test.sry
+  - cryptol -e -c ":m labs::Interpreter::Interpreter" -c ":s base=10" -c "x + 2"
+#  - cryptol -e -b labs/Interpreter/test.sry
 # Arithmetic verification tests
   - "! command -v saw >/dev/null 2>&1 || make -C labs/saw/ArithmeticVerifications"
 # Bittwiddling lab tests
-  - cryptol -e -c ":l labs/saw/bittwiddling/bittwiddling.md"
-  - clang -emit-llvm -c labs/saw/bittwiddling/bittwiddling.c -o labs/saw/bittwiddling/bittwiddling.bc
-  - cryptol -e -c ":l labs/saw/bittwiddling/bittwiddling_answers.md"
-  - "! command -v saw >/dev/null 2>&1 || saw labs/saw/bittwiddling/bittwiddling_answers.saw"
+  - cryptol -e -c ":m labs::saw::Bittwiddling::Bittwiddling"
+  - clang -emit-llvm -c labs/saw/Bittwiddling/bittwiddling.c -o labs/saw/Bittwiddling/bittwiddling.bc
+  - cryptol -e -c ":m labs::saw::Bittwiddling::BittwiddlingAnswers"
+  - "! command -v saw >/dev/null 2>&1 || saw labs/saw/Bittwiddling/BittwiddlingAnswers.saw"
 # Salsa20 lab tests
   - cryptol -e -c ":m labs::Salsa20::Salsa20"
   - cryptol -e -c ":m labs::Salsa20::Salsa20Answers"
   - cryptol -e -c ":m labs::Salsa20::Salsa20Props"
   - cryptol -e -c ":m labs::Salsa20::Salsa20PropsAnswers"
+  - cryptol -e -c ":m labs::Salsa20::spec::Salsa20"
 # CRC lab tests
   - cryptol -e -c ":m labs::CRC::CRC"
   - cryptol -e -c ":m labs::CRC::CRCAnswers"
+  - cryptol -e -c ":m labs::CRC::spec::CRC"
 # LoremIpsum tests
   - cryptol -e -c ":m labs::LoremIpsum::LoremIpsum"
   - cryptol -e -c ":m labs::LoremIpsum::LoremIpsumAnswers"
@@ -70,9 +77,13 @@ script:
 # Project Euler lab tests
   - cryptol -e -c ":m labs::ProjectEuler::ProjectEuler"
   - cryptol -e -c ":m labs::ProjectEuler::ProjectEulerAnswers"
+  - cryptol -e -c ":m labs::ProjectEuler::keylog"
+  - cryptol -e -c ":m labs::ProjectEuler::cipher1"
+  - cryptol -e -c ":m labs::ProjectEuler::cipher2"
 # Crypto Proofs lab tests
   - cryptol -e -c ":m labs::CryptoProofs::CryptoProofs"
   - cryptol -e -c ":m labs::CryptoProofs::CryptoProofsAnswers"
 # Key Wrapping lab tests
   - cryptol -e -c ":m labs::KeyWrapping::KeyWrapping"
   - cryptol -e -c ":m labs::KeyWrapping::KeyWrappingAnswers"
+  - cryptol -e -c ":m labs::KeyWrapping::spec::NISTKeyWrapping"

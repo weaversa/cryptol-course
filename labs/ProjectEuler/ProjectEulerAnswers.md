@@ -1,18 +1,50 @@
 # Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
-Cryptol document --- that is, it can be loaded directly into the Cryptol
-interpreter. Load this module from within the Cryptol interpreter running
-in the `cryptol-course` directory with:
+This lab provides you an opportunity to test your mettle against some
+challenging computational puzzles. These puzzles were selected from
+[Project Euler](https://projecteuler.net/) and can be solved using
+Cryptol's automated theorem proving interface.
+
+## Prerequisites
+
+Before working through this lab, you'll need 
+  * Cryptol to be installed,
+  * this module to load successfully, and
+  * an editor for completing the exercises in this file.
+
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter,
+  * Cryptol's sequence and `Integer` types,
+  * the `:prove` command,
+  * manipulating sequences using `#`, `take`, `split`, `join`,
+    `head`, `tail`, and `reverse`,
+  * writing functions and properties,
+  * sequence comprehensions,
+  * functions with curried parameters,
+  * logical, comparison, arithmetic, indexing, slicing, and
+    conditional operators, and
+  * the `sum` and `carry` operators.
+
+## Skills You'll Learn
+
+By the end of this lab you will be a puzzle master!
+
+## Load This Module
+
+This lab is a
+[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
+document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter
+running in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::ProjectEuler::ProjectEulerAnswers
+Cryptol> :m labs::ProjectEuler::ProjectEulerAnswers
 ```
 
 We start by defining a new module for this lab and importing some accessory
 modules that we will use:
 
-```
+```cryptol
 module labs::ProjectEuler::ProjectEulerAnswers where
 
 import labs::ProjectEuler::cipher1
@@ -30,12 +62,12 @@ import labs::ProjectEuler::cipher2
 > There exists exactly one Pythagorean triplet for which a + b +
 > c = 1000. Find this triple.
 
-```
+```cryptol
 pythagoreantriple : Integer -> Integer -> Integer -> Bit
 property pythagoreantriple a b c =
     a^^2 + b^^2 == c^^2 /\
     a + b + c == 1000   /\
-    a > 0 /\ b > 0 
+    a > 0 /\ b > 0
 ```
 
 
@@ -48,103 +80,80 @@ property pythagoreantriple a b c =
 > included.
 
 (Aside: these numbers are called
-[factorions](https://en.wikipedia.org/wiki/Factorion).
+[factorions](https://en.wikipedia.org/wiki/Factorion))
 
-*Hints*: the factorial function is usually defined recursively, but
+*Hints*: 
+ * the factorial function is usually defined recursively, but
  that tends to make SAT solving difficult. Since you only need to
  calculate the factorial of the numbers 0-9, make your function just
- do a case by case calculation. To get the digital representation of
+ do a case by case calculation. 
+ * To get the digital representation of
  the number, create a function which takes in a number and a list of
  numbers and returns `True` exactly when the list is the base 10
  representation. Finally, it can be shown that the most number of
  digits a factorion can have is 6.
 
-```
-factorial :
-    {b}
-    (Arith b, Cmp b, Literal 362880 b) =>
-    b -> b
+```cryptol
 factorial n = if n == 2 then      2 else
-	      if n == 3 then      6 else
-	      if n == 4 then     24 else
-	      if n == 5 then    120 else
-	      if n == 6 then    720 else
-	      if n == 7 then   5040 else
-	      if n == 8 then  40320 else
-	      if n == 9 then 362880 else
-	      1
+              if n == 3 then      6 else
+              if n == 4 then     24 else
+              if n == 5 then    120 else
+              if n == 6 then    720 else
+              if n == 7 then   5040 else
+              if n == 8 then  40320 else
+              if n == 9 then 362880 else
+              1
 
-powersoften :
-    {a}
-    (Arith a, Literal 10 a) =>
-    [inf]a
 powersoften = [1] # [ 10 * i | i <- powersoften ]
 
-alldigits :
-    {a, b}
-    (fin a, Arith b, Cmp b, Literal 10 b) =>
-    [a]b -> Bit
 alldigits l = [ 0 <= i /\ i < 10 | i <- l ] == ~0
 
-matchdigits :
-    {n, a}
-    (Arith a, Literal 10 a, fin n) =>
-    [n]a -> [n]a
 matchdigits l =
     [ i * t
     | i <- reverse l
     | t <- powersoften ]
 
-formnumber :
-    {a, b}
-    (fin a, Arith b, Literal 10 b) =>
-    [a]b -> b
 formnumber l =
     sum (matchdigits l)
 
-basetenrep :
-    {a, b}
-    (fin a, a >= 1, Arith b, Cmp b, Literal 10 b) =>
-    b -> [a]b -> Bit
 basetenrep n l =
     n == formnumber l /\
     alldigits l       /\
     head l != 0
 
-sumfactorial :
-    {a, b}
-    (fin a, Arith b, Cmp b, Literal 362880 b) =>
-    [a]b -> b
 sumfactorial l = sum [ factorial i | i <- l ]
 
-factorionprop :
-    {a, b}
-    (fin a, a >= 1, Arith b, Cmp b, Literal 362880 b) =>
-    b -> [a]b -> Bit
 property factorionprop n l =
     basetenrep n l       /\
     sumfactorial l == n
 ```
 
-```sh
+```shell
 labs::ProjectEuler::ProjectEulerAnswers> :s satNum=all
-labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop`{1, Integer}
-factorionprop`{1, Integer} 2 [2] = True
-factorionprop`{1, Integer} 1 [1] = True
-labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop`{2, Integer}
+labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [1]Integer -> _
+Satisfiable
+(factorionprop : _ -> [1]Integer -> _) 2 [2] = True
+(factorionprop : _ -> [1]Integer -> _) 1 [1] = True
+(Total Elapsed Time: 0.029s, using "Z3")
+labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [2]Integer -> _ :sat factorionprop : _ -> [2]Integer -> _
 Unsatisfiable
-labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop`{3, Integer}
-factorionprop`{3, Integer} 145 [1, 4, 5] = True
-labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop`{4, Integer}
+(Total Elapsed Time: 0.038s, using "Z3")
+labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [3]Integer -> _
+Satisfiable
+(factorionprop : _ -> [3]Integer -> _) 145 [1, 4, 5] = True
+(Total Elapsed Time: 0.048s, using "Z3")
+labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [4]Integer -> _
 Unsatisfiable
-labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop`{5, Integer}
-factorionprop`{5, Integer} 40585 [4, 0, 5, 8, 5] = True
-labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop`{6, Integer}
+(Total Elapsed Time: 0.136s, using "Z3")
+labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [5]Integer -> _
+Satisfiable
+(factorionprop : _ -> [5]Integer -> _) 40585 [4, 0, 5, 8, 5] = True
+(Total Elapsed Time: 0.404s, using "Z3")
+labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [6]Integer -> _
 Unsatisfiable
+Unsatisfiable
+(Total Elapsed Time: 53.026s, using "Z3")
 ```
-
-*Note*: The runtimes are not being reported correctly so we've removed
- them from the demonstration. Sorry!
 
 
 ### [Problem 36](https://projecteuler.net/problem=36)
@@ -155,7 +164,7 @@ Unsatisfiable
 > and base 2. (Please note that the palindromic number, in either
 > base, may not include leading zeros.)
 
-```
+```cryptol
 carrymult :
     {a}
     (fin a) =>
@@ -185,7 +194,7 @@ property doublepalindrome x l =
       nocarryprods = [ carrymult i p | i <- l | p <- powersoften ] == 0
 ```
 
-```sh
+```shell
 labs::ProjectEuler::ProjectEulerAnswers> :s base=10
 labs::ProjectEuler::ProjectEulerAnswers> :s satNum=all
 labs::ProjectEuler::ProjectEulerAnswers> :sat doublepalindrome`{3, 9}
@@ -215,7 +224,7 @@ doublepalindrome`{3, 10} 717 [7, 1, 7] = True
 >
 > Find at least two 0 to 9 pandigital numbers with this property.
 
-```
+```cryptol
 listhasdigit :
     {a, b}
     (fin a, a >=1, Cmp b) =>
@@ -250,7 +259,7 @@ pandigital n l =
       n890 = formnumber (l @@ ([7,8,9] : [3][16]))
 ```
 
-```sh
+```shell
 labs::ProjectEuler::ProjectEulerAnswers> :s satNum=all
 labs::ProjectEuler::ProjectEulerAnswers> :s base=10
 labs::ProjectEuler::ProjectEulerAnswers> :sat pandigital
@@ -271,7 +280,7 @@ pandigital 1460357289 [1, 4, 6, 0, 3, 5, 7, 2, 8, 9] = True
 > Find the smallest positive integer, x, such that 2x, 3x, 4x, 5x, and
 > 6x, all contain the same digits.
 
-```
+```cryptol
 twolistssamedigits :
     {a, b}
     (fin a, a >=1, Cmp b) =>
@@ -279,10 +288,10 @@ twolistssamedigits :
 twolistssamedigits l1 l2 =
     [ listhasdigit l1 i | i <- l2 ] == ~0
 
-productdigits :
-    {a, b}
-    (fin a, a >= 1, Cmp b, Arith b, Literal 10 b) =>
-    b -> [6][a]b -> Bit
+//productdigits :
+//    {a, b}
+//    (fin a, a >= 1, Cmp b, Arith b, Literal 10 b) =>
+//    b -> [6][a]b -> Bit
 property productdigits n ls =
     basetenrep n l1                 /\
     alltwolists                     /\
@@ -298,7 +307,7 @@ property productdigits n ls =
                | i <- [2..6] ] == ~0
 ```
 
-```sh
+```shell
 labs::ProjectEuler::ProjectEulerAnswers> :sat productdigits`{6, [32]}
 productdigits`{6, [32]}
   142857
@@ -317,7 +326,7 @@ productdigits`{6, [32]}
 > to ASCII, then XOR each byte with a given value, taken from a secret
 > key. The advantage with the XOR function is that using the same
 > encryption key on the cipher text, restores the plain text; for
-> example, 65 ⊕ 42 = 107, then 107 ⊕ 42 = 65.
+> example, 65 ^ 42 = 107, then 107 ^ 42 = 65.
 >
 > For unbreakable encryption, the key is the same length as the
 > plaintext message, and the key is made up of random bytes. The user
@@ -343,7 +352,7 @@ Note: cipher1.cry contains a different cipher encrypted under a
 different key from the original. The original Project Euler problem
 can be found in cipher2.cry.
 
-```
+```cryptol
 containsWords :
     {a, b}
     (fin a, a >= 2, fin b) =>
@@ -351,11 +360,11 @@ containsWords :
 containsWords l ws = [ checkword w | w <- ws ] == ~0
   where
     checkword w = [ c0 == w@0 /\
-    	       	    c1 == w@1 /\
-		    c2 == w@2
-		  | c0 <- l
-		  | c1 <- tail l
-		  | c2 <- tail (tail l) ] != 0
+                    c1 == w@1 /\
+                    c2 == w@2
+                  | c0 <- l
+                  | c1 <- tail l
+                  | c2 <- tail (tail l) ] != 0
 
 isLowercase : Char -> Bit
 isLowercase c = c >= 0x61 /\ c <= 0x7a
@@ -385,7 +394,7 @@ decrypt s key = s ^ (take ks)
     keys = [ key ] # [ k | k <- keys ]
 ```
 
-```sh
+```shell
 labs::ProjectEuler::ProjectEulerAnswers> :s ascii=on
 labs::ProjectEuler::ProjectEulerAnswers> :sat XORtowords cipher1
 XORtowords cipher1 "abe" = True
@@ -405,25 +414,25 @@ labs::ProjectEuler::ProjectEulerAnswers> decrypt cipher1 "aba"
 > The text file, keylog.cry, contains fifty successful login attempts.
 >
 > Given that the three characters are always asked for in order,
-> analyse the file so as to determine the shortest possible secret
+> analyze the file so as to determine the shortest possible secret
 > passcode of unknown length.
 
-```
+```cryptol
 passcode :
     {a}
     (fin a, a >= 1) =>
     [a]Integer -> Bit
 passcode l = [ loop l kl != 0 | kl <- keylog ] == ~0
-  where 
+  where
     loop ll kll = [ [ ll@(i:[a]), ll@j, ll@k] == kll /\
-	            i < j                            /\
-	            j < k
-	          | i <- [0..a-1],
-	     	    j <- [0..a-1],
-	   	    k <- [0..a-1] ]
+                    i < j                            /\
+                    j < k
+                  | i <- [0..a-1],
+                    j <- [0..a-1],
+                    k <- [0..a-1] ]
 ```
 
-```sh
+```shell
 labs::ProjectEuler::ProjectEulerAnswers> :s base=10
 labs::ProjectEuler::ProjectEulerAnswers> :sat passcode`{1}
 Unsatisfiable
@@ -451,12 +460,12 @@ passcode`{8} [7, 3, 1, 6, 2, 8, 9, 0] = True
 > EXTRA CHALLENGE:
 > What about five-digit numbers? Other numbers of digits?
 
-```sh
+```shell
 labs::ProjectEuler::ProjectEulerAnswers> :sat \(x : [32]) -> x > 999 /\ x ^^ 2 % 10000 == x
 (\(x : [32]) -> x > 999 /\ x ^^ 2 % 10000 == x) 9376 = True
 ```
 
-```
+```cryptol
 squaredrop :
     {a}
     (fin a, a>=2, a%2 == 0) =>
@@ -466,7 +475,7 @@ squaredrop n l =
     formnumber (drop`{back = ((a)/2)} l) == n
 ```
 
-```sh
+```shell
 labs::ProjectEuler::ProjectEulerAnswers> :sat squaredrop`{8}
 squaredrop`{8} 9376 [8, 7, 9, 0, 9, 3, 7, 6] = True
 ```

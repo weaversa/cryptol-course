@@ -1,4 +1,4 @@
-# Bit Twiddling Exercises.
+# Introduction
 
 Sean Eron Anderson, a former graduate student at Stanford, collected a
 large set of [Bit Twiddling
@@ -24,6 +24,57 @@ already exists in Cryptol), and they should all be relatively easy to
 read. We also included some properties to help test your code. After
 you have completed this code, you should write (from scratch) a
 SAWscript to compare the two.
+
+## Prerequisites
+
+Before working through this lab, you'll need
+  * Cryptol to be installed,
+  * the Software Analysis Workbench (SAW) to be installed,
+  * this module to load successfully, and
+  * an editor for completing the exercises in this file.
+  
+A pre-compiled bitcode file is provided so that you don't need to
+compile the sample C code. If you want to compile the C code yourself,
+you'll need to install the [Clang C
+compiler](https://clang.llvm.org/). **SAW usually lags behind Clang
+releases. Check here
+(https://github.com/GaloisInc/saw-script#notes-on-llvm) for a list of
+supported versions of Clang.**
+
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter,
+  * Cryptol's sequence types,
+  * manipulating sequences using `#`, `take`, `split`, `join`, `head`,
+    `tail`, and `reverse,
+  * writing functions and properties,
+  * sequence comprehensions,
+  * functions with curried parameters,
+  * logical, comparison, arithmetic, indexing, slicing, and
+    conditional operators, and
+  * C programming.
+
+## Skills You'll Learn
+
+By the end of this lab you will gain experience with
+  * writing functions and properties, and
+  * the Software Analysis Workbench.
+
+## Load This Module
+
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
+Cryptol document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter running
+in the `cryptol-course` directory with:
+
+```shell
+Cryptol> :m labs::saw::Bittwiddling::Bittwiddling
+```
+
+We start by defining a new module for this lab:
+
+```cryptol
+module labs::saw::Bittwiddling::Bittwiddling where
+```
 
 ## Parity Exercise
 
@@ -51,12 +102,12 @@ and one for a double word (64 bits).
 word. Use the three properties below to help you verify that your
 function works correctly.
 
-```
+```cryptol
 parity : {n} (fin n) => [n] -> Bit
 parity w = undefined
 ```
 
-```
+```cryptol
 property parity8bitProp =
     parity 0x01 == True  /\
     parity 0x00 == False /\
@@ -64,7 +115,7 @@ property parity8bitProp =
     parity 0xef == True
 ```
 
-```
+```cryptol
 property parity32bitProp =
     parity 0x00000001 == True  /\
     parity 0x00000000 == False /\
@@ -72,7 +123,7 @@ property parity32bitProp =
     parity 0x7fffffff == True
 ```
 
-```
+```cryptol
 property parity64bitProp =
     parity 0x0000000000000001 == True  /\
     parity 0x0000000000000000 == False /\
@@ -86,12 +137,12 @@ property parity64bitProp =
 example, `0b10101010` should map to `0b01010101`. Use the property
 below to verify that your function works correctly.
 
-```
+```cryptol
 reverseByte : [8] -> [8]
 reverseByte b = undefined
 ```
 
-```
+```cryptol
 property reverseByteProp =
     reverseByte 0x01 == 0x80 /\
     reverseByte 0xaa == 0x55
@@ -106,12 +157,12 @@ zero byte (the second byte) but `0x10011111` does not (the first byte
 is `0x10` while the second byte is `0x01`). Use the property below to
 help you verify that your function works correctly.
 
-```
+```cryptol
 anyZeroByte : {n} (fin n) => [n*8] -> Bit
 anyZeroByte w = undefined
 ```
 
-```
+```cryptol
 property anyZeroByteProp =
     anyZeroByte 0x10011001 == False /\
     anyZeroByte 0x00112233 == True

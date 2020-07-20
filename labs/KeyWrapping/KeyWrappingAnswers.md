@@ -1,15 +1,61 @@
 # Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming) 
+Key Wrapping is an important technique for storing and transmitting
+cryptographic keys. This module introduces a family of NIST's general
+purpose Key Wrapping algorithms.
+
+## Prerequisites
+
+Before working through this lab, you'll need
+  * Cryptol to be installed,
+  * this module to load successfully, and
+  * an editor for completing the exercises in this file.
+  
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter,
+  * Cryptol's sequence and `Integer` types,
+  * demoting types variables to value variables,
+  * the `:prove` command,
+  * manipulating sequences using `#`, `take`, `drop`, `split`, `join`,
+    `head`, and `tail`,
+  * writing functions and properties,
+  * sequence comprehensions,
+  * functions with curried parameters,
+  * logical, comparison, arithmetic, and conditional operators.
+
+## Skills You Will Learn
+
+By the end of this lab you will have read through a NIST standard and
+implemented a few real-world block cipher modes for authenticated
+encryption and decryption.
+
+You'll also gain experience with
+  * type parameters and type constraints,
+  * pattern matching,
+  * the use of pre-written cryptographic routines from other modules,
+  * navigating some nuances of Cryptol's type checking system, and
+  * the `foldl` operator.
+
+## Load This Module
+
+This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::KeyWrapping::KeyWrappingAnswers
+Cryptol> :m labs::KeyWrapping::KeyWrappingAnswers
 ```
 
-This lab will take the student through developing wrapping algorithms
+We start by defining a new module for this lab:
+
+```cryptol
+module labs::KeyWrapping::KeyWrappingAnswers where
+```
+
+# Writing Key Wrapping Routines in Cryptol
+
+This lab takes the student through developing wrapping algorithms
 described in [NIST Special Publication
 800-38F](https://csrc.nist.gov/publications/detail/sp/800-38f/final)
 "Recommendation for Block Cipher Modes of Operation: Methods for Key
@@ -19,7 +65,7 @@ document open side-by-side.
 Here is the abstract from this document:
 
 > This publication describes cryptographic methods that are approved
-> for “key wrapping,” i.e., the protection of the confidentiality and
+> for "key wrapping," i.e., the protection of the confidentiality and
 > integrity of cryptographic keys. In addition to describing existing
 > methods, this publication specifies two new, deterministic
 > authenticated-encryption modes of operation of the Advanced
@@ -35,13 +81,6 @@ subcomponents. In fact each of these is a family of algorithms: `KW`
 is composed of an *authenticated encryption* component `KW-AE` and an
 *authenticated decryption* component `KW-AD`; similarly for `TKW` and
 `KWP`.
-
-Since we are creating a new module, the first line needs to be the
-module definition:
-
-```
-module labs::KeyWrapping::KeyWrappingAnswers where
-```
 
 # Preliminaries
 
@@ -94,7 +133,7 @@ primitives. The algorithms are found under the `specs/` directory in
 `specs/Primitive/Symmetric/Cipher/Block` and we import them into our
 module with the following:
 
-```
+```cryptol
 import specs::Primitive::Symmetric::Cipher::Block::AES_parameterized as AES
 import specs::Primitive::Symmetric::Cipher::Block::TripleDES as TDEA
 ```
@@ -113,20 +152,20 @@ a sense of the overall organization:
      good background if we were trying to decide *how* to use these
      algorithms; however we will not need to reference this
      information to build our specifications.
- 
+
  Feel free to skim through this material or skip for now.
 
  * **Section 4, Definitions and Notation** -- This section contains
      important definitions, acronyms, variables, and operations used
      in this standard. Let's scan through this to see if we find
      anything useful...
- 
+
 Section `4.3` provides some constants `ICV1`, `ICV2`, and `ICV3` which
 are defined to have special values. Since we are working inside of a
 module we can define these variables without fear of polluting another
 namespace by placing them in a `private` code block:
 
-```
+```cryptol
 private
     ICV1 = 0xA6A6A6A6A6A6A6A6
     ICV2 = 0xA65959A6
@@ -145,22 +184,22 @@ to us in some fashion or another.
      out, is simply a 64-bit word when used in conjunction with AES,
      and a 32-bit word when used in conjunction with TDEA) and Table 1
      that provides limits on the size of the input and outputs.
- 
+
  * **Section 6, Specifications of KW and KWP** -- This section
      specifies the two families of algorithms `KW` and `KWP`. This
      section is the reference we will use for the bulk of this lab as
      we work through building a specification for `KW`.
- 
+
  * **Section 7, Specification of TKW** -- This section specifies the
      final major algorithm `TKW`. It is structurally very similar to
      `KW`, but there are some differences that warrant its own section
      in the standards.
- 
+
  * **Section 8, Conformance** -- This section has information about
      how implementations may claim conformance to the algorithms
      described in this standard.
- 
- 
+
+
 # Formal Specification of `KW`
 
 `KW` is a family of algorithms comprised of `KW-AE` and `KW-AD`. We
@@ -178,7 +217,7 @@ which we will have to model in our formal specification:
 
   * A **Key Encryption Key (KEK)** `K` and
   * A **designated cipher function** `CIPHk`, which operates on 128-bit blocks
-  
+
 The document defines a *semiblock* to be a block with half the width
 of the underlying block cipher, `CIPHk`. Since `KW-AE` uses `AES` as
 its `CIPHk`, semiblocks will be 64-bit blocks. Also notice that the
@@ -196,9 +235,9 @@ which will contain the following components:
 Putting these together we have our preliminary type signature:
 
 ```comment
-W_prelim : 
-  {n} 
-  (fin n) => 
+W_prelim :
+  {n}
+  (fin n) =>
   ([128] -> [128]) -> [n][64] -> [n][64]
 ```
 
@@ -216,10 +255,10 @@ have to make two more assumptions about `n`.
    `WStep`. Of course, `2^^54` is less than `6 * (2^^54 - 1)` which is
    less than `2^^64`, so the tighter lower bound from Table 1 is
    acceptable.
- 
+
 ```comment
-W : 
-  {n} 
+W :
+  {n}
   (fin n, 3 <= n, n <= 2^^54) =>
   ([128] -> [128]) -> [n][64] -> [n][64]
 ```
@@ -239,7 +278,7 @@ counter found in step 2 of `Algorithm 1`.
   `A'` and `Rs'` found in the body of the function. *Hint*: R2 mentioned
   in the spec is actually the first (`head`) semi-block from Rs.
 
-```
+```cryptol
 WStep:
     {n}
     (fin n, n >= 3) =>
@@ -310,8 +349,8 @@ definition for `W`.
 
 **EXERCISE**: Complete the definition of `W` below by filling in the
   function skeleton provided.
- 
-```
+
+```cryptol
 W :
     {n}
     (fin n, 3 <= n, n <= 2^^54) =>
@@ -332,7 +371,7 @@ algorithm.
   module. Also, notice that the bounds from Table 1 (Section 5.3.1,
   page 10) are included as type constraints.
 
-```
+```cryptol
 KWAE :
     {n}
     (fin n, 2 <= n, n < 2^^54) =>
@@ -373,7 +412,7 @@ special attention to the order of the index variable for the main
 loop, the sequence of operations, and how the sequence of `Rs`
 transforms:
 
-```
+```cryptol
 WStep' :
     {n}
     (fin n, n >= 3) =>
@@ -400,7 +439,7 @@ having Cryptol `:prove` the properties `WStep'Prop` and
 `W'Prop`. Your output should look something like the following:
 
 ```shell
-Cryptol> :prove WStep'Prop 
+Cryptol> :prove WStep'Prop
 Q.E.D.
 (Total Elapsed Time: 0.079s, using Z3)
 Cryptol> :prove W'Prop
@@ -412,7 +451,7 @@ These two properties state that for a fixed, dummy CIPHk and S of
 length 3 semiblocks, `WStep` and `WStep'` are inverses and `W` and
 `W'` are inverses. Here are the definitions of these properties:
 
-```
+```cryptol
 property WStep'Prop ARs t =
     WStep'`{3} (\a -> a-1) (WStep (\a -> a+1) ARs t) t == ARs
 
@@ -438,7 +477,7 @@ authenticate.
 
 *Hint:* Review the Cryptol primitives `head` and `tail`.
 
-```
+```cryptol
 KWAD :
     {n}
     (fin n, 2 <= n, n < 2^^54) =>
@@ -457,8 +496,8 @@ least for a dummy CIPHk and P of length 3 semiblocks) using the
 by using the property `KWADTests` (this is defined later on
 in this document).
 
-```
-property KWAEInvProp S = 
+```cryptol
+property KWAEInvProp S =
     KWAD`{3} (\a -> a-1) (KWAE (\a -> a+1) S) == (False, S)
 ```
 
@@ -502,7 +541,7 @@ You can test your work with the `TKWAETests` and `TKWADTests`
 properties. Though, if you want to use them, you'll have to uncomment
 them after finishing your work here. Good luck!
 
-```
+```cryptol
 TWStep:
     {n}
     (fin n, n >= 3) =>
@@ -512,7 +551,7 @@ TWStep CIPHk ([A] # Rs) t = [A'] # Rs'
     [MSB, LSB] = split (CIPHk (A # head Rs))
     A'         = MSB ^ t
     Rs'        = tail Rs # [LSB]
-    
+
 TW :
     {n}
     (fin n, 3 <= n, n <= 2^^28) =>
@@ -584,7 +623,7 @@ want to pad it to fit into some number of 32-bit words. Well, the next
 largest multiple of `32` is `64`, and `64 - 37` is `27`, so we'll need
 to pad with `27` zeros. We can demonstrate this using Cryptol:
 
-```
+```cryptol
 bits = 0b1001100101110011111010000001110011011 : [37]
 bits_padded = bits # (0 : [27]) : [64]
 ```
@@ -606,7 +645,7 @@ said another way, we are **short** `2` apples.
 As it turns out, Cryptol has such a shortage operator (the ceiling
 modulus), namely, `%^`
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrapping> :h (%^)
 
     primitive type (%^) : # -> # -> #
@@ -625,7 +664,7 @@ So, to revisit our padding example above, if we have a bitvector of
 length `37` and it needs to be padded to a multiple of `32`, we're
 short `27`, as demonstrated here using Cryptol:
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrapping> `(37 %^ 32)
 27
 ```
@@ -633,7 +672,7 @@ labs::KeyWrapping::KeyWrapping> `(37 %^ 32)
 Now we can revisit creating a function that pads any size input
 into a bitvector with a size that is a multiple of 32.
 
-```
+```cryptol
 pad32 : {a} (fin a) => [a] -> [a + a %^ 32]
 pad32 x = x # 0
 ```
@@ -672,7 +711,7 @@ use that instead.
   standard and complete the definition of `KWPAEPad` below by filling
   in the function skeleton provided with appropriate logic.
 
-```
+```cryptol
 KWPAEPad :
     {k, l}               // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
@@ -685,8 +724,8 @@ KWPAEPad P = S
 
 ## Concept 2: Oddly Typed `if-then-else` Statements
 
-Sometimes, though not often, cryptographic algorithms will contain if
-statements where the `then` and `else` branches return different
+Sometimes, though not often, cryptographic algorithms will contain
+`if` statements where the `then` and `else` branches return different
 types. You were exposed to this a bit already in the [Salsa20
 lab](../Salsa20/Salsa20.md). First off, this is always frustrating to
 deal with in Cryptol, and we want you to know that we feel your pain
@@ -697,7 +736,7 @@ that is likely only learned through trial and error.
 To dig into this a bit, let's consider the type of a generic
 `if-then-else` statement
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrapping> :t \(c, t, e) -> if c then t else e
 (\(c, t, e) -> if c then t else e) : {a} (Bit, a, a) -> a
 ```
@@ -713,7 +752,7 @@ thing, we can either give up, or try and unify the two cases.
 Here is a silly example that closely models the behavior we'll see in
 `KWP-AE` and `KWP-AD`:
 
-```
+```cryptol
 g : [32] -> [32]
 g x = x + 1
 
@@ -737,7 +776,7 @@ values. If `a > 0x30`, `f` returns `h x` where `h` takes and returns
 only 64-bit values. If we try to load this function into Cryptol we
 see:
 
-```sh
+```shell
 [error] at labs/KeyWrapping/KeyWrapping.md:663:1--666:14:
   Failed to validate user-specified signature.
     in the definition of 'f', at labs/KeyWrapping/KeyWrapping.md:663:1--663:2,
@@ -770,15 +809,15 @@ This message tells us that `a`, the length of our input, has to
 simultaneously be both `64` and `32` and (looking at the line numbers)
 that these constraints come from the types of `g` and `h`.
 
-In support of fixing the function, notice that since since `g` always
+In support of fixing the function, notice that since `g` always
 takes and returns 32-bit values, we have to shrink `x` from `a` bits
 to `32` bits, and widen the result up to `48` bits. And, since `h`
 always takes and returns 64-bit values, we have to widen `x` from `a`
-bits to `64` bits, and shrink the result back down to `48` bits To
+bits to `64` bits, and shrink the result back down to `48` bits. To
 help us do this resizing work, we'll introduce `shrink` and `widen`
 functions.
 
-```
+```cryptol
 widen : {a, b} (fin a, fin b) => [b] -> [a + b]
 widen a = 0 # a
 
@@ -790,7 +829,7 @@ shrink a = drop a
 bits. `shrink` takes any sized input and removes `0` or more bits from
 the front. Using these two functions, we can fix our `f` from above:
 
-```
+```cryptol
 f : {a} (32 <= a, a <= 64) => [a] -> [48]
 f x = if `a <= 0x30 then
         widen (g (shrink x))
@@ -801,7 +840,7 @@ f x = if `a <= 0x30 then
 And here we test that `f` correctly calls `g` and `h` (which increment
 and decrement by 1, respectively).
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrapping> f (10 : [37])
 11
 labs::KeyWrapping::KeyWrapping> f (10 : [53])
@@ -820,14 +859,14 @@ With those two considerations firmly under our belt, we can now tackle
   above to create `S`. Use the `shrink` and `widen` functions to
   assist in resizing `S` and the function outputs on the `then` and
   `else` branches of line 5.
-  
+
 *Hint:* You'll notice that we needed to pull in the type variable `n`
 and type constraints from `W` and relate `n` and `l` (the type of both
 `S` and `C`). It may also be necessary to tell `W` that our type
 variable `n` is the same type variable that it uses. This can be
 achieved by calling `W` like so: ```W`{n=n}```.
 
-```
+```cryptol
 KWPAE :
     {k, l, n}            // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
@@ -861,7 +900,7 @@ previously defined `W'`.
   FAIL can be a Boolean expression, that is, it does not need to be an
   `if-then-else` statement.
 
-```
+```cryptol
 KWPADUnpad :
     {k, l}               // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
@@ -880,8 +919,8 @@ KWPADUnpad S = (FAIL, split P)
            PAD   != 0
 ```
 
-```
-KWPAD : 
+```cryptol
+KWPAD :
     {k, l, n}            // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
     , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C
@@ -915,7 +954,7 @@ number of semiblocks of `C` should be `2^^29`.
 Asking Cryptol for the type of `KWPAE` after plugging in `2^^32-1` for
 `k` gives an `l` of `34359738432`:
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1}
 KWPAE`{k = 2 ^^ 32 -
            1} : ([128] -> [128]) -> [4294967295][8] -> [34359738432]
@@ -924,14 +963,14 @@ KWPAE`{k = 2 ^^ 32 -
 Well, what's `34359738432`? Is it `2^^29` 64-bit words? Let's first
 check how many 64-bit words it is. Here's one way:
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrappingAnswers> :t \(a : [34359738432]) -> groupBy`{64} a
 (\(a : [34359738432]) -> groupBy`{64} a) : [34359738432] -> [536870913][64]
 ```
 
 Great...now what's `536870913`? Is it `2^^29`?
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrappingAnswers> 2^^29 : Integer
 536870912
 ```
@@ -939,7 +978,7 @@ labs::KeyWrapping::KeyWrappingAnswers> 2^^29 : Integer
 Woh! Its not. `536870913` is `2^^29 + 1`. Let's double check this ---
 here is a command that tests the `2^^29` upper bound from Table 1:
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29)}
 
 [error] at <interactive>:1:1--1:6:
@@ -948,7 +987,7 @@ labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29)
 
 And here is a command that tests the bound we just found, `2^^29 + 1`.
 
-```sh
+```shell
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29 + 1)}
 KWPAE`{k = 2 ^^ 32 - 1,
        l = 64 *
@@ -959,7 +998,6 @@ KWPAE`{k = 2 ^^ 32 - 1,
 Well folks, it appears we (...well, Cryptol) just found a bug (albeit
 a small one) in one of NIST's most well read crypto specs. Thanks
 sticklers!
-
 
 # Test Vectors
 
@@ -973,7 +1011,7 @@ Recall that you can check individual properties with the `:check`
 command in the interpreter.  Here are some test vectors from [RFC
 3394](rfc3394.pdf) that are useful for testing `KW-AE` and `KW-AD`.
 
-```
+```cryptol
 TestKWAE :
    {a, n}
    (a >= 2, 4 >= a, n >= 2, 2^^54-1 >= n) =>
@@ -992,26 +1030,10 @@ property KWAETests =
     (TestKWAE (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F,
                        0x1011121314151617, 0x18191A1B1C1D1E1F ])
                (join [ 0x0011223344556677, 0x8899AABBCCDDEEFF ]) ==
-     join [ 0x64e8c3f9ce0f5ba2, 0x63e9777905818a2a, 0x93c8191e7d6e8ae7 ]) /\
-    (TestKWAE (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F, 0x1011121314151617 ])
-               (join [ 0x0011223344556677, 0x8899AABBCCDDEEFF, 0x0001020304050607 ]) ==
-     join [ 0x031d33264e15d332, 0x68f24ec260743edc,
-            0xe1c6c7ddee725a93, 0x6ba814915c6762d2 ]) /\
-    (TestKWAE (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F,
-                       0x1011121314151617, 0x18191A1B1C1D1E1F ])
-               (join [ 0x0011223344556677, 0x8899AABBCCDDEEFF, 0x0001020304050607 ]) ==
-     join [ 0xa8f9bc1612c68b3f, 0xf6e6f4fbe30e71e4,
-            0x769c8b80a32cb895, 0x8cd5d17d6b254da1 ]) /\
-    (TestKWAE (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F,
-                       0x1011121314151617, 0x18191A1B1C1D1E1F ])
-               (join [ 0x0011223344556677, 0x8899AABBCCDDEEFF,
-                       0x0001020304050607, 0x08090A0B0C0D0E0F ]) ==
-     join [ 0x28c9f404c4b810f4, 0xcbccb35cfb87f826,
-            0x3f5786e2d80ed326, 0xcbc7f0e71a99f43b,
-            0xfb988b9b7a02dd21 ])
+     join [ 0x64e8c3f9ce0f5ba2, 0x63e9777905818a2a, 0x93c8191e7d6e8ae7 ])
 ```
 
-```
+```cryptol
 TestKWAD :
    {a, n}
    (a >= 2, 4 >= a, n >= 2, 2^^54-1 >= n) =>
@@ -1031,15 +1053,6 @@ property KWADTests =
                       0x1011121314151617, 0x18191A1B1C1D1E1F ])
               (join [ 0x64e8c3f9ce0f5ba2, 0x63e9777905818a2a, 0x93c8191e7d6e8ae7 ]) ==
      (False, join [ 0x0011223344556677, 0x8899AABBCCDDEEFF ])) /\
-    (TestKWAD (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F, 0x1011121314151617 ])
-              (join [ 0x031d33264e15d332, 0x68f24ec260743edc,
-                      0xe1c6c7ddee725a93, 0x6ba814915c6762d2 ]) ==
-     (False, join [ 0x0011223344556677, 0x8899AABBCCDDEEFF, 0x0001020304050607 ])) /\
-    (TestKWAD (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F,
-                      0x1011121314151617, 0x18191A1B1C1D1E1F ])
-              (join [ 0xa8f9bc1612c68b3f, 0xf6e6f4fbe30e71e4,
-                      0x769c8b80a32cb895, 0x8cd5d17d6b254da1 ]) ==
-     (False, join [ 0x0011223344556677, 0x8899AABBCCDDEEFF, 0x0001020304050607 ])) /\
     (TestKWAD (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F,
                       0x1011121314151617, 0x18191A1B1C1D1E10 ])
               (join [ 0x28c9f404c4b810f4, 0xcbccb35cfb87f826,
@@ -1049,7 +1062,7 @@ property KWADTests =
                    0x3a6d614e94ba1ac5, 0xfe957c5963100091]))
 ```
 
-```
+```cryptol
 TestTKWAE :
    {n}
    (n >= 2, 2^^28-1 >= n) =>
@@ -1061,13 +1074,10 @@ TestTKWAE (k0#k1#k2) pt = join ct
 property TKWAETests =
     (TestTKWAE 0x12b84c663120c196f8fc17428bc86a110d92cc7c4d3cb695
                0xef7da3da918d0679
-            == 0x7a72bbca3aa323aa1ac231ba) /\
-    (TestTKWAE 0xee9e19d319e4669d46fafc47f266277788017de0e38a4eaf
-               0xd96075b0ee4525fe0bbe2abbd49d4d68e15a37c2bb11bd79a491e13ed3d32a48aef0d1fbcd9a65c7e0bf3cbba92366cb23b4b0876d509539df8f6dd8edb5eb9d8487ec42497b579b8a660a95455063bb7703ea6d57717c7d3625c86e3162c78b13068605e9e1c6ebed9d8f8b2b72784de432bb1ae596d4210538d4ca8577878ec42fa25694bd12a0a27423c62dd0e35a2781b8fecab7066871f4f4d506d41fceb63b669558c1df622259eaefd33bbd6af871798ca98d469a6c5a8bef284318b9692263b7c84c1d352bea16c3ee40b86061aa99d7e60013d618f579111f1e03685ede51b9fe7cde04416718db5f7d322a6f8547c354c8ee9a8f176de5f090e08e
-            == 0x61a9e9ec40462f6915179fef341b41cfcebe70f4539cc8babb6d6083905ead8f62f1e1cebf8045a7930812acd93227c09be10758dccd1afdb997931adeeb5e39749aaec607bc8c0346c0d864e65f61a4d7de4c3aea6cbcd9ff5c7664e705b441d8bce4b44ffbfb796a81e491eab7b817382ff87c8f6ce855ab80e234432ed7cf3d7bfddc15406d4b07fd0455c23669306634fccefb0cef69f693ec6c075912ec23342116d28453f7e1d2df05585d9a03e6e8ed3b8e2e0a95394b19779e26f845245c0806f7f619c618889caa9167f8908c0325923a1118cdd2c0a48b8b2b224c5faec7beb7d6a7d54e4212783f01661fb570ab1aa2589a6e922c9c3accc308b8088b601e)
+            == 0x7a72bbca3aa323aa1ac231ba)
 ```
 
-```
+```cryptol
 TestTKWAD :
    {n}
    (n >= 2, 2^^28-1 >= n) =>
@@ -1082,13 +1092,10 @@ property TKWADTests =
             == (False, 0x2ffd56320f1dff99)) /\
     ((TestTKWAD 0x8476d056582e322d93ab9919086798ba48d03eddf77803e5
                0x2c9bf0131cf486402422b8ef).0
-            == True) /\
-    (TestTKWAD 0xee9e19d319e4669d46fafc47f266277788017de0e38a4eaf
-               0x61a9e9ec40462f6915179fef341b41cfcebe70f4539cc8babb6d6083905ead8f62f1e1cebf8045a7930812acd93227c09be10758dccd1afdb997931adeeb5e39749aaec607bc8c0346c0d864e65f61a4d7de4c3aea6cbcd9ff5c7664e705b441d8bce4b44ffbfb796a81e491eab7b817382ff87c8f6ce855ab80e234432ed7cf3d7bfddc15406d4b07fd0455c23669306634fccefb0cef69f693ec6c075912ec23342116d28453f7e1d2df05585d9a03e6e8ed3b8e2e0a95394b19779e26f845245c0806f7f619c618889caa9167f8908c0325923a1118cdd2c0a48b8b2b224c5faec7beb7d6a7d54e4212783f01661fb570ab1aa2589a6e922c9c3accc308b8088b601e
-            == (False, 0xd96075b0ee4525fe0bbe2abbd49d4d68e15a37c2bb11bd79a491e13ed3d32a48aef0d1fbcd9a65c7e0bf3cbba92366cb23b4b0876d509539df8f6dd8edb5eb9d8487ec42497b579b8a660a95455063bb7703ea6d57717c7d3625c86e3162c78b13068605e9e1c6ebed9d8f8b2b72784de432bb1ae596d4210538d4ca8577878ec42fa25694bd12a0a27423c62dd0e35a2781b8fecab7066871f4f4d506d41fceb63b669558c1df622259eaefd33bbd6af871798ca98d469a6c5a8bef284318b9692263b7c84c1d352bea16c3ee40b86061aa99d7e60013d618f579111f1e03685ede51b9fe7cde04416718db5f7d322a6f8547c354c8ee9a8f176de5f090e08e))
+            == True)
 ```
 
-```
+```cryptol
 TestKWPAE :
    {a, k, l, n}
    ( a >= 2, 4 >= a
@@ -1104,22 +1111,7 @@ TestKWPAE k pt = ct
 property KWPAETests =
     (TestKWPAE 0x6decf10a1caf8e3b80c7a4be8c9c84e8
                0x49
-            == 0x01a7d657fc4a5b216f261cca4d052c2b) /\
-    (TestKWPAE 0x76f37eac56a4830945102ea2548daf4a
-               0x236fe4754222b8d365ff2c86e5d5e7a37704361b9dde550d6f7d9efc19b0ff2171db8b7979e404d9a80fdf57c122108d83d09b9479d0c6c210587c0c6e5efc8356e50dcd4f87e25518ee8d3fe72d4b357b4329c009cf1a838d2e022c97dfe9cff9b55df5262bbab5f48cc5f7a51e59e1ab4ab08463dbb7b43c3fe65372d2453bba96c245803df76f104246e01a5bc31053827c784fee50d0111423704985f1db8dad03aa9105e76cc509557055d20f34d78c7245d8003521cae7a74d5a9de9db947f3669f41bc0581c6c27fc3aa6b90ede76a5449a5359eca187d418ee4949ffc415543fab451eb71b3b92e43450a943683bdb5bb16b06b12ef356e061206078c8c4d69b0ce945ee8cd6d5008400c4460f74e3a1f26d9e89034a190cabf98b84c0cc35d4540ce41a5abd628179ec2d087b82f4d3582cfd432a0cfcbb0684c6512ff4900979e3f28f3ff4218a101817883a2de60f35262b6f82173242d06a01cff339abe314d8a7c1ed80e721947420a5e5e5adf71d2b39abb0e31b2bfb1f4ef9bc9cb60f2930b48a654612f49a2d52537cd966eb9ac8f23d32dc10167c2ba21e8d3ffcc91f0e2aef73f7583a30c2d1417a4e94f30fb1f4626e95a63943a68fc615e122b39aeb6be5b8b55580c78e6449ad09ba86d5dde97c4ab9853fa0f98edc675d23e192cbc96f0d678c7e3f6de0292a26d939aa97ae98b44c3b16f53c55f1
-            == 0xef9c70fdbdab68d16246bbf93088cae29efa85cb4c5b00b4e6743e9cbd7d714229ef9f072d42f441ac66eb2ec1e71bec35c2555b2ea961403ac9d0fa8b3a06b3a0f897afea0e7317caf82033e2de04bf6cdb5269a5d3cbeecc2e89148d75dfadc31430c1b66cc285347eff43e8c91c6b245fcbb65cc33b599c623b1823c79af39b0bb98440595157a90fe045cbcd6fd2c240869eb01d867d0eea7cc08deb081ce488e767c1fb441020db9416e0887e323dc7cb12cf26a5c6be4a9abbc99c207a02836f11f32441c5cd8c1e298a0deb142f2c6eecead290fbe67edc1de748dc56317cb7084781f29f44df282171062a4723d2a9d189ddb7fb048a56a48e607cfccacc7b3f351acc9b6d97607412a8e3d0d58ae40d6e8c9989284cc42712113411f5c7d0b19e7184418d33c4f70742316a49566aec1b7de8d0514dca97111d571f40828b3ab097a708311be10847db08bac4e69949d89e8d02369ec13cb06a5d9ccdfd2afdfe291e5d56b5149ba7e55236925eaf322fbc50e942289cbec6b66db924aa0107a69002208e282b4314ad20d60b67c80a4632a630e014867a23fb96f13aa5da5ddb3480e269d7b607ccc6e832bc1f83bd6e4553118def549693afc3b9b60038d65956769cb74bb09892348fcf1daf5563e6592e11b48d6b34914b1f6ccaf26b46f2717e284ffcc27e8c574f8b8b9690bb66c25d7c5281ac36b75e2ab3a96b253c0008cbdf) /\
-    (TestKWPAE 0x9ca11078baebc1597a68ce2fe3fc79a201626575252b8860
-               0x76
-            == 0x866bc0ae30e290bb20a0dab31a6e7165) /\
-    (TestKWPAE 0x8b190ea5cab54000d037fda56859521f0af545bdc80b8ac3
-               0x0cdb4f843aa332077bf9b52340343085191e0e72e4f6a520ff7e561406902e188ae09fb451a087d9862279a96c4ee8b599a4c4c15e450cecf8df6f0ae879fd5c359bba26dcb308dd3e700e0511f01a72b7e525ddceaf06b1b311c8f22da10fec9a9555f78e5ebcb6015175cc6e6ed9f79d3f5e637bbdba2642c0c63ff66b3f711c1d3e9e39dd588209d1131eabb910f2cd4561ff0611397a74837d5009aecbb6901d8228039627f42c3372bbd7a57797db563c8ae5a1809c6d71b7a36875529544da375ab2cd48ea8931b2a905f84c3a4513c6ddb05a37ed7a9efed062c75f25435f4ade509864555408798be3886dde1fc3c3897622e1d63821b4238348cf331aca9379608f9f5fdf907dd72f25c7d1e8671b5db4217315c23d72a7bab12e1156d18d4b3d3263aef1e1e11603de7c958dfc60f989f38dd994c064d5128677740f3ab65ca8d42f6c40b779b669a27ef3ce91baf040b0674a34cc6fb23a75c944ce63bf359aea107eac0823b25b94b640d24c31fef796f3485ca316e91a2175eecbbb6be3dc947b8eeb2d502c3442e995046d959ea78206f18aeeafd844dac654aa0d92e03756ade850537d58bba15ca760fee9156fcac540cf85de7cb7ecb47a7bfb17bf8f98d39cee83e0caeebde4b8985cd0035419c727599d9e07ea807eaba08eb21a5644c7ced157d07d2b2766495788267b77eb2c71af2c49406529d5a3
-            == 0x05a9711e3248192d0513f859cac33f5cd036a30ab1390d9e50849ea4ccab2d015eb352174440bff2bf6ca06c27267b05d867ae907be30a9d4df51c2af192ae17101edfe9d776e22341289daa30b0539ee2066e05691f18ebed41b2fcdfcec22f6c0108565e24228096a7bd98982fb45761c8bb9b7155303beab7488f1341e87f9549fecd41a71e3ca7c93f8374275852da1a8d1c5ade015507a2044353e9a598280779dec798d047c22284e0968367ef9decc66cd8ebc8a340adb4c679602c869c02a53090feb2353aeca6507a6aee7a5ddb409476ea8255c722a4d151a97253180ffafeee6fad2d40da285d188d68f4d1c1ec9d925f976d43143bc35caa306fc7178b2ddc8c9342c31c385fff69f600dac1b3ad6c590655047b6371dd9cff8eadd480b0305e03b35ad90a3a75671abf2ad73d5b75851e4413f608b1e6df083540042c67e7c54c6760971ad022975c90f42454f38dea0bfc7d8b01691a74f0f29f9e0133a1484682c96ab7c0b4d347394d69fff364327eaa7af8d71e72ca8176cefff901fcef6f960a63b0b6304f59ee9fb62f628b5e6d3783068c2f6203982188de009373eb0c8422a5f0d4201e31876414ca84a398d68bdd9cda50ac663a3e05abc8698113d6ce6fe3538e785e96ea148732018812b1f62e80848a88a65f7dca04aab3f9f9b8968d0ae8f299974af036676eb21617f143bda55dbe92921001f17ccf655de53586) /\
-    (TestKWPAE 0x95da2700ca6fd9a52554ee2a8df1386f5b94a1a60ed8a4aef60a8d61ab5f225a
-               0xd1
-            == 0x06ba7ae6f3248cfdcf267507fa001bc4) /\
-    (TestKWPAE 0xa8571d0257d79010ab20d01858f4763c03e628f912786119850614d9023950b3
-               0xed9061eac56e8fc571134219e5f713a7a57cb11760e2e7848ab38102a7ce4e1e2a4e18e4da4d13978c6d41f8e05969a140c40929fd0f57f073d83c15f56a1f5a5db0e9b0da57a763e85ae365e3a24c79ec6b9ce90e12bd9fe080c357a469b2fcbe2e897a277764c97f4af160acac71c9fe6110c19ead71d2a7ce9624a0d1f9639867559e93bffb81fdedfe30a408bc4c69b56a17aced776c1fcb0e956351bcc5c2102ad7a4b3274f3a9e3ab9a9885830c30942cd210afc260971e879caf74aef71ae6d083a0362b047dad38d91773a555da7dc6d6377b8cc8c8c158ab708a02479be5362854f45c7f119a4da9adef76ef5bc42a7be85ee8cfab244673b649c9bfc52faee6e46af2322a65c1a07cb40c6f78f36d5519c8d15edcf5bab4ae00a8106ef7389029d796367c49c1555680ef910e0844fe7b0b7c47188ce0b64ad6f3b57a6507f825b8b05d95b30c407f127ac73d9e25cf70992586e037edd1edd897f863c8a052543b68eccaa2eb4199b045a27310effc0168591a4b32484e8541c79dc8b61e749828f03a3313edfd75d0336aeb2c64d5900df9ba5afc9c2302385bfa032f0f2f775762dab19df0dc464c67ff9537636b9ea0fd58ff210376e735e4d5c54129fbe55694f170476cf5a1511e11ab71d5be8590ce6f073b7daed59d3d9fd36ad804e2b3f2d5f4207d65f014cb0351a4c774bfaae7c0777b9e0f5e7eca6
-            == 0x0e522e2dc48dcd4833226ca86439a2cd6188315794a41098fe3e7bc6e442212fc216d5bd682a6829b61fbb6d466b4cd82da87a40ade8833b4782b23ed869e2d47275a12fb21a4ca980458e64e4ce7e95c228b570f536179f4df2842302f0efaee7be28c7ca7f7edab902cb11a0325eaf2abf45fffff78f72a5a1061ea579592407866edb9863a2d05445bf4f21778ad620164c289d8fcc31e846bea4dc251c9baf7b7211296a9229148447dbffafeb780bb18a2436689cb897f791af171fac294f1b289dba66b233e42022548cb904222a09b742fd6a9a5c2e864124dea1be9877661cfc7f28810a4c2448f00c7d07a7ea9daae6a9a18569e68620df9f35a66b585c00d411912f6858ec8f70931ecc692c38b72ec096850fa5d7a77c826d9d053ee859ebea486b8d1802a4879b3237a36f773c13806a2449faefa9bf30dc5176b758d153cb2a0373ff795a58da303a48cd3531423926160be19dce1b1a9dc76739e01baa86e489cb8d378ad40e0a1ebeb4a0ffa246762915d92ba1e78449df45d0b99a78b74d64da3cf03fed733f36fe5a23d48ceab01446aa67433b8a2b15610ee27a5bb81247d2172c4e555094e957efac906e5fb502a46e7097fb42251885782f7e0cb19ee0e4028f659447647ebdd2d0b59e026874e44b62d8dd862fda89095fa170af25b156d7687152cc6cd50aebc143a781b9802484eb068ae284aa9db54e8b5cf4303a4c)
+            == 0x01a7d657fc4a5b216f261cca4d052c2b)
 
 TestKWPAD :
    {a, k, l, n}
@@ -1145,12 +1137,6 @@ property KWPADTests =
             == (False, 0x76)) /\
     ((TestKWPAD`{k=1} 0x94c8dae772a43b5e00468e0947699b239dfe30ab5f90e2f6
                       0x239c6bceee3583fe7825011e02f01cc0).0
-            == True) /\
-    (TestKWPAD 0xf89732cee8226735ee03020093d02ba1d1f658bd192532f89f14c4706752b50f
-               0x784b3288625af3fd5b675c0bf72e08be1dded4cfeb1bfa007dde6cce875010e265ec6b0af91d6c84
-            == (False, 0x9a5c3c6fbca7007e1ec9fa62f50c46af2186f5ab3b5e936ef9845ecd362a6d)) /\
-    ((TestKWPAD`{k=27} 0x9c2f01de02319ddedcd6193769a6e134ed2ef4b2e36b0edc1719fbd3bc3850b4
-                       0xe3f3b2ed794fb604a162911a7d8e8b44d7b9ba65834ed9cadf410e27fdbd11934ee1490205f4c2b6).0
             == True)
 ```
 

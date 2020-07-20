@@ -4,7 +4,7 @@
  */
 
 print "Importing Cryptol file";
-import "bittwiddling_answers.md";
+import "BittwiddlingAnswers.md";
 
 print "Importing C file";
 l <- llvm_load_module "bittwiddling.bc";
@@ -48,4 +48,3 @@ print "Checking C anyZeroByte implementation vs Cryptol specification";
 let thm5 = {{ \x -> anyZeroByte_c x == [ anyZeroByte x ] }};
 result <- prove z3 thm5;
 print result;
-
