@@ -95,6 +95,14 @@ Enjoy getting addicted to this level of assurance!
 
 ## Preliminaries
 
+Many of the concepts in this lab were briefly introduced in the
+[Overview](../Overview/Overview.md) lab. This lab goes over many of
+those same concepts, but in much more depth. Consider this lab a
+resource that you may want to revisit as you work through the course
+material. Also consider keeping the [official Cryptol
+manual](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf)
+close at hand.
+
 For examples in this lab, the warning messages about specifying bit
 sizes of numbers have been turned off. This is **not** something you
 should do when you're new at Cryptol. (it's only done here for
@@ -962,6 +970,84 @@ sequence. So we surround it in brackets (`` [`size] ``) to turn it
 from a 32-bit bitvector into a sequence of one 32-bit bitvector (a
 2-dimensional sequence).
 
+## Local Definitions
+
+All the functions we've written so far have been one-liners (well,
+essentially). This section introduces the `where` clause, a mechanism
+that allows you to create local definitions in a functions. There's
+really not too much to this, but you'll use it in almost every Cryptol
+function you'll ever write, so consider it important.
+
+Here we fully describe what a function looks like in Cryptol:
+
+```comment
+functionName :
+    {typeVariable, typeVariable, ...}
+    (typeConstraint, typeConstraint, ...) =>
+    Input -> ... Input -> Output
+functionName input1 ... input3 =
+    output
+  where
+    localVariable1 = ...
+	localVariable2 = ...
+	...
+	output = ...
+```
+
+Here's an example that demonstrates the use of a `where` clause:
+
+```cryptol
+addMult :
+    {n}
+	(fin n) =>
+	[n] -> [n] -> [n] -> [n]
+addMult a b c = ab + bc
+  where
+    ab = a * b
+    bc = b * c
+```
+
+## Properties
+
+Cryptol has a built-in automated theorem proving interface. This lab
+doesn't go over this capability except to say that you can designate
+functions with an output type of `Bit` as properties using the
+`property` keyword. The purpose of this keyword is mostly to help
+document and differentiate functions that are used to compute a
+cryptographic algorithm, with functions that express properties about
+a cryptographic algorithm. For example, here we have two ways to
+compute the same function, and a property stating that they are
+equivalent for all inputs:
+
+```cryptol
+/**
+ * Checks if any of the 4 bytes of a 32 bit word is zero. Returns true
+ * if any byte is zero, returns false otherwise.
+ */
+anyZeroByteOpt : [32] -> Bit
+anyZeroByteOpt v =
+  ~((((v && 0x7F7F7F7F) + 0x7F7F7F7F) || v) || 0x7F7F7F7F) != 0
+  
+anyZeroByteSpec : [32] -> Bit
+anyZeroByteSpec bytes =
+    b0 == 0 \/ b1 == 0 \/ b2 == 0 \/ b3 == 0
+  where
+    [b0, b1, b2, b3] = split bytes : [4][8]
+	
+property anyZeroByteCorrect bytes =
+    anyZeroByteOpt bytes == anyZeroByteSpec bytes
+```
+
+Cryptol's `:prove` interpreter command will cue on the `property`
+keyword, trying to prove every `property` in scope. The `:prove`
+command also works if you give it a property directly, like so:
+
+```shell
+labs::Language::Basics> :prove anyZeroByteCorrect
+Q.E.D.
+(Total Elapsed Time: 0.009s, using "Z3")
+```
+
 ## Operators
 
 Cryptol's `:help` command will provide a brief description of the
@@ -1329,10 +1415,6 @@ advantageous:
     about code. Moreover, properties serve as another kind of
     documentation!
 
-## Where clauses
-
-## Properties
-
 ## Writing Loops
 
 ### Or not...
@@ -1386,7 +1468,7 @@ labs::Language::Basics> sum [1..100]
 Loops with functions on the indices are written as sequence comprehensions.
 
 ```shell
-labs::Language::Basics> [n^^3 | n <- [0..10]]
+labs::Language::Basics> [ n^^3 | n <- [0..10] ]
 [0, 1, 8, 27, 64, 125, 216, 343, 512, 729, 1000]
 ```
 
@@ -1396,10 +1478,6 @@ Star Trek's (T.O.S.) warp factor light speed multipliers!
 
 Loops that modify an accumulator in place become self-referential
 sequence comprehensions. The following example illustrates this.
-
-
-**EXERCISE**:
-
 
 ## Simple Block Encryption Example
 
