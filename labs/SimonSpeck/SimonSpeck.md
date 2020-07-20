@@ -40,7 +40,40 @@ was defined in its own Cryptol module. But because this lab introduces further
 concepts around the definition and use of modules, this lab will not be entirely
 self-contained in this file.
 
-# Implementing Simon with a Parameterized Module
+# Introducing Parameterized Modules
+
+A *parameterized module* is a module which has a collection of type parameters
+that can be be used as implicit type variables for all of the definitions it contains. New modules can specify concrete values for these type parameters and easily create a variety of new functionality which reutilizes the functionality in the base parameterized module.
+
+This feature is especially useful for cryptographic applications which often define many variants of a cryptographic routine relying on common functionality. Parameterized modules help specification writers avoid writing redundant code and can help strengthen the confidence in the core of a verified stack of cryptographic primitives.
+
+This template describes how to define a generic parameterized module:
+
+```example
+module MyParameterizedModule where
+
+parameter
+  
+  type param_1 : #
+  type param_2 : #
+  //...
+  type param_k : #
+
+// <-- Variable and Function Definition
+```
+
+New modules can import this module and specify concrete values for these parameters as follows:
+
+```example
+module MyConcreteModule = MyParameterizedModule where
+  type param_1 = 0
+  type param_2 = 1
+  //...
+  type param_k = 127
+```  
+Users can then import `MyConcreteModule` which will contain all of the functionality in `MyParameterizedModule` where the functionality is specified to the concrete values.
+
+
 
 # References
 

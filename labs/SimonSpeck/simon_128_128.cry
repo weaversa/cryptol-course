@@ -1,7 +1,0 @@
-module labs::SimonSpeck::simon_128_128 = labs::SimonSpeck::Simon where
-
-  type n = 64
-  type m = 2
-  type T = 68
-  type j = 2
-

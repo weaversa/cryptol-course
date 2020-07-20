@@ -1,15 +1,15 @@
-module labs::SimonSpeck::SimonTestVectors where
+module labs::SimonSpeck::Simon::SimonTestVectors where
 
-import labs::SimonSpeck::simon_32_64   as simon_32_64
-import labs::SimonSpeck::simon_48_72   as simon_48_72
-import labs::SimonSpeck::simon_48_96   as simon_48_96
-import labs::SimonSpeck::simon_64_96   as simon_64_96
-import labs::SimonSpeck::simon_64_128  as simon_64_128
-import labs::SimonSpeck::simon_96_96   as simon_96_96
-import labs::SimonSpeck::simon_96_144  as simon_96_144
-import labs::SimonSpeck::simon_128_128 as simon_128_128
-import labs::SimonSpeck::simon_128_192 as simon_128_192
-import labs::SimonSpeck::simon_128_256 as simon_128_256
+import labs::SimonSpeck::Simon::simon_32_64   as simon_32_64
+import labs::SimonSpeck::Simon::simon_48_72   as simon_48_72
+import labs::SimonSpeck::Simon::simon_48_96   as simon_48_96
+import labs::SimonSpeck::Simon::simon_64_96   as simon_64_96
+import labs::SimonSpeck::Simon::simon_64_128  as simon_64_128
+import labs::SimonSpeck::Simon::simon_96_96   as simon_96_96
+import labs::SimonSpeck::Simon::simon_96_144  as simon_96_144
+import labs::SimonSpeck::Simon::simon_128_128 as simon_128_128
+import labs::SimonSpeck::Simon::simon_128_192 as simon_128_192
+import labs::SimonSpeck::Simon::simon_128_256 as simon_128_256
 
 K_32_64 = join[0x1918, 0x1110, 0x0908, 0x0100]
 P_32_64 = join[0x6565, 0x6877]
@@ -62,8 +62,8 @@ P_128_256 = join [0x74206e69206d6f6f, 0x6d69732061207369]
 C_128_256 = join [0x8d2b5579afc8a3a0, 0x3bf72a87efe7b868]
 property TV_128_256 = simon_128_256::encrypt K_128_256 P_128_256 == C_128_256
 
-property all_pass = and [TV_32_64,  
-                         TV_48_72, TV_48_96,  
-                         TV_64_96, TV_64_128,
-                         TV_96_96, TV_96_144, 
-                         TV_128_128, TV_128_192, TV_128_256]
+property all_vectors_pass = and [TV_32_64,  
+                                 TV_48_72, TV_48_96,  
+                                 TV_64_96, TV_64_128,
+                                 TV_96_96, TV_96_144, 
+                                 TV_128_128, TV_128_192, TV_128_256]

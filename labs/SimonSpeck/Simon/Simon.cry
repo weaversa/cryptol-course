@@ -1,4 +1,4 @@
-module labs::SimonSpeck::Simon where
+module labs::SimonSpeck::Simon::Simon where
 
 parameter
   
