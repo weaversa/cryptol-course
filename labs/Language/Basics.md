@@ -970,6 +970,54 @@ sequence. So we surround it in brackets (`` [`size] ``) to turn it
 from a 32-bit bitvector into a sequence of one 32-bit bitvector (a
 2-dimensional sequence).
 
+### Type synonyms
+
+You can define type synonyms using the `type` keyword. For example
+
+```cryptol
+type myType x = [x][x]
+```
+
+```shell
+labs::Language::Basics> :s base=2
+labs::Language::Basics> zero : myType 5
+[0b00, 0b00]
+labs::Language::Basics> zero : myType 5
+[0b00000, 0b00000, 0b00000, 0b00000, 0b00000]
+```
+
+## Judicious Type System Usage
+
+### Don't let the type system do your work
+
+Cryptol's type system tries to infer the types of functions lacking a
+type signature. Sometimes it comes up with a more general type than
+you were imagining. This causes problems:
+  * Perhaps you only want your function to be applicable on a smaller
+    set of types (usually minor, but occasionally major).
+  * Error messages can become even more incomprehensible! (Major)
+
+### Do let the type system work for you
+
+Type signatures for functions are wonderful bits of documentation. It
+is much easier to see what's going on if you use type synonyms and
+signatures.
+
+  * cleaner code
+  * easier for other tools to consume/reason about
+
+### Provide additional types to aid in debugging
+
+Many of the errors in coding Cryptol will be instances of type
+mismatching. If you can't see your problem based on the error message,
+try adding more type annotations. This:
+  * makes the interpreter do less work trying alternative
+    possibilities and, consequently, can make error messages more
+    comprehensible
+  * reduces the body of code to examine for bugs (a sort of binary bug
+    search)
+  * can get you to notice where you blew it
+
 ## Local Definitions
 
 All the functions we've written so far have been one-liners (well,
@@ -1546,82 +1594,6 @@ labs::Language::Basics> lazyAbsMin 0 (0/0)
 
 **EXERCISE**:
 
-
-## Less Common Operators
-
-Function equality: `===` and `!==`. These are mostly used to state
-properties about functions over a finite domain.
-
-```cryptol
-add8 : [4] -> [4]
-add8 x = x + 8
-sub8 : [4] -> [4]
-sub8 x = x - 8
-```
-
-```shell
-labs::Language::Basics> :prove add8 === sub8
-Q.E.D.
-(Total Elapsed Time: 0.014s, using Z3)
-```
-
-There is also an `:exhaust` command for finite domains. On occasion
-the machinery behind `:prove` gets overwhelmed and, on small enough
-domains, exhausting works in a reasonable time.
-
-```shell
-labs::Language::Basics> :exhaust add8 === sub8
-Using exhaustive testing.
-Passed 16 tests.
-Q.E.D.
-```
-
-The `:check` command is smart enough to notice small enough domains
-and switch to exhaustion automagically:
-
-```shell
-labs::Language::Basics> :check add8 === sub8
-Using exhaustive testing.
-Passed 16 tests.
-Q.E.D.
-```
-
-**EXERCISE**:
-
-
-## Judicious Type System Usage
-
-### Don't let the type system do your work
-
-Cryptol's type system tries to infer the types of functions lacking a
-type signature. Sometimes it comes up with a more general type than
-you were imagining. This causes problems:
-  * Perhaps you only want your function to be applicable on a smaller
-    set of types (usually minor, but occasionally major).
-  * Error messages can become even more incomprehensible! (Major)
-
-### Do let the type system work for you
-
-Type signatures for functions are wonderful bits of documentation. It
-is much easier to see what's going on if you use type synonyms and
-signatures.
-
-  * cleaner code
-  * easier for other tools to consume/reason about
-
-### Provide additional types to aid in debugging
-
-Many of the errors in coding Cryptol will be instances of type
-mismatching. If you can't see your problem based on the error message,
-try adding more type annotations. This:
-  * makes the interpreter do less work trying alternative
-    possibilities and, consequently, can make error messages more
-    comprehensible
-  * reduces the body of code to examine for bugs (a sort of binary bug
-    search)
-  * can get you to notice where you blew it
-
-**EXERCISE**:
 
 
 # Here Abide Monsters
