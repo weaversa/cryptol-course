@@ -1,15 +1,15 @@
-module labs::SimonSpeck::SpeckTestVectors where
+module labs::SimonSpeck::SpeckAnswers::SpeckTestVectors where
 
-import labs::SimonSpeck::speck_32_64   as speck_32_64
-import labs::SimonSpeck::speck_48_72   as speck_48_72
-import labs::SimonSpeck::speck_48_96   as speck_48_96
-import labs::SimonSpeck::speck_64_96   as speck_64_96
-import labs::SimonSpeck::speck_64_128  as speck_64_128
-import labs::SimonSpeck::speck_96_96   as speck_96_96
-import labs::SimonSpeck::speck_96_144  as speck_96_144
-import labs::SimonSpeck::speck_128_128 as speck_128_128
-import labs::SimonSpeck::speck_128_192 as speck_128_192
-import labs::SimonSpeck::speck_128_256 as speck_128_256
+import labs::SimonSpeck::SpeckAnswers::speck_32_64   as speck_32_64
+import labs::SimonSpeck::SpeckAnswers::speck_48_72   as speck_48_72
+import labs::SimonSpeck::SpeckAnswers::speck_48_96   as speck_48_96
+import labs::SimonSpeck::SpeckAnswers::speck_64_96   as speck_64_96
+import labs::SimonSpeck::SpeckAnswers::speck_64_128  as speck_64_128
+import labs::SimonSpeck::SpeckAnswers::speck_96_96   as speck_96_96
+import labs::SimonSpeck::SpeckAnswers::speck_96_144  as speck_96_144
+import labs::SimonSpeck::SpeckAnswers::speck_128_128 as speck_128_128
+import labs::SimonSpeck::SpeckAnswers::speck_128_192 as speck_128_192
+import labs::SimonSpeck::SpeckAnswers::speck_128_256 as speck_128_256
 
 K_32_64 = join[0x1918, 0x1110, 0x0908, 0x0100]
 P_32_64 = join[0x6574, 0x694c]
@@ -62,8 +62,8 @@ P_128_256 = join [0x65736f6874206e49, 0x202e72656e6f6f70]
 C_128_256 = join [0x4109010405c0f53e, 0x4eeeb48d9c188f43]
 property TV_128_256 = speck_128_256::encrypt K_128_256 P_128_256 == C_128_256
 
-property all_pass = and [TV_32_64,  
-                         TV_48_72, TV_48_96,  
-                         TV_64_96, TV_64_128,
-                         TV_96_96, TV_96_144, 
-                         TV_128_128, TV_128_192, TV_128_256]
+property all_speck_vectors_pass = and [TV_32_64,  
+                                       TV_48_72, TV_48_96,  
+                                       TV_64_96, TV_64_128,
+                                       TV_96_96, TV_96_144, 
+                                       TV_128_128, TV_128_192, TV_128_256]
