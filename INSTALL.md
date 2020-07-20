@@ -23,12 +23,39 @@ the material directly from the GitHub website.
 
 This course currently focuses on learning to program in Cryptol. As
 such, you will need to be able to run the Cryptol
-interpreter. Supported platforms include up-to-date CentOS, Ubuntu,
-MacOS, and Windows 10.
+interpreter. Supported platforms include **up-to-date** CentOS,
+Ubuntu, MacOS, and Windows 10.
 
 Some challenge labs make use of SAW, a companion verification tool
 associated with Cryptol. However, SAW is not a requirement for success
 here.
+
+## Quickstart
+
+1. Download this repository and unzip it somewhere on your computer.
+2. Install Docker:
+   [https://docs.docker.com/get-docker](https://docs.docker.com/get-docker)
+3. Open a terminal window (for Windows use Command Prompt or
+   PowerShell, but not PowerShell ISE). Run
+   ```shell
+   > docker pull cryptolcourse/cryptol
+   ```
+4. Install VS Code:
+   [https://code.visualstudio.com](https://code.visualstudio.com)
+5. In VS Code,
+   * click "File" -> "Open Workspace", and select the directory where
+   you unziped this repository.
+   * In the "Explorer" pane, select `README.md` (or any lab you want
+     to work through)..
+   * Click "Terminal" -> "Run Task" -> "cryptol-docker".
+
+If a terminal window appears with the Cryptol logo, you're done. The
+lab you selected should be loaded into the interpreter. Start using VS
+Code to work through the course. And, enjoy learning Cryptol!
+
+More involved instructions follow for those powerusers that are
+familiar with installing and using terminal-based tools and that want
+a more customized environment in which to program Cryptol.
 
 ## Option 1: Docker (*Preferred Installation Method*)
 
