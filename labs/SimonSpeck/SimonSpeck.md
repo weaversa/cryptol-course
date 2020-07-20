@@ -124,9 +124,17 @@ Note that four module parameters are declared (`n`, `m`, `T`, and `j`) which ref
 
 Now it's your turn to try writing a parameterized module. You will also get some more practice reading and writing a cryptographic specification.
 
-**Exercise** Write a parameterized module for `Speck`. This should be written in the `Speck` folder in this lab directory. 
+**Exercise** Write a parameterized module for `Speck`. Refer to Section 4 from reference [1 The corresponding `Speck` Cryptol files should be written in the `Speck` folder in this lab directory. You can use the `Simon` implementation as a reference -- many of the patterns you will encounter writing up `Speck` will mirror `Simon`.
 
-If you place the files in the appropriate directory, and name the files/modules as suggested in the `README.md` file 
+If you place the files in the appropriate directory, and name the files/modules as suggested in the `README.md` file, then you can check your work against the test vectors below with the following as follows (with expected output):
+
+```shell
+Cryptol> :prove all_speck_vectors_pass 
+Q.E.D.
+(Total Elapsed Time: 0.021s, using "Z3")
+```
+
+**Additional Exercise** The test vectors below only test the encryption direction for `Speck`. Define the decryption direction for the round function and algorihthm and try writing properties to test that these functions are inverses. Example properties can be found in the provided `Simon` specification, you may need to try different solvers like `abc` for some property verifications to complete in a reasonable amount of time.
 
 ## Speck Test Vectors
 
@@ -193,11 +201,11 @@ P_128_256 = join [0x65736f6874206e49, 0x202e72656e6f6f70]
 C_128_256 = join [0x4109010405c0f53e, 0x4eeeb48d9c188f43]
 property TV_128_256 = speck_128_256::encrypt K_128_256 P_128_256 == C_128_256
 
-property all_vectors_pass = and [TV_32_64,  
-                                 TV_48_72, TV_48_96,  
-                                 TV_64_96, TV_64_128,
-                                 TV_96_96, TV_96_144, 
-                                 TV_128_128, TV_128_192, TV_128_256]
+property all_speck_vectors_pass = and [TV_32_64,  
+                                       TV_48_72, TV_48_96,  
+                                       TV_64_96, TV_64_128,
+                                       TV_96_96, TV_96_144, 
+                                       TV_128_128, TV_128_192, TV_128_256]
 ```
 
 # References
