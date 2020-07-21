@@ -32,7 +32,9 @@ here.
 
 ## Quickstart
 
-1. Download this repository and unzip it somewhere on your computer.
+1. Download [the Cryptol course
+   repository](https://github.com/weaversa/cryptol-course/archive/master.zip)
+   and unzip it somewhere on your computer.
 2. Install Docker:
    [https://docs.docker.com/get-docker](https://docs.docker.com/get-docker)
 3. Open a terminal window (for Windows use Command Prompt or
