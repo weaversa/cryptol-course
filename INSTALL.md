@@ -46,7 +46,7 @@ here.
    * click "File" -> "Open Workspace", and select the directory where
    you unziped this repository.
    * In the "Explorer" pane, select `README.md` (or any lab you want
-     to work through)..
+     to work through).
    * Click "Terminal" -> "Run Task" -> "cryptol-docker".
 
 If a terminal window appears with the Cryptol logo, you're done. The
