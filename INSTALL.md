@@ -33,7 +33,7 @@ Some challenge labs make use of SAW, a companion verification tool
 associated with Cryptol. However, SAW is not a requirement for success
 here.
 
-## Quickstart
+## Option 0: Quick and Easy (VScode + Docker)
 
 1. Download [the Cryptol course
    repository](https://github.com/weaversa/cryptol-course/archive/master.zip)
@@ -46,7 +46,7 @@ here.
    Extensions panel.
 5. Open Visual Studio Code and
    * click "File" -> "Open Folder...", and select the directory where you
-   unziped this repository.
+   unzipped this repository.
    * Visual Studio will detect the remote container and prompt you -- choose 
      "Reopen in Container"
    * The first time you load it may take a while for Docker to build the
@@ -62,7 +62,7 @@ More involved instructions follow for those powerusers that are
 familiar with installing and using terminal-based tools and that want
 a more customized environment in which to program Cryptol.
 
-## Option 1: Docker (*Preferred Installation Method*)
+## Option 1: Docker
 
 [Docker](https://www.docker.com) containers are available for both
 [Cryptol](https://hub.docker.com/repository/docker/cryptolcourse/cryptol)
