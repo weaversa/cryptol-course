@@ -45,9 +45,9 @@ here.
    ```shell
    > docker pull cryptolcourse/cryptol
    ```
-4. Install VS Code:
+4. Install Visual Studio Code:
    [https://code.visualstudio.com](https://code.visualstudio.com)
-5. In VS Code,
+5. Open Visual Studio Code and
    * click "File" -> "Open Workspace", and select the directory where
    you unziped this repository.
    * In the "Explorer" pane, select `README.md` (or any lab you want
@@ -55,8 +55,9 @@ here.
    * Click "Terminal" -> "Run Task" -> "cryptol-docker".
 
 If a terminal window appears with the Cryptol logo, you're done. The
-lab you selected should be loaded into the interpreter. Start using VS
-Code to work through the course. And, enjoy learning Cryptol!
+lab you selected should be loaded into the interpreter. You may now
+start using Visual Studio Code to work through the course. We hope you
+enjoy learning Cryptol!
 
 More involved instructions follow for those powerusers that are
 familiar with installing and using terminal-based tools and that want
