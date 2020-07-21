@@ -1,12 +1,12 @@
-FROM cryptolcourse/cryptol-dev
-
-# This Dockerfile adds a non-root user with sudo access. Use the "remoteUser"
-# property in devcontainer.json to use it. On Linux, the container user's GID/UIDs
-# will be updated to match your local UID/GID (when using the dockerFile property).
-# See https://aka.ms/vscode-remote/containers/non-root-user for details.
-ARG USERNAME=cryptol
-ARG USER_UID=1000
-ARG USER_GID=$USER_UID
+FROM debian:stretch
+RUN apt-get update \
+    && apt-get install -y libgmp10 libgomp1 libffi6 wget libncurses5 unzip libreadline7 vim emacs-nox \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+COPY --from=cryptolcourse/cryptol /usr/local/bin /usr/local/bin
+COPY --from=cryptolcourse/saw /usr/local/bin /usr/local/bin
+RUN useradd -m cryptol && chown -R cryptol:cryptol /home/cryptol
+USER cryptol
+ENV LANG C.UTF-8
 RUN echo 'export PS1="Cryptol> "' >> /home/cryptol/.bashrc
 
-
+ENTRYPOINT ["/bin/bash"]
