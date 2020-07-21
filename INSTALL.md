@@ -4,6 +4,8 @@ All of the Cryptol course material (presentations, labs, supporting
 data files) is available on
 [GitHub](https://github.com/weaversa/cryptol-course). You can clone or
 download the files using the green `clone` button on the GitHub page,
+download a zip file by clicking
+[here](https://github.com/weaversa/cryptol-course/archive/master.zip),
 or you can use the command line to acquire a copy by ensuring you're
 in a writable working directory and issuing `git clone
 https://github.com/weaversa/cryptol-course.git` *(no password or keys
