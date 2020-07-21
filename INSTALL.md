@@ -40,19 +40,18 @@ here.
    and unzip it somewhere on your computer.
 2. Install Docker:
    [https://docs.docker.com/get-docker](https://docs.docker.com/get-docker)
-3. Open a terminal window (for Windows use Command Prompt or
-   PowerShell, but not PowerShell ISE). Run
-   ```shell
-   > docker pull cryptolcourse/cryptol
-   ```
-4. Install Visual Studio Code:
+3. Install Visual Studio Code:
    [https://code.visualstudio.com](https://code.visualstudio.com)
+4. Install the Remote Containers Visual Studio Code Extension (`ms-vscode-remote.remote-containers`). This can be done within Visual Studio Code from the
+   Extensions panel.
 5. Open Visual Studio Code and
-   * click "File" -> "Open...", and select the directory where you
+   * click "File" -> "Open Folder...", and select the directory where you
    unziped this repository.
-   * In the "Explorer" pane, select `README.md` (or any lab you want
-     to work through).
-   * Click "Terminal" -> "Run Task" -> "cryptol-docker".
+   * Visual Studio will detect the remote container and prompt you -- choose 
+     "Reopen in Container"
+   * The first time you load it may take a while for Docker to build the
+     container. Once it loads you can access a terminal by "Terminal" -> "New
+     Terminal"
 
 If a terminal window appears with the Cryptol logo, you're done. The
 lab you selected should be loaded into the interpreter. You may now
