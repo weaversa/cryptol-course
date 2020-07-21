@@ -48,8 +48,8 @@ here.
 4. Install Visual Studio Code:
    [https://code.visualstudio.com](https://code.visualstudio.com)
 5. Open Visual Studio Code and
-   * click "File" -> "Open Workspace", and select the directory where
-   you unziped this repository.
+   * click "File" -> "Open...", and select the directory where you
+   unziped this repository.
    * In the "Explorer" pane, select `README.md` (or any lab you want
      to work through).
    * Click "Terminal" -> "Run Task" -> "cryptol-docker".
