@@ -58,6 +58,8 @@ lab you selected should be loaded into the interpreter. You may now
 start using Visual Studio Code to work through the course. We hope you
 enjoy learning Cryptol!
 
+-----
+
 More involved instructions follow for those powerusers that are
 familiar with installing and using terminal-based tools and that want
 a more customized environment in which to program Cryptol.
