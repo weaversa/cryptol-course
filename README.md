@@ -13,7 +13,11 @@ admittedly, we're a little light on SAW material right now.
 Many of the labs in this course are taught using
 [literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
 documents --- that is, they can be loaded directly into the Cryptol
-interpreter. This README.md is no exception!
+interpreter. This README.md is no exception! We start by defining a new module for this lab:
+
+```cryptol
+module README where
+```
 
 Labs have exercises that look like this:
 
@@ -58,17 +62,15 @@ Check your answer with the following command; your output should look
 similar to the following:
 
 ```shell
- $ cryptol
  ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
  ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
  ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
  version 2.8.0
 
  Loading module Cryptol
- Cryptol> :load README.md
- Loading module Cryptol
- Loading module Main
- Main> :prove CBCInverts
+ Cryptol> :module README
+ Loading module README
+ README> :prove CBCInverts
  Q.E.D.
  (Total Elapsed Time: 0.081s, using Z3)
 ```

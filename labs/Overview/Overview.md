@@ -88,7 +88,6 @@ sayHello name = greeting
 If you have Cryptol installed, you should be able to do the following:
 
 ```shell
-$ cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
