@@ -5,14 +5,12 @@
             "label": "Cryptol",
             "type": "shell",
             "command": "cryptol",
-            },
             "problemMatcher": []
         },
             {
             "label": "SAW",
             "type": "shell",
             "command": "saw",
-            },
             "problemMatcher": []
         }
     ]
