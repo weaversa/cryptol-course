@@ -33,7 +33,7 @@ Some challenge labs make use of SAW, a companion verification tool
 associated with Cryptol. However, SAW is not a requirement for success
 here.
 
-## Quickstart (Visual Studio Code + Docker)
+## Recommended Installation Instructions (Visual Studio Code + Docker)
 
 1. Download [the Cryptol course
    repository](https://github.com/weaversa/cryptol-course/archive/master.zip)
@@ -68,13 +68,13 @@ course. We hope you enjoy learning Cryptol!
 Link to the next lab: [Cryptol and SAW
 Overview](labs/Overview/Overview.md).
 
------
+## Installation Instructions for Expert Users
 
 More involved instructions follow for those powerusers that are
 familiar with installing and using terminal-based tools and that want
 a more customized environment in which to program Cryptol.
 
-## Option 1: Docker
+### Option 1: Docker
 
 [Docker](https://www.docker.com) containers are available for both
 [Cryptol](https://hub.docker.com/repository/docker/cryptolcourse/cryptol)
@@ -104,7 +104,7 @@ $ docker pull cryptolcourse/saw
 You should now test your installation by running Cryptol. Instructions
 can be found by scrolling down to the "Running Cryptol" section.
 
-## Option 2: Homebrew
+### Option 2: Homebrew
 
 [Homebrew](https://brew.sh) is a package manager for MacOS, Linux, and
 Windows Subsystem for Linux. Instructions for installing Homebrew can
@@ -123,9 +123,9 @@ Unfortunately, SAW is not available via Homebrew.
 You should now test your installation by running Cryptol. Instructions
 can be found by scrolling down to the "Running Cryptol" section.
 
-## Option 3: Downloading pre-built Cryptol and SAW binaries
+### Option 3: Downloading pre-built Cryptol and SAW binaries
 
-### Downloading Cryptol and SAW
+#### Downloading Cryptol and SAW
 
 Galois provides releases of Cryptol at
 https://cryptol.net/downloads.html and releases of SAW at
@@ -154,7 +154,7 @@ explanatory.*
 *Prebuilt SAW binaries for CentOS, Ubuntu, and MacOS can be found
 here: https://saw.galois.com/*
 
-### Downloading Z3
+#### Downloading Z3
 
 Both Cryptol and SAW require a tool called `z3`. This tool is not
 bundled with Cryptol or SAW, so it must be installed separately.
