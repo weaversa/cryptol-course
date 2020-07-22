@@ -1,15 +1,17 @@
 {
-    "version": "2.0.0",
+    "version": "3.0.0",
     "tasks": [
         {
-            "label": "cryptol",
+            "label": "Cryptol",
             "type": "shell",
-            "command": "cryptol ${relativeFile}"
+            "command": "cryptol",
+            "problemMatcher": []
         },
-        {
-            "label": "saw",
+            {
+            "label": "SAW",
             "type": "shell",
-            "command": "saw ${relativeFile}"
+            "command": "saw",
+            "problemMatcher": []
         }
     ]
 }
