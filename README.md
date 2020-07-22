@@ -75,8 +75,9 @@ similar to the following:
  (Total Elapsed Time: 0.081s, using Z3)
 ```
 
-Don't worry if Cryptol is not on your system -- the first lab walks
-you through [installing and running Cryptol](INSTALL.md).
+Don't worry if Cryptol is not yet installed on your computer -- the
+first lab walks you through [installing and running
+Cryptol](INSTALL.md).
 
 
 ## Suggested Lab Order
