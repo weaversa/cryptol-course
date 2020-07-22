@@ -8,7 +8,7 @@
             "problemMatcher": []
         },
             {
-            "label": "SAW",
+            "label": "Software Analysis Workbench",
             "type": "shell",
             "command": "saw",
             "problemMatcher": []
