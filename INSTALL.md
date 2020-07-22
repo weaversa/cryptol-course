@@ -52,14 +52,21 @@ here.
      Studio will detect the remote container and prompt you -- choose
      "Reopen in Container"**.
    * It will take a while for Docker to build the container. Once it's
-     done you can run Cryptol by opening a terminal. Click "Terminal"
-     -> "New Terminal".
-   * Inside the terminal window, type `/workspaces/cryptol-course>
-     cryptol`.
+     done you can run Cryptol by clicking "Terminal" -> "Run Task..."
+     -> "Cryptol".
 
-If the Cryptol logo appears, you're done. You may now start using
-Visual Studio Code to work through the course. We hope you enjoy
-learning Cryptol!
+If a terminal window appears with the Cryptol logo, you're done. Feel
+free to load the next lab into the interpreter by typing:
+
+```shell
+Cryptol> :m labs::Overview::Overview
+```
+
+You may now start using Visual Studio Code to work through the
+course. We hope you enjoy learning Cryptol!
+
+Link to the next lab: [Cryptol and SAW
+Overview](labs/Overview/Overview.md).
 
 -----
 
