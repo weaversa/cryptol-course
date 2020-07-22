@@ -33,7 +33,7 @@ Some challenge labs make use of SAW, a companion verification tool
 associated with Cryptol. However, SAW is not a requirement for success
 here.
 
-## Option 0: Quick and Easy (VScode + Docker)
+## Quickstart (Visual Studio Code + Docker)
 
 1. Download [the Cryptol course
    repository](https://github.com/weaversa/cryptol-course/archive/master.zip)
@@ -42,21 +42,24 @@ here.
    [https://docs.docker.com/get-docker](https://docs.docker.com/get-docker)
 3. Install Visual Studio Code:
    [https://code.visualstudio.com](https://code.visualstudio.com)
-4. Install the Remote Containers Visual Studio Code Extension (`ms-vscode-remote.remote-containers`). This can be done within Visual Studio Code from the
-   Extensions panel.
+4. Install the Remote Containers Visual Studio Code Extension
+   (`ms-vscode-remote.remote-containers`). This can be done within
+   Visual Studio Code from the Extensions panel which you can open by
+   clicking "View" -> "Extensions".
 5. Open Visual Studio Code and
-   * click "File" -> "Open Folder...", and select the directory where you
-   unzipped this repository.
-   * Visual Studio will detect the remote container and prompt you -- choose 
-     "Reopen in Container"
-   * The first time you load it may take a while for Docker to build the
-     container. Once it loads you can access a terminal by "Terminal" -> "New
-     Terminal"
+   * click "File" -> "Open Folder..." (or just "Open..." on OSX).
+   * Select the directory where you unzipped this repository. **Visual
+     Studio will detect the remote container and prompt you -- choose
+     "Reopen in Container"**.
+   * It will take a while for Docker to build the container. Once it's
+     done you can run Cryptol by opening a terminal. Click "Terminal"
+     -> "New Terminal".
+   * Inside the terminal window, type `/workspaces/cryptol-course>
+     cryptol`.
 
-If a terminal window appears with the Cryptol logo, you're done. The
-lab you selected should be loaded into the interpreter. You may now
-start using Visual Studio Code to work through the course. We hope you
-enjoy learning Cryptol!
+If the Cryptol logo appears, you're done. You may now start using
+Visual Studio Code to work through the course. We hope you enjoy
+learning Cryptol!
 
 -----
 
