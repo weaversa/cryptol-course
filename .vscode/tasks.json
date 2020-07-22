@@ -1,0 +1,15 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "cryptol",
+            "type": "shell",
+            "command": "cryptol ${relativeFile}"
+        },
+        {
+            "label": "saw",
+            "type": "shell",
+            "command": "saw ${relativeFile}"
+        }
+    ]
+}
