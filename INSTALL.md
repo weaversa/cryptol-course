@@ -33,37 +33,48 @@ Some challenge labs make use of SAW, a companion verification tool
 associated with Cryptol. However, SAW is not a requirement for success
 here.
 
-## Quickstart
+## Quickstart (Visual Studio Code + Docker)
 
 1. Download [the Cryptol course
    repository](https://github.com/weaversa/cryptol-course/archive/master.zip)
    and unzip it somewhere on your computer.
 2. Install Docker:
    [https://docs.docker.com/get-docker](https://docs.docker.com/get-docker)
-3. Open a terminal window (for Windows use Command Prompt or
-   PowerShell, but not PowerShell ISE). Run
-   ```shell
-   > docker pull cryptolcourse/cryptol
-   ```
-4. Install Visual Studio Code:
+3. Install Visual Studio Code:
    [https://code.visualstudio.com](https://code.visualstudio.com)
+4. Install the Remote Containers Visual Studio Code Extension
+   (`ms-vscode-remote.remote-containers`). This can be done within
+   Visual Studio Code from the Extensions panel which you can open by
+   clicking "View" -> "Extensions".
 5. Open Visual Studio Code and
-   * click "File" -> "Open...", and select the directory where you
-   unziped this repository.
-   * In the "Explorer" pane, select `README.md` (or any lab you want
-     to work through).
-   * Click "Terminal" -> "Run Task" -> "cryptol-docker".
+   * click "File" -> "Open Folder..." (or just "Open..." on OSX).
+   * Select the directory where you unzipped this repository. **Visual
+     Studio will detect the remote container and prompt you -- choose
+     "Reopen in Container"**.
+   * It will take a while for Docker to build the container. Once it's
+     done you can run Cryptol by clicking "Terminal" -> "Run Task..."
+     -> "Cryptol".
 
-If a terminal window appears with the Cryptol logo, you're done. The
-lab you selected should be loaded into the interpreter. You may now
-start using Visual Studio Code to work through the course. We hope you
-enjoy learning Cryptol!
+If a terminal window appears with the Cryptol logo, you're done. Feel
+free to load the next lab into the interpreter by typing:
+
+```shell
+Cryptol> :m labs::Overview::Overview
+```
+
+You may now start using Visual Studio Code to work through the
+course. We hope you enjoy learning Cryptol!
+
+Link to the next lab: [Cryptol and SAW
+Overview](labs/Overview/Overview.md).
+
+-----
 
 More involved instructions follow for those powerusers that are
 familiar with installing and using terminal-based tools and that want
 a more customized environment in which to program Cryptol.
 
-## Option 1: Docker (*Preferred Installation Method*)
+## Option 1: Docker
 
 [Docker](https://www.docker.com) containers are available for both
 [Cryptol](https://hub.docker.com/repository/docker/cryptolcourse/cryptol)

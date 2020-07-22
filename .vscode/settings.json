@@ -1,3 +1,19 @@
 {
-    "terminal.integrated.shell.windows": "powershell.exe"
+    "version": "3.0.0",
+    "tasks": [
+        {
+            "label": "Cryptol",
+            "type": "shell",
+            "command": "cryptol",
+            },
+            "problemMatcher": []
+        },
+            {
+            "label": "SAW",
+            "type": "shell",
+            "command": "saw",
+            },
+            "problemMatcher": []
+        }
+    ]
 }
