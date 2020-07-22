@@ -41,6 +41,8 @@ jobs:
 language: c
 script:
   - export CRYPTOLPATH=$(pwd)
+# README tests
+  - cryptol -e -c ":m README" -c ":prove"
 # Interpreter lab tests
   - cryptol -e -c ":m labs::Interpreter::Interpreter" -c ":s base=10" -c "x + 2"
 #  - cryptol -e -b labs/Interpreter/test.sry
