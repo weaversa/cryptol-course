@@ -99,9 +99,8 @@ on those parameters, and generate a result.
 **EXERCISE:** Create the body of the function below.
 
 ```comment
-absValue : Integer -> Integer
-absValue n = undefined
-    // Replace 'undefined' with code to determine the absolute value
+bitFlip a = undefined
+    // Replace 'undefined' with code to invert each bit and swap positions
 ```
 ...
 <hr>
@@ -117,15 +116,14 @@ a student might solve this problem by editing the literate file and
 changing this snippet to the following:
 
 ```cryptol
-absValue : Integer -> Integer
-absValue n = if n >= 0 then n else -n
+bitFlip a = reverse ( ~a )
 ```
 
 then loading the module and testing their solution.
 
 <hr>
 
-```
+```shell
  $ cryptol
  ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
  ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
@@ -136,10 +134,9 @@ then loading the module and testing their solution.
  Cryptol> :load README.md
  Loading module Cryptol
  Loading module Main
- Main> absValue 5
- 5
- Main> absValue (-6)
- 6
+ Main> :set base=2
+ Main> bitFlip 0b1100010
+ 0b1011100
 ```
 
 <hr>
