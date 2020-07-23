@@ -1655,16 +1655,6 @@ labs::Language::Basics> lazyAbsMin 0 (0/0)
 0x00000000
 ```
 
-# Here Abide Monsters
-
-Following is some code that is needed to make the Cryptol within this
-document valid, but is not discussed for pedagogical reasons. You may
-read on, but you have been warned...
-
-The following code does serve to illustrate the type signature and
-function definitions can be separated within a file. A practice that
-is _**strongly**_ discouraged.
-
 # Postface
 
 Go forth and write correct cryptographic algorithms!
