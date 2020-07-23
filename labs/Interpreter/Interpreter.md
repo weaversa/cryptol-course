@@ -173,10 +173,10 @@ labs::Interpreter::Interpreter :h
                        number of tests is determined by the "tests" option.
 ```
 
-The most used commands have to do with files (loading `:l`, editing
-`:e`, and reloading `:r` a file), quitting the interpreter `:q`, and
-asking for the type of an expression `:t`. Many of the commands have
-single character shortcuts for ease of use.
+The most used commands have to do with files (loading `:m` and
+reloading `:r` modules), quitting the interpreter `:q`, and asking for
+the type of an expression `:t`. Many of the commands have single
+character shortcuts for ease of use.
 
 
 ## Browsing the Environment
