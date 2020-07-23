@@ -23,6 +23,7 @@ Specifically, you'll also gain experience with
   * writing functions and properties, 
   * functions with curried parameters,
   * type parameters and type constraints,
+  * pattern matching,
   * demoting types variables to value variables,
   * `/\`, `\/`, `==>` -- single bit logical operations,
   * `~`, `&&`, `||`, `^` -- logical operations for sequences,
@@ -39,12 +40,11 @@ Specifically, you'll also gain experience with
     and `foldl`,
   * the `sum` and `carry` operators,
   * enumerations and sequence comprehensions,
-  * pattern matching,
   * `import` -- using cryptographic routines from other modules,
   * the `:check`, `:prove`, and `:sat` commands, and
   * lambda functions.
 
-!!! SEAN !!! Still need `:check`, `:prove`, `:sat`, pattern matching, and `import`.
+!!! SEAN !!! Still need `:check`, `:prove`, `:sat`, and `import`.
 
 ## Load This Module
 
@@ -650,6 +650,46 @@ have to. Curry your parameters and group heterogeneous elements
 together in sequences. Tuples are only really useful when you want a
 function to output multiple values that have different types.
 
+### Pattern Matching
+
+You've no doubt noticed by now that the left-hand side of assignment
+statements aren't restricted to just single variables. This
+flexibility comes from Cryptol's powerful **pattern matching**
+capabilities. Cryptol allows you to make assignments by writing
+patterns based on the type (shape) of the value on the right-hand
+side. Again, `_` acts a kind of hole. For example:
+
+```shell
+labs::Language::Basics> let ab = (0xa, 0xb)
+labs::Language::Basics> ab
+(0xa, 0xb)
+labs::Language::Basics> let (a, b) = ab
+labs::Language::Basics> a
+0xa
+labs::Language::Basics> b
+0xb
+labs::Language::Basics> let [ (a, b, _), (_, _, c), _ ] = [ (1, 2, 3), (4, 5, 6), (7, 8, 9) ] : [3]([4], [4], [4])
+labs::Language::Basics> a
+0x1
+labs::Language::Basics> b
+0x2
+labs::Language::Basics> c
+0x6
+```
+
+Cryptol can even pattern match on sequence concatenation, for example:
+
+```cryptol
+firstThreeBits : {n} [3 + n]-> [3]
+firstThreeBits ([a, b, c] # xs) = [a, b, c]
+```
+
+```shell
+labs::Language::Basics> :s base=2
+labs::Language::Basics> firstThreeBits 0b1100111
+0b110
+```
+
 ### Polymorphic Functions
 
 Sometimes, though not often, cryptographic functions are parameterized
@@ -664,7 +704,7 @@ general, the full type of a function looks something like this:
 functionName :
     {typeVariable, typeVariable, ...}
     (typeConstraint, typeConstraint, ...) =>
-    Input -> ... Input -> Output
+    inputType -> ... inputType -> outputType
 ```
 
 Let's make an example to work with:
@@ -1034,12 +1074,12 @@ Here we fully describe what a function looks like in Cryptol:
 functionName :
     {typeVariable, typeVariable, ...}
     (typeConstraint, typeConstraint, ...) =>
-    Input -> ... Input -> Output
-functionName input1 ... input3 =
+    inputType -> ... inputType -> outputType
+functionName input ... input =
     output
   where
-    localVariable1 = ...
-	localVariable2 = ...
+    localVariable = ...
+	localVariable = ...
 	...
 	output = ...
 ```
