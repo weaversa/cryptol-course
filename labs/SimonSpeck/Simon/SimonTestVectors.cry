@@ -62,8 +62,8 @@ P_128_256 = join [0x74206e69206d6f6f, 0x6d69732061207369]
 C_128_256 = join [0x8d2b5579afc8a3a0, 0x3bf72a87efe7b868]
 property TV_128_256 = simon_128_256::encrypt K_128_256 P_128_256 == C_128_256
 
-property all_vectors_pass = and [TV_32_64,  
-                                 TV_48_72, TV_48_96,  
-                                 TV_64_96, TV_64_128,
-                                 TV_96_96, TV_96_144, 
-                                 TV_128_128, TV_128_192, TV_128_256]
+property all_simon_vectors_pass = and [TV_32_64,  
+                                       TV_48_72, TV_48_96,  
+                                       TV_64_96, TV_64_128,
+                                       TV_96_96, TV_96_144, 
+                                       TV_128_128, TV_128_192, TV_128_256]

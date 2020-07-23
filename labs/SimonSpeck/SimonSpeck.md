@@ -3,12 +3,11 @@
 ## Prerequisites
 
  * Know how to read Cryptol and skim through a standards document
- * Know how to write Cryptol methods and use basic type parameters in their
-   definitions
+ * Know how to use basic type parameters in function definitions
 
 ## What You Will Learn
 
- * Defining and using Cryptol Parameterized Modules to define families of
+ * Defining and using Cryptol Parameterized Modules to define basic families of
    cryptographic routines
 
 ## Getting Started
@@ -53,26 +52,50 @@ This template describes how to define a generic parameterized module:
 module MyParameterizedModule where
 
 parameter
-  
-  type param_1 : #
-  type param_2 : #
-  //...
-  type param_k : #
+    /** value parameter of built-in type */
+    param_builtin: [16][8]
 
-// <<-- Variable and Function Definitions -->>
+    /** numeric type parameter; must be a finite whole number */
+    type param_NumType : #
+    type constraint (fin param_NumType, param_NumType >= 1)
+
+    /** arbitrary type parameter; must be comparable and logical */
+    type param_AnyType : *
+    type constraint (Cmp param_AnyType, Logic param_AnyType)
+
+    /** value parameter of parameter type */
+    param_val: param_AnyType
+
+/** a type defined outside parameter scope */
+type OtherType = [param_NumType]param_AnyType
+
+/** value parameter defined outside parameter scope */
+value_userdef : SomeOtherType
+
+// ...other definitions in public scope; may use parameters defined above...
+
+private
+    /** private value of parameter type */
+    value_priv_val : param_AnyType
 ```
-Type parameters `param_1`, `param_2`, *etc...* can be used to declare new types and define variables and functions throughout the module.
+Type parameters `param_builtin`, `param_NumType`, *etc...* which appear indented under
+the `parameter` keyword declare types which can be used throughout the module.
+
+We also introduce the `private` keyword here which allows the user to define 
+functions and values which are only visible from within the module -- other
+modules importing this one will not be able to directly access these definitions.
 
 New modules can import this module and specify concrete values for these parameters as follows:
 
 ```example
 module MyConcreteModule = MyParameterizedModule where
-  type param_1 = 0
-  type param_2 = 1
-  //...
-  type param_k = 127
+    param_builtin = [0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+                     0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x0e, 0x0f]
+    type param_NumType = 42
+    type param_AnyType = Bit
+    param_val = True
 ```  
-Users can then import `MyConcreteModule` which will contain all of the functionality in `MyParameterizedModule` where the functionality is specified to the concrete values.
+Users can then import `MyConcreteModule` which will contain all of the functionality in `MyParameterizedModule` where the functionality is specialized to the concrete values.
 
 # Writing a Parameterized Module for Simon
 
@@ -90,7 +113,7 @@ Furthermore, the different versions of `Simon` are named after the `block size` 
   * `block size 2*n` -- The size of the block in bits
   * `key size m*n` -- The size of the key in bits
 
-In this lab we have defined a parameterized base module and a family of derived modules in `[CRYPTOLCOURSE]/labs/SimonSpeck/Simon/`. The base module is called `Simon.cry` and the derived modules are named `simon_[bs]_[ks].cry` where `[ks]` and `[bs]` vary overy the valid block and key sized.
+In this lab we have defined a parameterized base module and a family of derived modules in `[CRYPTOLCOURSE]/labs/SimonSpeck/Simon/`. The base module is called `Simon.cry` and the derived modules are named `simon_[bs]_[ks].cry` where `[ks]` and `[bs]` vary over the valid block and key sized.
 
 Here is the header for the `Simon.cry` base module:
 
@@ -118,7 +141,10 @@ type keySize   = m * n
 // for the remainder of the Simon specificaiton.
 ```
 
-Note that four module parameters are declared (`n`, `m`, `T`, and `j`) which reflect the four from page 10 of the specification document. We are also able to declare `blockSize` and `keySize` types using these variables that match the definitions in the specification. Note that we use `j` to indicate the index of the sequence `z_j` we will use.
+Note that four module parameters are declared (`n`, `m`, `T`, and `j`) which reflect the four from page 10 of the specification document. We are also able to declare `blockSize` and `keySize` types using these variables that match the definitions in the specification. 
+
+`Simon` defines five different bit sequences `z0, ..., z4`. Note that we
+introduce the parameter `j` to indicate the which of these sequences we will use.
 
 We are also able to specify general type constraints for these parameters. The line that begins `type constraints` places some general bounds on the ranges of values that are possible for each parameter.
 
@@ -132,6 +158,7 @@ module labs::SimonSpeck::Simon::simon_32_64 = labs::SimonSpeck::Simon::Simon whe
   type T = 32
   type j = 0
 ```
+
 This code appears in the file `[CRYPTOLCOURSE]/labs/SimonSpeck/Simon/simon_32_64.cry` and defines a new module `labs::SimonSpeck::Simon::simon_32_64` with concrete values for the `simon32/64` block cipher according to the specification. The user can import this module and use the concretized `encrypt` function as follows:
 
 ```
@@ -145,96 +172,139 @@ property test_32_64 = simon_32_64::encrypt test_K test_P == test_C
 
 You can check that this test vector passes by running `:check test_32_64`.
 
+## Simon Details
+
+We will not walk through the entire implementation of Simon; however, we will
+describe some of the definitions and interesting features found in the
+specification.
+
+Additional documentation can be found in the Simon source file 
+`[CRYPTOLCOURSE]/labs/SimonSpeck/Simon/Simon.cry` which you are encouraged to
+review as part of this lab.
+
+**Bit Sequences**
+`Simon` defines five different bit sequences and each `Simon` variant selects 
+one of these to use in its definition. We could have defined a value parameter
+which could have been specified in each of the concrete `Simon` modules;
+however, the bit sequences are reused between these variants.
+
+To avoid having to rewrite the bit sequences we define all five in the base
+parameterized module as follows:
+
+```
+    // We define the sequences u, v, w, and z_j following the paper
+    u = join(repeat`{inf} 0b1111101000100101011000011100110)
+    v = join(repeat`{inf} 0b1000111011111001001100001011010)
+    w = join(repeat`{inf} 0b1000010010110011111000110111010)
+
+    z0 = u
+    z1 = v
+    z2 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} u ])
+    z3 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} v ])
+    z4 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} w ])
+
+    // Z will be the sequence selected by the module parameter j
+    Z = [z0, z1, z2, z3, z4]@(`j:[width j])
+```
+
+The module parameter `j` is then used to index into the array of these bit 
+sequences `[z0, z1, z2, z3, z4]` to select a specific sequence for each variant.
+The variable `Z` then refers to the selected sequence and is used in the
+definition of the round function.
+
+**Key Expansion**
+
+There are two interesting features of the `KeyExpansion` function in this
+implementation which stemp, ultimately, to conditionally defined behavior when 
+the number of `Simon` key words `m` is equal to `4`.
+
+Here is the code that we will be discussing:
+
+```example
+    // tmp
+    //
+    // "tmp" appears as the name of a variable in the Simon key expansion
+    // sample implementation on page 13. The tmp function below captures the 
+    // possible final values the expression has, taking into account the type 
+    // parameter `m` containing the number of key words
+    tmp: [n] -> [n] -> [n]
+    tmp k1 k2 = r
+      where 
+        r  = t ^ (t >>> 1)
+        t  = if `m == 0x4 then (t' ^ k2) else t'
+        t' = (k1 >>> 3)
+
+    // KeyExpansion
+    //
+    // The Simon Key Expansion function.                
+    KeyExpansion : [keySize] -> [T][n]
+    KeyExpansion K = take Ks
+      where
+        Kis : [m][n]
+        Kis = reverse(split K)
+        Ks : [inf][n]
+        Ks = Kis # [ ~k0 ^ (tmp k1 k2) ^ (zext [z]) ^ (zext 0x3) 
+                   | k0 <- Ks
+                   | k1 <- drop`{m-1} Ks
+                   | k2 <- drop`{max m 3  - 3} Ks // gadget to typecheck "drop`{m-3}"
+                   | z <- Z ]
+```                                      
+
+First, the `tmp` function is named to mirror the sample implementation
+found in the specification on page 13. `KeyExpansion` xors in  earlier values of
+the key expansion conditionally on whether there are four key words (`m == 4`) for
+this variant. 
+
+Note that when `m != 4`the second parameter `k2` is ignored by the conditional
+statement defining `t`.
+
+Second, in the parallel enumeration found in `KeyExpansion` we see that `k2` is 
+drawn from the sequence ```drop`{max m 3  - 3}```. The `max m 3` expression 
+guaruntees that after subtracting `3` the result is non-negative. Note that the
+value `k2` is ignored in the `tmp` function when `m != 4` and that `max m 3  - 3`
+is equivalent to `m - 3` when `m == 4`.
+
+Without the `max m 3` expression, Cryptol's type checker will detect that the
+`m - 3` could potentially be negative and suggest that an additional constraint
+`m >= 3` should be added. However, we want to allow `m` to take on the values
+`2` or `3` as well, hence add this as a workaround.
+
+Ultimately, these choices allow us to define a single `KeyExpansion` function
+for all variants of `Simon`.
+
 # Writing a Parameterized Module for Speck
 
-Now it's your turn to try writing a parameterized module. You will also get some more practice reading and writing a cryptographic specification.
+Now it's your turn to try writing a parameterized module. You will also get more
+ractice reading and writing a cryptographic specification.
 
-**Exercise** Write a parameterized module for `Speck`. Refer to Section 4 from reference [1 The corresponding `Speck` Cryptol files should be written in the `Speck` folder in this lab directory. You can use the `Simon` implementation as a reference -- many of the patterns you will encounter writing up `Speck` will mirror `Simon`.
+**Exercise** Write a parameterized module for `Speck`. Refer to Section 4 from 
+reference [1]. The corresponding `Speck` Cryptol files should be written in the
+`Speck` folder provided in this lab directory. Consider using the `Simon` 
+implementation as a reference -- many of the patterns you will encounter writing
+up `Speck` will mirror `Simon`.
 
-If you place the files in the appropriate directory, and name the files/modules as suggested in the `README.md` file, then you can check your work against the test vectors below with the following as follows (with expected output):
+If you name your files as suggested in the `Speck/FILENAMES.md` file, then you
+should be able to load the `SpeckTestVectors` module also located in the `Speck`
+folder as follows and verify that you have correctly implemented the functions:
 
 ```shell
+Cryptol> :m labs::SimonSpeck::Speck::SpeckTestVectors
 Cryptol> :prove all_speck_vectors_pass 
 Q.E.D.
 (Total Elapsed Time: 0.021s, using "Z3")
 ```
 
-**Additional Exercise** The test vectors below only test the encryption direction for `Speck`. Define the decryption direction for the round function and algorihthm and try writing properties to test that these functions are inverses. Example properties can be found in the provided `Simon` specification, you may need to try different solvers like `abc` for some property verifications to complete in a reasonable amount of time.
-
-## Speck Test Vectors
-
-```example
-import labs::SimonSpeck::Speck::speck_32_64   as speck_32_64
-import labs::SimonSpeck::Speck::speck_48_72   as speck_48_72
-import labs::SimonSpeck::Speck::speck_48_96   as speck_48_96
-import labs::SimonSpeck::Speck::speck_64_96   as speck_64_96
-import labs::SimonSpeck::Speck::speck_64_128  as speck_64_128
-import labs::SimonSpeck::Speck::speck_96_96   as speck_96_96
-import labs::SimonSpeck::Speck::speck_96_144  as speck_96_144
-import labs::SimonSpeck::Speck::speck_128_128 as speck_128_128
-import labs::SimonSpeck::Speck::speck_128_192 as speck_128_192
-import labs::SimonSpeck::Speck::speck_128_256 as speck_128_256
-
-K_32_64 = join[0x1918, 0x1110, 0x0908, 0x0100]
-P_32_64 = join[0x6574, 0x694c]
-C_32_64 = join[0xa868, 0x42f2]
-property TV_32_64 = speck_32_64::encrypt K_32_64 P_32_64 == C_32_64
-
-K_48_72 = join[0x121110, 0x0a0908, 0x020100]
-P_48_72 = join[0x20796c, 0x6c6172]
-C_48_72 = join[0xc049a5, 0x385adc]
-property TV_48_72 = speck_48_72::encrypt K_48_72 P_48_72 == C_48_72
-
-K_48_96 = join [0x1a1918, 0x121110, 0x0a0908, 0x020100]
-P_48_96 = join [0x6d2073, 0x696874]
-C_48_96 = join [0x735e10, 0xb6445d]
-property TV_48_96 = speck_48_96::encrypt K_48_96 P_48_96 == C_48_96
-
-K_64_96 = join [0x13121110, 0x0b0a0908, 0x03020100]
-P_64_96 = join [0x74614620, 0x736e6165]
-C_64_96 = join [0x9f7952ec, 0x4175946c]
-property TV_64_96 = speck_64_96::encrypt K_64_96 P_64_96 == C_64_96
-
-K_64_128 = join [0x1b1a1918, 0x13121110, 0x0b0a0908, 0x03020100]
-P_64_128 = join [0x3b726574, 0x7475432d]
-C_64_128 = join [0x8c6fa548, 0x454e028b]
-property TV_64_128 = speck_64_128::encrypt K_64_128 P_64_128 == C_64_128
-
-K_96_96 = join [0x0d0c0b0a0908, 0x050403020100]
-P_96_96 = join [0x65776f68202c, 0x656761737520]
-C_96_96 = join [0x9e4d09ab7178, 0x62bdde8f79aa]
-property TV_96_96 = speck_96_96::encrypt K_96_96 P_96_96 == C_96_96
-
-K_96_144 = join [0x151413121110, 0x0d0c0b0a0908, 0x050403020100]
-P_96_144 = join [0x656d6974206e, 0x69202c726576]
-C_96_144 = join [0x2bf31072228a, 0x7ae440252ee6]
-property TV_96_144 = speck_96_144::encrypt K_96_144 P_96_144 == C_96_144
-
-K_128_128 = join [0x0f0e0d0c0b0a0908, 0x0706050403020100]
-P_128_128 = join [0x6c61766975716520, 0x7469206564616d20]
-C_128_128 = join [0xa65d985179783265, 0x7860fedf5c570d18]
-property TV_128_128 = speck_128_128::encrypt K_128_128 P_128_128 == C_128_128
-
-K_128_192 = join [0x1716151413121110, 0x0f0e0d0c0b0a0908, 0x0706050403020100]
-P_128_192 = join [0x7261482066656968, 0x43206f7420746e65]
-C_128_192 = join [0x1be4cf3a13135566, 0xf9bc185de03c1886]
-property TV_128_192 = speck_128_192::encrypt K_128_192 P_128_192 == C_128_192
-
-K_128_256 = join [0x1f1e1d1c1b1a1918, 0x1716151413121110, 
-                  0x0f0e0d0c0b0a0908, 0x0706050403020100]
-P_128_256 = join [0x65736f6874206e49, 0x202e72656e6f6f70]
-C_128_256 = join [0x4109010405c0f53e, 0x4eeeb48d9c188f43]
-property TV_128_256 = speck_128_256::encrypt K_128_256 P_128_256 == C_128_256
-
-property all_speck_vectors_pass = and [TV_32_64,  
-                                       TV_48_72, TV_48_96,  
-                                       TV_64_96, TV_64_128,
-                                       TV_96_96, TV_96_144, 
-                                       TV_128_128, TV_128_192, TV_128_256]
-```
+**Additional Exercise** The test vectors below only test the encryption 
+direction for `Speck`. Define the decryption direction for the round function 
+and algorihthm and try writing properties and/or test vectors to verify that
+these functions are inverses. You may need to try different solvers like `abc` 
+for some property verifications to complete in a reasonable amount of time.
 
 # References
 
 [1] Beaulieu R., Shors D., et. al. "The Simon and Speck Families of Lightweight Block Ciphers". eprint-2013-404.pdf. National Security Agency. June, 2013.
+
+[2] Beaulieu R., Shors D., et. al. "SIMON and SPECK Implementation Guide".
+National Security Agency. January, 2019.
 
 

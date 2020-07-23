@@ -75,7 +75,7 @@ private
     Z = [z0, z1, z2, z3, z4]@(`j:[width j])
 
     // 
-    // Round Functions and Auxilliary 
+    // Round Function and auxilliary functions
     //
     
     // f is used in the round function and appears on page 8 of [1]
@@ -101,9 +101,10 @@ private
               
     // tmp
     //
-    // "tmp" shows up as the name of a variable in the Simon key schedule example
-    // implementation. This function is captures the final values this
-    // portion of the expression has, depending on the value number of key words `m
+    // "tmp" appears as the name of a variable in the Simon key expansion
+    // sample implementation on page 13. The tmp function below captures the 
+    // possible final values the expression has, taking into account the type 
+    // parameter `m` containing the number of key words
     tmp: [n] -> [n] -> [n]
     tmp k1 k2 = r
       where 
@@ -111,19 +112,19 @@ private
         t  = if `m == 0x4 then (t' ^ k2) else t'
         t' = (k1 >>> 3)
 
-    // KeySchedule
+    // KeyExpansion
     //
-    // The Simon Key Schedule.                
-    KeySchedule : [keySize] -> [T][n]
-    KeySchedule K = take Ks
+    // The Simon Key Expansion function.                
+    KeyExpansion : [keySize] -> [T][n]
+    KeyExpansion K = take Ks
       where
         Kis : [m][n]
-        Kis = reverse(split`{m} K)
+        Kis = reverse(split K)
         Ks : [inf][n]
         Ks = Kis # [ ~k0 ^ (tmp k1 k2) ^ (zext [z]) ^ (zext 0x3) 
                    | k0 <- Ks
                    | k1 <- drop`{m-1} Ks
-                   | k2 <- drop`{max m 3 - 3} Ks // gadget to typecheck "drop`{m-3}"
+                   | k2 <- drop`{max m 3  - 3} Ks // gadget to typecheck "drop`{m-3}"
                    | z <- Z ]
 
     // decryptList
@@ -136,7 +137,7 @@ private
     decryptList K C = Ps
       where
         Cs = split C
-        Ks = reverse(KeySchedule K)
+        Ks = reverse(KeyExpansion K)
         Ps = [Cs] # [ Rk' k xy | k <- Ks | xy <- Ps]
 
     // encryptList
@@ -149,5 +150,5 @@ private
     encryptList K P = Cs
       where
         Ps = split P
-        Ks = KeySchedule K
+        Ks = KeyExpansion K
         Cs = [Ps] # [ Rk k xy | k <- Ks | xy <- Cs]
