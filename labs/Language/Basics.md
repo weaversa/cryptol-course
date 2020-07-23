@@ -37,12 +37,14 @@ Specifically, you'll also gain experience with
   * manipulating sequences using `#`, `take`, `drop`, `split`, `join`,
     `head`, `last`, `tail`, `reverse`, `groupBy`, `map`, `iterate`,
     and `foldl`,
-  * the `sum`, `carry`, and `pmod` operators,
+  * the `sum` and `carry` operators,
   * enumerations and sequence comprehensions,
   * pattern matching,
   * `import` -- using cryptographic routines from other modules,
   * the `:check`, `:prove`, and `:sat` commands, and
   * lambda functions.
+
+!!! SEAN !!! Still need `:check`, `:prove`, `:sat`, pattern matching, and `import`.
 
 ## Load This Module
 
