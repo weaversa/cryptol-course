@@ -1016,7 +1016,7 @@ try adding more type annotations. This:
     comprehensible
   * reduces the body of code to examine for bugs (a sort of binary bug
     search)
-  * can get you to notice where you blew it
+  * can get you to notice where you mucked up
 
 ## Local Definitions
 
@@ -1259,11 +1259,10 @@ labs::Language::Basics> 2 + (if 10 < 7 then 12 else 4) + 2 : Integer
 ```
 
 **EXERCISE**: Specify the Speck2n round function from page 14 of the
-Simon and Speck specification document
-[https://eprint.iacr.org/2013/404.pdf](https://eprint.iacr.org/2013/404.pdf). Here
-we provide you with the S (rotate) functions and the inverse round
-function `R'`. There are also two properties that you can use to prove
-your work. An example of how to do this follows below.
+[Simon and Speck specification document](404.pdf). Here we provide
+you with the S (rotate) functions and the inverse round function
+`R'`. There are also two properties that you can use to prove your
+work. An example of how to do this follows below.
 
 ```cryptol
 S amount value = value <<< amount
@@ -1305,7 +1304,7 @@ correct by printing `Q.E.D.`. This means Cryptol has proven that your
 the 32-bit proof or `2^^192` for the 64-bit proof).
 
 ```shell
-labs::Language::Basics> :prove RInverseProperty`{64}
+labs::Language::Basics> :prove RInverseProperty`{32}
 Q.E.D.
 (Total Elapsed Time: 0.008s, using "Z3")
 labs::Language::Basics> :prove RInverseProperty`{64}
@@ -1477,7 +1476,7 @@ labs::Language::Basics> [[[2, 3], [5, 7]], [[11, 13], [17, 19]]] + [[[0, 1], [1,
 
   * So we don't have to write loops within loops to process these
     sorts of multidimensional arrays.
-  * All the arithmetic, bitwise logical and comparison operators work
+  * All the arithmetic, bitwise logical, and comparison operators work
     element-wise over nested sequences!
 
 ### Loop indices
@@ -1500,11 +1499,13 @@ labs::Language::Basics> [1...]
 [1, 2, 3, 4, 5, ...]
 ```
 
-So long as only a finite prefix of any "infinite" calculation is needed we're fine.
+So long as only a finite prefix of any "infinite" calculation is
+needed we're fine.
 
 ### Loops to accumulate a value
 
-Loops to accumulate a value are often simple calculations over indices.
+Loops to accumulate a value are often simple calculations over
+indices.
 
 ```shell
 labs::Language::Basics> sum [1..100]
@@ -1513,7 +1514,15 @@ labs::Language::Basics> sum [1..100]
 
 ### Loops with functions on the indices
 
-Loops with functions on the indices are written as sequence comprehensions.
+Loops with functions on the indices are written as **sequence
+comprehensions**. From the [Cryptol
+manual](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf),
+Section 1.7.2:
+
+> A Cryptol comprehension is a way of programmatically computing the
+> elements of a new sequence, out of the elements of existing
+> ones. The syntax is reminiscent of the set comprehension notation
+> from ordinary mathematics, generalized to cover parallel branches
 
 ```shell
 labs::Language::Basics> [ n^^3 | n <- [0..10] ]
@@ -1521,6 +1530,63 @@ labs::Language::Basics> [ n^^3 | n <- [0..10] ]
 ```
 
 Star Trek's (T.O.S.) warp factor light speed multipliers!
+
+We read this as "make the sequence `n^^3` where `n` draws from the
+sequence `[0..10]`. We refer to the right-hand side (`n <- [0..10]`)
+as a branch. With multiple branches, there are two choices for how the
+values are drawn from the branches, *cartesian* (`,` between
+branches), or in *parallel* (`|` between branches). For example:
+
+```shell
+labs::Language::Basics> [ (a, b) | a <- [0..3] , b <- [0..7] ]
+[(0, 0), (0, 1), (0, 2), (0, 3), (0, 4), (0, 5), (0, 6), (0, 7),
+ (1, 0), (1, 1), (1, 2), (1, 3), (1, 4), (1, 5), (1, 6), (1, 7),
+ (2, 0), (2, 1), (2, 2), (2, 3), (2, 4), (2, 5), (2, 6), (2, 7),
+ (3, 0), (3, 1), (3, 2), (3, 3), (3, 4), (3, 5), (3, 6), (3, 7)]
+labs::Language::Basics> [ (a, b) | a <- [0..3] | b <- [0..7] ]
+[(0, 0), (1, 1), (2, 2), (3, 3)]
+```
+
+These two types can mix, though this is not often found when
+specifying cryptography.
+
+```shell
+labs::Language::Basics> [ (a, b, c) | a <- [0..2] , b <- [3..4] | c <- [5..10] ]
+[(0, 3, 5), (0, 4, 6), (1, 3, 7), (1, 4, 8), (2, 3, 9), (2, 4, 10)]
+```
+
+The previously described functional programming idioms can all be
+implemented using sequence comprehension. For example:
+
+  * `map`
+    ```shell
+    labs::Language::Basics> let sum (a, b) = a + b
+    labs::Language::Basics> map sum [ (1, 2), (3, 4), (4, 5) ]
+    [3, 7, 9]
+    labs::Language::Basics> [ sum (a, b) | (a, b) <- [ (1, 2), (3, 4), (4, 5) ] ]
+    [3, 7, 9]
+    ```
+  * `iterate`
+    ```shell
+    labs::Language::Basics> let skipBy a x = x + a
+    labs::Language::Basics> iterate (skipBy 3) 0
+    [0, 3, 6, 9, 12, ...]
+    labs::Language::Basics> let seq = [0] # [ skipBy 3 s | s <- seq ]
+    labs::Language::Basics> seq
+    [0, 3, 6, 9, 12, ...]
+    ```
+  * `scanl` and `foldl`
+    ```shell
+    labs::Language::Basics> scanl (+) 0 [1, 2, 3, 4, 5]
+    [0, 1, 3, 6, 10, 15]
+    labs::Language::Basics> let seq = [0] # [ a + b | a <- seq | b <- [1, 2, 3, 4, 5] ]
+    labs::Language::Basics> seq
+    [0, 1, 3, 6, 10, 15]
+    labs::Language::Basics> foldl (+) 0 [1, 2, 3, 4, 5]
+    15
+    labs::Language::Basics> last seq
+    15
+    ```
 
 ### Loops that modify an accumulator in place
 
@@ -1534,7 +1600,7 @@ keyExpand : [32] -> [10][32]
 keyExpand key = take roundKeys // take leverages the type signature
   where
     roundKeys : [inf][32]  // a conceptually infinite list
-    roundKeys = [key] # [roundKey <<< 1 | roundKey <- roundKeys]
+    roundKeys = [key] # [ roundKey <<< 1 | roundKey <- roundKeys ]
 
 encrypt : [32] -> [32] -> [32]
 encrypt key plainText = cipherText
@@ -1563,9 +1629,6 @@ Notice that both `roundKeys` in `keyExpand` and `roundResults` in
 occur when coding up cryptography.
 
 
-**EXERCISE**:
-
-
 ## Laziness
 
 Cryptol's evaluation strategy is
@@ -1574,10 +1637,10 @@ a.k.a. "call-by-need". I.e., computations are not performed until
 necessary. So
 
 ```cryptol
-abs : Integer -> Integer
+abs : [32] -> [32]
 abs n = if n >= 0 then n else -n
 
-lazyAbsMin : Integer -> Integer -> Integer
+lazyAbsMin : [32] -> [32] -> [32]
 lazyAbsMin x y = if x == 0 then 0 else min (abs x) (abs y)
 ```
 
@@ -1589,12 +1652,8 @@ labs::Language::Basics> lazyAbsMin 1 (0/0)
 
 division by 0
 labs::Language::Basics> lazyAbsMin 0 (0/0)
-0
+0x00000000
 ```
-
-**EXERCISE**:
-
-
 
 # Here Abide Monsters
 
