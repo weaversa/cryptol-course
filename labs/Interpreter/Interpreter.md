@@ -209,7 +209,7 @@ Type Synonyms
 ```
 
 Type synonyms are helper functions used to express the type of some
-data. For example, The integer `10` can be expressed as a 32-bit word
+data. For example, The number `10` can be expressed as a 32-bit word
 via,
 
 ```shell
@@ -228,7 +228,7 @@ include comparison and arithmetic operators, type classes, basic
 types, and some type constraints that help with expressing some
 cryptographic type constraints elegantly. These are used when defining
 the type of a function or variable. For example, the size of a
-bitvector can be represented in terms of the width of an integer:
+bitvector can be represented in terms of the width of a number:
 
 ```shell
 labs::Interpreter::Interpreter> :t 10 : [width 32]
@@ -239,7 +239,7 @@ In the last section you'll see with `:b` are Cryptol's symbols. This
 is where you'll find all of the value operators (as opposed to type
 operators). These are used when defining the value of a function or
 variable. For example, `reverse` can be used to reverse the order of a
-sequence of integers:
+sequence of bitvectors:
 
 ```shell
 labs::Interpreter::Interpreter> reverse [1, 2, 3] : [3][2]
