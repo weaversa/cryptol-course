@@ -54,7 +54,7 @@ The interpreter has a number of different configuration settings. To
 view them type `:set`.
 
 ```shell
-labs::Interpreter::Interpreter :set
+labs::Interpreter::Interpreter> :set
 ascii = off
 base = 16
 core-lint = off
@@ -79,9 +79,9 @@ The most common setting to change is `base`. The default is `base =
 their hexadecimal representations. For example,
 
 ```shell
-labs::Interpreter::Interpreter 0xa
+labs::Interpreter::Interpreter> 0xa
 0xa
-labs::Interpreter::Interpreter 10 : [4]
+labs::Interpreter::Interpreter> 10 : [4]
 0xa
 ```
 
@@ -89,10 +89,10 @@ To make the interpreter display bitvectors in decimal (base 10) type
 `:set base=10`.
 
 ```shell
-labs::Interpreter::Interpreter :set base=10
-labs::Interpreter::Interpreter 0xa
+labs::Interpreter::Interpreter> :set base=10
+labs::Interpreter::Interpreter> 0xa
 10
-labs::Interpreter::Interpreter 10 : [4]
+labs::Interpreter::Interpreter> 10 : [4]
 10
 ```
 
@@ -111,7 +111,7 @@ example, if we'd like to know more about the `:set base` command, we
 can type:
 
 ```shell
-labs::Interpreter::Interpreter :h :set base
+labs::Interpreter::Interpreter> :h :set base
 
     base = 10
 
@@ -124,7 +124,7 @@ Cryptol has a built-in command to reverse a list, called
 `reverse`. Let's look at the help for this command.
 
 ```shell
-labs::Interpreter::Interpreter :h reverse
+labs::Interpreter::Interpreter> :h reverse
 
     reverse : {n, a} (fin n) => [n]a -> [n]a
 
@@ -139,7 +139,7 @@ do not. The colon commands are commands that are outside of the
 Cryptol language, and only exist in the interpreter. You can see a full listing of these commands by typing `:h`.
 
 ```shell
-labs::Interpreter::Interpreter :h
+labs::Interpreter::Interpreter> :h
   :t, :type            Check the type of an expression.
   :b, :browse          Display environment for all loaded modules, or for a specific module.
   :?, :help            Display a brief description of a function, type, or command.
@@ -173,10 +173,10 @@ labs::Interpreter::Interpreter :h
                        number of tests is determined by the "tests" option.
 ```
 
-The most used commands have to do with files (loading `:l`, editing
-`:e`, and reloading `:r` a file), quitting the interpreter `:q`, and
-asking for the type of an expression `:t`. Many of the commands have
-single character shortcuts for ease of use.
+The most used commands have to do with files (loading `:m` and
+reloading `:r` modules), quitting the interpreter `:q`, and asking for
+the type of an expression `:t`. Many of the commands have single
+character shortcuts for ease of use.
 
 
 ## Browsing the Environment
@@ -193,7 +193,7 @@ About `:browse` --- If you enter `:b` into the interpreter you will
 first see:
 
 ```shell
-labs::Interpreter::Interpreter :b
+labs::Interpreter::Interpreter> :b
 Type Synonyms
 =============
 
@@ -209,11 +209,11 @@ Type Synonyms
 ```
 
 Type synonyms are helper functions used to express the type of some
-data. For example, The integer `10` can be expressed as a 32-bit word
+data. For example, The number `10` can be expressed as a 32-bit word
 via,
 
 ```shell
-labs::Interpreter::Interpreter 10 : Word 32
+labs::Interpreter::Interpreter> 10 : Word 32
 0x0000000a
 ```
 
@@ -228,10 +228,10 @@ include comparison and arithmetic operators, type classes, basic
 types, and some type constraints that help with expressing some
 cryptographic type constraints elegantly. These are used when defining
 the type of a function or variable. For example, the size of a
-bitvector can be represented in terms of the width of an integer:
+bitvector can be represented in terms of the width of a number:
 
 ```shell
-labs::Interpreter::Interpreter :t 10 : [width 32]
+labs::Interpreter::Interpreter> :t 10 : [width 32]
 (10 : [width 32]) : [6]
 ```
 
@@ -239,10 +239,10 @@ In the last section you'll see with `:b` are Cryptol's symbols. This
 is where you'll find all of the value operators (as opposed to type
 operators). These are used when defining the value of a function or
 variable. For example, `reverse` can be used to reverse the order of a
-sequence of integers:
+sequence of bitvectors:
 
 ```shell
-labs::Interpreter::Interpreter reverse [1, 2, 3] : [3][2]
+labs::Interpreter::Interpreter> reverse [1, 2, 3] : [3][2]
 [0x3, 0x2, 0x1]
 ```
 
@@ -274,10 +274,10 @@ result `[3, 2, 1]` is automatically bound to the `it` symbol. We can
 then `reverse it` and see that we get `[1, 2, 3]` back.
 
 ```shell
-labs::Interpreter::Interpreter :s base=10
-labs::Interpreter::Interpreter reverse [1, 2, 3] : [3][2]
+labs::Interpreter::Interpreter> :s base=10
+labs::Interpreter::Interpreter> reverse [1, 2, 3] : [3][2]
 [3, 2, 1]
-labs::Interpreter::Interpreter reverse it
+labs::Interpreter::Interpreter> reverse it
 [1, 2, 3]
 ```
 
@@ -288,12 +288,12 @@ example, here we bind the result of `reverse [1, 2, 3] : [3][2]` to
 `r` still retains `[3, 2, 1]`.
 
 ```shell
-labs::Interpreter::Interpreter let r = reverse [1, 2, 3] : [3][2]
-labs::Interpreter::Interpreter r
+labs::Interpreter::Interpreter> let r = reverse [1, 2, 3] : [3][2]
+labs::Interpreter::Interpreter> r
 [3, 2, 1]
-labs::Interpreter::Interpreter reverse r
+labs::Interpreter::Interpreter> reverse r
 [1, 2, 3]
-labs::Interpreter::Interpreter r
+labs::Interpreter::Interpreter> r
 [3, 2, 1]
 ```
 
@@ -307,18 +307,17 @@ these kinds of definitions in a file and use the `:reload` (or `:r`)
 command when editing to maintain a consistent state.
 
 ```shell
-labs::Interpreter::Interpreter let x = 0
-labs::Interpreter::Interpreter let y = x + 1
-labs::Interpreter::Interpreter let x = 1
+labs::Interpreter::Interpreter> let x = 0
+labs::Interpreter::Interpreter> let y = x + 1
+labs::Interpreter::Interpreter> let x = 1
 ```
 
 
 ## Loading and Reloading Files
 
-Speaking of loading files, there is a simple Cryptol file in the same
-directory as this lab (`labs/Interpreter/test.cry`). If you run
-Cryptol from the root of this repository, you can load this file using
-`:l` like so:
+Speaking of loading files, this lab can be loaded directly into the
+interpreter. If you run Cryptol from the root of this repository, you
+can load this file using `:l` like so:
 
 ```shell
 [cryptol-course]$ cryptol
@@ -328,14 +327,14 @@ Cryptol from the root of this repository, you can load this file using
 version 2.8.0
 
 Loading module Cryptol
-Cryptol> :l labs/Interpreter/test.cry
+Cryptol> :l labs/Interpreter/Interpreter.md
 Loading module Cryptol
-Loading module labs::Interpreter::test
-labs::Interpreter::test>
+Loading module labs::Interpreter::Interpreter
+labs::Interpreter::Interpreter>
 ```
 
 Here we see that this file contains a module named
-`labs::Interpreter::test`, which really just describes it's filename
+`labs::Interpreter::Interpreter`, which really just describes it's filename
 and directory path from the root of the repository.
 
 We can browse the currently loaded module to see what new symbols it
@@ -344,7 +343,7 @@ only need to type `:b l` then press the TAB key and the interpreter
 will fill in the rest.
 
 ```shell
-labs::Interpreter::test> :b labs::Interpreter::test
+labs::Interpreter::Interpreter> :b labs::Interpreter::Interpreter
 Type Synonyms
 =============
 
@@ -391,9 +390,9 @@ cryptol-course]$ cryptol
 version 2.8.0
 
 Loading module Cryptol
-Cryptol> :m labs::Interpreter::test
-Loading module labs::Interpreter::test
-labs::Interpreter::test>
+Cryptol> :m labs::Interpreter::Interpreter
+Loading module labs::Interpreter::Interpreter
+labs::Interpreter::Interpreter>
 ```
 
 ## Editing
@@ -475,7 +474,7 @@ list](https://groups.google.com/a/galois.com/forum/#!forum/cryptol-users).
 
 ## Miscellaneous
 
-Here are a few miscellaneous definitions so that the the browse
+Here are a few miscellaneous definitions so that the browse
 command has something to show after loading this module.
 
 ```cryptol

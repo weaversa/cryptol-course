@@ -29,14 +29,14 @@ interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```shell
-Cryptol> :m labs::Demos::NQueens
+Cryptol> :m labs::Demos::Cryptol::NQueens
 ```
 
 We start by defining a new module for this lab and importing some accessory
 modules that we will use:
 
 ```cryptol
-module labs::Demos::NQueens where
+module labs::Demos::Cryptol::NQueens where
 ```
 
 # N-Queens
@@ -195,8 +195,8 @@ The instructions for [1] also work here:
 Here is one possible outcome for `n = 8`:
 
 ```shell
-labs::Demos::NQueens> :s base=10
-labs::Demos::NQueens> :sat nQueens : (Solution 8)
+labs::Demos::Cryptol::NQueens> :s base=10
+labs::Demos::Cryptol::NQueens> :sat nQueens : (Solution 8)
 (nQueens : Solution 8)
   [1, 7, 5, 0, 2, 4, 6, 3] = True
 (Total Elapsed Time: 0.053s, using "Z3")

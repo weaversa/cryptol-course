@@ -2,13 +2,16 @@
 
 All of the Cryptol course material (presentations, labs, supporting
 data files) is available on
-[GitHub](https://github.com/weaversa/cryptol-course). You can clone or
-download the files using the green `clone` button on the GitHub page,
-or you can use the command line to acquire a copy by ensuring you're
-in a writable working directory and issuing `git clone
+[GitHub](https://github.com/weaversa/cryptol-course). You can
+   * clone or download the files using the green `clone` button on the
+GitHub page,
+   * download a zip file by clicking
+[here](https://github.com/weaversa/cryptol-course/archive/master.zip),
+   * use the command line to acquire a copy by ensuring you're in a
+writable working directory and issuing `git clone
 https://github.com/weaversa/cryptol-course.git` *(no password or keys
-required)*, or if you don't have `git` installed, `curl -L
--ocryptol-course.zip
+required)*, or
+   * if you don't have `git` installed, `curl -L -ocryptol-course.zip
 https://github.com/weaversa/cryptol-course/archive/master.zip && unzip
 cryptol-course.zip`.
 
@@ -23,14 +26,58 @@ the material directly from the GitHub website.
 
 This course currently focuses on learning to program in Cryptol. As
 such, you will need to be able to run the Cryptol
-interpreter. Supported platforms include up-to-date CentOS, Ubuntu,
-MacOS, and Windows 10.
+interpreter. Supported platforms include **up-to-date** CentOS,
+Ubuntu, MacOS, and Windows 10.
 
 Some challenge labs make use of SAW, a companion verification tool
 associated with Cryptol. However, SAW is not a requirement for success
 here.
 
-## Option 1: Docker (*Preferred Installation Method*)
+## Recommended Installation Instructions (Visual Studio Code + Docker)
+
+1. Download [the Cryptol course
+   repository](https://github.com/weaversa/cryptol-course/archive/master.zip)
+   and unzip it somewhere on your computer.
+2. Install Docker:
+   [https://docs.docker.com/get-docker](https://docs.docker.com/get-docker)
+3. Install Visual Studio Code:
+   [https://code.visualstudio.com](https://code.visualstudio.com)
+4. Install the Remote Containers Visual Studio Code Extension
+   (`ms-vscode-remote.remote-containers`). This can be done within
+   Visual Studio Code from the Extensions panel which you can open by
+   clicking "View" -> "Extensions".
+5. Open Visual Studio Code and
+   * click "File" -> "Open Folder..." (or just "Open..." on OSX).
+   * Select the directory where you unzipped this repository. **Visual
+     Studio will detect the remote container and prompt you -- choose
+     "Reopen in Container"**.
+     If you miss the prompt, click the `><` box (hovertext: 
+     "open a remote window") in the lower left hand corner of the window 
+     and choose "Remote-Containers: Reopen in Container".
+   * It will take a while for Docker to build the container. Once it's
+     done you can run Cryptol by clicking "Terminal" -> "Run Task..."
+     -> "Cryptol".
+
+If a terminal window appears with the Cryptol logo, you're done. Feel
+free to load the next lab into the interpreter by typing:
+
+```shell
+Cryptol> :m labs::Overview::Overview
+```
+
+You may now start using Visual Studio Code to work through the
+course. We hope you enjoy learning Cryptol!
+
+Link to the next lab: [Cryptol and SAW
+Overview](labs/Overview/Overview.md).
+
+## Installation Instructions for Expert Users
+
+More involved instructions follow for those powerusers that are
+familiar with installing and using terminal-based tools and that want
+a more customized environment in which to program Cryptol.
+
+### Option 1: Docker
 
 [Docker](https://www.docker.com) containers are available for both
 [Cryptol](https://hub.docker.com/repository/docker/cryptolcourse/cryptol)
@@ -60,7 +107,7 @@ $ docker pull cryptolcourse/saw
 You should now test your installation by running Cryptol. Instructions
 can be found by scrolling down to the "Running Cryptol" section.
 
-## Option 2: Homebrew
+### Option 2: Homebrew
 
 [Homebrew](https://brew.sh) is a package manager for MacOS, Linux, and
 Windows Subsystem for Linux. Instructions for installing Homebrew can
@@ -79,9 +126,9 @@ Unfortunately, SAW is not available via Homebrew.
 You should now test your installation by running Cryptol. Instructions
 can be found by scrolling down to the "Running Cryptol" section.
 
-## Option 3: Downloading pre-built Cryptol and SAW binaries
+### Option 3: Downloading pre-built Cryptol and SAW binaries
 
-### Downloading Cryptol and SAW
+#### Downloading Cryptol and SAW
 
 Galois provides releases of Cryptol at
 https://cryptol.net/downloads.html and releases of SAW at
@@ -110,7 +157,7 @@ explanatory.*
 *Prebuilt SAW binaries for CentOS, Ubuntu, and MacOS can be found
 here: https://saw.galois.com/*
 
-### Downloading Z3
+#### Downloading Z3
 
 Both Cryptol and SAW require a tool called `z3`. This tool is not
 bundled with Cryptol or SAW, so it must be installed separately.

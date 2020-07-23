@@ -41,16 +41,18 @@ jobs:
 language: c
 script:
   - export CRYPTOLPATH=$(pwd)
+# README tests
+  - cryptol -e -c ":m README" -c ":prove"
 # Interpreter lab tests
   - cryptol -e -c ":m labs::Interpreter::Interpreter" -c ":s base=10" -c "x + 2"
 #  - cryptol -e -b labs/Interpreter/test.sry
 # Arithmetic verification tests
-  - "! command -v saw >/dev/null 2>&1 || make -C labs/saw/ArithmeticVerifications"
+  - "! command -v saw >/dev/null 2>&1 || make -C labs/Demos/SAW/ArithmeticVerifications"
 # Bittwiddling lab tests
-  - cryptol -e -c ":m labs::saw::Bittwiddling::Bittwiddling"
-  - clang -emit-llvm -c labs/saw/Bittwiddling/bittwiddling.c -o labs/saw/Bittwiddling/bittwiddling.bc
-  - cryptol -e -c ":m labs::saw::Bittwiddling::BittwiddlingAnswers"
-  - "! command -v saw >/dev/null 2>&1 || saw labs/saw/Bittwiddling/BittwiddlingAnswers.saw"
+  - cryptol -e -c ":m labs::Demos::SAW::Bittwiddling::Bittwiddling"
+  - clang -emit-llvm -c labs/Demos/SAW/Bittwiddling/bittwiddling.c -o labs/Demos/SAW/Bittwiddling/bittwiddling.bc
+  - cryptol -e -c ":m labs::Demos::SAW::Bittwiddling::BittwiddlingAnswers"
+  - "! command -v saw >/dev/null 2>&1 || saw labs/Demos/SAW/Bittwiddling/BittwiddlingAnswers.saw"
 # Salsa20 lab tests
   - cryptol -e -c ":m labs::Salsa20::Salsa20"
   - cryptol -e -c ":m labs::Salsa20::Salsa20Answers"
@@ -65,11 +67,11 @@ script:
   - cryptol -e -c ":m labs::LoremIpsum::LoremIpsum"
   - cryptol -e -c ":m labs::LoremIpsum::LoremIpsumAnswers"
   - cryptol -e -c ":m labs::LoremIpsum::KLI20"
-# Demo lab tests
-  - cryptol -e -c ":m labs::Demos::Caesar"
-  - cryptol -e -c ":m labs::Demos::OneTimePad"
-  - cryptol -e -c ":m labs::Demos::NQueens"
-  - cryptol -e -c ":m labs::Demos::Sudoku"
+# Cryptol demo lab tests
+  - cryptol -e -c ":m labs::Demos::Cryptol::Caesar"
+  - cryptol -e -c ":m labs::Demos::Cryptol::OneTimePad"
+  - cryptol -e -c ":m labs::Demos::Cryptol::NQueens"
+  - cryptol -e -c ":m labs::Demos::Cryptol::Sudoku"
 # Overview lab tests
   - cryptol -e -c ":m labs::Overview::Overview"
 # Language Basics lab tests

@@ -21,7 +21,8 @@ digraph G {
   Overview [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Overview/Overview.md"];
   Interpreter [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Interpreter/Interpreter.md"];
   LanguageBasics [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Language/Basics.md"];
-  Demos [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Demos/Demos.md"];
+  CryptolDemos [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Demos/Cryptol/Demos.md"];
+  SAWDemos [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Demos/SAW/Demos.md"];
   CRC [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/CRC/CRC.md"];
   Salsa20 [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Salsa20/Salsa20.md"];
   Salsa20Properties [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Salsa20/Salsa20Props.md"];
@@ -29,8 +30,6 @@ digraph G {
   KeyWrapping [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/KeyWrapping/KeyWrapping.md"];
   Capstone [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/LoremIpsum/LoremIpsum.md"];
   ProjectEuler [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/ProjectEuler/ProjectEuler.md"];
-  BitTwiddling [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/saw/bittwiddling/bittwiddling.md"];
-  ArithmeticVerifications [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/saw/ArithmeticVerifications/ArithmeticVerifications.md"];
 
   // Fixing up node labels for ones that need a space
   LanguageBasics          [label="Language\nBasics"];
@@ -38,8 +37,8 @@ digraph G {
   CryptographicProperties [label="Cryptographic\nProperties"];
   KeyWrapping             [label="Key Wrapping"];
   ProjectEuler            [label="Project\nEuler"];
-  BitTwiddling            [label="Bit Twiddling"];
-  ArithmeticVerifications [label="Arithmetic\nVerifications"]
+  CryptolDemos            [label="Cryptol\nDemos"];
+  SAWDemos                [label="SAW\nDemos"];
 
   // The Suggested Flow with Red Arrows
   edge [color=red];
@@ -59,13 +58,10 @@ digraph G {
   //CRC -> Capstone;
   //LanguageBasics -> Salsa20;
   //LanguageBasics -> KeyWrapping;
-  LanguageBasics -> Demos;
+  LanguageBasics -> CryptolDemos;
+  LanguageBasics -> SAWDemos;
   //Salsa20 -> Capstone;
-  LanguageBasics -> BitTwiddling;
-  LanguageBasics -> ArithmeticVerifications;
 
   {rank=same; Salsa20Properties -> ProjectEuler [style=invis];};
-
-  {rank=same; Demos -> ArithmeticVerifications [style=invis]; ArithmeticVerifications -> BitTwiddling [style=invis];}
 
 }
