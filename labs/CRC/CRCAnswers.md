@@ -93,7 +93,7 @@ Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCrypto
 We'll also need a message `M` which is simply a sequence of `m`
 bits. Notice that the definition from [2] tells us that `M` is
 extended (concatenated) with `n` zeroes prior to performing the
-modulus operation. Cryptol supports multiplying (`pmul`), dividing
+modulus operation. Cryptol supports multiplying (`pmult`), dividing
 (`pdiv`), and performing the modulus (`pmod`) of polynomials. This is
 more than we need to define a simple CRC function.
 
