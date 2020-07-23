@@ -32,7 +32,7 @@ Before working through this lab, you'll need
   * the Software Analysis Workbench (SAW) to be installed,
   * this module to load successfully, and
   * an editor for completing the exercises in this file.
-  
+
 A pre-compiled bitcode file is provided so that you don't need to
 compile the sample C code. If you want to compile the C code yourself,
 you'll need to install the [Clang C
@@ -40,7 +40,7 @@ compiler](https://clang.llvm.org/). **SAW usually lags behind Clang
 releases. Check here
 (https://github.com/GaloisInc/saw-script#notes-on-llvm) for a list of
 supported versions of Clang.**
-
+  
 You'll also need experience with
   * loading modules and evaluating functions in the interpreter,
   * Cryptol's sequence types,
@@ -67,34 +67,14 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-Cryptol> :m labs::saw::Bittwiddling::Bittwiddling
+Cryptol> :m labs::Demos::SAW::Bittwiddling::BittwiddlingAnswers
 ```
 
 We start by defining a new module for this lab:
 
 ```cryptol
-module labs::saw::Bittwiddling::Bittwiddling where
+module labs::Demos::SAW::Bittwiddling::BittwiddlingAnswers where
 ```
-
-## Parity Exercise
-
-In mathematics, the
-[parity](https://en.wikipedia.org/wiki/Parity_(mathematics)) of an
-integer simply says whether it is even or odd. For a set of bits, we
-extend this definition to finding the parity of the sum of the
-bits. For example, the parity `0b0011` is even (the sum of the bits is
-2) while `0b1110` is odd (the sum of the bits is 3). Rather than
-returning "even" or "odd", we can return "0" if it's even or "1" if
-it's odd; since "0" often represents "false" on a computer and "1"
-represents "true", the parity function may return one of the Boolean
-values.
-
-A straightforward way to calculate the parity of a set of bits is to
-XOR all of the bits together: if there's an even number of 1s, the
-result is 0, and if there's an odd number of 1s, the result is 1. We
-will write a generic parity function and then compare it to three
-different lengths: one for a byte (8 bits), one for a word (32 bits),
-and one for a double word (64 bits).
 
 ### Parity
 
@@ -104,7 +84,7 @@ function works correctly.
 
 ```cryptol
 parity : {n} (fin n) => [n] -> Bit
-parity w = undefined
+parity w = foldl (^) False w
 ```
 
 ```cryptol
@@ -139,7 +119,7 @@ below to verify that your function works correctly.
 
 ```cryptol
 reverseByte : [8] -> [8]
-reverseByte b = undefined
+reverseByte b = reverse b
 ```
 
 ```cryptol
@@ -159,7 +139,9 @@ help you verify that your function works correctly.
 
 ```cryptol
 anyZeroByte : {n} (fin n) => [n*8] -> Bit
-anyZeroByte w = undefined
+anyZeroByte w = any ((==) 0) bytes
+  where
+    bytes = groupBy`{8} w
 ```
 
 ```cryptol

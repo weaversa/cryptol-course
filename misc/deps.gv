@@ -29,8 +29,6 @@ digraph G {
   KeyWrapping [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/KeyWrapping/KeyWrapping.md"];
   Capstone [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/LoremIpsum/LoremIpsum.md"];
   ProjectEuler [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/ProjectEuler/ProjectEuler.md"];
-  BitTwiddling [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/saw/bittwiddling/bittwiddling.md"];
-  ArithmeticVerifications [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/saw/ArithmeticVerifications/ArithmeticVerifications.md"];
 
   // Fixing up node labels for ones that need a space
   LanguageBasics          [label="Language\nBasics"];
@@ -38,8 +36,6 @@ digraph G {
   CryptographicProperties [label="Cryptographic\nProperties"];
   KeyWrapping             [label="Key Wrapping"];
   ProjectEuler            [label="Project\nEuler"];
-  BitTwiddling            [label="Bit Twiddling"];
-  ArithmeticVerifications [label="Arithmetic\nVerifications"]
 
   // The Suggested Flow with Red Arrows
   edge [color=red];
@@ -61,11 +57,7 @@ digraph G {
   //LanguageBasics -> KeyWrapping;
   LanguageBasics -> Demos;
   //Salsa20 -> Capstone;
-  LanguageBasics -> BitTwiddling;
-  LanguageBasics -> ArithmeticVerifications;
 
   {rank=same; Salsa20Properties -> ProjectEuler [style=invis];};
-
-  {rank=same; Demos -> ArithmeticVerifications [style=invis]; ArithmeticVerifications -> BitTwiddling [style=invis];}
 
 }
