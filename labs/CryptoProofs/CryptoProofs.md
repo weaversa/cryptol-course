@@ -271,6 +271,11 @@ be used to prove that a function is injective.
 Show that, for any given key, `DES.encrypt` is injective
 (collision-free) with respect to plaintext.
 
+Technically, `DES.encrypt` (for any given key) is also *surjective*
+(*onto*) due to the fact that its domain and range are the same (The
+set of all possible 64-bit vectors.) A function that is both injective
+and surjective is called *bijective*.
+
 *Hint*: Use the Boolector prover. (Even then, this proof may take a
 few minutes!)
 
