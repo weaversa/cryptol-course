@@ -474,7 +474,7 @@ list](https://groups.google.com/a/galois.com/forum/#!forum/cryptol-users).
 
 ## Miscellaneous
 
-Here are a few miscellaneous definitions so that the the browse
+Here are a few miscellaneous definitions so that the browse
 command has something to show after loading this module.
 
 ```cryptol
