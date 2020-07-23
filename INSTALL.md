@@ -51,6 +51,9 @@ here.
    * Select the directory where you unzipped this repository. **Visual
      Studio will detect the remote container and prompt you -- choose
      "Reopen in Container"**.
+     If you miss the prompt, click the `><` box (hovertext: 
+     "open a remote window") in the lower left hand corner of the window 
+     and choose "Remote-Containers: Reopen in Container".
    * It will take a while for Docker to build the container. Once it's
      done you can run Cryptol by clicking "Terminal" -> "Run Task..."
      -> "Cryptol".
