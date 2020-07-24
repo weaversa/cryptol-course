@@ -192,6 +192,27 @@ labs::Language::Basics> OVLab::RotWord [1, 2, 3, 4]
 [0x02, 0x03, 0x04, 0x01]
 ```
 
+Imports can be further refined with _definition lists_, which specify 
+which definitions to include (or exclude) from the imported modules:
+
+```comment
+// imports `product` and `distinct` from the NQueens demo
+import labs::Demos::Cryptol::NQueens (product, distinct) 
+
+// imports all _except_ the listed test definitions from the CRC spec
+import labs::CRC::CRC hiding (
+  CRCSimpleTest, testM, CRCSimple_QTest, CRCSimple_XFERTest, 
+  CRC32_BZIP2Test, CRC32_CTest, CRC32_DTest, CRC32_MPEG2Test, 
+  CRC32_POSIXTest, CRC32_QTest, CRC32_JAMCRCTest, CRC32_XFERTest
+)
+
+// imports `littlendian`(`'`) functions, prefixed with `Salsa20`
+import labs::Salsa20::Salsa20 as Salsa20 (littleendian, littleendian')
+
+// imports all except `inc` functions from `ProjectEuler`, prefixed as PE
+import labs::ProjectEuler::ProjectEuler as PE hiding (inc, inc1001)
+```
+
 Cryptol's module system supports also parameters, but that is covered
 in a later lab.
 
