@@ -164,7 +164,7 @@ For more information on lambda functions in Cryptol, see Section
 1.13.3 of [Programming
 Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf).
 
-**EXERCISE** 2.1.1 Reverse DES.encrypt
+**EXERCISE**: 2.1.1 Reverse DES.encrypt
 
 Given the following key and ciphertext, find the plaintext using only
 the solver and the `DES.encrypt` function. To do this, head over to
@@ -191,7 +191,7 @@ labs::CryptoProofs::CryptoProofs> :s prover=any
 ```
 
 
-**EXERCISE** 2.1.2 Breaking DES
+**EXERCISE**: 2.1.2 Breaking DES
 
 Given the following matched plaintext and ciphertext, ask the solver
 to find the key. Will this work? Why or why not? (*Hint*: see
@@ -241,7 +241,7 @@ Here's the breakdown of this proof:
 | "Prove to me" | "that for all `x`" | "it is true that" | "`g` inverts `f`" |
 |||||
 
-**EXERCISE** 2.2.1 The other direction
+**EXERCISE**: 2.2.1 The other direction
 
 Our example proof showed that `g` inverts `f` for all inputs. Does
 this work the other way around? Try it! If the proof fails, it will
@@ -249,7 +249,7 @@ provide a *counterexample*. Use the counterexample to understand what
 went wrong.
 
 
-**EXERCISE** 2.2.2 DES inversion
+**EXERCISE**: 2.2.2 DES inversion
 
 Use Cryptol to prove that `DES.encrypt` and `DES.decrypt` are inverses
 for all possible inputs. Show both directions.
@@ -266,7 +266,7 @@ A function for which every input generates a distinct output is
 referred to in mathematics as *injective* or *one-to-one*. Cryptol can
 be used to prove that a function is injective.
 
-**EXERCISE** 2.3.1 DES Injectivity
+**EXERCISE**: 2.3.1 DES Injectivity
 
 Show that, for any given key, `DES.encrypt` is injective
 (collision-free) with respect to plaintext.
@@ -293,7 +293,7 @@ collisions are inevitable, but should be difficult to discover. It is
 easy in Cryptol to ask the solver to search for collisions. (Though
 finding a solution may not be possible.)
 
-**EXERCISE** 2.4.1 DES Key Collisions
+**EXERCISE**: 2.4.1 DES Key Collisions
 
 Use the solver to find two different keys and a single plaintext such
 that both keys encrypt that plaintext to the same ciphertext.
@@ -312,7 +312,7 @@ One of the most powerful uses of Cryptol's theorem proving technology
 is the ability to show equivalence of two different functions for all
 possible inputs.
 
-**EXERCISE** 2.5.1 DES Equivalent Keys
+**EXERCISE**: 2.5.1 DES Equivalent Keys
 
 Prove that the two keys you just found are equivalent keys. That is,
 prove that these two keyed DES functions are equivalent for *all*
@@ -321,7 +321,7 @@ plaintext inputs.
 *Hint*: Use the `abc` prover.
 
 
-**EXERCISE** 2.5.2 DES Parity Bits
+**EXERCISE**: 2.5.2 DES Parity Bits
 
 Having equivalent keys is often considered a weakness in an a
 cipher. However, in the case of DES, it turns out that this is a
@@ -341,7 +341,7 @@ DESFixParity = zero // Replace "zero" with your code
 ```
 
 
-**EXERCISE** 2.5.3 Proving DES Key Equivalence
+**EXERCISE**: 2.5.3 Proving DES Key Equivalence
 
 Use the function `DESFixParity` that you wrote above to show that DES
 completely ignores parity bits. That is, prove that the DES encryption
