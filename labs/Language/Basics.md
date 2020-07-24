@@ -192,7 +192,7 @@ labs::Language::Basics> OVLab::RotWord [1, 2, 3, 4]
 [0x02, 0x03, 0x04, 0x01]
 ```
 
-Imports can be further refined with _definition lists_, which specify 
+Imports can be further refined with _import lists_, which specify 
 which definitions to include (or exclude) from the imported modules:
 
 ```comment
@@ -206,10 +206,10 @@ import labs::CRC::CRC hiding (
   CRC32_POSIXTest, CRC32_QTest, CRC32_JAMCRCTest, CRC32_XFERTest
 )
 
-// imports `littlendian`(`'`) functions, prefixed with `Salsa20`
+// imports `littlendian`(`'`) functions, prefaced with `Salsa20::`
 import labs::Salsa20::Salsa20 as Salsa20 (littleendian, littleendian')
 
-// imports all except `inc` functions from `ProjectEuler`, prefixed as PE
+// imports all except `inc` functions from `ProjectEuler` in `PE::`
 import labs::ProjectEuler::ProjectEuler as PE hiding (inc, inc1001)
 ```
 
