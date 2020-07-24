@@ -5,11 +5,11 @@ This demo gives an overview of the famous Caesar cipher.
 ## Prerequisites
 
 Before working through this lab, you'll need 
-  * Cryptol to be installed, and
+  * Cryptol to be installed and
   * this module to load successfully.
 
 You'll also need experience with
-  * loading modules and evaluating functions in the interpreter, and
+  * loading modules and evaluating functions in the interpreter and
   * the `:prove` and `:sat` commands.
 
 ## Skills You'll Learn
