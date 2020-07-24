@@ -17,12 +17,14 @@ Cryptol's language constructs. At least good enough that you can come
 back here for reference as you work through the labs.
 
 Specifically, you'll also gain experience with
+  * Cryptol's module system,
   * commenting,
   * Cryptol's `Bit`, sequence, `Integer`, tuple, and record types,
   * evaluating expressions,
   * writing functions and properties, 
   * functions with curried parameters,
   * type parameters and type constraints,
+  * the `check`, `:prove`, and `:sat` commands, and
   * pattern matching,
   * demoting types variables to value variables,
   * `/\`, `\/`, `==>` -- single bit logical operations,
@@ -40,11 +42,7 @@ Specifically, you'll also gain experience with
     and `foldl`,
   * the `sum` and `carry` operators,
   * enumerations and sequence comprehensions,
-  * `import` -- using cryptographic routines from other modules,
-  * the `:check`, `:prove`, and `:sat` commands, and
   * lambda functions.
-
-!!! SEAN !!! Still need `:check`, `:prove`, `:sat`, and `import`.
 
 ## Load This Module
 
@@ -139,6 +137,63 @@ the exact same internal representation. `:set ascii = on` just causes
 the display of output to be ASCII strings or characters when
 appropriate, not unlike using `:set base = 10` to see numbers in
 base 10.
+
+## Modules
+
+This file is a Cryptol module. The first line of every Cryptol module
+must be `module Path::...Path::ModuleName where`. The `Path` component
+is the system path from the root of whatever set of modules you're
+creating or working from. The `ModuleName` component is the basename
+of this file. For instance, this module is `labs::Language::Basics`
+because it's path from the root repository is
+`labs/Language/Basics.md`. There's really not much to naming
+modules. But, don't forget the `where` clause at the end.
+
+Importing modules is also pretty simple. Just add a line starting with
+`import` followed by the name of the module. For example, here we
+import the [Overview lab](../Overview/Overview.md).
+
+```comment
+import labs::Overview::Overview
+```
+
+To avoid naming conflicts, or just generally improve readability, you
+can qualify the module import using the `as` clause.
+
+```cryptol
+import labs::Overview::Overview as OVLab
+```
+
+When the Cryptol interpreter loads this lab, it gains access to all
+public definitions in the Overview lab. To keep a definition private,
+meaning it won't be imported by other modules, use the `private`
+clause.
+
+```cryptol
+private thisIsPrivate = 10
+```
+
+Now all of the Overview lab definitions are accessed by prefixing
+`OVLab::`. For example,
+
+```shell
+labs::Language::Basics> :browse
+...
+  From labs::Overview::Overview
+  -----------------------------
+
+    OVLab::decrypt : {a} (fin a) => [8] -> [a][8] -> [a][8]
+    OVLab::encrypt : {a} (fin a) => [8] -> [a][8] -> [a][8]
+    OVLab::RotWord : [4][8] -> [4][8]
+    OVLab::sayHello : {a} (fin a) => [a][8] -> [7 + a][8]
+    OVLab::ss : {a} (Arith a, Literal 100 a) => [101]a
+
+labs::Language::Basics> OVLab::RotWord [1, 2, 3, 4]
+[0x02, 0x03, 0x04, 0x01]
+```
+
+Cryptol's module system supports also parameters, but that is covered
+in a later lab.
 
 ## Comments
 
@@ -1138,6 +1193,24 @@ Q.E.D.
 (Total Elapsed Time: 0.009s, using "Z3")
 ```
 
+Here, `:prove` tells Cryptol to call out to an external theorem prover
+(here, Z3) to try and prove the property. Cryptol also supports a
+light-weight quick check interface `:check` that runs some random
+inputs through a property, rather than trying to prove it for all
+inputs. Cryptol also allows you to *find* solutions to a property via
+it's `:sat` command. For example,
+
+```shell
+labs::Language::Basics> :sat \x -> increment x < x
+(\x -> increment x < x) 0xffffffff = True
+```
+
+Here we used a *lambda* function, a simple way to create a function
+without giving it a name. We'd read the above as, "Cryptol, find an
+assignment to `x` such that `increment x < x`. And, since the type of
+`increment` forces `x` to be a 32-bit bitvector, `increment
+0xffffffff` overflows to zero.
+
 ## Operators
 
 Cryptol's `:help` command will provide a brief description of the
@@ -1697,6 +1770,6 @@ labs::Language::Basics> lazyAbsMin 0 (0/0)
 0x00000000
 ```
 
-# Postface
+# Post face
 
 Go forth and write correct cryptographic algorithms!
