@@ -112,7 +112,7 @@ teaching purposes.)
 labs::Language::Basics> :set warnDefaulting = off
 ```
 
-Also some examples have octets as outputs that are easier to see as
+Also, some examples have octets as outputs that are easier to see as
 characters. To see octets as characters, turn on ASCII mode:
 
 ```shell
@@ -213,7 +213,7 @@ import labs::Salsa20::Salsa20 as Salsa20 (littleendian, littleendian')
 import labs::ProjectEuler::ProjectEuler as PE hiding (inc, inc1001)
 ```
 
-Cryptol's module system supports also parameters, but that is covered
+Cryptol's module system also supports parameters, but that is covered
 in a later lab.
 
 ## Comments
