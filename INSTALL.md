@@ -47,7 +47,7 @@ here.
    Visual Studio Code from the Extensions panel which you can open by
    clicking "View" -> "Extensions".
 5. Open Visual Studio Code and
-   * click "File" -> "Open Folder..." (or just "Open..." on OSX).
+   * click "File" -> "Open Folder..." (or just "Open..." on MacOS).
    * Select the directory where you unzipped this repository. **Visual
      Studio will detect the remote container and prompt you -- choose
      "Reopen in Container"**.
@@ -225,7 +225,7 @@ docker container and set the `CRYPTOLPATH` environment variable for
 access to the directory's Cryptol modules. This environment variable
 is used by both Cryptol and SAW.
 
-### Using Docker on Linux and OSX
+### Using Docker on Linux and MacOS
 
 ```shell
 .../cryptol-course> docker run --rm -it --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course cryptolcourse/cryptol
