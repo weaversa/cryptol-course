@@ -44,7 +44,6 @@ indices = take`{m} (last out).0
           | (w', i, j) <- out
           | _ <- tail [0 .. (m /^ (2*r) * (2*r)) : [width (m /^ (2*r) * (2*r))]] ]
 
-
 /** inverse of condensed indices to decrypt message of length `m` over number of additional rails `r` */
 indices': {r, m} (_r_ r, _m_ m) => [m][pw m r]
 indices' = inverse_mapping indices`{r, m}
@@ -56,6 +55,7 @@ encrypt msg = msg @@ indices`{r, m}
 /** encrypt msg via Rail Fence transposition cipher */
 decrypt: {r, m, a} (_r_ r, _m_ m) => [m]a -> [m]a
 decrypt msg = msg @@ indices'`{r, m}
+
 
 // test values from [Wikipedia article on Rail Fence Cipher](https://en.wikipedia.org/wiki/Rail_fence_cipher)
 /** test number of additional rails */
