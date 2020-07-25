@@ -209,7 +209,7 @@ ask that you prove it for one iteration. If you are highly motivated,
 feel free to attempt the more general proof (though don't expect any
 extra credit).
 
-**EXERCISE** Formalize Theorem 6:
+**EXERCISE**: Formalize Theorem 6:
 
 ```cryptol
 Salsa20CoreCollidesProp : [32] -> Bit

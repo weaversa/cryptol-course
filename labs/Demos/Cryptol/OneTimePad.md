@@ -6,11 +6,11 @@ one-time pad.
 ## Prerequisites
 
 Before working through this lab, you'll need 
-  * Cryptol to be installed, and
+  * Cryptol to be installed and
   * this module to load successfully.
 
 You'll also need experience with
-  * loading modules and evaluating functions in the interpreter, and
+  * loading modules and evaluating functions in the interpreter and
   * the `:prove` and `:sat` commands.
 
 ## Skills You'll Learn
@@ -28,14 +28,14 @@ interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```shell
-Cryptol> :m labs::Demos::OneTimePad
+Cryptol> :m labs::Demos::Cryptol::OneTimePad
 ```
 
 We start by defining a new module for this lab and importing some accessory
 modules that we will use:
 
 ```cryptol
-module labs::Demos::OneTimePad where
+module labs::Demos::Cryptol::OneTimePad where
 ```
 
 # One-Time Pad
@@ -128,9 +128,9 @@ logs, but that's too complicated; here it's all in one place.)
 Great. Now let's try applying the module to the previous example:
 
 ```shell
-labs::Demos::OneTimePad> let psk = "ZUGESAGT"
-labs::Demos::OneTimePad> let pt = "HELLO"
-labs::Demos::OneTimePad> let ct = (encrypt psk pt)
+labs::Demos::Cryptol::OneTimePad> let psk = "ZUGESAGT"
+labs::Demos::Cryptol::OneTimePad> let pt = "HELLO"
+labs::Demos::Cryptol::OneTimePad> let ct = (encrypt psk pt)
 ```
 
 OK, we've assigned variables representing the pre-shared key (`psk`),
@@ -138,7 +138,7 @@ plaintext (`pt`), and ciphertext (`ct`) from the example. Let's see
 the plaintext:
 
 ```shell
-labs::Demos::OneTimePad> pt
+labs::Demos::Cryptol::OneTimePad> pt
 [0x48, 0x45, 0x4c, 0x4c, 0x4f]
 ```
 
@@ -148,15 +148,15 @@ rather than a string of 5 characters.  We can ask the interpreter
 to show us a string instead:
 
 ```shell
-labs::Demos::OneTimePad> :s ascii=on
-labs::Demos::OneTimePad> pt
+labs::Demos::Cryptol::OneTimePad> :s ascii=on
+labs::Demos::Cryptol::OneTimePad> pt
 "HELLO"
 ```
 
 That was pleasant.  Now let's see the ciphertext:
 
 ```shell
-labs::Demos::OneTimePad> ct
+labs::Demos::Cryptol::OneTimePad> ct
 "\DC2\DLE\v\t\FS"
 ```
 
@@ -164,7 +164,7 @@ That looks ciphertexty, all right.  Entering `:s` shows all the
 configuration settings:
 
 ```shell
-labs::Demos::OneTimePad> :s
+labs::Demos::Cryptol::OneTimePad> :s
 ascii = on
 base = 16
 core-lint = off
@@ -188,7 +188,7 @@ If a symbol's name isn't descriptive enough, we can use `:h` to display
 help text for it:
 
 ```shell
-labs::Demos::OneTimePad> :h encrypt
+labs::Demos::Cryptol::OneTimePad> :h encrypt
 
     encrypt : {k, m} (fin k, k >= m) =>
                 String k -> String m -> String m
@@ -201,7 +201,7 @@ labs::Demos::OneTimePad> :h encrypt
 Cool. Let's do a quick sanity check:
 
 ```shell
-labs::Demos::OneTimePad> (decrypt psk ct)
+labs::Demos::Cryptol::OneTimePad> (decrypt psk ct)
 "HELLO"
 ```
 
@@ -211,7 +211,7 @@ It matches! Our sanity is intact. Well, maybe not -- let's make
 sure:
 
 ```shell
-labs::Demos::OneTimePad> it == pt
+labs::Demos::Cryptol::OneTimePad> it == pt
 True
 ```
 
@@ -221,7 +221,7 @@ Nice! So that one example checks out, as expressed by the `test`
 property in our module. Let's prove it:
 
 ```shell
-labs::Demos::OneTimePad> :prove test
+labs::Demos::Cryptol::OneTimePad> :prove test
 Q.E.D.
 (Total Elapsed Time: 0.028s, using Z3)
 ```
@@ -241,9 +241,9 @@ rather sesquipedalian name; let's use tab-completion to prove the
 property:
 
 ```shell
-labs::Demos::OneTimePad> :prove dec<Tab>
-labs::Demos::OneTimePad> :prove decrypt_<Tab>
-labs::Demos::OneTimePad> :prove decrypt_of_encrypt_yields_original_plaintext_8_5<Enter>
+labs::Demos::Cryptol::OneTimePad> :prove dec<Tab>
+labs::Demos::Cryptol::OneTimePad> :prove decrypt_<Tab>
+labs::Demos::Cryptol::OneTimePad> :prove decrypt_of_encrypt_yields_original_plaintext_8_5<Enter>
 Q.E.D.
 (Total Elapsed Time: 0.028s, using Z3)
 ```
@@ -258,8 +258,8 @@ second plaintext/ciphertext exchange also using the pre-shared key
 `ZUGESAGT`:
 
 ```shell
-labs::Demos::OneTimePad> let pt2 = "GOODBYE"
-labs::Demos::OneTimePad> let ct2 = (encrypt psk pt2)
+labs::Demos::Cryptol::OneTimePad> let pt2 = "GOODBYE"
+labs::Demos::Cryptol::OneTimePad> let ct2 = (encrypt psk pt2)
 ```
 
 Now suppose an attacker Eve doesn't know the pre-shared key, but has
@@ -269,7 +269,7 @@ reasonably have been "GOODBYE". Then Eve can exploit Cryptol to
 deduce the pre-shared key Bob just used:
 
 ```shell
-labs::Demos::OneTimePad> :sat \psk -> (encrypt psk pt2) == ct2
+labs::Demos::Cryptol::OneTimePad> :sat \psk -> (encrypt psk pt2) == ct2
 (\psk -> (encrypt (psk : String 7) pt2) == ct2) "ZUGESAG" = True
 (Total Elapsed Time: 0.042s, using Z3)
 ```
@@ -285,10 +285,10 @@ Now that Eve has the pre-shared key for this exchange, she could
 stash it and try it on the message Bob received earlier:
 
 ```shell
-labs::Demos::OneTimePad> it
+labs::Demos::Cryptol::OneTimePad> it
 {result = True, arg1 = "ZUGESAG"}
-labs::Demos::OneTimePad> let psk' = it.arg1
-labs::Demos::OneTimePad> :sat \pt -> (encrypt psk' pt) == ct
+labs::Demos::Cryptol::OneTimePad> let psk' = it.arg1
+labs::Demos::Cryptol::OneTimePad> :sat \pt -> (encrypt psk' pt) == ct
 (\pt -> (encrypt psk' pt) == ct) "HELLO" = True
 (Total Elapsed Time: 0.028s, using Z3)
 ```

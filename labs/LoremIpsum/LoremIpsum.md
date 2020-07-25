@@ -61,7 +61,7 @@ ipsum](http://www.lipsum.com/), dummy text normally used for
 typesetting that you should happily skip over to get to the important
 bits.
 
-**EXERCISE** An important message has been encrypted using the
+**EXERCISE**: An important message has been encrypted using the
 [KLI20](KLI20.cry) end cryptographic unit, a completely made up device
 that was created specifically for use in this lab. The KLI20 takes
 LoremIpsum keys (as specified below) as input and will then operate as
