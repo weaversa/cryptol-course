@@ -112,7 +112,7 @@ teaching purposes.)
 labs::Language::Basics> :set warnDefaulting = off
 ```
 
-Also some examples have octets as outputs that are easier to see as
+Also, some examples have octets as outputs that are easier to see as
 characters. To see octets as characters, turn on ASCII mode:
 
 ```shell
@@ -192,7 +192,28 @@ labs::Language::Basics> OVLab::RotWord [1, 2, 3, 4]
 [0x02, 0x03, 0x04, 0x01]
 ```
 
-Cryptol's module system supports also parameters, but that is covered
+Imports can be further refined with _import lists_, which specify 
+which definitions to include (or exclude) from the imported modules:
+
+```comment
+// imports `product` and `distinct` from the NQueens demo
+import labs::Demos::Cryptol::NQueens (product, distinct) 
+
+// imports all _except_ the listed test definitions from the CRC spec
+import labs::CRC::CRC hiding (
+  CRCSimpleTest, testM, CRCSimple_QTest, CRCSimple_XFERTest, 
+  CRC32_BZIP2Test, CRC32_CTest, CRC32_DTest, CRC32_MPEG2Test, 
+  CRC32_POSIXTest, CRC32_QTest, CRC32_JAMCRCTest, CRC32_XFERTest
+)
+
+// imports `littlendian`(`'`) functions, prefaced with `Salsa20::`
+import labs::Salsa20::Salsa20 as Salsa20 (littleendian, littleendian')
+
+// imports all except `inc` functions from `ProjectEuler` in `PE::`
+import labs::ProjectEuler::ProjectEuler as PE hiding (inc, inc1001)
+```
+
+Cryptol's module system also supports parameters, but that is covered
 in a later lab.
 
 ## Comments
