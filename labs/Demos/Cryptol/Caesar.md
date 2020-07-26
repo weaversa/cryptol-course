@@ -5,11 +5,11 @@ This demo gives an overview of the famous Caesar cipher.
 ## Prerequisites
 
 Before working through this lab, you'll need 
-  * Cryptol to be installed, and
+  * Cryptol to be installed and
   * this module to load successfully.
 
 You'll also need experience with
-  * loading modules and evaluating functions in the interpreter, and
+  * loading modules and evaluating functions in the interpreter and
   * the `:prove` and `:sat` commands.
 
 ## Skills You'll Learn
@@ -27,14 +27,14 @@ interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```shell
-Cryptol> :m labs::Demos::Caesar
+Cryptol> :m labs::Demos::Cryptol::Caesar
 ```
 
 We start by defining a new module for this lab and importing some accessory
 modules that we will use:
 
 ```cryptol
-module labs::Demos::Caesar where
+module labs::Demos::Cryptol::Caesar where
 ```
 
 # Caesar Cipher
@@ -59,8 +59,8 @@ caesar msg = map rot3 msg
 ```
 
 ```shell
-labs::Demos::Caesar> :s ascii=on
-labs::Demos::Caesar> caesar "ATTACK AT DAWN"
+labs::Demos::Cryptol::Caesar> :s ascii=on
+labs::Demos::Cryptol::Caesar> caesar "ATTACK AT DAWN"
 "XQQXZH XQ AXTK"
 ```
 
@@ -116,7 +116,7 @@ property charIsAtIndex = indexCorrect alphabet
 ```
 
 ```shell
-labs::Demos::Caesar> :prove charIsAtIndex
+labs::Demos::Cryptol::Caesar> :prove charIsAtIndex
 Q.E.D.
 (Total Elapsed Time: 0.072s, using "Z3")
 ```
@@ -124,10 +124,10 @@ Q.E.D.
 The property even holds for other sequences, repeating or not:
 
 ```shell
-labs::Demos::Caesar> :prove \(A : [64]Char) -> indexCorrect A
+labs::Demos::Cryptol::Caesar> :prove \(A : [64]Char) -> indexCorrect A
 Q.E.D.
 (Total Elapsed Time: 1.172s, using "Z3")
-labs::Demos::Caesar> :prove \(L : [33]Integer) -> indexCorrect L
+labs::Demos::Cryptol::Caesar> :prove \(L : [33]Integer) -> indexCorrect L
 Q.E.D.
 (Total Elapsed Time: 0.347s, using "Z3")
 ```
@@ -158,22 +158,22 @@ Note the `alphabet >>> key` part: Cryptol allows rotation not only
 over bit sequences, ...
 
 ```shell
-labs::Demos::Caesar> :s ascii=off
-labs::Demos::Caesar> :s base=2
-labs::Demos::Caesar> 0b11001010 <<< 4
+labs::Demos::Cryptol::Caesar> :s ascii=off
+labs::Demos::Cryptol::Caesar> :s base=2
+labs::Demos::Cryptol::Caesar> 0b11001010 <<< 4
 0b10101100
 ```
 
 ...but over sequences of arbitrary shape...
 
 ```shell
-labs::Demos::Caesar> :s base=10
-labs::Demos::Caesar> [1, 2, 3, 4, 5 : Integer] <<< 3
+labs::Demos::Cryptol::Caesar> :s base=10
+labs::Demos::Cryptol::Caesar> [1, 2, 3, 4, 5 : Integer] <<< 3
 [4, 5, 1, 2, 3]
-labs::Demos::Caesar> :s ascii=on
-labs::Demos::Caesar> "RACECAR " <<< 4
+labs::Demos::Cryptol::Caesar> :s ascii=on
+labs::Demos::Cryptol::Caesar> "RACECAR " <<< 4
 "CAR RACE"
-labs::Demos::Caesar> :t (<<<)
+labs::Demos::Cryptol::Caesar> :t (<<<)
 (<<<) : {n, ix, a} (fin n, fin ix) => [n]a -> [ix] -> [n]a
 ```
 
@@ -218,15 +218,15 @@ variables, it makes more sense to `:check` these (this saves
 the solver some work and often speeds up such tests).
 
 ```shell
-labs::Demos::Caesar> :check v1
+labs::Demos::Cryptol::Caesar> :check v1
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::Demos::Caesar> :check v2
+labs::Demos::Cryptol::Caesar> :check v2
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::Demos::Caesar> :check v3
+labs::Demos::Cryptol::Caesar> :check v3
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
@@ -256,10 +256,10 @@ property recovery_14 = recovery`{14}
 ```
 
 ```shell
-labs::Demos::Caesar> :prove recovery_4
+labs::Demos::Cryptol::Caesar> :prove recovery_4
 Q.E.D.
 (Total Elapsed Time: 4.226s, using "Z3")
-labs::Demos::Caesar> :prove recovery_14
+labs::Demos::Cryptol::Caesar> :prove recovery_14
 Q.E.D.
 (Total Elapsed Time: 28.246s, using "Z3")
 ```
@@ -271,7 +271,7 @@ So is this a good cipher?  Well, no.  Let's...here.  We can manually
 deduce a key from known ciphertext...
 
 ```shell
-labs::Demos::Caesar> map (\k -> (k, decrypt k "SXQW SJLXK FJB J SRWPUNQNRVNA BLQVRMC")) [0..25]
+labs::Demos::Cryptol::Caesar> map (\k -> (k, decrypt k "SXQW SJLXK FJB J SRWPUNQNRVNA BLQVRMC")) [0..25]
 [(0, "SXQW SJLXK FJB J SRWPUNQNRVNA BLQVRMC"),
  (1, "TYRX TKMYL GKC K TSXQVOROSWOB CMRWSND"),
  (2, "UZSY ULNZM HLD L UTYRWPSPTXPC DNSXTOE"),
@@ -304,7 +304,7 @@ labs::Demos::Caesar> map (\k -> (k, decrypt k "SXQW SJLXK FJB J SRWPUNQNRVNA BLQ
 solving...
 
 ```shell
-labs::Demos::Caesar> :sat \k -> encrypt k "ILLUMINATI CONFIRMED" == "NQQZRNSFYN HTSKNWRJI"
+labs::Demos::Cryptol::Caesar> :sat \k -> encrypt k "ILLUMINATI CONFIRMED" == "NQQZRNSFYN HTSKNWRJI"
 (\k -> encrypt k "ILLUMINATI CONFIRMED" == "NQQZRNSFYN HTSKNWRJI")
   21 = True
 (Total Elapsed Time: 0.089s, using "Z3")

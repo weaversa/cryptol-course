@@ -91,8 +91,10 @@ Cryptol](INSTALL.md).
 4. [Language Basics](labs/Language/Basics.md): A resource
    for (most) of the language features you'll need to be successful
    here.
-    * [Demos](labs/Demos/Demos.md): Lightweight walkthroughs that
-      demonstrate common concepts.
+    * [Cryptol Demos](labs/Demos/Cryptol/Demos.md): Lightweight
+      walkthroughs that demonstrate common Cryptol concepts.
+    * [SAW Demos](labs/Demos/SAW/Demos.md): Demonstrations of using
+      Cryptol with the Software Analysis Workbench to verify software.
 5. [Cyclic Redundancy Checks](labs/CRC/CRC.md): Create your first
    specification.
 6. [Salsa20](labs/Salsa20/Salsa20.md): Create your second
@@ -123,28 +125,6 @@ practice Cryptol, but are not strictly necessary for course
 completion. (Click on the image below for a navigable representation.)
 
 <img class="center" src="https://raw.githubusercontent.com/weaversa/cryptol-course/master/misc/deps.svg" alt="Dependencies and Suggested Course Flow">
-
-## Extra Labs and Demonstrations
-
-There are also two labs that use Cryptol to demonstrate capabilities
-of the Software Analysis Workbench, and as such are outside the scope
-of learning Cryptol. Still, these may prove interesting or useful for
-students with wider interests or different backgrounds, so they are
-included here.
-
-1. [Arithmetic
-   Verifications](labs/saw/ArithmeticVerifications/ArithmeticVerifications.md):
-   This lab demonstrates using SAW to prove facts about various
-   arithmetic implementations. Some simple reference examples are
-   included as well as an illustration of a barrier one may encounter
-   when using these techniques.
-
-2. [Bit-twiddling](labs/saw/bittwiddling/bittwiddling.md): This lab
-   contains a collection of famous, yet hard to understand algorithms
-   which perform relatively simple calculations. This is a simple
-   introduction to how one can use Cryptol and SAW to prove that an
-   implementation matches its specification.
-
 
 ## Supporting Materials
 
