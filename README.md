@@ -111,13 +111,13 @@ Cryptol](INSTALL.md).
 8. [Methods for Key Wrapping](labs/KeyWrapping/KeyWrapping.md):
    Create a Cryptol specification of NIST's [SP800-38F key wrap
    standard](https://csrc.nist.gov/publications/detail/sp/800-38f/final).
+    * [Simon and Speck](labs/SimonSpeck/SimonSpeck.md): Learn about
+      Cryptol's parameterized modules by creating a Cryptol
+      specification of NSA's Speck block cipher.
 9. [Capstone: Putting it all together](labs/LoremIpsum/LoremIpsum.md):
    Use components and techniques from other labs to decrypt a series
    of secret messages by feeding wrapped keys into the anomalous KLI20
    cryptographic engine.
-    * [Simon and Speck](labs/SimonSpeck/SimonSpeck.md): Learn about
-      Cryptol's parameterized modules by creating a Cryptol
-      specification of NSA's Speck block cipher.
 
 ## Graphical View of the Course
 
