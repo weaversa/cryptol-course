@@ -7,43 +7,47 @@ parameter
   a : [n]
   b : [n]
   type T : #
-  type constraint (fin n, fin m, fin T, n >= width T, m >= 2, T >= 22)
+  type constraint ( fin n
+                  , fin m
+                  , fin T
+                  , n >= width T
+                  , m >= 2
+                  , T >= 22 )
 
 type blockSize = 2 * n
 type keySize   = m * n
 
-/* Rk - Speck Round Function
- * 
- *  From eprint-2013-404.pdf, Section 4.1 p. 14
- *   Rk(x, y) = ((S−αx+y)⊕k, Sβy⊕(S−αx+y)⊕k)
- */
-Rk : [n] -> [2][n] -> [2][n]
-Rk k [x, y] = [x', y']
-  where
-    x' = ((x >>> a) + y) ^ k
-    y' = (y <<< b) ^ x'
-
-KeyScheduleRound :
-    [m][n] -> [n] -> [m][n]
-KeyScheduleRound (Ls # [ki]) i = S'
-  where
-    [l', ki']  = Rk i [last Ls, ki]
-    S'         = [l'] # (take Ls) # [ki']
-    
-KeySchedule : [keySize] -> [T][n]
-KeySchedule K = Ks
-  where
-    S0 = split K
-    Ss = scanl KeyScheduleRound S0 [0..T-2]
-    Ks = last (transpose Ss)
-
-encryptList:
-    [keySize] -> [blockSize] -> [T+1][2][n]
-encryptList K P = Cs
-  where
-    Ps = split P
-    Ks = KeySchedule K
-    Cs = [Ps] # [ Rk k xy | k <- Ks | xy <- Cs]
-
 encrypt K P = join (last (encryptList K P))
 
+private
+
+  /**
+   * Speck Round Function
+   * From eprint-2013-404.pdf, Section 4.1 p. 14
+   * Rk(x, y) = ((S−αx+y)⊕k, Sβy⊕(S−αx+y)⊕k)
+   */
+  Rk : [n] -> [2][n] -> [2][n]
+  Rk k [x, y] = [x', y']
+    where
+      x' = ((x >>> a) + y) ^ k
+      y' = (y <<< b) ^ x'
+  
+  KeyScheduleRound : [m][n] -> [n] -> [m][n]
+  KeyScheduleRound (Ls # [ki]) i = S'
+    where
+      [l', ki']  = Rk i [ last Ls, ki ]
+      S'         = [ l' ] # (take Ls) # [ ki' ]
+      
+  KeySchedule : [keySize] -> [T][n]
+  KeySchedule K = Ks
+    where
+      S0 = split K
+      Ss = scanl KeyScheduleRound S0 [0..T-2]
+      Ks = last (transpose Ss)
+  
+  encryptList: [keySize] -> [blockSize] -> [T+1][2][n]
+  encryptList K P = Cs
+    where
+      Ps = split P
+      Ks = KeySchedule K
+      Cs = [Ps] # [ Rk k xy | k <- Ks | xy <- Cs]

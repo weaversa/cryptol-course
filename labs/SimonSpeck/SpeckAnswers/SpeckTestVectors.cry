@@ -11,14 +11,14 @@ import labs::SimonSpeck::SpeckAnswers::speck_128_128 as speck_128_128
 import labs::SimonSpeck::SpeckAnswers::speck_128_192 as speck_128_192
 import labs::SimonSpeck::SpeckAnswers::speck_128_256 as speck_128_256
 
-K_32_64 = join[0x1918, 0x1110, 0x0908, 0x0100]
-P_32_64 = join[0x6574, 0x694c]
-C_32_64 = join[0xa868, 0x42f2]
+K_32_64 = join [0x1918, 0x1110, 0x0908, 0x0100]
+P_32_64 = join [0x6574, 0x694c]
+C_32_64 = join [0xa868, 0x42f2]
 property TV_32_64 = speck_32_64::encrypt K_32_64 P_32_64 == C_32_64
 
-K_48_72 = join[0x121110, 0x0a0908, 0x020100]
-P_48_72 = join[0x20796c, 0x6c6172]
-C_48_72 = join[0xc049a5, 0x385adc]
+K_48_72 = join [0x121110, 0x0a0908, 0x020100]
+P_48_72 = join [0x20796c, 0x6c6172]
+C_48_72 = join [0xc049a5, 0x385adc]
 property TV_48_72 = speck_48_72::encrypt K_48_72 P_48_72 == C_48_72
 
 K_48_96 = join [0x1a1918, 0x121110, 0x0a0908, 0x020100]
