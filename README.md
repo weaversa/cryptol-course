@@ -115,7 +115,9 @@ Cryptol](INSTALL.md).
    Use components and techniques from other labs to decrypt a series
    of secret messages by feeding wrapped keys into the anomalous KLI20
    cryptographic engine.
-
+    * [Simon and Speck](labs/SimonSpeck/SimonSpeck.md): Learn about
+      Cryptol's parameterized modules by creating a Cryptol
+      specification of NSA's Speck block cipher.
 
 ## Graphical View of the Course
 
