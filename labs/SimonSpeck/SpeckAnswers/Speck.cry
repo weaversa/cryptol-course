@@ -1,18 +1,18 @@
 module labs::SimonSpeck::SpeckAnswers::Speck where
 
 parameter
-  
+
   type n : #
+  type constraint (fin n, n >= width T)
+  
   type m : #
+  type constraint (fin m, m >= 2)
+
   a : [n]
   b : [n]
+  
   type T : #
-  type constraint ( fin n
-                  , fin m
-                  , fin T
-                  , n >= width T
-                  , m >= 2
-                  , T >= 22 )
+  type constraint (fin T, T >= 22)
 
 type blockSize = 2 * n
 type keySize   = m * n
