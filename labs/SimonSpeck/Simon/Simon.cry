@@ -1,0 +1,159 @@
+module labs::SimonSpeck::Simon::Simon where
+
+parameter
+
+  /** word size */
+  type n : #
+  type constraint (16 <= n, n <= 64)
+
+  /** number of words in key */
+  type m : #
+  type constraint (2 <= m, m <= 4)
+
+  /** number of rounds in key schedule */
+  type T : #
+  type constraint (32 <= T, T <= 72)
+
+  /** index of z-sequence used (i.e. use sequence z_j) */
+  type j : #
+  type constraint (0 <= j, j <= 4)
+
+type blockSize = 2 * n
+type keySize   = m * n
+
+/**
+ * The Simon block cipher, encryption direction. See [1] for further
+ * details.
+ *
+ * [1] Beaulieu R., Shors D., et. al. "The Simon and Speck Families
+ * of Lightweight Block Ciphers". e-print-2013-404.pdf.
+ */
+encrypt : [keySize] -> [blockSize] -> [blockSize]
+encrypt K P = join (last (encryptList K P))
+
+/**
+ * The Simon block cipher, decryption direction. See [1] for further
+ * details.
+ *
+ * [1] Beaulieu R., Shors D., et. al. "The Simon and Speck Families
+ * of Lightweight Block Ciphers". e-print-2013-404.pdf.
+ */
+decrypt : [keySize] -> [blockSize] -> [blockSize]
+decrypt K P = join (last (decryptList K P))
+
+/**
+ * EncryptDecryptRoundIdentity k x = Rk' k (Rk k x) == x
+ */
+property EncryptDecryptRoundIdentity k x =
+  Rk' k (Rk k x) == x
+
+/**
+ * DecryptEncryptRoundIdentity k x = Rk k (Rk' k x) == x
+ */ 
+property DecryptEncryptRoundIdentity k x = 
+  Rk k (Rk' k x) == x
+
+// These properties take too long to verify with Z3
+// Try proving with abc
+//   :s prover=abc   or
+//   :s prover=any
+property EncryptDecryptIdentity k x =
+  decrypt k (encrypt k x) == x
+  
+property DecryptEncryptIdentity k x = 
+  encrypt k (decrypt k x) == x
+
+private
+
+    // We define the sequences u, v, w, and z_j following the paper
+    u = join(repeat`{inf} 0b1111101000100101011000011100110)
+    v = join(repeat`{inf} 0b1000111011111001001100001011010)
+    w = join(repeat`{inf} 0b1000010010110011111000110111010)
+
+    z0 = u
+    z1 = v
+    z2 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} u ])
+    z3 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} v ])
+    z4 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} w ])
+
+    // Z will be the sequence selected by the module parameter j
+    Z = [z0, z1, z2, z3, z4]@(`j:[width j])
+
+    // Round Function and auxiliary functions
+    
+    /**
+     * f is used in the round function and appears on page 8 of [1]
+     */
+    f x = (x <<< 1) && (x <<< 8) ^ (x <<< 2)
+    
+    /**
+     * The Simon round function
+     */ 
+    Rk : [n] -> [2][n] -> [2][n]
+    Rk k [x, y] = [x', y']
+      where
+        x'  = y ^ (f x) ^ k
+        y'  = x
+
+    /**
+     * The Simon inverse round function
+     */
+    Rk' : [n] -> [2][n] -> [2][n]
+    Rk' k [x, y] = [x', y']
+      where
+        x'  = y
+        y'  = x ^ (f y) ^ k
+              
+    /**
+     * "tmp" appears as the name of a variable in the Simon key
+     * expansion sample implementation on page 13. The tmp function
+     * below captures the possible final values the expression has,
+     * taking into account the type parameter `m` containing the
+     * number of key words.
+     */
+    tmp: [n] -> [n] -> [n]
+    tmp k1 k2 = r
+      where 
+        r  = t ^ (t >>> 1)
+        t  = if `m == 0x4 then (t' ^ k2) else t'
+        t' = (k1 >>> 3)
+
+    /**
+     * The Simon Key Expansion function.
+     */
+    KeyExpansion : [keySize] -> [T][n]
+    KeyExpansion K = take Ks
+      where
+        Kis : [m][n]
+        Kis = reverse (split K)
+        Ks : [inf][n]
+        Ks = Kis
+           # [ ~k0 ^ (tmp k1 k2) ^ (zext [z]) ^ (zext 0x3) 
+             | k0 <- Ks
+             | k1 <- drop`{m-1} Ks
+             | k2 <- drop`{max m 3 - 3} Ks // gadget to typecheck "drop`{m-3}"
+             | z <- Z ]
+
+    /**
+     * Simon decryption with intermediate values for each round
+     * produced as a list. Some test vectors are available to compare
+     * these intermediate values.
+     */
+    decryptList: [keySize] -> [blockSize] -> [T+1][2][n]
+    decryptList K C = Ps
+      where
+        Cs = split C
+        Ks = reverse (KeyExpansion K)
+        Ps = [ Cs ] # [ Rk' k xy | k <- Ks | xy <- Ps]
+
+    /**
+     *  Simon encryption with intermediate values for each round
+     * produced as a list. Some test vectors are available to compare
+     * these intermediate values.
+     */
+    encryptList: [keySize] -> [blockSize] -> [T+1][2][n]
+    encryptList K P = Cs
+      where
+        Ps = split P
+        Ks = KeyExpansion K
+        Cs = [ Ps ] # [ Rk k xy | k <- Ks | xy <- Cs]
