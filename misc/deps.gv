@@ -35,9 +35,9 @@ digraph G {
   Salsa20Properties       [label="Salsa20\nProperties"];
   CryptographicProperties [label="Cryptographic\nProperties"];
   KeyWrapping             [label="Key Wrapping"];
-  ProjectEuler            [label="Project\nEuler"];
-  CryptolDemos            [label="Cryptol\nDemos"];
-  SAWDemos                [label="SAW\nDemos"];
+  ProjectEuler            [label="Project Euler"];
+  CryptolDemos            [label="Cryptol Demos"];
+  SAWDemos                [label="SAW Demos"];
   SimonSpeck              [label="Parameterized\nModules"];
 
   // The Suggested Flow with Red Arrows
