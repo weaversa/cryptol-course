@@ -38,7 +38,7 @@ digraph G {
   ProjectEuler            [label="Project\nEuler"];
   CryptolDemos            [label="Cryptol\nDemos"];
   SAWDemos                [label="SAW\nDemos"];
-  SimonSpeck              [label="Simon\nSpeck"];
+  SimonSpeck              [label="Parameterized\nModules"];
 
   // The Suggested Flow with Red Arrows
   edge [color=red];
