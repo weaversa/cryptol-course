@@ -1,4 +1,4 @@
-digraph G {
+digraph CryptolCourseFlow {
   //splines = ortho;
   //concentrate = true;
 
