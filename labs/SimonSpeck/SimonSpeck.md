@@ -139,7 +139,7 @@ specialized to the concrete values.
 Let's take a look at writing a parameterized module for Simon. We will
 be using ["The Simon and Speck Families of Lightweight Block
 Ciphers"](https://eprint.iacr.org/2013/404) as our reference for
-building this formal specificaiton.
+building this formal specification.
 
 Look at page 10 of this document. We see that the specification
 defines a family of related block ciphers for `Simon` depending on the
@@ -183,11 +183,11 @@ parameter
 type blockSize = 2 * n
 type keySize   = m * n
 
-// Other definitions ommitted, see
+// Other definitions omitted, see
 //
 //     [CRYPTOLCOURSE]/labs/SimonSpeck/Simon/Simon.cry
 //
-// for the remainder of the Simon specificaiton.
+// for the remainder of the Simon specification.
 ```
 
 Note that four module parameters are declared (`n`, `m`, `T`, and `j`)
@@ -324,7 +324,7 @@ conditional statement defining `t`.
 
 Second, in the parallel enumeration found in `KeyExpansion` we see
 that `k2` is drawn from the sequence ```drop`{max m 3 - 3}```. The
-`max m 3` expression guaruntees that after subtracting `3` the result
+`max m 3` expression guarantees that after subtracting `3` the result
 is non-negative. Note that the value `k2` is ignored in the `tmp`
 function when `m != 4` and that `max m 3 - 3` is equivalent to `m - 3`
 when `m == 4`.
@@ -341,7 +341,7 @@ function for all variants of `Simon`.
 # Writing a Parameterized Module for Speck
 
 Now it's your turn to try writing a parameterized module. You will
-also get more ractice reading and writing a cryptographic
+also get more practice reading and writing a cryptographic
 specification.
 
 **Exercise** Write a parameterized module for `Speck`. Refer to
@@ -365,7 +365,7 @@ Q.E.D.
 
 **Additional Exercise** The test vectors below only test the
 encryption direction for `Speck`. Define the decryption direction for
-the round function and algorihthm and try writing properties and/or
+the round function and algorithm and try writing properties and/or
 test vectors to verify that these functions are inverses. You may need
 to try different solvers like `abc` for some property verifications to
 complete in a reasonable amount of time.

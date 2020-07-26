@@ -79,7 +79,7 @@ private
     // Z will be the sequence selected by the module parameter j
     Z = [z0, z1, z2, z3, z4]@(`j:[width j])
 
-    // Round Function and auxilliary functions
+    // Round Function and auxiliary functions
     
     /**
      * f is used in the round function and appears on page 8 of [1]
