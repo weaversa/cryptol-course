@@ -1,16 +1,29 @@
-# Learning to use Parameterized Modules with Simon and Speck
+# Introduction
 
 ## Prerequisites
 
- * Know how to read Cryptol and skim through a standards document
- * Know how to use basic type parameters in function definitions
+Before working through this lab, you'll need
+  * Cryptol to be installed,
+  * this module to load successfully, and
+  * an editor for completing the exercises in associated files.
 
-## What You Will Learn
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter,
+  * the `:prove` command,
+  * manipulating sequences using `#`, `take`, `split`, `join`,
+    `last`, `scanl`, and `transpose`,
+  * writing functions and properties,
+  * sequence comprehensions,
+  * functions with curried parameters, and
+  * logical, comparison, and arithmetic operators.
 
- * Defining and using Cryptol Parameterized Modules to define basic
-   families of cryptographic routines
+## Skills You'll Learn
 
-## Getting Started
+By the end of this lab you will have gained experience with defining
+and using Cryptol's parameterized modules to make basic families of
+cryptographic routines.
+
+## Load This Module
 
 This lab is a
 [literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
@@ -19,18 +32,25 @@ interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::SimonSpeck::SimonSpeck
+Cryptol> :m labs::SimonSpeck::SimonSpeck
 ```
-This lab will introduce the student to the use of Cryptol's 
-**Parameterized Modules** through the [Simon](https://en.wikipedia.org/wiki/Simon_(cipher)) and [Speck](https://en.wikipedia.org/wiki/Speck_(cipher)) algorithms.
+
+We start by defining a new module for this lab:
+
+```cryptol
+module labs::SimonSpeck::SimonSpeck where
+```
+
+# Learning to use Parameterized Modules with Simon and Speck
+
+This lab will introduce the student to the use of Cryptol's
+**Parameterized Modules** through the
+[Simon](https://en.wikipedia.org/wiki/Simon_(cipher)) and
+[Speck](https://en.wikipedia.org/wiki/Speck_(cipher)) algorithms.
 
 Parameterized Modules allow a user to create a family of modules which
 differ by the selection of type parameters that are defined for a base
 module.
-
-```
-module labs::SimonSpeck::SimonSpeck where
-```
 
 We will introduce parameterized modules through an implementation of
 the `Simon` algorithm. The student will then be asked to imitate this
