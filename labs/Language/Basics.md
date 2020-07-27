@@ -788,8 +788,8 @@ Let's make an example to work with:
 ```comment
 sayHello:
     {n}
-	(fin n) =>
-	[n][8] -> [7+n][8]
+    (fin n) =>
+    [n][8] -> [7+n][8]
 sayHello name = "Hello, " # name
 ```
 
@@ -803,8 +803,8 @@ some value, we could add another constraint, like so:
 ```cryptol
 sayHello:
     {n}
-	(n <= 12) =>
-	[n][8] -> [7+n][8]
+    (n <= 12) =>
+    [n][8] -> [7+n][8]
 sayHello name = "Hello, " # name
 ```
 
@@ -876,8 +876,8 @@ can only be called with bitvectors with at least 13 bits, like so:
 ```cryptol
 bitTwelve :
     {n}
-	(fin n, n >=13) =>
-	[n] -> Bit
+    (fin n, n >=13) =>
+    [n] -> Bit
 bitTwelve x = x@12
 ```
 
@@ -945,8 +945,8 @@ can ignore that for now; it gets covered later.
 ```cryptol
 repeat :
     {n, a}
-	() =>
-	a -> [n]a
+    () =>
+    a -> [n]a
 repeat value = [ value | _ <- zero : [n] ]
 ```
 
@@ -1042,8 +1042,8 @@ character. For example:
 ```cryptol
 appendSize :
     {size}
-	(fin size, 32 >= width size) =>
-	[size][32] -> [size+1][32]
+    (fin size, 32 >= width size) =>
+    [size][32] -> [size+1][32]
 appendSize input = input # [`size]
 ```
 
@@ -1155,9 +1155,9 @@ functionName input ... input =
     output
   where
     localVariable = ...
-	localVariable = ...
-	...
-	output = ...
+    localVariable = ...
+    ...
+    output = ...
 ```
 
 Here's an example that demonstrates the use of a `where` clause:
@@ -1165,8 +1165,8 @@ Here's an example that demonstrates the use of a `where` clause:
 ```cryptol
 addMult :
     {n}
-	(fin n) =>
-	[n] -> [n] -> [n] -> [n]
+    (fin n) =>
+    [n] -> [n] -> [n] -> [n]
 addMult a b c = ab + bc
   where
     ab = a * b
@@ -1199,7 +1199,7 @@ anyZeroByteSpec bytes =
     b0 == 0 \/ b1 == 0 \/ b2 == 0 \/ b3 == 0
   where
     [b0, b1, b2, b3] = split bytes : [4][8]
-	
+    
 property anyZeroByteCorrect bytes =
     anyZeroByteOpt bytes == anyZeroByteSpec bytes
 ```
@@ -1408,15 +1408,15 @@ S' amount value = value >>> amount
 //Uncomment and fill in this definition according to the Speck specification:
 //R :
 //  {?}
-//	(?) =>
-//	?
+//  (?) =>
+//  ?
 R k (x, y) =
     undefined
-	
+
 R' :
     {n}
-	(fin n) =>
-	[n] -> ([n], [n]) -> ([n], [n])
+    (fin n) =>
+    [n] -> ([n], [n]) -> ([n], [n])
 R' k (x, y) =
     (S a ((x ^ k) - S' b (x ^ y)), S' b (x ^ y))
   where
@@ -1426,8 +1426,8 @@ R' k (x, y) =
 
 RInverseProperty :
     {n}
-	(fin n) =>
-	[n] -> ([n], [n]) -> Bit
+    (fin n) =>
+    [n] -> ([n], [n]) -> Bit
 property RInverseProperty k (x, y) =
     R' k (R k (x, y)) == (x, y)
 ```
