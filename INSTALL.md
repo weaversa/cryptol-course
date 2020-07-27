@@ -40,23 +40,32 @@ here.
    and unzip it somewhere on your computer.
 2. Install Docker:
    [https://docs.docker.com/get-docker](https://docs.docker.com/get-docker)
+   * Linux users: enable user-mode access to docker by executing `sudo
+     groupadd docker && sudo usermod -aG docker $USER`, then logout
+     and log back in.
 3. Install Visual Studio Code:
    [https://code.visualstudio.com](https://code.visualstudio.com)
-4. Install the Remote Containers Visual Studio Code Extension
-   (`ms-vscode-remote.remote-containers`). This can be done within
-   Visual Studio Code from the Extensions panel which you can open by
-   clicking "View" -> "Extensions".
-5. Open Visual Studio Code and
-   * click "File" -> "Open Folder..." (or just "Open..." on MacOS).
-   * Select the directory where you unzipped this repository. **Visual
-     Studio will detect the remote container and prompt you -- choose
-     "Reopen in Container"**.
-     If you miss the prompt, click the `><` box (hovertext: 
-     "open a remote window") in the lower left hand corner of the window 
-     and choose "Remote-Containers: Reopen in Container".
-   * It will take a while for Docker to build the container. Once it's
-     done you can run Cryptol by clicking "Terminal" -> "Run Task..."
-     -> "Cryptol".
+4. Open Visual Studio Code (command name: `code`) and 
+   * Install the "Markdown Preview Enhanced" extension: click
+     **View->Extensions**, search for "markdown preview", select and
+     install.
+   * Install the "Remote Containers Visual Studio Code Extension":
+     click **View -> Extensions**, search for "remote containers",
+     select and install.
+   * Open the cryptol-course directory: click **File -> Open
+     Folder...** (or just **Open...** on MacOS) and select the
+     directory where you unzipped the course repository.
+     * Be sure to select the top-level cryptol-course directory, not a
+       subdirectory.
+   * Visual Studio Code will detect the remote container and prompt
+     you in the lower right corner of the window -- choose **Reopen in
+     Container**.
+     * If you miss the prompt, click the `><` box (hovertext: "open a
+     remote window") in the lower left hand corner of the window and
+     choose "Remote-Containers: Reopen in Container".
+   * It will take a while for Docker to build the container the first
+     time. Once it's done, you can run Cryptol by clicking **Terminal
+     -> Run Task... -> Cryptol**.
 
 If a terminal window appears with the Cryptol logo, you're done. Feel
 free to load the next lab into the interpreter by typing:
