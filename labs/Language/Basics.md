@@ -219,7 +219,8 @@ in a later lab.
 ### File-only commands
 
 It's worth noting that there are a very few Cryptol commands
-that can only be used in a file, *not* interactively in the interpreter.  The most common of these are `module` and `import`.  
+that can only be used in a file, *not* interactively in the interpreter.
+The most common of these are `module`, `import`, `private`, and `property`.  
 
 ## Comments
 
@@ -366,7 +367,8 @@ thrown in.
 **EXERCISE**: The Cryptol interpreter command `:type` (or `:t` for
 short) is very useful for helping understand types. Use the `:type` command
 in the interpreter to determine the types of the variables defined below.
-(*Recall that these variables have been instantiated as part of `:load`ing this module.*)
+(*Recall that these variables have been instantiated as a
+result of loading this module via `:module`.*)
 
 ```
 varType0 = False
@@ -409,7 +411,8 @@ The types of the variables you viewed above were all *monomorphic*,
 meaning there was only a single valid type for each variable. Recall
 that numbers can be represented using a lot of different types. For
 instance, the number `5` can be an `Integer`, a 32-bit bitvector, or
-even a 12039780-bit bitvector (with 12039777 leading `0` bits). So, when you ask for the type of `5` in
+even a 12039780-bit bitvector (with 12039777 leading `0` bits). So, 
+when you ask for the type of `5` in
 the interpreter, you'll see:
 
 ```shell
@@ -570,9 +573,10 @@ labs::Language::Basics> increment 10
    `add 1` takes a 32-bit bitvector and returns a 32-bit
     bitvector. When it is applied to a 32-bit bitvector it adds one to
     that bitvector. Other examples to illustrate partial application:
-  * `addUncurried` is really a function of one argument. It happens that that argument
-    is a tuple which makes `addUncurried (28, 20)` look just like a
-    two argument function in many languages.
+  * `addUncurried` is really a function of one argument. It happens 
+  that the argument is a tuple which makes 
+  `addUncurried (28, 20)` look just like a
+  two argument function in many languages.
 
 **EXERCISE**: Use the `:type` command in the interpreter to discover
 the types of the following functions.
@@ -622,7 +626,8 @@ Upon reloading this file, we would see:
 ```
 
 Here Cryptol is telling us that Cryptol
-**expected** (based on the type definition) the type of input `a` to take two 5-bit bitvectors. But,
+**expected** (based on the type definition) the type of input `a` 
+to take two 5-bit bitvectors. But,
 Cryptol **inferred** (from the value definition) that the function
 just takes a single 5-bit bitvector.
 
@@ -646,7 +651,7 @@ Upon reloading this file, we would see:
 ```
 
 Now we get two error messages. One is complaining about the input
-type,the other about the output type.
+type, the other about the output type.
 
 **EXERCISE**: Just like in the previous section, you're now being
 asked to fill in *any valid monomorphic* type for each of the
@@ -923,7 +928,8 @@ F : {size} (fin size) => [size][32] -> [32]
 In Cryptol, `array` and `size` are different classes of variables, and they are 
 strongly linked so that `F` doesn't have to trust that the length of
 `array` really is `size`. This kind of linkage is called [Strong
-typing](https://en.wikipedia.org/wiki/Strong_and_weak_typing) and generally refers to use of programming language types in order to both
+typing](https://en.wikipedia.org/wiki/Strong_and_weak_typing) and generally 
+refers to use of programming language types in order to both
 capture invariants of the code, and ensure its correctness, and
 definitely exclude certain classes of programming errors.
 
@@ -1119,7 +1125,7 @@ you were imagining. This causes problems:
 
 Type signatures for functions are wonderful bits of documentation. It
 is much easier to see what's going on if you use type synonyms and
-signatures.
+signatures.  Impacts:
 
   * cleaner code
   * easier for other tools to consume/reason about
@@ -1140,7 +1146,7 @@ try adding more type annotations. This:
 
 All the functions we've written so far have been one-liners (well,
 essentially). This section introduces the `where` clause, a mechanism
-that allows you to create local definitions in a functions. There's
+that allows you to create local definitions in functions. There's
 really not too much to this, but you'll use it in almost every Cryptol
 function you'll ever write, so consider it important.
 
@@ -1219,25 +1225,36 @@ Here, `:prove` tells Cryptol to call out to an external theorem prover
 light-weight quick check interface `:check` that runs some random
 inputs through a property, rather than trying to prove it for all
 inputs. Cryptol also allows you to *find* solutions to a property via
-it's `:sat` command. For example,
+its `:sat` command. For example,
 
 ```shell
 labs::Language::Basics> :sat \x -> increment x < x
 (\x -> increment x < x) 0xffffffff = True
 ```
 
-Here we used a *lambda* function, a simple way to create a function
+Here we used a *lambda* function (indicated by `\`), 
+a simple way to create a function
 without giving it a name. We'd read the above as, "Cryptol, find an
-assignment to `x` such that `increment x < x`. And, since the type of
+assignment to `x` such that `increment x < x`." And since the type of
 `increment` forces `x` to be a 32-bit bitvector, `increment
 0xffffffff` overflows to zero.
 
 ## Operators
 
-Cryptol's `:help` command will provide a brief description of the
-operators in this section by issuing `:help` (`:h` for short)
+Cryptol's `:help` command will provide a brief description of an
+operator by issuing `:help` (`:h` for short)
 followed by the name of the operator in parentheses. For example:
-`:help (@)`
+
+```shell
+Cryptol> :help (@)
+
+    (@) : {n, a, ix} (fin ix) => [n]a -> [ix] -> a
+
+Precedence 100, associates to the left.
+
+Index operator.  The first argument is a sequence.  The second argument is
+the zero-based index of the element to select from the sequence.
+```
 
 Many languages differentiate signed and unsigned numbers at the type
 level (e.g. C's `uint32` and `int32`). Cryptol has separate operators
@@ -1315,16 +1332,16 @@ labs::Language::Basics> [~1, 1] == [6 : [4], 3 * 3]
 False
 ```
 
-In the first example, `6` is the literal needing the most bits and is
+In the first example, `6` is the literal value that requires the most bits and is
 given type `[3]`. That makes both sides of the equality test have type
 `[2][3]` (two elements of three bits each). Now `~1 : [3]` is `0b110`
-or `6` in decimal and `3 * 3 : [3]` is `1 : [3]` so `[~1, 1] == [6, 1]
+or `6` in decimal and `3 * 3 : [3]` is `1 : [3]`, so `[~1, 1] == [6, 1]
 == [6, 3 * 3]`.
 
 In the second example, `6` is given type `[4]`, so both sides have
 type `[2][4]`. Now `~1 : [4]` is `0b1110` or `14` in decimal and
 `3 * 3 : [4]` is `9` in decimal. We have `[~1, 1] == [14, 1]`
-while `[6, 3 * 3] == [6, 9]` so equality fails.
+while `[6, 3 * 3] == [6, 9]`, so equality fails.
 
 _**It can be crucially important to be precise about the widths of
 things!**_
@@ -1450,8 +1467,8 @@ Q.E.D.
 
 ## Common Primitives
 
-Cryptol's `:help` command will provide a brief description of the
-primitives in the section by issuing `:help` (`:h` for short) followed
+Again, Cryptol's `:help` command will provide a brief description of the
+primitives in the section by issuing `:help` followed
 by the name of the primitive.
 
 ### Collections of all `False` or all `True` bits
@@ -1493,8 +1510,9 @@ labs::Language::Basics> reverse [0, 0, 1]
 [1, 0, 0]
 ```
 
-Of course the sizes of lists have to be big enough. Also, notice that
-`head` (which is equivalent to `@0` and `last` (which is equivalent to
+Of course, the sizes of lists have to be big enough for 
+the requested operation. Also, notice that
+`head` (which is equivalent to `@0`) and `last` (which is equivalent to
 `!0`) return an element while the others return lists.
 
 Often in a Cryptol program, the context will determine the shapes of
@@ -1517,10 +1535,10 @@ labs::Language::Basics> transpose [[1, 2], [3, 4]]
 ### Functional programming operators: `sum`, `map`, `iterate`, `foldl`
 
 Cryptol supports a few common idioms in functional programming. This
-section briefly touches upon four.
+section briefly touches upon five of these.
 
-The `sum` operator takes a sequence of elements and sums them all
-up. Similar to other operators, `sum` acts element-wise and as such
+The `sum` operator takes a sequence of elements and accumulates them.
+Similar to other operators, `sum` acts element-wise and as such
 accepts sequences of any type that arithmetic can be applied to.
 
 ```shell
@@ -1602,7 +1620,7 @@ advantageous:
 
 ### Or not...
 
-  * Many of Cryptol's operators naturally extend element-wise over
+Many of Cryptol's operators naturally extend element-wise over
     nested sequences to any depth.
 
 ```shell
@@ -1610,9 +1628,9 @@ labs::Language::Basics> [[[2, 3], [5, 7]], [[11, 13], [17, 19]]] + [[[0, 1], [1,
 [[[2, 4], [6, 9]], [[14, 18], [25, 32]]]
 ```
 
-  * So we don't have to write loops within loops to process these
+So we don't have to write loops within loops to process these
     sorts of multidimensional arrays.
-  * All the arithmetic, bitwise logical, and comparison operators work
+All of the arithmetic, bitwise logical, and comparison operators work
     element-wise over nested sequences!
 
 ### Loop indices
@@ -1653,7 +1671,7 @@ labs::Language::Basics> sum [1..100]
 Loops with functions on the indices are written as **sequence
 comprehensions**. From the [Cryptol
 manual](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf),
-Section 1.7.2:
+Section 1.6.2:
 
 > A Cryptol comprehension is a way of programmatically computing the
 > elements of a new sequence, out of the elements of existing
@@ -1668,7 +1686,7 @@ labs::Language::Basics> [ n^^3 | n <- [0..10] ]
 Star Trek's (T.O.S.) warp factor light speed multipliers!
 
 We read this as "make the sequence `n^^3` where `n` draws from the
-sequence `[0..10]`. We refer to the right-hand side (`n <- [0..10]`)
+sequence `[0..10]`." We refer to the right-hand side (`n <- [0..10]`)
 as a branch. With multiple branches, there are two choices for how the
 values are drawn from the branches, *cartesian* (`,` between
 branches), or in *parallel* (`|` between branches). For example:
@@ -1749,7 +1767,8 @@ encrypt key plainText = cipherText
     cipherText = last roundResults
 ```
 
-Many block ciphers are just variations of the above theme. Here's a sample of it in action:
+Many block ciphers are just variations of the above theme. 
+Here's a sample of it in action:
 
 ```shell
 labs::Language::Basics> encrypt 0x1337c0de 0xdabbad00
@@ -1762,7 +1781,7 @@ The latter shows that you can still write bad crypto with Cryptol!
 
 Notice that both `roundKeys` in `keyExpand` and `roundResults` in
 `encrypt` are self-referential sequences, a paradigm that will often
-occur when coding up cryptography.
+occur when coding cryptography.
 
 
 ## Laziness
