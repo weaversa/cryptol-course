@@ -46,15 +46,12 @@ here.
 3. Install Visual Studio Code:
    [https://code.visualstudio.com](https://code.visualstudio.com)
 4. Open Visual Studio Code (command name: `code`) and 
-
    a. Install the "vscode-pdf" extension: click
      **View->Extensions**, search for "tomoki1207", select and
      install.
-
    b. Install the "Remote Containers Visual Studio Code Extension":
      click **View -> Extensions**, search for "ms-vscode-remote.remote-containers",
      select and install.
-
    c. Open the cryptol-course directory: click **File -> Open
      Folder...** (or just **Open...** on MacOS) and select the
      directory where you unzipped the course repository.
