@@ -24,7 +24,7 @@ Specifically, you'll also gain experience with
   * writing functions and properties, 
   * functions with curried parameters,
   * type parameters and type constraints,
-  * the `check`, `:prove`, and `:sat` commands, and
+  * the `:check`, `:prove`, and `:sat` commands, 
   * pattern matching,
   * demoting types variables to value variables,
   * `/\`, `\/`, `==>` -- single bit logical operations,
@@ -41,7 +41,7 @@ Specifically, you'll also gain experience with
     `head`, `last`, `tail`, `reverse`, `groupBy`, `map`, `iterate`,
     and `foldl`,
   * the `sum` and `carry` operators,
-  * enumerations and sequence comprehensions,
+  * enumerations and sequence comprehensions, and
   * lambda functions.
 
 ## Load This Module
@@ -77,10 +77,10 @@ than with conventional languages. That's 'cause it's been tuned for
 such! To throw out the buzzwords:
   * Cryptol is a [domain-specific
     language](https://en.wikipedia.org/wiki/Domain-specific_language). Not
-    only does it have things to support its domain, but also it elides
+    only does it have things to support its application domain, but also it elides
     a lot of junk that makes programming and analyzing the programs
     difficult.
-  * Cryptol has been designed with automated reasoning about its code
+  * Cryptol has been designed with automated reasoning about code
     as a priority, so that we can leverage it for verification. Some
     things are harder to do in Cryptol, but they pay off in code that
     can be proven correct!
@@ -105,8 +105,8 @@ close at hand.
 
 For examples in this lab, the warning messages about specifying bit
 sizes of numbers have been turned off. This is **not** something you
-should do when you're new at Cryptol. (it's only done here for
-teaching purposes.)
+should do when you're new at Cryptol; it's only done here for
+teaching purposes.
 
 ```shell
 labs::Language::Basics> :set warnDefaulting = off
@@ -140,14 +140,14 @@ base 10.
 
 ## Modules
 
-This file is a Cryptol module. The first line of every Cryptol module
+This file is a Cryptol module. The first interpreted line of every Cryptol module
 must be `module Path::...Path::ModuleName where`. The `Path` component
 is the system path from the root of whatever set of modules you're
 creating or working from. The `ModuleName` component is the basename
 of this file. For instance, this module is `labs::Language::Basics`
-because it's path from the root repository is
+because its path from the root repository is
 `labs/Language/Basics.md`. There's really not much to naming
-modules. But, don't forget the `where` clause at the end.
+modules. But don't forget the `where` clause at the end.
 
 Importing modules is also pretty simple. Just add a line starting with
 `import` followed by the name of the module. For example, here we
@@ -216,6 +216,11 @@ import labs::ProjectEuler::ProjectEuler as PE hiding (inc, inc1001)
 Cryptol's module system also supports parameters, but that is covered
 in a later lab.
 
+### File-only commands
+
+It's worth noting that there are a very few Cryptol commands
+that can only be used in a file, *not* interactively in the interpreter.  The most common of these are `module` and `import`.  
+
 ## Comments
 
   * `//` comments to the to end of a line
@@ -251,7 +256,7 @@ alphanumeric characters plus `'` (apostrophe, but read "prime") and
 `_` (underscore). They must begin with an alphabetic character or an
 underscore. The notational convention for `'` is to indicate a related
 definition, while underscore is mostly used to separate words or as a
-catch all for characters we'd like to use but are forbidden. [Camel
+catch-all for characters we'd like to use but are forbidden. [Camel
 case](https://en.wikipedia.org/wiki/Camel_case) is often used when
 other naming constraints aren't mandated.
 
@@ -260,7 +265,7 @@ myValue  = 15 : [32]
 myValue' = myValue && mask  // mask defined elsewhere
 ```
 
-Feel free to take a quick look at the [the Cryptol style
+Feel free to take a quick look at the [Cryptol style
 guide](../../cryptol-style.md) we used for creating the material in
 this course.
 
@@ -308,7 +313,7 @@ Things to note:
   * 1-d sequences of bits are treated as numbers by arithmetic and
     comparison operators. So for instance, `[False, True] == (1 :
     [2])` and `[True, False, True] > 4` both hold.
-  * Cryptol distinguishes between the different dimensions. In
+  * Cryptol distinguishes between different dimensions. In
     particular, `True` and `[True]` are type incompatible.
   * The number of bracket pairs in a type gives its dimension.
   * Cryptol supports **holes** in types via the `_` character. When
@@ -359,29 +364,20 @@ makes heavy use sequences, with the occasional tuple and `Integer`
 thrown in.
 
 **EXERCISE**: The Cryptol interpreter command `:type` (or `:t` for
-short) is very useful for helping understand types. Use this command
-in the interpreter to discover the types of the following
-variables.
+short) is very useful for helping understand types. Use the `:type` command
+in the interpreter to determine the types of the variables defined below.
+(*Recall that these variables have been instantiated as part of `:load`ing this module.*)
 
 ```
 varType0 = False
-
 varType1 = [False]
-
 varType2 = [False, False, True]
-
 varType3 = 0b001
-
 varType4 = [0x1, 2, 3]
-
 varType5 = [ [1, 2, 3 : [8]] , [4, 5, 6], [7, 8, 9] ]
-
 varType6 = [ [1, 2, 3] : [3][8], [4, 5, 6], [7, 8, 9] ]
-
 varType7 = [ [1, 2, 3], [4, 5, 6], [7, 8, 9] ] : [_][_][8]
-
 varType8 = (0b1010, 0xff)
-
 varType9 = [ (10 : [12], [1, 2 : [4], 3], ([0b101, 7], 0xab)),
              (18 : [12], [0, 1 : [4], 2], ([0b100, 3], 0xcd)) ]
 ```
@@ -410,10 +406,10 @@ be a 10-bit sequence (because that's what we told Cryptol). However,
 Cryptol **inferred** that the type of `False` is actually `Bit`.
 
 The types of the variables you viewed above were all *monomorphic*,
-meaning, there was only a single valid type for each variable. Recall
+meaning there was only a single valid type for each variable. Recall
 that numbers can be represented using a lot of different types. For
 instance, the number `5` can be an `Integer`, a 32-bit bitvector, or
-even a 12039780-bit bitvector. So, when you ask for the type of `5` in
+even a 12039780-bit bitvector (with 12039777 leading `0` bits). So, when you ask for the type of `5` in
 the interpreter, you'll see:
 
 ```shell
@@ -427,11 +423,11 @@ there is some freedom in the type of the value variable (here,
 `5`). For the next set of exercises, you'll be asked to type some
 variables monomorphically, that is, you shouldn't need any curly
 braces or `=>` symbols when you specify the types. That's all stuff
-that's gone over later on in this section.
+that's covered later in this section.
 
 **EXERCISE**: Fill in *any valid monomorphic* type for each of the
 values below. Some will have multiple correct answers. Once done,
-reload this file to check that you've gotten them correct.
+`:reload` this file to check that you've gotten them correct.
 
 ```
 varType10 = 0x1234
@@ -459,14 +455,16 @@ That last one is a really good demonstration of what to avoid when
 writing specifications! Honestly, most of those look such a mess that
 it's now obligatory to point out that:
 
-**Specifications are supposed to be easily understood**. It's simply
+> **Specifications are supposed to be easily understood**. 
+
+It's simply
 bad form to mix numerical representations, put type parameters in the
 middle of sequences, and so on. Please don't take these exercises to
 be considered *good* Cryptol. They were crafted to challenge you,
-something you should **never** do to someone who wants to make use the
+something you should **never** do to someone who wants to use the
 specifications you write. Always strive to make elegant
 specifications. There is no reason to optimize, and certainly don't
-write a spec "just to get it done" --- making something that loads and
+write a spec "just to get it done" -- making something that loads and
 runs isn't good enough. Aim for creating specifications that *look*
 like the mathematics you're specifying. < rant over >
 
@@ -488,7 +486,7 @@ As it stands, this function works with many different types of `x` and
 13-bit bitvectors, and (believe it or not) even with both as tuples of
 sequences. Since this function accepts many different types of
 arguments, it's called
-[polymorphic](https://en.wikipedia.org/wiki/Polymorphism_(computer_science))
+[polymorphic](https://en.wikipedia.org/wiki/Polymorphism_(computer_science)):
 > the provision of a single interface to entities of different types.
 
 Often times, cryptographic functions are written to only work with
@@ -572,7 +570,7 @@ labs::Language::Basics> increment 10
    `add 1` takes a 32-bit bitvector and returns a 32-bit
     bitvector. When it is applied to a 32-bit bitvector it adds one to
     that bitvector. Other examples to illustrate partial application:
-  * Really `addUncurried` is a function of one argument. That argument
+  * `addUncurried` is really a function of one argument. It happens that that argument
     is a tuple which makes `addUncurried (28, 20)` look just like a
     two argument function in many languages.
 
@@ -623,8 +621,8 @@ Upon reloading this file, we would see:
     Inferred type: [5]
 ```
 
-Here Cryptol is telling us that (from the type definition) Cryptol
-**expected** the type of input `a` to take two 5-bit bitvectors. But,
+Here Cryptol is telling us that Cryptol
+**expected** (based on the type definition) the type of input `a` to take two 5-bit bitvectors. But,
 Cryptol **inferred** (from the value definition) that the function
 just takes a single 5-bit bitvector.
 
@@ -648,7 +646,7 @@ Upon reloading this file, we would see:
 ```
 
 Now we get two error messages. One is complaining about the input
-type, and one about the output type.
+type,the other about the output type.
 
 **EXERCISE**: Just like in the previous section, you're now being
 asked to fill in *any valid monomorphic* type for each of the
@@ -719,7 +717,7 @@ funType19 a b = ( ( a, b, a, b, a, b ),
                   ( a, b, a, b, a, b ) )  // We're so sorry
 ```
 
-After that set of exercises you likely see the conciseness of the
+After that set of exercises, you likely see the conciseness of the
 sequence type over the tuple type (it was hammered in pretty hard
 there at the end). Lesson: don't use tuples unless you really really
 have to. Curry your parameters and group heterogeneous elements
@@ -732,7 +730,7 @@ You've no doubt noticed by now that the left-hand side of assignment
 statements aren't restricted to just single variables. This
 flexibility comes from Cryptol's powerful **pattern matching**
 capabilities. Cryptol allows you to make assignments by writing
-patterns based on the type (shape) of the value on the right-hand
+patterns based on the type (*shape*) of the value on the right-hand
 side. Again, `_` acts a kind of hole. For example:
 
 ```shell
@@ -753,7 +751,7 @@ labs::Language::Basics> c
 0x6
 ```
 
-Cryptol can even pattern match on sequence concatenation, for example:
+Cryptol can even pattern match on sequence concatenation; for example:
 
 ```cryptol
 firstThreeBits : {n} [3 + n]-> [3]
@@ -864,7 +862,7 @@ from the left, it doesn't make sense to concatenate something onto the
 back of an infinite sequence, but it seems perfectly fine to
 concatenate something onto the front of an infinite sequence.
 
-All that aside, the `sayHello` example above is a bit silly, but, when
+All that aside, the `sayHello` example above is a bit silly, but when
 utilized fully, the type system acts to protect functions from being
 called in a way that is potentially harmful. For example, let's say we
 had a function that accesses the 12th bit of a bitvector. This can be
@@ -876,7 +874,7 @@ can only be called with bitvectors with at least 13 bits, like so:
 ```cryptol
 bitTwelve :
     {n}
-    (fin n, n >=13) =>
+    (fin n, n >= 13) =>
     [n] -> Bit
 bitTwelve x = x@12
 ```
@@ -922,11 +920,10 @@ And `F` has to trust that the length of `array` really is
 F : {size} (fin size) => [size][32] -> [32]
 ```
 
-In Cryptol `array` and `size` are different classes of variables and
+In Cryptol, `array` and `size` are different classes of variables, and they are 
 strongly linked so that `F` doesn't have to trust that the length of
 `array` really is `size`. This kind of linkage is called [Strong
-typing](https://en.wikipedia.org/wiki/Strong_and_weak_typing) and >
-generally refers to use of programming language types in order to both
+typing](https://en.wikipedia.org/wiki/Strong_and_weak_typing) and generally refers to use of programming language types in order to both
 capture invariants of the code, and ensure its correctness, and
 definitely exclude certain classes of programming errors.
 
