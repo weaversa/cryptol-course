@@ -56,16 +56,16 @@ here.
     3. Open the cryptol-course directory: click **File -> Open
        Folder...** (or just **Open...** on MacOS) and select the
        directory where you unzipped the course repository.
-        * Be sure to select the top-level cryptol-course directory, not a
-          subdirectory.
-        * Visual Studio Code will detect the remote container and prompt
-          you in the lower right corner of the window -- choose **Reopen in
-          Container**.
-            * If you miss the prompt, click the `><` box (hovertext: "open a
-              remote window") in the lower left hand corner of the window and
-              choose "Remote-Containers: Reopen in Container".
-        * It will take a while for Docker to build the container the first
-          time. Once it's done, you can run Cryptol by clicking **Terminal -> Run Task... -> Cryptol**.
+       * Be sure to select the top-level cryptol-course directory, not a
+         subdirectory.
+    4. Visual Studio Code will detect the remote container and prompt
+       you in the lower right corner of the window -- choose **Reopen in
+       Container**.
+       * If you miss the prompt, click the `><` box (hovertext: "open a
+         remote window") in the lower left hand corner of the window and
+         choose "Remote-Containers: Reopen in Container".
+       * It will take a while for Docker to build the container the first
+         time. Once it's done, you can run Cryptol by clicking **Terminal -> Run Task... -> Cryptol**.
 
 If a terminal window appears with the Cryptol logo, you're done. Feel
 free to load the next lab into the interpreter by typing:
