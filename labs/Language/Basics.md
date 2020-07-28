@@ -948,7 +948,7 @@ repeat value = [ value | _ <- zero : [n] ]
 ```
 
 **EXERCISE**: Here are a few examples demonstrating how to pass type
-and value variables to this function. Please typing these examples
+and value variables to this function. Please try typing these examples
 into the interpreter and consider the output, and trying your own
 examples as curiosity strikes you.
 
@@ -983,7 +983,7 @@ polyType13 = repeat`{5} (7 : [16])
 ```
 
 You'll see that you can either pass type variables or let Cryptol infer
-the type variables from the type of the output. Also, those last two
+the type variables from the type of the output. Also, those last two examples
 are demonstrating that you can pass type parameters based on position,
 that is, since the type of repeat declares `{n, a}` as type variables
 **in that order** (`n` first, then `a` second), Cryptol will infer
@@ -1023,7 +1023,7 @@ labs::Language::Basics> :s base=16
 Because type values and variable values are different classes of
 variables, they cannot interact directly. If we think of these two
 classes being in a hierarchy, type variables would be above value
-variables. With this hierarchy mind, Cryptol does allow type variables
+variables. With this hierarchy in mind, Cryptol does allow type variables
 to be **demoted** to value variables, but value variables cannot be
 promoted to type variables. For example, the following is not
 possible.
@@ -1045,11 +1045,14 @@ appendSize input = input # [`size]
 ```
 
 Here we concatenate the size of a sequence onto the end. To read the
-function definition more verbatim: `appendSize` takes an input named
+function definition more verbatim: 
+>`appendSize` takes an input named
 `input` that is a sequence of `size` number of 32-bit elements and
 outputs a sequence of `size+1` 32-bit elements where the first `size`
 elements are `input` and the last element is the size of the input
-sequence. When type variables are demoted into value variables, they
+sequence. 
+
+When type variables are demoted into value variables, they
 must take on a type. Cryptol usually infers the correct type, and in
 this case `` `size `` becomes a 32-bit value. It is because of this
 that the function has `32 >= width size` as a type constraint. If
