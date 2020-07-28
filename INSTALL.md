@@ -47,12 +47,12 @@ here.
    [https://code.visualstudio.com](https://code.visualstudio.com)
 4. Open Visual Studio Code (command name: `code`) and 
 
-   a. Install the "Markdown Preview Enhanced" extension: click
-     **View->Extensions**, search for "markdown preview", select and
+   a. Install the "vscode-pdf" extension: click
+     **View->Extensions**, search for "tomoki1207", select and
      install.
 
    b. Install the "Remote Containers Visual Studio Code Extension":
-     click **View -> Extensions**, search for "remote containers",
+     click **View -> Extensions**, search for "ms-vscode-remote.remote-containers",
      select and install.
 
    c. Open the cryptol-course directory: click **File -> Open
