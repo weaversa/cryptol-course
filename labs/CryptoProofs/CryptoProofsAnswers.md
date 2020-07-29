@@ -366,7 +366,7 @@ that both keys encrypt that plaintext to the same ciphertext.
 > Solution:
 >```shell
 >labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
->labs::CryptoProofs::CryptoProofsAnswers> :sat \k1 k2 pt  -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2 pt
+>labs::CryptoProofs::CryptoProofsAnswers> :sat \k1 k2 pt -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2 pt
 >(\k1 k2 pt -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2 pt)
 >  0x0000000000000000 0x0100000000000000 0x0000000000000000 = True
 >(Total Elapsed Time: 1.258s, using "Yices")
