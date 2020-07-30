@@ -283,6 +283,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](README.md)
+Up: [Course README](../../README.md)
 Previous: [Crypto Proofs](/labs/CryptoProofs/CryptoProofsAnswers.md)
 Next: [Transposition Ciphers, in the Abstract](TranspositionAnswers.md)

@@ -199,6 +199,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](README.md)
+Up: [Course README](../../README.md)
 Previous: [Scytale: A classic easy-to-specify transposition cipher](ScytaleAnswers.md)
-Next: [We've worked hard enough -- your turn!](RouteAnswers.md)
+Next: [Route: We've worked hard enough -- your turn!](RouteAnswers.md)

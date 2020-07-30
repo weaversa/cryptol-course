@@ -91,6 +91,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](README.md)
+Up: [Course README](../../README.md)
 Previous: [Transportation Ciphers, in the Abstract](TranspositionAnswers.md)
 Next: [Scytale: A classic easy-to-specify transposition cipher](ScytaleAnswers.md)
