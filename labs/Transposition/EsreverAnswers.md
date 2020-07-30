@@ -55,15 +55,25 @@ import labs::Transposition::TranspositionAnswers
 
 **EXERCISE**: Define a `PermutationMapping` `pi` such that 
 `encrypt pi msg` will return `reverse msg`.  Do not use the value of 
-`msg`.  Use `pi_reverses` to verify it to be correct.
+`msg`.  Check it with `pi_test` and prove it using  `pi_reverses`.
 
 ```cryptol
-pi: {n} fin n => PermutationMapping n
+/** a permutation mapping that just reverses order */
+pi: {n, w} (fin n, Integral w, Literal 0 w) => [n]w
 pi = reverse (take`{n} [0...])
 ```
 
 ```cryptol
-pi_reverses: {n, a} (fin n, Cmp a) => [n]a -> Bit
+pi_test = and
+    [ encrypt pi "" == ""
+    , encrypt pi "A" == "A"
+    , encrypt pi "STRESSED" == "DESSERTS"
+    , encrypt pi "RACECAR" == "RACECAR"
+    , encrypt pi "SEMORDNILAP" == "PALINDROMES"
+    ]
+
+/** `encrypt pi` reverses sequence order */ 
+pi_reverses: {n, a} (fin n, Eq a) => [n]a -> Bit
 pi_reverses msg = (encrypt pi) msg == reverse msg
 ```
 
