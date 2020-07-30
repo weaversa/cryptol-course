@@ -81,8 +81,8 @@ pi_correct msg = (encrypt pi) msg == reverse msg
 `decrypt pi`, and prove it.
 
 ```cryptol
-encrypt_decrypt_equiv: {n, a} (fin n, Eq a) => [n]a -> Bit
-encrypt_decrypt_equiv = encrypt pi`{n} === decrypt pi`{n}
+encrypt_decrypt_equiv: {n, a} [n]a -> Bit
+encrypt_decrypt_equiv = undefined
 ```
 
 # Conclusion
