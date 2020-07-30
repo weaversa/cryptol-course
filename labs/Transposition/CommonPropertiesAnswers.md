@@ -150,7 +150,7 @@ so let's use that:
  * `f` maps to `y` from `x`
  */
 maps_to:
-    {d, c} Cmp c => (d -> c) -> c -> d -> Bit
+    {d, c} Eq c => (d -> c) -> c -> d -> Bit
 maps_to f y x =
     f x == y
 
@@ -159,7 +159,7 @@ maps_to f y x =
  * `f'` maps `f x` back to `x`.
  */
 inverts:
-    {d, c} Cmp d => (c -> d) -> (d -> c) -> d -> Bit
+    {d, c} Eq d => (c -> d) -> (d -> c) -> d -> Bit
 inverts g f x =
     g (f x) == x
 
@@ -168,7 +168,7 @@ inverts g f x =
  * to distinct elements of its codomain `d`
  */
 injective:
-    {d, c} (Cmp d, Cmp c) => (d -> c) -> d -> d -> Bit
+    {d, c} (Eq d, Eq c) => (d -> c) -> d -> d -> Bit
 injective f x x' =
     x != x' ==> f x != f x'
 
@@ -176,7 +176,7 @@ injective f x x' =
  * `x` and `x'` differ, but `f` maps them to the same value
  */
 collides:
-    {d, c} (Cmp d, Cmp c) => (d -> c) -> d -> d -> Bit
+    {d, c} (Eq d, Eq c) => (d -> c) -> d -> d -> Bit
 collides f x x' =
     x != x' /\ f x == f x'
 ```

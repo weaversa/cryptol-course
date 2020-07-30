@@ -17,10 +17,8 @@ You'll also need experience with
 ## Skills You'll Learn
 
 This module will define a _transposition cipher_, in which message 
-characters are _transposed_, in Cryptol using `@@` (to select items 
-at multiple indices) and `updates` (to modify multiple items at 
-selected indices with specified values).  Additionally, the module 
-will recall some important cipher properties (that decryption 
+characters are _transposed_ in a different order.  Additionally, the 
+module will recall some important cipher properties (that decryption 
 recovers encrypted plaintext and that encryption is injective), where 
 these operations are defined in terms of _permutations_.
 
@@ -76,37 +74,60 @@ scrambled message containing the same elements in a different order
 decrypt a message, a receiver _inverts_ this permutation to yield the 
 original message.
 
-In Cryptol, we can use the `@@` operator to produce the transposition 
-of a given message by a given permutation, and again to produce the 
-original message by inverting that permutation (via a clever 
-application of `updates`).  First, we define a sequence index:
+**EXERCISE**: Define a function `isPermutation` that returns whether 
+`seq': [n]a` is a permutation of `seq: [n]a`.  Check your function 
+using `isPermutation_test`.
+
+(Hint: A helper function will...help.)
 
 ```cryptol
-/** type of index of sequence of width n */
-type SeqIndex n = [width n]
-```
-
-(Note: It might be tempting to define this as `[width (n-1)]` as the 
-weakest restriction on indices, but given the common need to compare 
-indices with sequence length, it often becomes difficult to maintain 
-specifications that satisfy Cryptol's type checker.  It's a lot 
-easier to just use this definition...at least until the language 
-developers improve sequence indexing, as planned for Cryptol 2.9...)
-
-**EXERCISE**: Define a `PermutationMapping` type and a predicate 
-`isPermutationMapping`, perhaps using the built-in functions `all` 
-and `elem`, and the above `type SeqIndex`.  `isPermutationMapping pi` 
-should return `True` iff a sequence `pi` comprises `n` elements, each 
-of which is an index in the range `[0, n)`.
-
-```cryptol
-type PermutationMapping n = [n](SeqIndex n)
-
-isPermutationMapping : {n} fin n => PermutationMapping n -> Bit
-isPermutationMapping pi = all (elem' pi) (take`{n} [0...])
+/** number of occurrences of `item` in `seq` */
+itemCount:
+    {n, a}
+    (fin n, Eq a) =>
+    [n]a -> a -> Integer
+itemCount seq item = counts ! 0
   where
-    elem' p x = elem x p
+    counts = [ 0 ]
+           # [ if x == item then count + 1 else count
+             | count <- counts
+             | x <- seq
+             ]
+
+/** is `seq'` a permutation of `seq`? */
+isPermutation:
+    {n, a}
+    (fin n, Eq a) =>
+    [n]a -> [n]a -> Bit
+isPermutation seq seq' = and
+    [ itemCount seq x == itemCount seq' x
+    | x <- seq
+    ]
 ```
+
+```cryptol
+/** `isPermutation` test vectors */
+isPermutation_test = and
+    [   isPermutation "" ""
+    ,   isPermutation "A" "A"
+    ,   isPermutation "AA" "AA"
+    ,   isPermutation "AB" "AB"
+    ,   isPermutation "AB" "BA"
+    ,   isPermutation "AAB" "ABA"
+    ,   isPermutation "BAB" "ABB"
+    ,   isPermutation "BAB" "BBA"
+
+    , ~ isPermutation "A" "B"
+    , ~ isPermutation "AA" "AB"
+    , ~ isPermutation "AAB" "ABB"
+    , ~ isPermutation "BAB" "AAB"
+    ]
+```
+
+**EXERCISE**: Define a function `isPermutationMapping`, perhaps using 
+the built-in functions `all` and `elem`, that recognizes a 
+permutation mapping.  Check your function using 
+`isPermuationMapping_test`.
 
 (Hint: ``take`{n} [0...]`` returns the first `n` numbers starting 
 from `0`, i.e. the identity mapping.  `isPermutationMapping` can be 
@@ -114,137 +135,132 @@ defined using this sequence as one of the arguments to `all`.  It
 may be simpler to define a variant of `elem` that takes arguments in 
 a different order.)
 
-**EXERCISE**: Given a mapping `pi: PermutationMapping n`, use `updates` to 
-return its inverse.  `:prove` your definition correct using 
-`inverse_inverts`.
+```cryptol
+/** Is `pi` a permutation of `[0,n)`? */
+isPermutationMapping:
+    {n, w}
+    (fin n, Eq w, Integral w, Literal 0 w) =>
+    [n]w -> Bit
+isPermutationMapping pi = all (elem' pi) (take`{n} [0...])
+  where
+    elem' p x = elem x p
+
+/** `isPermutationMapping` test vectors */
+isPermutationMapping_test = and
+    [   isPermutationMapping []
+    ,   isPermutationMapping [0]
+    ,   isPermutationMapping [0,1]
+    ,   isPermutationMapping [1,0]
+    ,   isPermutationMapping [0,1,2]
+    ,   isPermutationMapping [0,2,1]
+    ,   isPermutationMapping [2,0,1]
+
+    , ~ isPermutationMapping [1]
+    , ~ isPermutationMapping [0,0]
+    , ~ isPermutationMapping [0,2]
+    , ~ isPermutationMapping [1,2]
+    , ~ isPermutationMapping [0,1,1]
+    , ~ isPermutationMapping [2,0,2]
+    ]
+```
+
+**EXERCISE**: Define a function `permute` that permutes a sequence 
+`seq: [n]a` according to a permutation mapping `pi: [n]w`.
+
+(Hint: Consider built-in function `@@`.)
 
 ```cryptol
-/** invert a `PermutationMapping` */
-inverse : {n} fin n => PermutationMapping n -> PermutationMapping n
-inverse pi = updates pi pi (take [0...])
-
-/** `inverse` inverts `PermutationMapping` `pi` */
-inverse_inverts:
-    {n, a} (fin n, Cmp a) =>
-    PermutationMapping n -> [n]a -> Bit
-property inverse_inverts pi msg =
-    isPermutationMapping pi ==> msg @@ pi @@ (inverse pi) == msg
+permute:
+    {n, w, a}
+    Integral w =>
+    [n]w -> [n]a -> [n]a
+permute pi seq = seq @@ pi
 ```
+
+**EXERCISE**: State a predicate `permute_permutes` that, given a 
+permutation mapping `pi: [n]w` and a sequence `seq: [n]a`, `permute` 
+returns a permutation of `seq`.  Prove this predicate for various 
+sequence lengths and types.
+
+```cryptol
+permute_permutes:
+    {n, w, a}
+    (fin n, Eq w, Integral w, Literal 0 w, Eq a) =>
+    [n]w -> [n]a -> Bit
+permute_permutes pi seq =
+    isPermutationMapping pi ==> 
+    isPermutation seq (permute pi seq)
+```
+
+**EXERCISE**: Given a permutation mapping `pi: [n]w`, return its 
+inverse `pi'` such that `permute pi'` `inverts` `permute pi`.  
+(`inverts` is imported from `labs::Transposition::CommonProperties`.)
 
 (Hint: The idiomatic solution to this exercise, where `inverse` is 
 defined with ``take`{m} [0...]`` as one of the arguments to 
-`updates`, is one of the most elegant in all of Cryptol.)
-
-Alternatively, we can define the correctness of `inverse` in terms of 
-a `permute` function (which applies a mapping `pi` to a message 
-`msg`) and a generic function inverse property as described in 
-`labs::CryptoProofs::CryptoProofs` and encapsulated in 
-`labs::Transposition::CommonProperties`.
-
-**EXERCISE**: Define `permute` to map indices `pi` of message `msg`, 
-using `@@`.
+`updates`, is perhaps the most elegant in all of Cryptol.)
 
 ```cryptol
-permute : {n, a} fin n => PermutationMapping n -> [n]a -> [n]a
-permute pi msg = msg @@ pi
+/** return the inverse of a permutation mapping `pi` */
+inverse:
+    {n, w}
+    (fin n, Integral w, Literal 0 w) =>
+    [n]w -> [n]w
+inverse pi = updates pi pi (take [0...])
 ```
 
-**EXERCISE**: Define `permute'` such that `permute' pi` inverts 
-`permute pi`, using `@@`, `pi`, and prior definitions.
+**EXERCISE** State a predicate `inverse_inverts` that `inverse` 
+satisfies its specification above.  Prove this predicate for various 
+sequence lengths and types.
 
 ```cryptol
-permute' : {n, a} fin n => PermutationMapping n -> [n]a -> [n]a
-permute' pi msg = msg @@ (inverse pi)
+/** `inverse` inverts permutation mapping `pi` */
+inverse_inverts:
+    {n, w, a}
+    (fin n, Eq w, Integral w, Literal 0 w, Eq a) =>
+    [n]w -> [n]a -> Bit
+inverse_inverts pi seq =
+    isPermutationMapping pi ==>
+    inverts (permute (inverse pi)) (permute pi) seq
 ```
 
-**EXERCISE**: Define a `property` that `permute' pi` `inverts` 
-`permute pi` if `pi` is a `PermutationMapping`, and `:prove` it for 
-various message sizes and types.
+**EXERCISE**: Define a predicate that `permute pi` is `injective` if 
+`pi` is a permutation mapping, and `:prove` it for various sequence 
+lengths and types.  (`injective` is imported from 
+`labs::Transposition::CommonProperties`.)
 
 ```cryptol
-/**
- * `permute pi'` inverts `permute pi` if `pi` is a 
- * `PermutationMapping`
- */
-permute'_inverts_permute:
-    {n, a} (fin n, Cmp a) => PermutationMapping n -> [n]a -> Bit
-permute'_inverts_permute pi msg =
-    isPermutationMapping pi ==> inverts (permute' pi) (permute pi) msg
-```
-
-**EXERCISE**: Define a `property` that `permute pi` is `injective` if 
-`pi` is a `PermutationMapping`, and `:prove` it for various message 
-sizes and types.
-
-```cryptol
-/** `permute pi` is `injective` if `pi` is a `PermutationMapping` */
+/** `permute pi` is `injective` if `pi` is a permutation mapping */
 permute_injective:
-    {n, a} (fin n, Cmp a) =>
-    PermutationMapping n -> [n]a -> [n]a -> Bit
-permute_injective pi msg msg' =
-    isPermutationMapping pi ==> injective (permute pi) msg msg'
+    {n, w, a}
+    (fin n, Eq w, Integral w, Literal 0 w, Eq a) =>
+    [n]w -> [n]a -> [n]a -> Bit
+permute_injective pi seq seq' =
+    isPermutationMapping pi ==> injective (permute pi) seq seq'
 ```
 
 # Encryption and Decryption
 
 With this foundation in place, we can define `encrypt` and `decrypt` 
-operations for a transposition cipher.  All we need is a permutation 
-mapping for a given message length.
+operations for a transposition cipher in terms of a permutation 
+mapping `pi`.
 
-**EXERCISE**: Define `encrypt` and `decrypt` in terms of `permute`, 
-`permute'`, and a `PermutationMapping` `pi`.
+**EXERCISE**: Define `encrypt` and `decrypt` in terms of `permute` 
+and a permutation mapping `pi`.
 
 ```cryptol
-/**
- * encrypt a message by transposition, given a function to generate a 
- * corresponding permutation mapping
- */
-encrypt:
-    {n, a} fin n =>
-    PermutationMapping n -> [n]a -> [n]a
-encrypt pi msg = permute pi msg
-
-/**
- * decrypt a message by transposition, given a function to generate a 
- * corresponding permutation mapping
- */
-decrypt:
-    {n, a} fin n =>
-    PermutationMapping n -> [n]a -> [n]a
-decrypt pi msg = permute' pi msg
+encrypt = permute
+decrypt pi = permute (inverse pi)
 ```
 
-**EXERCISE**: Define a `property` showing that `decrypt pf` `inverts` 
-`encrypt pf` if `pf` returns a `PermutationMapping`, and `:prove` it 
-for various message sizes and types.
+**EXERCISE** Define predicates `cipher_recovery` and 
+`cipher_injective` stating that `decrypt pi` inverts `encrypt pi` and 
+that `encrypt pi` is injective, given a permutation mapping `pi`.  
+(These are direct assignments to earlier predicate definitions.)
 
 ```cryptol
-/**
- * `decrypt pi` `inverts` `encrypt pi` 
- * if `pi` is a `PermutationMapping`
- */
-recovery:
-    {n, a} (fin n, Cmp a) =>
-    PermutationMapping n -> [n]a -> Bit
-recovery pi msg =
-    isPermutationMapping pi ==> 
-    inverts (decrypt pi) (encrypt pi) msg
-```
-
-**EXERCISE**: Define a `property` showing that `encrypt pi` is 
-`injective` if `pi` is a `PermutationMapping`, and `:prove` it 
-for various message sizes and types.
-
-```cryptol
-/**
- * `encrypt pi` is `injective`
- * if `pi` is a `PermutationMapping`
- */
-encrypt_injective:
-    {n, a} (fin n, Cmp a) =>
-    PermutationMapping n -> [n]a -> [n]a -> Bit
-encrypt_injective pi msg msg' =
-    isPermutationMapping pi ==> injective (encrypt pi) msg msg'
+cipher_recovery = inverse_inverts
+cipher_injective = permute_injective
 ```
 
 # Padding and Filtering
@@ -271,7 +287,7 @@ predicate `f: a -> Bit`, return from a sequence `seq: [n]a` the
 elements `seq': [m]a` such that `all f seq' == True`.
 
 **EXERCISE**...just kidding. Normally, we might introduce an exercise 
-to define `partition` at this point.  However, in Cryptol's type 
+to define such a function at this point.  However, in Cryptol's type 
 system, this turns out to be a somewhat difficult problem.  Indeed, 
 this module's author, for whom all prior concepts covered in the lab 
 came naturally, struggled for a day to arrive at what turned out to 
@@ -279,7 +295,7 @@ be an incorrect (but easily correctable) solution.  This problem
 baffled all but the lead instructor for the course.  Readers are 
 invited to similarly struggle at this point, but hints showing a 
 couple ways to solve this problem are provided below for those who 
-instead wish to endure a diatribe on potential strategies to solve 
+instead wish to endure a diatribe on different strategies to solve 
 this problem.  Even we're not that mean!
 
 ## Index swapping
@@ -295,23 +311,25 @@ filtering problem...
 items at indices `i` and `j` of a sequence `seq: [n]a` for number `n` 
 and arbitrary character type `a`, using `@` and `update`, then again 
 using `@@` and `updates` (do not use a temporary variable in either 
-definition).  Use the `swap_equiv` property to verify that your 
-definitions are equivalent, then the `swap_correct` property to show 
+definition).  Use the `swap_equiv` predicate to verify that your 
+definitions are equivalent, then the `swap_correct` predicate to show 
 that one of them is correct.  (Because they are equivalent, this will 
 infer that the other swap function is also correct.)
 
 ```cryptol
+/** constraint on type variables of a `SwapFunction` */
+type constraint _SwapFunction_ n w = (fin n, Integral w)
 /** type of function that swaps items at index-pair */
-type SwapFunction n a = [n]a -> SeqIndex n -> SeqIndex n -> [n]a
+type SwapFunction n w a = [n]a -> w -> w -> [n]a
 ```
 
 ```cryptol
 /** Swap `i`th and `j`th entries of sequence `a` via `@`/`update` */
-swap_update : {n, a} fin n => SwapFunction n a
+swap_update : {n, w, a} _SwapFunction_ n w => SwapFunction n w a
 swap_update seq i j = update (update seq i (seq @ j)) j (seq @ i)
 
 /** Swap `i`th and `j`th entries of sequence `a` via `@@`/`updates` */
-swap_updates : {n, a} fin n => SwapFunction n a
+swap_updates : {n, w, a} _SwapFunction_ n w => SwapFunction n w a
 swap_updates seq i j = updates seq [i,j] (seq @@ [j,i])
 
 // Define `swap` as either of above swap functions
@@ -321,18 +339,18 @@ swap = swap_updates
 ```cryptol
 /** swap_update is functionally equivalent to swap_updates */
 swap_equiv:
-    {n, a}
-    (fin n, Cmp a) =>
-    [n]a -> SeqIndex n -> SeqIndex n -> Bit
-property swap_equiv seq i j =
+    {n, w, a}
+    (_SwapFunction_ n w, Eq a) =>
+    [n]a -> w -> w -> Bit
+swap_equiv seq i j =
     swap_update seq i j == swap_updates seq i j
 
 /** `swap` is correct; it just swaps values at specified indices */
 swap_correct:
-    {n, a}
-    (fin n, Cmp a) =>
-    [n]a -> SeqIndex n -> SeqIndex n -> SeqIndex n -> Bit
-property swap_correct seq i j k =
+    {n, w, a}
+    (_SwapFunction_ n w, Cmp w, Literal (max n (max n n)) w, Cmp a) =>
+    [n]a -> w -> w -> w -> Bit
+swap_correct seq i j k =
     i < `n ==> j < `n ==> k < `n ==> 
     seq' @ k ==
         if k == i then seq @ j
@@ -365,7 +383,7 @@ including the empty message `""` of length `0`:
 rearrange: {n} (fin n) => String n -> String n
 rearrange w = take (last out).0
   where
-    out = [(w # [undefined], 0, 0)]
+    out = [(w, 0, 0)]
         # [ if w'@i != '-' then (w', i', j)
              | j <= i      then (w', i, i')
              | w'@j != '-' then (swap w' i j, i', j+1)
@@ -402,10 +420,10 @@ labs::Transposition::TranspositionAnswers> rearrange_trace "HE-LL-O-"
 **EXERCISE**: Using `rearrange` as a blueprint, define a function 
 `partition` that, given a predicate `f: a -> Bit` and sequence 
 `seq: [n]a`, "partitions" the sequence, returning `seq': [n]a` 
-such that there exists some `i: SeqIndex n` such that 
+such that there exists some `i: Integral n` such that 
 `all f seqt' == True` and `all f' seqf' == True`, where 
 `f' x = ~ f x` and ``(seqt', seqf') = splitAt`{i} seq'``.  Use the 
-`partition_rearranges` property to `:prove` (or if you lose 
+`partition_rearranges` predicate to `:prove` (or if you lose 
 patience, `:check`) that you defined `partition` correctly.
 
 ```cryptol
@@ -417,7 +435,7 @@ patience, `:check`) that you defined `partition` correctly.
 partition: {n, a} (fin n) => (a -> Bit) -> [n]a -> [n]a
 partition f seq = take (last out).0
   where
-    out = [(seq # [undefined], 0, 0)]
+    out = [(seq, 0, 0)]
         # [ if f (w' @ i) then (w', i', j)
              | j <= i     then (w', i, i')
              | f (w' @ j) then (swap w' i j, i', j+1)
@@ -463,8 +481,7 @@ split before and after a current index, e.g.
 **EXERCISE**: Is it possible to enumerate over sequence indices and 
 pass each index `i` to compute ``splitAt`{i} seq``?  Why (not)?  If 
 it is possible, feel free to submit a pull request!  Otherwise, can 
-we apply another advanced technique to operate over these 
-subsequences?
+we apply another technique to operate over these subsequences?
 
 Unfortunately, there is no mechanism for "type sequence 
 comprehensions".  However, we can apply recursion...
@@ -479,8 +496,8 @@ rearrange':
     String n -> String n
 rearrange' w =
     if `n == (0: [width n]) then w
-    | (w # ['\0']) @ 0 == '-' then rearrange' (take`{max 1 n - 1} (w <<< 1)) # (take`{min 1 n} ['-'])
-    else (take`{min 1 n} [(w # ['\0']) @ 0]) # rearrange' (drop`{min 1 n} w)
+    | w @ 0 == '-' then rearrange' (take`{max 1 n - 1} (w <<< 1)) # (take`{min 1 n} ['-'])
+    else (take`{min 1 n} [w @ 0]) # rearrange' (drop`{min 1 n} w)
 
 /** The iterative and recursive `rearrange(')` functions are equivalent */
 rearrange_equiv:
@@ -489,12 +506,12 @@ rearrange_equiv:
 rearrange_equiv = rearrange`{n} === rearrange'`{n}
 ```
 
-In addition to being recursive, this approach confusingly adds and 
-removes an arbitrary `\0` character and applies tricks with `min` and 
-`max` to establish type consistency for an empty sequence.  What kind 
-of fool thought this up?  (See [Intro to Type Hackery](labs/Language/IntroTypeHackery.md) 
+In addition to being recursive, this approach requires tricks with 
+`min` and `max` to establish type consistency for an empty sequence.  
+What kind of fool thought this up?  (See 
+[Intro to Type Hackery](labs/Language/IntroTypeHackery.md) 
 for a better, more detailed example of such hackery...when this lab 
-gets merged into the repo...)
+gets merged into the repo.)
 
 **EXERCISE**: Using `rearrange'` as a blueprint, define a function 
 `partition'` that does the same as `partition`, and try to convince 
@@ -509,8 +526,8 @@ partition':
     (a -> Bit) -> [n]a -> [n]a
 partition' f w =
     if `n == (0: [width n]) then w
-    | ~ (f ((w # [undefined]) @ 0)) then partition' f (take`{max 1 n - 1} (w <<< 1)) # (take`{min 1 n} [(w # [undefined]) @ 0])
-    else (take`{min 1 n} [(w # [undefined]) @ 0]) # partition' f (drop`{min 1 n} w)
+    | ~ (f (w @ 0)) then partition' f (take`{max 1 n - 1} (w <<< 1)) # (take`{min 1 n} [w @ 0])
+    else (take`{min 1 n} [w @ 0]) # partition' f (drop`{min 1 n} w)
 ```
 
 ```cryptol
@@ -527,8 +544,8 @@ partition'_rearranges =
 Phew!  Now that we have defined a `partition` function...
 
 **EXERCISE**: Define a function `unpad` that uses `partition` (or 
-`partition'`) and `take` to reduce a `PermutationMapping (n + p)` to 
-a possibly smaller `PermutationMapping n` (where `p >= 0`).  Use 
+`partition'`) and `take` to reduce a permutation mapping `(n + p) w` 
+to a possibly smaller `[n]w` (where `p >= 0`).  Use 
 `unpad_unpads` to check your definition of `unpad` is correct for 
 various _valid permutation mappings_ of various lengths and paddings.  
 (Checking invalid permutation mappings is trivial and inefficient.)  
@@ -537,18 +554,20 @@ correctness of this function?
 
 ```cryptol
 unpad:
-    {n, p} (fin n, fin p) =>
-    PermutationMapping (n + p) -> PermutationMapping n
+    {n, p, w}
+    (fin n, fin p, Cmp w, Literal n w) =>
+    [n + p]w -> [n]w
 unpad pi =
-    map take (take (partition ((>) (`n : [width (n + p)])) pi))
+    take (partition ((>) `n) pi)
 ```
 
 ```cryptol
 unpad_unpads:
-    {n, p} (fin n, fin p) =>
-    PermutationMapping (n + p) -> Bit
+    {n, w, p}
+    (fin n, fin p, Cmp w, Integral w, Literal 0 w, Literal n w) =>
+    [n + p]w -> Bit
 unpad_unpads pi =
-    isPermutationMapping pi ==> isPermutationMapping`{n} (unpad pi)
+    isPermutationMapping`{n + p} pi ==> isPermutationMapping`{n} (unpad pi)
 ```
 
 # Conclusion
