@@ -36,20 +36,20 @@ Cryptol interpreter. Load this module from within the Cryptol
 interpreter running in the `cryptol-course` directory with:
 
 ```shell
-Cryptol> :m labs::Transposition::RailFenceAnswers
+Cryptol> :m labs::Transposition::RailFence
 ```
 
 We start by defining the module for this lab:
 
 ```cryptol
-module labs::Transposition::RailFenceAnswers where
+module labs::Transposition::RailFence where
 ```
 
 Additionally, we will import some common properties and transposition 
 cipher components to this spec:
 
 ```cryptol
-import labs::Transposition::TranspositionAnswers
+import labs::Transposition::Transposition
 ```
 
 # Rail Fence
@@ -108,29 +108,10 @@ helper function that keeps this distinction intact for computation of
 `pi` in the next step.)
 
 ```cryptol
-/** indices per cycle, tupled */
-cycle':
-    {r, w}
-    Literal (max (max 1 r) (max 1 r)) w =>
-    (fin r, r >= 1, Integral w) => // Literal (max 1 r) w
-    (w, [max 2 r - 2][2]w, w)
-cycle' = (0, m, `r - 1)
-  where
-    ml = take`{max 2 r - 2} [1...]
-    mr = reverse (take`{max 2 r - 2} [`r...])
-    m = transpose [ ml, mr ]
-
-/** indices per cycle, untupled */
+/** indices per cycle */
 cycle:
-    {r, w}
-    Literal (max (max 1 r) (max 1 r)) w =>
-    (fin r, r >= 1, Integral w) => // Literal (max 1 r) w
-    [max 1 (2*(r - 1))]w
-cycle = take`{max 1 (2*(r - 1))} ([0] # join m # [`r - 1])
-  where
-    ml = take`{max 2 r - 2} [1...]
-    mr = reverse (take`{max 2 r - 2} [`r...])
-    m = transpose [ ml, mr ]
+    {r, w} (r >= 1) => [max 1 (2*(r - 1))]w
+cycle = undefined
 ```
 
 Having broken down a Rail Fence message into cycles, we can try to 
@@ -148,25 +129,12 @@ Use `pi_test` to check your definition.
 ```cryptol
 /** condensed indices to encrypt message of length `m` over number of additional rails `r` */
 pi:
-    {r, n, w}
-    Literal (max (max (max (max 1 r) (max 1 r)) (max 1 (2 * (r - 1)))) n) w =>
-    (fin r, r >= 1, fin n, Cmp w, Integral w, Ring ([2]w)) =>
-    [n]w
-pi = out
-  where
-    (a,b,c) = cycle'`{r}
-    groups =
-      [ ( a, b, c ) + ( o, take (repeat [o,o]), o)
-      | o <- take`{n /^ (max 1 (2*(r-1)))} [0,`(max 1 (2*(r-1)))...] ]
-    idxs = groups.0 # join (join (transpose (groups.1))) # groups.2
-    out = unpad`{n} idxs
+    {n, w} [n]w
+pi = undefined
 
 /** inverse of condensed pi to decrypt message of length `m` over number of additional rails `r` */
-pi': {r, n, w}
-    Literal (max (max (max (max 1 r) (max 1 r)) (max 1 (2 * (r - 1)))) n) w =>
-    (fin r, r >= 1, fin n, Cmp w, Integral w, Ring ([2]w)) =>
-    [n]w
-pi' = inverse pi`{r, n, w}
+pi': {n, w} [n]w
+pi' = undefined
 
 /** tests from [Wikipedia article on Rail Fence Cipher](https://en.wikipedia.org/wiki/Rail_fence_cipher) pass */
 property pi_test = and
@@ -201,5 +169,5 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 
 Up: [Course README](../../README.md)
-Previous: [Scytale: A classic easy-to-specify transposition cipher](ScytaleAnswers.md)
-Next: [Route: We've worked hard enough -- your turn!](RouteAnswers.md)
+Previous: [Scytale: A classic easy-to-specify transposition cipher](Scytale.md)
+Next: [Route: We've worked hard enough -- your turn!](Route.md)

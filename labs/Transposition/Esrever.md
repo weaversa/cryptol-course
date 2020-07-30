@@ -35,20 +35,20 @@ Cryptol interpreter. Load this module from within the Cryptol
 interpreter running in the `cryptol-course` directory with:
 
 ```shell
-Cryptol> :m labs::Transposition::EsreverAnswers
+Cryptol> :m labs::Transposition::Esrever
 ```
 
 We start by defining the module for this lab:
 
 ```cryptol
-module labs::Transposition::EsreverAnswers where
+module labs::Transposition::Esrever where
 ```
 
 Additionally, we will import the common transposition cipher 
 definitions:
 
 ```cryptol
-import labs::Transposition::TranspositionAnswers
+import labs::Transposition::Transposition
 ```
 
 # Esrever Encryption and Decryption
@@ -59,8 +59,8 @@ import labs::Transposition::TranspositionAnswers
 
 ```cryptol
 /** a permutation mapping that just reverses order */
-pi: {n, w} (fin n, Integral w, Literal 0 w) => [n]w
-pi = reverse (take`{n} [0...])
+pi: {n, w} [n]w
+pi = undefined
 ```
 
 ```cryptol
@@ -70,11 +70,6 @@ property pi_test = and
     , encrypt pi "STRESSED" == "DESSERTS"
     , encrypt pi "RACECAR" == "RACECAR"
     , encrypt pi "SEMORDNILAP" == "PALINDROMES"
-    , decrypt pi "" == ""
-    , decrypt pi "A" == "A"
-    , decrypt pi "STRESSED" == "DESSERTS"
-    , decrypt pi "RACECAR" == "RACECAR"
-    , decrypt pi "SEMORDNILAP" == "PALINDROMES"
     ]
 
 /** `encrypt pi` reverses sequence order */ 
@@ -106,5 +101,5 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 
 Up: [Course README](../../README.md)
-Previous: [Transportation Ciphers, in the Abstract](TranspositionAnswers.md)
-Next: [Scytale: A classic easy-to-specify transposition cipher](ScytaleAnswers.md)
+Previous: [Transportation Ciphers, in the Abstract](Transposition.md)
+Next: [Scytale: A classic easy-to-specify transposition cipher](Scytale.md)

@@ -41,7 +41,7 @@ interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```sh
-Cryptol> :m labs::Transposition::CommonPropertiesAnswers
+Cryptol> :m labs::Transposition::CommonProperties
 ```
 
 The proofs in this lab require an array of different theorem provers
@@ -52,7 +52,7 @@ this course.
 The first line of a Cryptol module needs to be a module definition:
 
 ```cryptol
-module labs::Transposition::CommonPropertiesAnswers where
+module labs::Transposition::CommonProperties where
 ```
 
 In this lab, we'll redo exercises from 
@@ -61,7 +61,7 @@ import the same dependency.  We'll give it an alias this time so
 Cryptol doesn't spew warnings about shadowing its definition of `f`:
 
 ```cryptol
-import labs::CryptoProofs::CryptoProofsAnswers (known_key, known_ct, matched_pt, matched_ct, DESFixParity)
+import labs::CryptoProofs::CryptoProofs (known_key, known_ct, matched_pt, matched_ct, DESFixParity)
 import specs::Primitive::Symmetric::Cipher::Block::DES (DES)
 ```
 
@@ -70,21 +70,21 @@ import specs::Primitive::Symmetric::Cipher::Block::DES (DES)
 Let's count to 10...
 
 ```sh
-labs::Transposition::CommonPropertiesAnswers> let _1 = 1 : Integer
-labs::Transposition::CommonPropertiesAnswers> _1
+labs::Transposition::CommonProperties> let _1 = 1 : Integer
+labs::Transposition::CommonProperties> _1
 1
-labs::Transposition::CommonPropertiesAnswers> 1 + it
+labs::Transposition::CommonProperties> 1 + it
 2
 ...
 9
-labs::Transposition::CommonPropertiesAnswers> 1 + it
+labs::Transposition::CommonProperties> 1 + it
 10
 ```
 
 That was repetitive.  Let's just ask Cryptol to count to 10:
 
 ```sh
-labs::Transposition::CommonPropertiesAnswers> take`{10} (iterate (\x -> 1 + x) (1 : Integer))
+labs::Transposition::CommonProperties> take`{10} (iterate (\x -> 1 + x) (1 : Integer))
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 ```sh
 
@@ -99,16 +99,16 @@ Peano would be proud.  Wouldn't it be nice if Cryptol could just
 reuse S to repeatedly increment a counter?
 
 ```sh
-labs::Transposition::CommonPropertiesAnswers> :t \(x : Integer) -> 1 + x
+labs::Transposition::CommonProperties> :t \(x : Integer) -> 1 + x
 (\(x : Integer) -> 1 + x) : Integer -> Integer
-labs::Transposition::CommonPropertiesAnswers> :t S
+labs::Transposition::CommonProperties> :t S
 S : Integer -> Integer
 ```
 
 Wait a minute...it can!
 
 ```sh
-labs::Transposition::CommonPropertiesAnswers> take`{10} (iterate S 1)
+labs::Transposition::CommonProperties> take`{10} (iterate S 1)
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 ```
 
@@ -195,11 +195,8 @@ them with our newfound appreciation for higher-order functions!
 and `known_ct` from `CryptoProofs`, using `maps_to`.  Avoid lambda.
 
 ```shell
-labs::Transposition::CommonPropertiesAnswers> :s prover=boolector
-labs::Transposition::CommonPropertiesAnswers> :sat maps_to (DES.encrypt known_key) known_ct
-maps_to (DES.encrypt known_key) known_ct
-  0x70617373776f7264 = True
-(Total Elapsed Time: 0.773s, using Boolector)
+labs::Transposition::CommonProperties> :s prover=boolector
+labs::Transposition::CommonProperties> 
 ```
 
 (Hint: A curried function of two arguments can be viewed as a 
@@ -210,9 +207,8 @@ are mutual inverses for all possible `pt`, given the same `key`.
 Do not mention `pt` in your proof commands.
 
 ```sh
-labs::Transposition::CommonPropertiesAnswers> :s prover=abc
-labs::Transposition::CommonPropertiesAnswers> :prove \key -> inverts (DES.decrypt key) (DES.encrypt key)
-labs::Transposition::CommonPropertiesAnswers> :prove \key -> inverts (DES.encrypt key) (DES.decrypt key)
+labs::Transposition::CommonProperties> :s prover=abc
+labs::Transposition::CommonProperties> 
 ```
 
 **EXERCISE**: Use Boolector to prove that `DES.encrypt` is injective 
@@ -220,8 +216,8 @@ for any given `key`.  Do not mention `pt`s in your proof command.
 Meditate on the nature of lambda and the (f)utility of names.
 
 ```sh
-labs::Transposition::CommonPropertiesAnswers> :s prover=boolector
-labs::Transposition::CommonPropertiesAnswers> :prove \key -> injective (DES.encrypt key)
+labs::Transposition::CommonProperties> :s prover=boolector
+labs::Transposition::CommonProperties> 
 ```
 
 **EXERCISE**: Use ABC to find two different keys and a single 
@@ -232,8 +228,8 @@ your command.  Guess whether such a collision will be found before
 you observe a collision of black holes in nearby outer space.
 
 ```sh
-labs::Transposition::CommonPropertiesAnswers> :s prover=abc
-labs::Transposition::CommonPropertiesAnswers> :sat \pt -> collides (encrypt_ pt) where encrypt_ pt key = DES.encrypt key pt
+labs::Transposition::CommonProperties> :s prover=abc
+labs::Transposition::CommonProperties> 
 ```
 
 **EXERCISE**: Use ABC to prove that the two keys you just found are 
@@ -242,9 +238,8 @@ equivalent keys; i.e., prove that keyed `DES.encrypt` and
 Avoid lambda.
 
 ```sh
-labs::Transposition::CommonPropertiesAnswers> :s prover=abc
-labs::Transposition::CommonPropertiesAnswers> let { result = _, arg1 = pt, arg2 = key, arg3 = key_ } = it
-labs::Transposition::CommonPropertiesAnswers> :prove (DES.encrypt key) == (DES.encrypt key_)
+labs::Transposition::CommonProperties> :s prover=abc
+labs::Transposition::CommonProperties> 
 ```
 
 **EXERCISE**: Use ABC to prove that (DES.encrypt key) is equivalent 
@@ -252,8 +247,8 @@ to (DES.encrypt (DESFixParity)).  Do not mention `pt` in your
 proof command.
 
 ```sh
-labs::Transposition::CommonPropertiesAnswers> :s prover=abc
-labs::Transposition::CommonPropertiesAnswers> :prove \key -> DES.encrypt key === DES.encrypt (DESFixParity key)
+labs::Transposition::CommonProperties> :s prover=abc
+labs::Transposition::CommonProperties> 
 ```
 
 **EXERCISE**: Finally, try to find a collision with keys of distinct 
@@ -263,8 +258,8 @@ go crazy with lambda.  Ponder the abject hopelessness of classical
 crypto in a post-quantum world...
 
 ```sh
-labs::Transposition::CommonPropertiesAnswers> :s prover=abc
-labs::Transposition::CommonPropertiesAnswers> :sat \key key_ pt -> DESFixParity key != DESFixParity key_ /\ DES.encrypt key pt == DES.encrypt key_ pt
+labs::Transposition::CommonProperties> :s prover=abc
+labs::Transposition::CommonProperties> 
 ```
 
 # Conclusion
@@ -284,5 +279,5 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 
 Up: [Course README](../../README.md)
-Previous: [Crypto Proofs](/labs/CryptoProofs/CryptoProofsAnswers.md)
-Next: [Transposition Ciphers, in the Abstract](TranspositionAnswers.md)
+Previous: [Crypto Proofs](/labs/CryptoProofs/CryptoProofs.md)
+Next: [Transposition Ciphers, in the Abstract](Transposition.md)

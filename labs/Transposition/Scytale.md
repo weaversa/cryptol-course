@@ -37,20 +37,20 @@ Cryptol interpreter. Load this module from within the Cryptol
 interpreter running in the `cryptol-course` directory with:
 
 ```shell
-Cryptol> :m labs::Transposition::ScytaleAnswers
+Cryptol> :m labs::Transposition::Scytale
 ```
 
 We start by defining the module for this lab:
 
 ```cryptol
-module labs::Transposition::ScytaleAnswers where
+module labs::Transposition::Scytale where
 ```
 
 Additionally, we will import the common transposition cipher 
 definitions:
 
 ```cryptol
-import labs::Transposition::TranspositionAnswers
+import labs::Transposition::Transposition
 ```
 
 # Scytale Encryption and Decryption
@@ -80,9 +80,9 @@ While informative, this definition only accepts messages whose length
 is a multiple of the rod diameter:
 
 ```sh
-labs::Transposition::ScytaleAnswers> scytale`{3} "ATTACKATDAWN"
+labs::Transposition::Scytale> scytale`{3} "ATTACKATDAWN"
 "AAAATCTWTKDN"
-labs::Transposition::ScytaleAnswers> scytale`{3} "ATTACKDAWN"
+labs::Transposition::Scytale> scytale`{3} "ATTACKDAWN"
 
 [error] at <interactive>:1:13--1:25:
   10 != 3 * anything
@@ -102,9 +102,9 @@ block size.  Revisiting the earlier example, `"ATTACKDAWN"` is length
 of size 3:
 
 ```sh
-labs::Transposition::ScytaleAnswers> `numBlocks:Integer where type numBlocks = 10 /^ 3
+labs::Transposition::Scytale> `numBlocks:Integer where type numBlocks = 10 /^ 3
 4
-labs::Transposition::ScytaleAnswers> `padLength:Integer where type padLength = 10 %^ 3 
+labs::Transposition::Scytale> `padLength:Integer where type padLength = 10 %^ 3 
 2
 ```
 
@@ -122,13 +122,8 @@ definitions.
 _encryption_.  Bizarre, right?)
 
 ```cryptol
-pi: {d, n, w} (fin d, d >= 1, fin n, Cmp w, Integral w, Literal n w) => [n]w
-pi = inverse (unpad`{n} (join (transpose (groupBy`{d} (take`{np} [0...])))))
-  where
-    type np = n /^ d * d
-
-pi': {d, n, w} (fin d, d >= 1, fin n, Cmp w, Integral w, Literal n w) => [n]w
-pi' = inverse pi`{d}
+pi: {n, w} [n]w
+pi = undefined
 ```
 
 ```cryptol
@@ -152,31 +147,10 @@ help here?  If not, how can you account for padding?  Define
 rod diameters and message lengths.
 
 ```cryptol
-scy_pad:
-    {d, n}
-    (n >= n / d * (n %^ d)) =>
-    (fin d, d >= 1, fin n) =>
-    String n -> String (n /^ d * d)
-scy_pad msg = (msg @@ ixs') # join [ (msg @@ g) # "-" | g <- gixs_]
-  where
-    (ixs', ixs_) = splitAt`{n - (n / d) * (n %^ d)} (take`{n} [0...])
-    gixs_ = split ixs_ : [n %^ d][n / d]Integer
-```
-
-```cryptol
 pi_correct:
-    {d, n}
-    (n >= n / d * (n %^ d)) =>
-    (fin d, d >= 1, fin n) => String n -> Bit
-pi_correct msg =
-    ~ (elem '-' msg) ==>
-    encrypt pi`{d} msg == msg'
-  where
-    msg' = take`{n} (rearrange' (scytale`{d} (scy_pad`{d} msg)))
+    {n} String n -> Bit
+pi_correct msg = undefined
 ```
-
-(Note: `rearrange'` accommodates larger message sizes than 
-`rearrange`, but proving this property blows up around `n = 16`.)
 
 # Conclusion
 
@@ -194,5 +168,5 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 
 Up: [Course README](../../README.md)
-Previous: [Esrever: A trivial message-reversing transposition "cipher"](ErseverAnswers.md)
-Next: [Rail Fence: A basic transposition cipher for humans that's not-so-basic for Cryptol](RailFenceAnswers.md)
+Previous: [Esrever: A trivial message-reversing transposition "cipher"](Ersever.md)
+Next: [Rail Fence: A basic transposition cipher for humans that's not-so-basic for Cryptol](RailFence.md)

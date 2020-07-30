@@ -31,20 +31,20 @@ Cryptol interpreter. Load this module from within the Cryptol
 interpreter running in the `cryptol-course` directory with:
 
 ```shell
-Cryptol> :m labs::Transposition::TranspositionAnswers
+Cryptol> :m labs::Transposition::Transposition
 ```
 
 We start by defining the module for this lab:
 
 ```cryptol
-module labs::Transposition::TranspositionAnswers where
+module labs::Transposition::Transposition where
 ```
 
 Additionally, we will import some common properties to apply to this 
 spec:
 
 ```cryptol
-import labs::Transposition::CommonPropertiesAnswers (injective, inverts)
+import labs::Transposition::CommonProperties (injective, inverts)
 ```
 
 # Transposition Ciphers
@@ -81,28 +81,9 @@ using `isPermutation_test`.
 (Hint: A helper function will...help.)
 
 ```cryptol
-/** number of occurrences of `item` in `seq` */
-itemCount:
-    {n, a}
-    (fin n, Eq a) =>
-    [n]a -> a -> Integer
-itemCount seq item = counts ! 0
-  where
-    counts = [ 0 ]
-           # [ if x == item then count + 1 else count
-             | count <- counts
-             | x <- seq
-             ]
-
 /** is `seq'` a permutation of `seq`? */
-isPermutation:
-    {n, a}
-    (fin n, Eq a) =>
-    [n]a -> [n]a -> Bit
-isPermutation seq seq' = and
-    [ itemCount seq x == itemCount seq' x
-    | x <- seq
-    ]
+isPermutation: {n, a} [n]a -> [n]a -> Bit
+isPermutation seq seq' = undefined
 ```
 
 ```cryptol
@@ -137,13 +118,8 @@ a different order.)
 
 ```cryptol
 /** Is `pi` a permutation of `[0,n)`? */
-isPermutationMapping:
-    {n, w}
-    (fin n, Eq w, Integral w, Literal 0 w) =>
-    [n]w -> Bit
-isPermutationMapping pi = all (elem' pi) (take`{n} [0...])
-  where
-    elem' p x = elem x p
+isPermutationMapping: {n, w} [n]w -> Bit
+isPermutationMapping pi = undefined
 
 /** `isPermutationMapping` test vectors */
 property isPermutationMapping_test = and
@@ -171,10 +147,8 @@ property isPermutationMapping_test = and
 
 ```cryptol
 permute:
-    {n, w, a}
-    Integral w =>
-    [n]w -> [n]a -> [n]a
-permute pi seq = seq @@ pi
+    {n, w, a} [n]w -> [n]a -> [n]a
+permute pi seq = undefined
 ```
 
 **EXERCISE**: Define a predicate `permute_permutes` that, given a 
@@ -183,13 +157,8 @@ returns a permutation of `seq`.  Prove this predicate for various
 sequence lengths and types.
 
 ```cryptol
-permute_permutes:
-    {n, w, a}
-    (fin n, Eq w, Integral w, Literal 0 w, Eq a) =>
-    [n]w -> [n]a -> Bit
-permute_permutes pi seq =
-    isPermutationMapping pi ==> 
-    isPermutation seq (permute pi seq)
+permute_permutes: {n, w, a} [n]w -> [n]a -> Bit
+permute_permutes pi seq = undefined
 ```
 
 **EXERCISE**: Given a permutation mapping `pi: [n]w`, return its 
@@ -202,11 +171,8 @@ defined with ``take`{m} [0...]`` as one of the arguments to
 
 ```cryptol
 /** return the inverse of a permutation mapping `pi` */
-inverse:
-    {n, w}
-    (fin n, Integral w, Literal 0 w) =>
-    [n]w -> [n]w
-inverse pi = updates pi pi (take [0...])
+inverse: {n, w} [n]w -> [n]w
+inverse pi = undefined
 ```
 
 **EXERCISE** State a predicate `inverse_inverts` that `inverse` 
@@ -215,13 +181,8 @@ sequence lengths and types.
 
 ```cryptol
 /** `inverse` inverts permutation mapping `pi` */
-inverse_inverts:
-    {n, w, a}
-    (fin n, Eq w, Integral w, Literal 0 w, Eq a) =>
-    [n]w -> [n]a -> Bit
-inverse_inverts pi seq =
-    isPermutationMapping pi ==>
-    inverts (permute (inverse pi)) (permute pi) seq
+inverse_inverts: {n, w, a} [n]w -> [n]a -> Bit
+inverse_inverts pi seq = undefined
 ```
 
 **EXERCISE**: Define a predicate that `permute pi` is `injective` if 
@@ -231,12 +192,8 @@ lengths and types.  (`injective` is imported from
 
 ```cryptol
 /** `permute pi` is `injective` if `pi` is a permutation mapping */
-permute_injective:
-    {n, w, a}
-    (fin n, Eq w, Integral w, Literal 0 w, Eq a) =>
-    [n]w -> [n]a -> [n]a -> Bit
-permute_injective pi seq seq' =
-    isPermutationMapping pi ==> injective (permute pi) seq seq'
+permute_injective: {n, w, a} [n]w -> [n]a -> [n]a -> Bit
+permute_injective pi seq seq' = undefined
 ```
 
 # Encryption and Decryption
@@ -249,8 +206,8 @@ mapping `pi`.
 and a permutation mapping `pi`.  Do not modify anything left of `=`.
 
 ```cryptol
-encrypt = permute
-decrypt pi = permute (inverse pi)
+encrypt = undefined
+decrypt pi = undefined
 ```
 
 **EXERCISE** Define predicates `cipher_recovery` and 
@@ -260,8 +217,8 @@ that `encrypt pi` is injective, given a permutation mapping `pi`.
 not modify anything left of `=`.)
 
 ```cryptol
-cipher_recovery = inverse_inverts
-cipher_injective = permute_injective
+cipher_recovery = undefined
+cipher_injective = undefined
 ```
 
 # Padding and Filtering
@@ -327,11 +284,11 @@ type SwapFunction n w a = [n]a -> w -> w -> [n]a
 ```cryptol
 /** Swap `i`th and `j`th entries of sequence `a` via `@`/`update` */
 swap_update : {n, w, a} _SwapFunction_ n w => SwapFunction n w a
-swap_update seq i j = update (update seq i (seq @ j)) j (seq @ i)
+swap_update seq i j = undefined
 
 /** Swap `i`th and `j`th entries of sequence `a` via `@@`/`updates` */
 swap_updates : {n, w, a} _SwapFunction_ n w => SwapFunction n w a
-swap_updates seq i j = updates seq [i,j] (seq @@ [j,i])
+swap_updates seq i j = undefined
 
 // Define `swap` as either of above swap functions
 swap = swap_updates
@@ -412,7 +369,7 @@ rearrange_trace w = out
 Here's how this function works for the string `"HE-LL-O-"`:
 
 ```sh
-labs::Transposition::TranspositionAnswers> rearrange_trace "HE-LL-O-" 
+labs::Transposition::Transposition> rearrange_trace "HE-LL-O-" 
 [("HE-LL-O--", 0, 0), ("HE-LL-O--", 1, 0), ("HE-LL-O--", 2, 0),
  ("HE-LL-O--", 2, 3), ("HEL-L-O--", 3, 4), ("HELL--O--", 4, 5),
  ("HELL--O--", 4, 6), ("HELLO----", 5, 7), ("HELLO----", 5, 8)]
@@ -435,17 +392,7 @@ various sequence lengths.
  * by all items not satisfying `f`
  */
 partition: {n, a} (fin n) => (a -> Bit) -> [n]a -> [n]a
-partition f seq = take (last out).0
-  where
-    out = [(seq, 0, 0)]
-        # [ if f (w' @ i) then (w', i', j)
-             | j <= i     then (w', i, i')
-             | f (w' @ j) then (swap w' i j, i', j')
-            else (w', i, j+1)
-            where i' = i + 1
-                  j' = j + 1
-          | (w', i, j) <- out
-          | _ <- tail [0 .. n : [width n]] ]
+partition f seq = undefined
 ```
 
 ```cryptol
@@ -523,13 +470,8 @@ correct and equivalent to `partition` for various sequence sizes and
 types.
 
 ```cryptol
-partition':
-    {n, a} fin n =>
-    (a -> Bit) -> [n]a -> [n]a
-partition' f w =
-    if `n == (0: [width n]) then w
-    | ~ (f (w @ 0)) then partition' f (take`{max 1 n - 1} (w <<< 1)) # (take`{min 1 n} [w @ 0])
-    else (take`{min 1 n} [w @ 0]) # partition' f (drop`{min 1 n} w)
+partition': {n, a} (a -> Bit) -> [n]a -> [n]a
+partition' f w = undefined
 ```
 
 ```cryptol
@@ -555,12 +497,8 @@ Can you think of a more efficient way to increase confidence in the
 correctness of this function?
 
 ```cryptol
-unpad:
-    {n, p, w}
-    (fin n, fin p, Cmp w, Literal n w) =>
-    [n + p]w -> [n]w
-unpad pi =
-    take (partition ((>) `n) pi)
+unpad: {n, p, w} [n + p]w -> [n]w
+unpad pi = undefined
 ```
 
 ```cryptol
@@ -587,5 +525,5 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 
 Up: [Course README](../../README.md)
-Previous: [Common Properties for Ciphers](CommonPropertiesAnswers.md)
-Next: [Esrever: A trivial message-reversing transposition "cipher"](EsreverAnswers.md)
+Previous: [Common Properties for Ciphers](CommonProperties.md)
+Next: [Esrever: A trivial message-reversing transposition "cipher"](Esrever.md)
