@@ -64,7 +64,7 @@ pi = reverse (take`{n} [0...])
 ```
 
 ```cryptol
-pi_test = and
+property pi_test = and
     [ encrypt pi "" == ""
     , encrypt pi "A" == "A"
     , encrypt pi "STRESSED" == "DESSERTS"

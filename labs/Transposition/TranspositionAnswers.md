@@ -107,7 +107,7 @@ isPermutation seq seq' = and
 
 ```cryptol
 /** `isPermutation` test vectors */
-isPermutation_test = and
+property isPermutation_test = and
     [   isPermutation "" ""
     ,   isPermutation "A" "A"
     ,   isPermutation "AA" "AA"
@@ -146,7 +146,7 @@ isPermutationMapping pi = all (elem' pi) (take`{n} [0...])
     elem' p x = elem x p
 
 /** `isPermutationMapping` test vectors */
-isPermutationMapping_test = and
+property isPermutationMapping_test = and
     [   isPermutationMapping []
     ,   isPermutationMapping [0]
     ,   isPermutationMapping [0,1]

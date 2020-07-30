@@ -4,7 +4,7 @@ This module defines a classic transposition "cipher" that encrypts a
 message by wrapping it around a (virtual) [scytale](https://en.wikipedia.org/wiki/Scytale).  
 The cipher is defined in terms of the 
 `labs::Transposition::Transposition` library, which defines `encrypt` 
-and `decrypt` functions given a `PermutationMapping`, which in this 
+and `decrypt` functions given a permutation mapping, which in this 
 case just returns ``reverse (take`{n} [0...])`` given a message of 
 length `n`.
 
@@ -92,14 +92,14 @@ labs::Transposition::ScytaleAnswers> scytale`{3} "ATTACKDAWN"
 similar transposition for any message length and rod diameter?
 
 Our strategy will be to rephrase scytale to operate over a 
-`PermutationMapping` (from `lab::Transposition::Transposition`) with 
-the number of padding characters necessary to reach a multiple of the 
-rod diameter, then use `unpad` to reduce that mapping back down to 
-the original message length.  To support this, Cryptol defines type 
-operators `/^` and `%^` to denote the number of blocks and padding 
-length, respective, given message and block size.  Revisiting the 
-earlier example, `"ATTACKDAWN"` is length 10, requiring 4 blocks of
-2 padding characters to divide into blocks of size 3:
+permutation mapping with the number of padding characters necessary 
+to reach a multiple of the rod diameter, then use `unpad` to reduce 
+that mapping back down to the original message length.  To support 
+this, Cryptol defines type operators `/^` and `%^` to denote the 
+number of blocks and padding length, respective, given message and 
+block size.  Revisiting the earlier example, `"ATTACKDAWN"` is length 
+10, requiring 4 blocks of 2 padding characters to divide into blocks 
+of size 3:
 
 ```sh
 labs::Transposition::ScytaleAnswers> `numBlocks:Integer where type numBlocks = 10 /^ 3
@@ -118,33 +118,52 @@ padded message of length `n` on a scytale of rod diameter `r`.
 Use `pi_test` to check your definition.
 
 ```cryptol
-pi: {r, n} (fin n, fin r, r >= 1) => PermutationMapping n
-pi = unpad`{n} (join (transpose (groupBy`{r} (take`{np} [0...] : [np][width np]))))
+pi: {d, n, w} (fin d, d >= 1, fin n, Cmp w, Integral w, Literal n w) => [n]w
+pi = inverse (unpad`{n} (join (transpose (groupBy`{d} (take`{np} [0...])))))
   where
-    type np = n /^ r * r
+    type np = n /^ d * d
 ```
 
 ```cryptol
-pi_test = 
-    and [ encrypt pi`{3} "ATTACKATDAWN" == "AAAATCTWTKDN"
-        , encrypt pi`{3}   "ATTACKDAWN" == "AADNTCATKW"     ]
+property pi_test = 
+    and [ encrypt pi`{3}              "ATTACKATDAWN" == "ACDTKATAWATN"
+        , encrypt pi`{3}                "ATTACKDAWN" == "ACATKWTDNA"
+        , encrypt pi`{3} "WEAREDISCOVEREDFLEEATONCE" == "WOEEVEAEARRTEEODDNIFCSLEC" ]
 ```
 
 **EXERCISE**: Can you state an agreement property in terms of 
 `scytale` and `encrypt pi` using `rearrange` or `partition`?  What 
 corner cases must be ruled out?  Define such a property 
-`pi_correct` and use it to verify your definition of `pi`.
+`pi_correct` and use it to verify your definition of `pi` for various 
+rod diameters and message lengths.
 
 ```cryptol
-pi_correct: {r, n} (fin n, fin r, r >= 1) => String n -> Bit
-pi_correct msg =
-    ~ (elem '-' msg) ==>
-        encrypt pi`{r} msg ==
-        take (rearrange' (scytale`{r, n /^ r} (msg # take`{n %^ r} (repeat '-'))))
+scy_pad:
+    {d, n}
+    (n >= n / d * (n %^ d)) =>
+    (fin d, d >= 1, fin n) =>
+    String n -> String (n /^ d * d)
+scy_pad msg = (msg @@ ixs') # join [ (msg @@ g) # "-" | g <- gixs_]
+  where
+    (ixs', ixs_) = splitAt`{n - (n / d) * (n %^ d)} (take`{n} [0...])
+
+    gixs_ = split ixs_ : [n %^ d][n / d]Integer
 ```
 
-(Note: `rearrangement'` accommodates slightly larger message sizes, 
-but still blows up around `n = 16`.)
+```cryptol
+pi_correct:
+    {d, n}
+    (n >= n / d * (n %^ d)) =>
+    (fin d, d >= 1, fin n) => String n -> Bit
+pi_correct msg =
+    ~ (elem '-' msg) ==>
+    encrypt pi`{d} msg == msg'
+  where
+    msg' = take`{n} (rearrange' (scytale`{n /^ d, d} (scy_pad`{d} msg)))
+```
+
+(Note: `rearrange'` accommodates larger message sizes than 
+`rearrange`, but proving this property blows up around `n = 16`.)
 
 # Conclusion
 
