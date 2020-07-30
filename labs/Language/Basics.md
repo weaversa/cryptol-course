@@ -1104,7 +1104,7 @@ type myType x = [x][x]
 
 ```shell
 labs::Language::Basics> :s base=2
-labs::Language::Basics> zero : myType 5
+labs::Language::Basics> zero : myType 2
 [0b00, 0b00]
 labs::Language::Basics> zero : myType 5
 [0b00000, 0b00000, 0b00000, 0b00000, 0b00000]
