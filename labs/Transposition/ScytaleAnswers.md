@@ -134,7 +134,7 @@ property pi_test =
 **EXERCISE**: Can you state an agreement property in terms of 
 `scytale` and `encrypt pi` using `rearrange` or `partition`?  What 
 corner cases must be ruled out?  Define such a property 
-`pi_correct` and use it to verify your definition of `pi` for various 
+`pi_agrees` and use it to verify your definition of `pi` for various 
 rod diameters and message lengths.
 
 ```cryptol
@@ -151,11 +151,11 @@ scy_pad msg = (msg @@ ixs') # join [ (msg @@ g) # "-" | g <- gixs_]
 ```
 
 ```cryptol
-pi_correct:
+pi_agrees:
     {d, n}
     (n >= n / d * (n %^ d)) =>
     (fin d, d >= 1, fin n) => String n -> Bit
-pi_correct msg =
+pi_agrees msg =
     ~ (elem '-' msg) ==>
     encrypt pi`{d} msg == msg'
   where
