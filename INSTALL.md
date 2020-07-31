@@ -47,25 +47,28 @@ here.
    [https://code.visualstudio.com](https://code.visualstudio.com)
    * **If installing on Windows, be sure to download the "User Installer"**.
 4. Open Visual Studio Code (command name: `code`) and 
-    1. Install the "vscode-pdf" extension: click
-      **View->Extensions**, search for "tomoki1207", select and
-      install.
-    2. Install the "Remote Containers Visual Studio Code Extension":
-       click **View -> Extensions**, search for "ms-vscode-remote.remote-containers",
+    1. Install the "vscode-pdf" extension: click **View ->
+       Extensions**, search for "tomoki1207", select and install.
+    2. Install the "Markdown Preview Enhanced" extension: click **View
+       -> Extensions**, search for
+       "shd101wyy.markdown-preview-enhanced", select and install.
+    3. Install the "Remote - Containers" extension: click **View ->
+       Extensions**, search for "ms-vscode-remote.remote-containers",
        select and install.
-    3. Open the cryptol-course directory: click **File -> Open
+    4. Open the cryptol-course directory: click **File -> Open
        Folder...** (or just **Open...** on MacOS) and select the
        directory where you unzipped the course repository.
        * Be sure to select the top-level cryptol-course directory, not a
          subdirectory.
-    4. Visual Studio Code will detect the remote container and prompt
+    5. Visual Studio Code will detect the remote container and prompt
        you in the lower right corner of the window -- choose **Reopen in
        Container**.
        * If you miss the prompt, click the `><` box (hovertext: "open a
          remote window") in the lower left hand corner of the window and
          choose "Remote-Containers: Reopen in Container".
-       * It will take a while for Docker to build the container the first
-         time. Once it's done, you can run Cryptol by clicking **Terminal -> Run Task... -> Cryptol**.
+       * It will take a while for Docker to build the container the
+         first time. Once it's done, you can run Cryptol by clicking
+         **Terminal -> Run Task... -> Cryptol**.
 
 If a terminal window appears with the Cryptol logo, you're done. Feel
 free to load the next lab into the interpreter by typing:
