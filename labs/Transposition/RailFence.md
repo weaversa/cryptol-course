@@ -66,7 +66,7 @@ by reading, row-by-row, "WECRLTEERDSOEEFEAOCAIVDEN".
 // . E . R . D . S . O . E . E . F . E . A . O . C .
 // . . A . . . I . . . V . . . D . . . E . . . N . .
 
-/** test # additional rails */
+/** test number of rails */
 type test_r = 3
 
 /** test plaintext */
@@ -127,12 +127,12 @@ length `type n`.  (You'll have to add `r` as a type parameter.)
 Use `pi_test` to check your definition.
 
 ```cryptol
-/** condensed indices to encrypt message of length `m` over number of additional rails `r` */
+/** condensed indices to encrypt message of length `m` over number of rails `r` */
 pi:
     {n, w} [n]w
 pi = undefined
 
-/** inverse of condensed pi to decrypt message of length `m` over number of additional rails `r` */
+/** inverse of condensed pi to decrypt message of length `m` over number of rails `r` */
 pi': {n, w} [n]w
 pi' = undefined
 
