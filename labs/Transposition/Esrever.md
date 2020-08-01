@@ -73,7 +73,7 @@ property pi_test = and
     ]
 
 /** `encrypt pi` reverses sequence order */ 
-pi_correct: {n, a} (fin n, Eq a) => [n]a -> Bit
+pi_correct: {n, a} (fin n, Cmp a) => [n]a -> Bit
 pi_correct msg = (encrypt pi) msg == reverse msg
 ```
 

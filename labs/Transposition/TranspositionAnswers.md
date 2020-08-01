@@ -84,7 +84,7 @@ using `isPermutation_test`.
 /** number of occurrences of `item` in `seq` */
 itemCount:
     {n, a}
-    (fin n, Eq a) =>
+    (fin n, Cmp a) =>
     [n]a -> a -> Integer
 itemCount seq item = counts ! 0
   where
@@ -97,7 +97,7 @@ itemCount seq item = counts ! 0
 /** is `seq'` a permutation of `seq`? */
 isPermutation:
     {n, a}
-    (fin n, Eq a) =>
+    (fin n, Cmp a) =>
     [n]a -> [n]a -> Bit
 isPermutation seq seq' = and
     [ itemCount seq x == itemCount seq' x
@@ -139,7 +139,7 @@ a different order.)
 /** Is `pi` a permutation of `[0,n)`? */
 isPermutationMapping:
     {n, w}
-    (fin n, Eq w, Integral w, Literal 0 w) =>
+    (fin n, Cmp w, Integral w, Literal 0 w) =>
     [n]w -> Bit
 isPermutationMapping pi = all (elem' pi) (take`{n} [0...])
   where
@@ -185,7 +185,7 @@ sequence lengths and types.
 ```cryptol
 permute_permutes:
     {n, w, a}
-    (fin n, Eq w, Integral w, Literal 0 w, Eq a) =>
+    (fin n, Cmp w, Integral w, Literal 0 w, Cmp a) =>
     [n]w -> [n]a -> Bit
 permute_permutes pi seq =
     isPermutationMapping pi ==> 
@@ -217,7 +217,7 @@ sequence lengths and types.
 /** `inverse` inverts permutation mapping `pi` */
 inverse_inverts:
     {n, w, a}
-    (fin n, Eq w, Integral w, Literal 0 w, Eq a) =>
+    (fin n, Cmp w, Integral w, Literal 0 w, Cmp a) =>
     [n]w -> [n]a -> Bit
 inverse_inverts pi seq =
     isPermutationMapping pi ==>
@@ -233,7 +233,7 @@ lengths and types.  (`injective` is imported from
 /** `permute pi` is `injective` if `pi` is a permutation mapping */
 permute_injective:
     {n, w, a}
-    (fin n, Eq w, Integral w, Literal 0 w, Eq a) =>
+    (fin n, Cmp w, Integral w, Literal 0 w, Cmp a) =>
     [n]w -> [n]a -> [n]a -> Bit
 permute_injective pi seq seq' =
     isPermutationMapping pi ==> injective (permute pi) seq seq'
@@ -341,7 +341,7 @@ swap = swap_updates
 /** `swap_update` is functionally equivalent to `swap_updates` */
 swap_equiv:
     {n, w, a}
-    (_SwapFunction_ n w, Eq a) =>
+    (_SwapFunction_ n w, Cmp a) =>
     [n]a -> w -> w -> Bit
 swap_equiv seq i j =
     swap_update seq i j == swap_updates seq i j

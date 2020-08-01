@@ -78,7 +78,7 @@ property pi_test = and
     ]
 
 /** `encrypt pi` reverses sequence order */ 
-pi_correct: {n, a} (fin n, Eq a) => [n]a -> Bit
+pi_correct: {n, a} (fin n, Cmp a) => [n]a -> Bit
 pi_correct msg = (encrypt pi) msg == reverse msg
 ```
 
@@ -86,7 +86,7 @@ pi_correct msg = (encrypt pi) msg == reverse msg
 `decrypt pi`, and prove it.
 
 ```cryptol
-encrypt_decrypt_equiv: {n, a} (fin n, Eq a) => [n]a -> Bit
+encrypt_decrypt_equiv: {n, a} (fin n, Cmp a) => [n]a -> Bit
 encrypt_decrypt_equiv = encrypt pi`{n} === decrypt pi`{n}
 ```
 

@@ -298,7 +298,7 @@ swap = swap_updates
 /** `swap_update` is functionally equivalent to `swap_updates` */
 swap_equiv:
     {n, w, a}
-    (_SwapFunction_ n w, Eq a) =>
+    (_SwapFunction_ n w, Cmp a) =>
     [n]a -> w -> w -> Bit
 swap_equiv seq i j =
     swap_update seq i j == swap_updates seq i j
