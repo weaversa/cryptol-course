@@ -290,8 +290,8 @@ provides syntax highlighting and an interface to a local Cryptol
 installation (e.g. evaluate the current expression or get its type).
 
 The local `.vscode` configuration in the `cryptol-course` repo
-supports running a `cryptolcourse/cryptol` Docker image via `Terminal
-> Run Task... > Cryptol` in the VS Code menu bar.
+supports running a `cryptolcourse/cryptol` Docker image via **Terminal
+-> Run Task... > Cryptol** in the VS Code menu bar.
 
 ## Emacs
 
