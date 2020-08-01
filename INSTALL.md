@@ -40,23 +40,35 @@ here.
    and unzip it somewhere on your computer.
 2. Install Docker:
    [https://docs.docker.com/get-docker](https://docs.docker.com/get-docker)
+   * Linux users: enable user-mode access to docker by executing `sudo
+     groupadd docker && sudo usermod -aG docker $USER`, then logout
+     and log back in.
 3. Install Visual Studio Code:
    [https://code.visualstudio.com](https://code.visualstudio.com)
-4. Install the Remote Containers Visual Studio Code Extension
-   (`ms-vscode-remote.remote-containers`). This can be done within
-   Visual Studio Code from the Extensions panel which you can open by
-   clicking "View" -> "Extensions".
-5. Open Visual Studio Code and
-   * click "File" -> "Open Folder..." (or just "Open..." on OSX).
-   * Select the directory where you unzipped this repository. **Visual
-     Studio will detect the remote container and prompt you -- choose
-     "Reopen in Container"**.
-     If you miss the prompt, click the `><` box (hovertext: 
-     "open a remote window") in the lower left hand corner of the window 
-     and choose "Remote-Containers: Reopen in Container".
-   * It will take a while for Docker to build the container. Once it's
-     done you can run Cryptol by clicking "Terminal" -> "Run Task..."
-     -> "Cryptol".
+   * **If installing on Windows, be sure to download the "User Installer"**.
+4. Open Visual Studio Code (command name: `code`) and 
+    1. Install the "vscode-pdf" extension: click **View ->
+       Extensions**, search for "tomoki1207", select and install.
+    2. Install the "Markdown Preview Enhanced" extension: click **View
+       -> Extensions**, search for
+       "shd101wyy.markdown-preview-enhanced", select and install.
+    3. Install the "Remote - Containers" extension: click **View ->
+       Extensions**, search for "ms-vscode-remote.remote-containers",
+       select and install.
+    4. Open the cryptol-course directory: click **File -> Open
+       Folder...** (or just **Open...** on MacOS) and select the
+       directory where you unzipped the course repository.
+       * Be sure to select the top-level cryptol-course directory, not a
+         subdirectory.
+    5. Visual Studio Code will detect the remote container and prompt
+       you in the lower right corner of the window -- choose **Reopen in
+       Container**.
+       * If you miss the prompt, click the `><` box (hovertext: "open a
+         remote window") in the lower left hand corner of the window and
+         choose "Remote-Containers: Reopen in Container".
+       * It will take a while for Docker to build the container the
+         first time. Once it's done, you can run Cryptol by clicking
+         **Terminal -> Run Task... -> Cryptol**.
 
 If a terminal window appears with the Cryptol logo, you're done. Feel
 free to load the next lab into the interpreter by typing:
@@ -225,7 +237,7 @@ docker container and set the `CRYPTOLPATH` environment variable for
 access to the directory's Cryptol modules. This environment variable
 is used by both Cryptol and SAW.
 
-### Using Docker on Linux and OSX
+### Using Docker on Linux and MacOS
 
 ```shell
 .../cryptol-course> docker run --rm -it --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course cryptolcourse/cryptol
@@ -278,8 +290,8 @@ provides syntax highlighting and an interface to a local Cryptol
 installation (e.g. evaluate the current expression or get its type).
 
 The local `.vscode` configuration in the `cryptol-course` repo
-supports running a `cryptolcourse/cryptol` Docker image via `Terminal
-> Run Task... > cryptol-docker` in the VS Code menu bar.
+supports running a `cryptolcourse/cryptol` Docker image via **Terminal
+-> Run Task... > Cryptol** in the VS Code menu bar.
 
 ## Emacs
 

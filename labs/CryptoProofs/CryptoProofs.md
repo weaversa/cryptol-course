@@ -68,14 +68,14 @@ First, we import it.
 import specs::Primitive::Symmetric::Cipher::Block::DES
 ```
 
-Now, from the command line, load this module.
+When you loaded the module, these lines should have been printed:
 
 ```shell
-Cryptol> :m labs::CryptoProofs::CryptoProofs
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
 Loading module labs::CryptoProofs::CryptoProofs
 ```
+In reverse order: the third line says that this module has been loaded.  Since it imported the DES module, Cryptol helpfully tells you that DES has been loaded.  Since DES imported the Cipher module, Cryptol tells you that too.
 
 Next, we'll take a look at the type of the DES encryption function.
 

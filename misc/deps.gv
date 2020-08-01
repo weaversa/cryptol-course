@@ -1,4 +1,4 @@
-digraph G {
+digraph CryptolCourseFlow {
   //splines = ortho;
   //concentrate = true;
 
@@ -13,8 +13,6 @@ digraph G {
     Overview;
     Interpreter;
     LanguageBasics;
-//    CRC;
-//    Demos;
   }
 
   Installation [URL="https://github.com/weaversa/cryptol-course/blob/master/INSTALL.md"];
@@ -22,23 +20,25 @@ digraph G {
   Interpreter [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Interpreter/Interpreter.md"];
   LanguageBasics [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Language/Basics.md"];
   CryptolDemos [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Demos/Cryptol/Demos.md"];
-  SAWDemos [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Demos/SAW/Demos.md"];
   CRC [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/CRC/CRC.md"];
+  SAWDemos [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Demos/SAW/Demos.md"];
   Salsa20 [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Salsa20/Salsa20.md"];
   Salsa20Properties [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Salsa20/Salsa20Props.md"];
-  CryptographicProperties [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/CryptoProofs/CryptoProofs.md"];
   KeyWrapping [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/KeyWrapping/KeyWrapping.md"];
-  Capstone [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/LoremIpsum/LoremIpsum.md"];
+  CryptographicProperties [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/CryptoProofs/CryptoProofs.md"];
   ProjectEuler [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/ProjectEuler/ProjectEuler.md"];
+  Capstone [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/LoremIpsum/LoremIpsum.md"];
+  SimonSpeck [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/SimonSpeck/SimonSpeck.md"];
 
   // Fixing up node labels for ones that need a space
   LanguageBasics          [label="Language\nBasics"];
   Salsa20Properties       [label="Salsa20\nProperties"];
   CryptographicProperties [label="Cryptographic\nProperties"];
   KeyWrapping             [label="Key Wrapping"];
-  ProjectEuler            [label="Project\nEuler"];
-  CryptolDemos            [label="Cryptol\nDemos"];
-  SAWDemos                [label="SAW\nDemos"];
+  ProjectEuler            [label="Project Euler"];
+  CryptolDemos            [label="Cryptol Demos"];
+  SAWDemos                [label="SAW Demos"];
+  SimonSpeck              [label="Parameterized\nModules"];
 
   // The Suggested Flow with Red Arrows
   edge [color=red];
@@ -60,8 +60,9 @@ digraph G {
   //LanguageBasics -> KeyWrapping;
   LanguageBasics -> CryptolDemos;
   LanguageBasics -> SAWDemos;
+  KeyWrapping -> SimonSpeck;
   //Salsa20 -> Capstone;
 
-  {rank=same; Salsa20Properties -> ProjectEuler [style=invis];};
+//  {rank=same; Salsa20Properties -> ProjectEuler [style=invis];};
 
 }

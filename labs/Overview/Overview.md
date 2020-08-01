@@ -78,6 +78,8 @@ A grand tradition when learning a new programming language is to test
 the waters with a Hello World program. In this file we've defined a
 function `sayHello` which is specified as follows:
 
+void sayHello (uint8_t *name, size_t a)
+
 ```cryptol
 sayHello : {a} (fin a) => [a][8] -> [7+a][8]
 sayHello name = greeting
