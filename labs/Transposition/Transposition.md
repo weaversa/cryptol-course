@@ -118,25 +118,25 @@ a different order.)
 
 ```cryptol
 /** Is `pi` a permutation of `[0,n)`? */
-isPermutationMapping: {n, w} [n]w -> Bit
+isPermutationMapping: {n, ix} [n][ix] -> Bit
 isPermutationMapping pi = undefined
 
 /** `isPermutationMapping` test vectors */
 property isPermutationMapping_test = and
-    [   isPermutationMapping []
-    ,   isPermutationMapping [0]
-    ,   isPermutationMapping [0,1]
-    ,   isPermutationMapping [1,0]
-    ,   isPermutationMapping [0,1,2]
-    ,   isPermutationMapping [0,2,1]
-    ,   isPermutationMapping [2,0,1]
+    [   isPermutationMapping`{ix=0} []
+    ,   isPermutationMapping`{ix=1} [0]
+    ,   isPermutationMapping`{ix=2} [0,1]
+    ,   isPermutationMapping`{ix=2} [1,0]
+    ,   isPermutationMapping`{ix=2} [0,1,2]
+    ,   isPermutationMapping`{ix=2} [0,2,1]
+    ,   isPermutationMapping`{ix=2} [2,0,1]
 
-    , ~ isPermutationMapping [1]
-    , ~ isPermutationMapping [0,0]
-    , ~ isPermutationMapping [0,2]
-    , ~ isPermutationMapping [1,2]
-    , ~ isPermutationMapping [0,1,1]
-    , ~ isPermutationMapping [2,0,2]
+    , ~ isPermutationMapping`{ix=1} [1]
+    , ~ isPermutationMapping`{ix=2} [0,0]
+    , ~ isPermutationMapping`{ix=2} [0,2]
+    , ~ isPermutationMapping`{ix=2} [1,2]
+    , ~ isPermutationMapping`{ix=2} [0,1,1]
+    , ~ isPermutationMapping`{ix=2} [2,0,2]
     ]
 ```
 
@@ -147,7 +147,7 @@ property isPermutationMapping_test = and
 
 ```cryptol
 permute:
-    {n, w, a} [n]w -> [n]a -> [n]a
+    {n, a, ix} [n][ix] -> [n]a -> [n]a
 permute pi seq = undefined
 ```
 
@@ -157,7 +157,7 @@ returns a permutation of `seq`.  Prove this predicate for various
 sequence lengths and types.
 
 ```cryptol
-permute_permutes: {n, w, a} [n]w -> [n]a -> Bit
+permute_permutes: {n, a, ix} [n][ix] -> [n]a -> Bit
 permute_permutes pi seq = undefined
 ```
 
@@ -171,7 +171,7 @@ defined with ``take`{m} [0...]`` as one of the arguments to
 
 ```cryptol
 /** return the inverse of a permutation mapping `pi` */
-inverse: {n, w} [n]w -> [n]w
+inverse: {n, ix} [n][ix] -> [n][ix]
 inverse pi = undefined
 ```
 
@@ -181,7 +181,7 @@ sequence lengths and types.
 
 ```cryptol
 /** `inverse` inverts permutation mapping `pi` */
-inverse_inverts: {n, w, a} [n]w -> [n]a -> Bit
+inverse_inverts: {n, a, ix} [n][ix] -> [n]a -> Bit
 inverse_inverts pi seq = undefined
 ```
 
@@ -192,7 +192,7 @@ lengths and types.  (`injective` is imported from
 
 ```cryptol
 /** `permute pi` is `injective` if `pi` is a permutation mapping */
-permute_injective: {n, w, a} [n]w -> [n]a -> [n]a -> Bit
+permute_injective: {n, a, ix} [n][ix] -> [n]a -> [n]a -> Bit
 permute_injective pi seq seq' = undefined
 ```
 
@@ -276,18 +276,18 @@ infer that the other swap function is also correct.)
 
 ```cryptol
 /** constraint on type variables of a `SwapFunction` */
-type constraint _SwapFunction_ n w = (fin n, Integral w)
+type constraint _SwapFunction_ n ix = (fin n, fin ix, ix >= width n)
 /** type of function that swaps items at index-pair */
-type SwapFunction n w a = [n]a -> w -> w -> [n]a
+type SwapFunction n a ix = [n]a -> [ix] -> [ix] -> [n]a
 ```
 
 ```cryptol
 /** Swap `i`th and `j`th entries of sequence `a` via `@`/`update` */
-swap_update : {n, w, a} _SwapFunction_ n w => SwapFunction n w a
+swap_update : {n, a, ix} _SwapFunction_ n ix => SwapFunction n a ix
 swap_update seq i j = undefined
 
 /** Swap `i`th and `j`th entries of sequence `a` via `@@`/`updates` */
-swap_updates : {n, w, a} _SwapFunction_ n w => SwapFunction n w a
+swap_updates : {n, a, ix} _SwapFunction_ n ix => SwapFunction n a ix
 swap_updates seq i j = undefined
 
 // Define `swap` as either of above swap functions
@@ -297,17 +297,17 @@ swap = swap_updates
 ```cryptol
 /** `swap_update` is functionally equivalent to `swap_updates` */
 swap_equiv:
-    {n, w, a}
-    (_SwapFunction_ n w, Cmp a) =>
-    [n]a -> w -> w -> Bit
+    {n, a, ix}
+    (_SwapFunction_ n ix, Cmp a) =>
+    [n]a -> [ix] -> [ix] -> Bit
 swap_equiv seq i j =
     swap_update seq i j == swap_updates seq i j
 
 /** `swap` is correct; it just swaps values at specified indices */
 swap_correct:
-    {n, w, a}
-    (_SwapFunction_ n w, Cmp w, Literal (max n (max n n)) w, Cmp a) =>
-    [n]a -> w -> w -> w -> Bit
+    {n, a, ix}
+    (_SwapFunction_ n ix, Cmp a) =>
+    [n]a -> [ix] -> [ix] -> [ix] -> Bit
 swap_correct seq i j k =
     i < `n ==> j < `n ==> k < `n ==> 
     seq' @ k ==
@@ -378,7 +378,7 @@ labs::Transposition::Transposition> rearrange_trace "HE-LL-O-"
 **EXERCISE**: Using `rearrange` as a blueprint, define a function 
 `partition` that, given a predicate `f: a -> Bit` and sequence 
 `seq: [n]a`, "partitions" the sequence, returning `seq': [n]a` 
-such that there exists some `i: Integral n` such that 
+such that there exists some `i` such that 
 `all f seqt' == True` and `all f' seqf' == True`, where 
 `f' x = ~ f x` and ``(seqt', seqf') = splitAt`{i} seq'``.  Use the 
 `partition_rearranges` predicate to `:prove` (or if you lose 
@@ -497,15 +497,15 @@ Can you think of a more efficient way to increase confidence in the
 correctness of this function?
 
 ```cryptol
-unpad: {n, p, w} [n + p]w -> [n]w
+unpad: {n, p} [n + p][width (n + p)] -> [n][width (n + p)]
 unpad pi = undefined
 ```
 
 ```cryptol
 unpad_unpads:
-    {n, w, p}
-    (fin n, fin p, Cmp w, Integral w, Literal 0 w, Literal n w) =>
-    [n + p]w -> Bit
+    {n, p}
+    (fin n, fin p) =>
+    [n + p][width (n + p)] -> Bit
 unpad_unpads pi =
     isPermutationMapping`{n + p} pi ==> isPermutationMapping`{n} (unpad pi)
 ```

@@ -81,7 +81,7 @@ is a multiple of the rod diameter:
 
 ```sh
 labs::Transposition::ScytaleAnswers> scytale`{3} "ATTACKATDAWN"
-"AAAATCTWTKDN"
+"ACDTKATAWATN"
 labs::Transposition::ScytaleAnswers> scytale`{3} "ATTACKDAWN"
 
 [error] at <interactive>:1:13--1:25:
@@ -122,12 +122,12 @@ definitions.
 _encryption_.  Bizarre, right?)
 
 ```cryptol
-pi: {d, n, w} (fin d, d >= 1, fin n, Cmp w, Integral w, Literal n w) => [n]w
+pi: {d, n} (fin d, d >= 1, fin n) => [n][width n]
 pi = inverse (unpad`{n} (join (transpose (groupBy`{d} (take`{np} [0...])))))
   where
     type np = n /^ d * d
 
-pi': {d, n, w} (fin d, d >= 1, fin n, Cmp w, Integral w, Literal n w) => [n]w
+pi': {d, n} (fin d, d >= 1, fin n) => [n][width n]
 pi' = inverse pi`{d}
 ```
 
@@ -160,7 +160,7 @@ scy_pad:
 scy_pad msg = (msg @@ ixs') # join [ (msg @@ g) # "-" | g <- gixs_]
   where
     (ixs', ixs_) = splitAt`{n - (n / d) * (n %^ d)} (take`{n} [0...])
-    gixs_ = split ixs_ : [n %^ d][n / d]Integer
+    gixs_ = split ixs_ : [n %^ d][n / d][width (n /^ d * d)]
 ```
 
 ```cryptol

@@ -110,10 +110,9 @@ helper function that keeps this distinction intact for computation of
 ```cryptol
 /** indices per cycle, tupled */
 cycle':
-    {r, w}
-    Literal (max (max 1 r) (max 1 r)) w =>
-    (fin r, r >= 1, Integral w) => // Literal (max 1 r) w
-    (w, [max 2 r - 2][2]w, w)
+    {r}
+    (fin r, r >= 1) =>
+    ([width (max 1 (2*(r - 1)))], [max 2 r - 2][2][width (max 1 (2*(r - 1)))], [width (max 1 (2*(r - 1)))])
 cycle' = (0, m, `r - 1)
   where
     ml = take`{max 2 r - 2} [1...]
@@ -122,10 +121,9 @@ cycle' = (0, m, `r - 1)
 
 /** indices per cycle, untupled */
 cycle:
-    {r, w}
-    Literal (max (max 1 r) (max 1 r)) w =>
-    (fin r, r >= 1, Integral w) => // Literal (max 1 r) w
-    [max 1 (2*(r - 1))]w
+    {r}
+    (fin r, r >= 1) =>
+    [max 1 (2*(r - 1))][width (max 1 (2*(r - 1)))]
 cycle = take`{max 1 (2*(r - 1))} ([0] # join m # [`r - 1])
   where
     ml = take`{max 2 r - 2} [1...]
@@ -148,25 +146,23 @@ Use `pi_test` to check your definition.
 ```cryptol
 /** condensed indices to encrypt message of length `m` over number of additional rails `r` */
 pi:
-    {r, n, w}
-    Literal (max (max (max (max 1 r) (max 1 r)) (max 1 (2 * (r - 1)))) n) w =>
-    (fin r, r >= 1, fin n, Cmp w, Integral w, Ring ([2]w)) =>
-    [n]w
+    {r, n}
+    (fin r, r >= 1, fin n) =>
+    [n][width n]
 pi = out
   where
     (a,b,c) = cycle'`{r}
     groups =
-      [ ( a, b, c ) + ( o, take (repeat [o,o]), o)
-      | o <- take`{n /^ (max 1 (2*(r-1)))} [0,`(max 1 (2*(r-1)))...] ]
+      [ ( zext a, [map zext _b | _b <- b], zext c ) + ( o, take (repeat [o,o]), o)
+      | o <- take`{max 1 (n /^ (max 1 (2*(r-1))))} ([0...] * repeat (`(max 1 (2*(r-1))))) ]
     idxs = groups.0 # join (join (transpose (groups.1))) # groups.2
     out = unpad`{n} idxs
 
 /** inverse of condensed pi to decrypt message of length `m` over number of additional rails `r` */
-pi': {r, n, w}
-    Literal (max (max (max (max 1 r) (max 1 r)) (max 1 (2 * (r - 1)))) n) w =>
-    (fin r, r >= 1, fin n, Cmp w, Integral w, Ring ([2]w)) =>
-    [n]w
-pi' = inverse pi`{r, n, w}
+pi': {r, n}
+    (fin r, r >= 1, fin n) =>
+    [n][width n]
+pi' = inverse pi`{r, n}
 
 /** tests from [Wikipedia article on Rail Fence Cipher](https://en.wikipedia.org/wiki/Rail_fence_cipher) pass */
 property pi_test = and
@@ -183,6 +179,7 @@ property pi_test = and
     , decrypt pi`{1} test_msg == test_msg
     , decrypt pi`{1} "I_REALLY_LIKE_PUZZLES" == "I_REALLY_LIKE_PUZZLES"
     ]
+
 ```
 
 # Conclusion

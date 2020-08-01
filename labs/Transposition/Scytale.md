@@ -123,7 +123,7 @@ definitions.
 _encryption_.  Bizarre, right?)
 
 ```cryptol
-pi: {n, w} [n]w
+pi: {n} [n][width n]
 pi = undefined
 ```
 

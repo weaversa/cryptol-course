@@ -59,7 +59,7 @@ import labs::Transposition::TranspositionAnswers
 
 ```cryptol
 /** a permutation mapping that just reverses order */
-pi: {n, w} (fin n, Integral w, Literal 0 w) => [n]w
+pi: {n} (fin n) => [n][width n]
 pi = reverse (take`{n} [0...])
 ```
 
@@ -87,7 +87,7 @@ pi_correct msg = (encrypt pi) msg == reverse msg
 
 ```cryptol
 encrypt_decrypt_equiv: {n, a} (fin n, Cmp a) => [n]a -> Bit
-encrypt_decrypt_equiv = encrypt pi`{n} === decrypt pi`{n}
+encrypt_decrypt_equiv = encrypt pi === decrypt pi
 ```
 
 # Conclusion

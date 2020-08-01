@@ -59,7 +59,7 @@ import labs::Transposition::Transposition
 
 ```cryptol
 /** a permutation mapping that just reverses order */
-pi: {n, w} [n]w
+pi: {n} [n][width n]
 pi = undefined
 ```
 
@@ -70,6 +70,11 @@ property pi_test = and
     , encrypt pi "STRESSED" == "DESSERTS"
     , encrypt pi "RACECAR" == "RACECAR"
     , encrypt pi "SEMORDNILAP" == "PALINDROMES"
+    , decrypt pi "" == ""
+    , decrypt pi "A" == "A"
+    , decrypt pi "STRESSED" == "DESSERTS"
+    , decrypt pi "RACECAR" == "RACECAR"
+    , decrypt pi "SEMORDNILAP" == "PALINDROMES"
     ]
 
 /** `encrypt pi` reverses sequence order */ 
