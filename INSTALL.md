@@ -291,7 +291,7 @@ installation (e.g. evaluate the current expression or get its type).
 
 The local `.vscode` configuration in the `cryptol-course` repo
 supports running a `cryptolcourse/cryptol` Docker image via `Terminal
-> Run Task... > cryptol-docker` in the VS Code menu bar.
+> Run Task... > Cryptol` in the VS Code menu bar.
 
 ## Emacs
 
