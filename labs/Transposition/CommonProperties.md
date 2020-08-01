@@ -168,7 +168,7 @@ inverts g f x =
  * to distinct elements of its codomain `d`
  */
 injective:
-    {d, c} (Eq d, Cmp c) => (d -> c) -> d -> d -> Bit
+    {d, c} (Cmp d, Cmp c) => (d -> c) -> d -> d -> Bit
 injective f x x' =
     x != x' ==> f x != f x'
 
@@ -176,7 +176,7 @@ injective f x x' =
  * `x` and `x'` differ, but `f` maps them to the same value
  */
 collides:
-    {d, c} (Eq d, Cmp c) => (d -> c) -> d -> d -> Bit
+    {d, c} (Cmp d, Cmp c) => (d -> c) -> d -> d -> Bit
 collides f x x' =
     x != x' /\ f x == f x'
 ```
