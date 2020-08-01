@@ -80,8 +80,9 @@ While informative, this definition only accepts messages whose length
 is a multiple of the rod diameter:
 
 ```sh
+labs::Transposition::Scytale> :s ascii=on
 labs::Transposition::Scytale> scytale`{3} "ATTACKATDAWN"
-"AAAATCTWTKDN"
+"ACDTKATAWATN"
 labs::Transposition::Scytale> scytale`{3} "ATTACKDAWN"
 
 [error] at <interactive>:1:13--1:25:
