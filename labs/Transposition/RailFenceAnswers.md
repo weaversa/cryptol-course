@@ -179,7 +179,6 @@ property pi_test = and
     , decrypt pi`{1} test_msg == test_msg
     , decrypt pi`{1} "I_REALLY_LIKE_PUZZLES" == "I_REALLY_LIKE_PUZZLES"
     ]
-
 ```
 
 # Conclusion
