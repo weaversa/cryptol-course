@@ -66,7 +66,7 @@ by reading, row-by-row, "WECRLTEERDSOEEFEAOCAIVDEN".
 // . E . R . D . S . O . E . E . F . E . A . O . C .
 // . . A . . . I . . . V . . . D . . . E . . . N . .
 
-/** test # additional rails */
+/** test number of rails */
 type test_r = 3
 
 /** test plaintext */
@@ -119,7 +119,7 @@ cycle' = (0, m, `r - 1)
     mr = reverse (take`{max 2 r - 2} [`r...])
     m = transpose [ ml, mr ]
 
-/** indices per cycle, untupled */
+/** indices per cycle */
 cycle:
     {r}
     (fin r, r >= 1) =>

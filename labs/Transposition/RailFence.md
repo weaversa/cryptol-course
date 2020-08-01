@@ -129,11 +129,11 @@ Use `pi_test` to check your definition.
 ```cryptol
 /** condensed indices to encrypt message of length `m` over number of rails `r` */
 pi:
-    {n, w} [n]w
+    {n} [n][width n]
 pi = undefined
 
 /** inverse of condensed pi to decrypt message of length `m` over number of rails `r` */
-pi': {n, w} [n]w
+pi': {n} [n][width n]
 pi' = undefined
 
 /** tests from [Wikipedia article on Rail Fence Cipher](https://en.wikipedia.org/wiki/Rail_fence_cipher) pass */
