@@ -331,7 +331,7 @@ iterative process. For instance, we **could** find a list of partial
 sums from the sequence `[1..10]` as follows:
 
 ```shell
-Cryptol> [0] # [ x + partial | x <- [1..10] | partial <- sums]
+Cryptol> sums where sums = [0] # [ x + partial | x <- [1..10] | partial <- sums]
 [0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55]
 ```
 
