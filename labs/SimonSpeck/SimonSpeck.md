@@ -323,7 +323,7 @@ Note that when `m != 4` the second parameter `k2` is ignored by the
 conditional statement defining `t`.
 
 Second, in the parallel enumeration found in `KeyExpansion` we see
-that `k2` is drawn from the sequence ```drop`{max m 3 - 3}```. The
+that `k2` is drawn from the sequence ``drop`{max m 3 - 3}``. The
 `max m 3` expression guarantees that after subtracting `3` the result
 is non-negative. Note that the value `k2` is ignored in the `tmp`
 function when `m != 4` and that `max m 3 - 3` is equivalent to `m - 3`
