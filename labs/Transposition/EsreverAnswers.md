@@ -34,8 +34,15 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```shell
+```icry
 Cryptol> :m labs::Transposition::EsreverAnswers
+Loading module Cryptol
+Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
+Loading module specs::Primitive::Symmetric::Cipher::Block::DES
+Loading module labs::CryptoProofs::CryptoProofsAnswers
+Loading module labs::Transposition::CommonPropertiesAnswers
+Loading module labs::Transposition::TranspositionAnswers
+Loading module labs::Transposition::EsreverAnswers
 ```
 
 We start by defining the module for this lab:
@@ -82,12 +89,41 @@ pi_correct: {n, a} (fin n, Cmp a) => [n]a -> Bit
 pi_correct msg = (encrypt pi) msg == reverse msg
 ```
 
+```icry
+labs::Transposition::EsreverAnswers> :check pi_test
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::Transposition::EsreverAnswers> :prove pi_correct`{7, Char}
+Q.E.D.
+(Total Elapsed Time: 0.006s, using Z3)
+labs::Transposition::EsreverAnswers> :prove pi_correct`{128, Char}
+Q.E.D.
+(Total Elapsed Time: 0.014s, using Z3)
+labs::Transposition::EsreverAnswers> :check pi_correct`{4096, Char}
+Using random testing.
+Passed 100 tests.
+Expected test coverage: 0.00% (100 of 2^^32768 values)
+```
+
 **EXERCISE** Define a predicate that `encrypt pi` is equivalent to 
 `decrypt pi`, and prove it.
 
 ```cryptol
 encrypt_decrypt_equiv: {n, a} (fin n, Cmp a) => [n]a -> Bit
 encrypt_decrypt_equiv = encrypt pi === decrypt pi
+```
+
+```icry
+labs::Transposition::EsreverAnswers> :prove encrypt_decrypt_equiv`{32, Char}
+Q.E.D.
+(Total Elapsed Time: 0.008s, using Z3)
+labs::Transposition::EsreverAnswers> :prove encrypt_decrypt_equiv`{512, Char}
+Q.E.D.
+(Total Elapsed Time: 0.053s, using Z3)
+labs::Transposition::EsreverAnswers> :prove encrypt_decrypt_equiv`{4096, Char}
+Q.E.D.
+(Total Elapsed Time: 0.730s, using Z3)
 ```
 
 # Conclusion

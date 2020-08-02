@@ -33,8 +33,15 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```shell
+```icry
 Cryptol> :m labs::Transposition::Route
+Loading module Cryptol
+Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
+Loading module specs::Primitive::Symmetric::Cipher::Block::DES
+Loading module labs::CryptoProofs::CryptoProofs
+Loading module labs::Transposition::CommonProperties
+Loading module labs::Transposition::Transposition
+Loading module labs::Transposition::Route
 ```
 
 Start by defining the module for this lab:

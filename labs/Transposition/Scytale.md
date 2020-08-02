@@ -36,8 +36,15 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```shell
+```icry
 Cryptol> :m labs::Transposition::Scytale
+Loading module Cryptol
+Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
+Loading module specs::Primitive::Symmetric::Cipher::Block::DES
+Loading module labs::CryptoProofs::CryptoProofs
+Loading module labs::Transposition::CommonProperties
+Loading module labs::Transposition::Transposition
+Loading module labs::Transposition::Scytale
 ```
 
 We start by defining the module for this lab:
@@ -79,7 +86,7 @@ dScytale msg = join (transpose msg')
 While informative, this definition only accepts messages whose length 
 is a multiple of the rod diameter:
 
-```sh
+```icry
 labs::Transposition::Scytale> :s ascii=on
 labs::Transposition::Scytale> scytale`{3} "ATTACKATDAWN"
 "ACDTKATAWATN"
@@ -102,7 +109,7 @@ block size.  Revisiting the earlier example, `"ATTACKDAWN"` is length
 10, requiring 4 blocks and 2 padding characters to divide into blocks 
 of size 3:
 
-```sh
+```icry
 labs::Transposition::Scytale> `numBlocks:Integer where type numBlocks = 10 /^ 3
 4
 labs::Transposition::Scytale> `padLength:Integer where type padLength = 10 %^ 3 

@@ -40,8 +40,13 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```sh
+```icry
 Cryptol> :m labs::Transposition::CommonPropertiesAnswers
+Loading module Cryptol
+Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
+Loading module specs::Primitive::Symmetric::Cipher::Block::DES
+Loading module labs::CryptoProofs::CryptoProofsAnswers
+Loading module labs::Transposition::CommonPropertiesAnswers
 ```
 
 The proofs in this lab require an array of different theorem provers
@@ -69,13 +74,25 @@ import specs::Primitive::Symmetric::Cipher::Block::DES (DES)
 
 Let's count to 10...
 
-```sh
+```icry
 labs::Transposition::CommonPropertiesAnswers> let _1 = 1 : Integer
 labs::Transposition::CommonPropertiesAnswers> _1
 1
 labs::Transposition::CommonPropertiesAnswers> 1 + it
 2
-...
+labs::Transposition::CommonPropertiesAnswers> 1 + it
+3
+labs::Transposition::CommonPropertiesAnswers> 1 + it
+4
+labs::Transposition::CommonPropertiesAnswers> 1 + it
+5
+labs::Transposition::CommonPropertiesAnswers> 1 + it
+6
+labs::Transposition::CommonPropertiesAnswers> 1 + it
+7
+labs::Transposition::CommonPropertiesAnswers> 1 + it
+8
+labs::Transposition::CommonPropertiesAnswers> 1 + it
 9
 labs::Transposition::CommonPropertiesAnswers> 1 + it
 10
@@ -83,10 +100,10 @@ labs::Transposition::CommonPropertiesAnswers> 1 + it
 
 That was repetitive.  Let's just ask Cryptol to count to 10:
 
-```sh
+```icry
 labs::Transposition::CommonPropertiesAnswers> take`{10} (iterate (\x -> 1 + x) (1 : Integer))
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-```sh
+```
 
 Adding 1 to something seems like a common task.  Let's name it...
 
@@ -98,7 +115,7 @@ S x = 1 + x
 Peano would be proud.  Wouldn't it be nice if Cryptol could just 
 reuse S to repeatedly increment a counter?
 
-```sh
+```icry
 labs::Transposition::CommonPropertiesAnswers> :t \(x : Integer) -> 1 + x
 (\(x : Integer) -> 1 + x) : Integer -> Integer
 labs::Transposition::CommonPropertiesAnswers> :t S
@@ -107,7 +124,7 @@ S : Integer -> Integer
 
 Wait a minute...it can!
 
-```sh
+```icry
 labs::Transposition::CommonPropertiesAnswers> take`{10} (iterate S 1)
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 ```
@@ -194,11 +211,10 @@ them with our newfound appreciation for higher-order functions!
 **EXERCISE**: Use Boolector to reverse `DES.encrypt` for `known_key` 
 and `known_ct` from `CryptoProofs`, using `maps_to`.  Avoid lambda.
 
-```shell
+```icry
 labs::Transposition::CommonPropertiesAnswers> :s prover=boolector
 labs::Transposition::CommonPropertiesAnswers> :sat maps_to (DES.encrypt known_key) known_ct
-maps_to (DES.encrypt known_key) known_ct
-  0x70617373776f7264 = True
+maps_to (DES.encrypt known_key) known_ct 0x70617373776f7264 = True
 (Total Elapsed Time: 0.773s, using Boolector)
 ```
 
@@ -209,19 +225,25 @@ function of one argument to a function of one argument...)
 are mutual inverses for all possible `pt`, given the same `key`.
 Do not mention `pt` in your proof commands.
 
-```sh
+```icry
 labs::Transposition::CommonPropertiesAnswers> :s prover=abc
 labs::Transposition::CommonPropertiesAnswers> :prove \key -> inverts (DES.decrypt key) (DES.encrypt key)
+Q.E.D.
+(Total Elapsed Time: 1.080s, using ABC)
 labs::Transposition::CommonPropertiesAnswers> :prove \key -> inverts (DES.encrypt key) (DES.decrypt key)
+Q.E.D.
+(Total Elapsed Time: 1.139s, using ABC)
 ```
 
 **EXERCISE**: Use Boolector to prove that `DES.encrypt` is injective 
 for any given `key`.  Do not mention `pt`s in your proof command.  
 Meditate on the nature of lambda and the (f)utility of names.
 
-```sh
+```shell
 labs::Transposition::CommonPropertiesAnswers> :s prover=boolector
 labs::Transposition::CommonPropertiesAnswers> :prove \key -> injective (DES.encrypt key)
+Q.E.D.
+(Total Elapsed Time: 48.986s, using Boolector)
 ```
 
 **EXERCISE**: Use ABC to find two different keys and a single 
@@ -231,9 +253,15 @@ clause, but do not mention `key` in the lambda function you pass to
 your command.  Guess whether such a collision will be found before 
 you observe a collision of black holes in nearby outer space.
 
-```sh
+```icry
 labs::Transposition::CommonPropertiesAnswers> :s prover=abc
 labs::Transposition::CommonPropertiesAnswers> :sat \pt -> collides (encrypt_ pt) where encrypt_ pt key = DES.encrypt key pt
+(\pt -> collides (encrypt_ pt)
+ where
+   encrypt_ pt key = DES.encrypt key pt
+ )
+  0x0000000000000000 0x0000010101000100 0x0000000100010001 = True
+(Total Elapsed Time: 5.675s, using ABC)
 ```
 
 **EXERCISE**: Use ABC to prove that the two keys you just found are 
@@ -241,19 +269,23 @@ equivalent keys; i.e., prove that keyed `DES.encrypt` and
 `DES.decrypt`, respectively, are equivalent for *all* `pt`/`ct`.  
 Avoid lambda.
 
-```sh
+```icry
 labs::Transposition::CommonPropertiesAnswers> :s prover=abc
-labs::Transposition::CommonPropertiesAnswers> let { result = _, arg1 = pt, arg2 = key, arg3 = key_ } = it
-labs::Transposition::CommonPropertiesAnswers> :prove (DES.encrypt key) == (DES.encrypt key_)
+labs::Transposition::CommonPropertiesAnswers> let { result = _, arg1 = cx_pt, arg2 = cx_key, arg3 = cx_key_ } = it
+labs::Transposition::CommonPropertiesAnswers> :prove (DES.encrypt cx_key) === (DES.encrypt cx_key_)
+Q.E.D.
+(Total Elapsed Time: 0.497s, using ABC)
 ```
 
 **EXERCISE**: Use ABC to prove that (DES.encrypt key) is equivalent 
 to (DES.encrypt (DESFixParity)).  Do not mention `pt` in your 
 proof command.
 
-```sh
+```icry
 labs::Transposition::CommonPropertiesAnswers> :s prover=abc
 labs::Transposition::CommonPropertiesAnswers> :prove \key -> DES.encrypt key === DES.encrypt (DESFixParity key)
+Q.E.D.
+(Total Elapsed Time: 0.915s, using ABC)
 ```
 
 **EXERCISE**: Finally, try to find a collision with keys of distinct 
@@ -262,9 +294,10 @@ parity; alternatively, try to prove that no such collision exists.
 go crazy with lambda.  Ponder the abject hopelessness of classical 
 crypto in a post-quantum world...
 
-```sh
-labs::Transposition::CommonPropertiesAnswers> :s prover=abc
+```shell
+labs::Transposition::CommonPropertiesAnswers> :s prover=any
 labs::Transposition::CommonPropertiesAnswers> :sat \key key_ pt -> DESFixParity key != DESFixParity key_ /\ DES.encrypt key pt == DES.encrypt key_ pt
+...
 ```
 
 # Conclusion

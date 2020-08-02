@@ -30,8 +30,14 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```shell
+```icry
 Cryptol> :m labs::Transposition::TranspositionAnswers
+Loading module Cryptol
+Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
+Loading module specs::Primitive::Symmetric::Cipher::Block::DES
+Loading module labs::CryptoProofs::CryptoProofsAnswers
+Loading module labs::Transposition::CommonPropertiesAnswers
+Loading module labs::Transposition::TranspositionAnswers
 ```
 
 We start by defining the module for this lab:
@@ -124,6 +130,13 @@ property isPermutation_test = and
     ]
 ```
 
+```icry
+labs::Transposition::TranspositionAnswers> :check isPermutation_test
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+```
+
 **EXERCISE**: Define a function `isPermutationMapping`, perhaps using 
 the built-in functions `all` and `elem`, that recognizes a 
 permutation mapping.  Check your function using 
@@ -164,6 +177,13 @@ property isPermutationMapping_test = and
     ]
 ```
 
+```icry
+labs::Transposition::TranspositionAnswers> :check isPermutationMapping_test
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+```
+
 **EXERCISE**: Define a function `permute` that permutes a sequence 
 `seq: [n]a` according to a permutation mapping `pi: [n]w`.
 
@@ -179,7 +199,7 @@ permute pi seq = seq @@ pi
 
 **EXERCISE**: Define a predicate `permute_permutes` that, given a 
 permutation mapping `pi: [n]w` and a sequence `seq: [n]a`, `permute` 
-returns a permutation of `seq`.  Prove this predicate for various 
+returns a permutation of `seq`.  Prove/check this predicate for various 
 sequence lengths and types.
 
 ```cryptol
@@ -190,6 +210,19 @@ permute_permutes:
 permute_permutes pi seq =
     isPermutationMapping pi ==> 
     isPermutation seq (permute pi seq)
+```
+
+```icry
+labs::Transposition::TranspositionAnswers> :prove permute_permutes`{4, Char, width 4}
+Q.E.D.
+(Total Elapsed Time: 0.157s, using Z3)
+labs::Transposition::TranspositionAnswers> :prove permute_permutes`{6, Char, width 6}
+Q.E.D.
+(Total Elapsed Time: 22.503s, using Z3)
+labs::Transposition::TranspositionAnswers> :check permute_permutes`{8, [2]Char, width 8}
+Using random testing.
+Passed 100 tests.
+Expected test coverage: 0.00% (100 of 2^^160 values)
 ```
 
 **EXERCISE**: Given a permutation mapping `pi: [n]w`, return its 
@@ -224,6 +257,19 @@ inverse_inverts pi seq =
     inverts (permute (inverse pi)) (permute pi) seq
 ```
 
+```icry
+labs::Transposition::TranspositionAnswers> :prove inverse_inverts`{4, Char, width 4}
+Q.E.D.
+(Total Elapsed Time: 0.022s, using Z3)
+labs::Transposition::TranspositionAnswers> :prove inverse_inverts`{16, Char, width 16}
+Q.E.D.
+(Total Elapsed Time: 1.750s, using Z3)
+labs::Transposition::TranspositionAnswers> :check inverse_inverts`{128, [2]Char, width 128}
+Using random testing.
+Passed 100 tests.
+Expected test coverage: 0.00% (100 of 2^^3072 values)
+```
+
 **EXERCISE**: Define a predicate that `permute pi` is `injective` if 
 `pi` is a permutation mapping, and `:prove` it for various sequence 
 lengths and types.  (`injective` is imported from 
@@ -237,6 +283,19 @@ permute_injective:
     [n][ix] -> [n]a -> [n]a -> Bit
 permute_injective pi seq seq' =
     isPermutationMapping pi ==> injective (permute pi) seq seq'
+```
+
+```icry
+labs::Transposition::TranspositionAnswers> :prove permute_injective`{4, Char, width 4}
+Q.E.D.
+(Total Elapsed Time: 0.019s, using Z3)
+labs::Transposition::TranspositionAnswers> :prove permute_injective`{32, Char, width 32}
+Q.E.D.
+(Total Elapsed Time: 9.077s, using Z3)
+labs::Transposition::TranspositionAnswers> :check permute_injective`{128, [3]Char, width 128}
+Using random testing.
+Passed 100 tests.
+Expected test coverage: 0.00% (100 of 2^^7168 values)
 ```
 
 # Encryption and Decryption
@@ -344,6 +403,7 @@ swap_equiv:
     (_SwapFunction_ n ix, Cmp a) =>
     [n]a -> [ix] -> [ix] -> Bit
 swap_equiv seq i j =
+    i < `n ==> j < `n ==>
     swap_update seq i j == swap_updates seq i j
 
 /** `swap` is correct; it just swaps values at specified indices */
@@ -359,6 +419,29 @@ swap_correct seq i j k =
                   else seq @ k
       where
         seq' = swap seq i j
+```
+
+```icry
+labs::Transposition::TranspositionAnswers> :prove swap_equiv`{32, Char, width 32}
+Q.E.D.
+(Total Elapsed Time: 0.025s, using Z3)
+labs::Transposition::TranspositionAnswers> :prove swap_equiv`{512, Char, width 512}
+Q.E.D.
+(Total Elapsed Time: 0.304s, using Z3)
+labs::Transposition::TranspositionAnswers> :check swap_equiv`{4096, Char, width 4096}
+Using random testing.
+Passed 100 tests.
+Expected test coverage: 0.00% (100 of 2^^32794 values)
+labs::Transposition::TranspositionAnswers> :prove swap_correct`{32, Char, width 32}
+Q.E.D.
+(Total Elapsed Time: 0.049s, using Z3)
+labs::Transposition::TranspositionAnswers> :prove swap_correct`{512, Char, width 512}
+Q.E.D.
+(Total Elapsed Time: 3.686s, using Z3)
+labs::Transposition::TranspositionAnswers> :check swap_correct`{4096, Char, width 4096}
+Using random testing.
+Passed 100 tests.
+Expected test coverage: 0.00% (100 of 2^^32807 values)
 ```
 
 ### Swap-Partitioning
@@ -411,7 +494,9 @@ rearrange_trace w = out
 
 Here's how this function works for the string `"HE-LL-O-"`:
 
-```sh
+```icry
+labs::Transposition::TranspositionAnswers> :s ascii=on
+labs::Transposition::TranspositionAnswers> :s base=10
 labs::Transposition::TranspositionAnswers> rearrange_trace "HE-LL-O-" 
 [("HE-LL-O--", 0, 0), ("HE-LL-O--", 1, 0), ("HE-LL-O--", 2, 0),
  ("HE-LL-O--", 2, 3), ("HEL-L-O--", 3, 4), ("HELL--O--", 4, 5),
@@ -455,6 +540,19 @@ partition_rearranges =
     partition isNotPadding === rearrange
       where
         isNotPadding c = c != '-'
+```
+
+```icry
+labs::Transposition::TranspositionAnswers> :prove partition_rearranges`{16}
+Q.E.D.
+(Total Elapsed Time: 0.242s, using Z3)
+labs::Transposition::TranspositionAnswers> :prove partition_rearranges`{64}
+Q.E.D.
+(Total Elapsed Time: 4.377s, using Z3)
+labs::Transposition::TranspositionAnswers> :check partition_rearranges`{512}
+Using random testing.
+Passed 100 tests.
+Expected test coverage: 0.00% (100 of 2^^4096 values)
 ```
 
 **EXERCISE**: Is it possible to programmatically determine `i` for an 
@@ -508,6 +606,19 @@ rearrange_equiv:
 rearrange_equiv = rearrange`{n} === rearrange'`{n}
 ```
 
+```icry
+labs::Transposition::TranspositionAnswers> :prove rearrange_equiv`{8}
+Q.E.D.
+(Total Elapsed Time: 0.477s, using Z3)
+labs::Transposition::TranspositionAnswers> :prove rearrange_equiv`{12}
+Q.E.D.
+(Total Elapsed Time: 10.214s, using Z3)
+labs::Transposition::TranspositionAnswers> :check rearrange_equiv`{128}
+Using random testing.
+Passed 100 tests.
+Expected test coverage: 0.00% (100 of 2^^1024 values)
+```
+
 In addition to being recursive, this approach requires tricks with 
 `min` and `max` to establish type consistency for an empty sequence.  
 What kind of fool thought this up?  (See 
@@ -519,8 +630,7 @@ gets merged into the repo.)
 `partition'` that does the same as `partition`, and try to convince 
 yourself (via `:prove` and/or `:check` commands using 
 `partition'_rearranges`) that your definition of `partition'` is 
-correct and equivalent to `partition` for various sequence sizes and 
-types.
+correct for various sequence sizes and types.
 
 ```cryptol
 partition':
@@ -541,6 +651,40 @@ partition'_rearranges =
         isNotPadding c = c != '-'
 ```
 
+```icry
+labs::Transposition::TranspositionAnswers> :prove partition'_rearranges`{8}
+Q.E.D.
+(Total Elapsed Time: 0.040s, using Z3)
+labs::Transposition::TranspositionAnswers> :prove partition'_rearranges`{16}
+Q.E.D.
+(Total Elapsed Time: 12.524s, using Z3)
+labs::Transposition::TranspositionAnswers> :check partition'_rearranges`{256}
+Using random testing.
+Passed 100 tests.
+Expected test coverage: 0.00% (100 of 2^^2048 values)
+```
+
+**EXERCISE**: Define a property `partition_equiv` that `partition` 
+and `partition'` are functionally equivalent.  Are they?  If not, why 
+not?  Can either or both still be used for transposition ciphers?
+
+```cryptol
+/** `partition` and `partition'` are functionally equivalent...or are they? */
+partition_equiv: {n, a} (fin n, Cmp a) => (a -> Bit) -> [n]a -> Bit
+partition_equiv f = partition`{n} f === partition'`{n} f
+```
+
+```icry
+labs::Transposition::TranspositionAnswers> :prove partition_equiv`{8, Bit} (\b -> b)
+Q.E.D.
+(Total Elapsed Time: 1.669s, using Z3)
+labs::Transposition::TranspositionAnswers> :prove partition_equiv`{8, [32]} (\b -> b ! 0)
+partition_equiv`{8, [32]} (\b -> b ! 0)
+  [0x00000000, 0x01000000, 0x00000020, 0x40000020, 0x00000040,
+   0x00000001, 0x00000001, 0x00000002] = False
+(Total Elapsed Time: 0.147s, using Z3)
+```
+
 ## Reduction of Padded Partition Mappings
 
 Phew!  Now that we have defined a `partition` function...
@@ -554,13 +698,17 @@ various _valid permutation mappings_ of various lengths and paddings.
 Can you think of a more efficient way to increase confidence in the 
 correctness of this function?
 
+(Note: `partition'` supports "larger" values of `n` and `p` for 
+proofs, but this slows considerably for double-digit values of 
+either.  Why?  Who knows?)
+
 ```cryptol
 unpad:
     {n, p}
     (fin n, fin p) =>
     [n + p][width (n + p)] -> [n][width n]
 unpad pi =
-    map drop (take (partition ((>) `n) pi))
+    map drop (take (partition' ((>) `n) pi))
 ```
 
 ```cryptol
@@ -570,6 +718,19 @@ unpad_unpads:
     [n + p][width (n + p)] -> Bit
 unpad_unpads pi =
     isPermutationMapping`{n + p} pi ==> isPermutationMapping`{n} (unpad pi)
+```
+
+```icry
+labs::Transposition::TranspositionAnswers> :prove unpad_unpads`{4, 2}
+Q.E.D.
+(Total Elapsed Time: 0.031s, using Z3)
+labs::Transposition::TranspositionAnswers> :prove unpad_unpads`{8, 4}
+Q.E.D.
+(Total Elapsed Time: 7.033s, using Z3)
+labs::Transposition::TranspositionAnswers> :check unpad_unpads`{25, 7}
+Using random testing.
+Passed 100 tests.
+Expected test coverage: 0.00% (100 of 2^^192 values)
 ```
 
 # Conclusion

@@ -30,8 +30,14 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```shell
+```icry
 Cryptol> :m labs::Transposition::Transposition
+Loading module Cryptol
+Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
+Loading module specs::Primitive::Symmetric::Cipher::Block::DES
+Loading module labs::CryptoProofs::CryptoProofs
+Loading module labs::Transposition::CommonProperties
+Loading module labs::Transposition::Transposition
 ```
 
 We start by defining the module for this lab:
@@ -368,7 +374,7 @@ rearrange_trace w = out
 
 Here's how this function works for the string `"HE-LL-O-"`:
 
-```sh
+```icry
 labs::Transposition::Transposition> rearrange_trace "HE-LL-O-" 
 [("HE-LL-O--", 0, 0), ("HE-LL-O--", 1, 0), ("HE-LL-O--", 2, 0),
  ("HE-LL-O--", 2, 3), ("HEL-L-O--", 3, 4), ("HELL--O--", 4, 5),
@@ -466,8 +472,7 @@ gets merged into the repo.)
 `partition'` that does the same as `partition`, and try to convince 
 yourself (via `:prove` and/or `:check` commands using 
 `partition'_rearranges`) that your definition of `partition'` is 
-correct and equivalent to `partition` for various sequence sizes and 
-types.
+correct for various sequence sizes and types.
 
 ```cryptol
 partition': {n, a} (a -> Bit) -> [n]a -> [n]a
@@ -482,6 +487,11 @@ partition'_rearranges =
       where
         isNotPadding c = c != '-'
 ```
+
+
+**EXERCISE**: Define a property `partition_equiv` that `partition` 
+and `partition'` are functionally equivalent.  Are they?  If not, why 
+not?  Can either or both still be used for transposition ciphers?
 
 ## Reduction of Padded Partition Mappings
 

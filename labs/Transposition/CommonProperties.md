@@ -40,8 +40,13 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```sh
+```icry
 Cryptol> :m labs::Transposition::CommonProperties
+Loading module Cryptol
+Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
+Loading module specs::Primitive::Symmetric::Cipher::Block::DES
+Loading module labs::CryptoProofs::CryptoProofs
+Loading module labs::Transposition::CommonProperties
 ```
 
 The proofs in this lab require an array of different theorem provers
@@ -69,13 +74,25 @@ import specs::Primitive::Symmetric::Cipher::Block::DES (DES)
 
 Let's count to 10...
 
-```sh
+```icry
 labs::Transposition::CommonProperties> let _1 = 1 : Integer
 labs::Transposition::CommonProperties> _1
 1
 labs::Transposition::CommonProperties> 1 + it
 2
-...
+labs::Transposition::CommonProperties> 1 + it
+3
+labs::Transposition::CommonProperties> 1 + it
+4
+labs::Transposition::CommonProperties> 1 + it
+5
+labs::Transposition::CommonProperties> 1 + it
+6
+labs::Transposition::CommonProperties> 1 + it
+7
+labs::Transposition::CommonProperties> 1 + it
+8
+labs::Transposition::CommonProperties> 1 + it
 9
 labs::Transposition::CommonProperties> 1 + it
 10
@@ -83,10 +100,10 @@ labs::Transposition::CommonProperties> 1 + it
 
 That was repetitive.  Let's just ask Cryptol to count to 10:
 
-```sh
+```icry
 labs::Transposition::CommonProperties> take`{10} (iterate (\x -> 1 + x) (1 : Integer))
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-```sh
+```
 
 Adding 1 to something seems like a common task.  Let's name it...
 
@@ -98,7 +115,7 @@ S x = 1 + x
 Peano would be proud.  Wouldn't it be nice if Cryptol could just 
 reuse S to repeatedly increment a counter?
 
-```sh
+```icry
 labs::Transposition::CommonProperties> :t \(x : Integer) -> 1 + x
 (\(x : Integer) -> 1 + x) : Integer -> Integer
 labs::Transposition::CommonProperties> :t S
@@ -107,7 +124,7 @@ S : Integer -> Integer
 
 Wait a minute...it can!
 
-```sh
+```icry
 labs::Transposition::CommonProperties> take`{10} (iterate S 1)
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 ```
@@ -206,7 +223,7 @@ function of one argument to a function of one argument...)
 are mutual inverses for all possible `pt`, given the same `key`.
 Do not mention `pt` in your proof commands.
 
-```sh
+```shell
 labs::Transposition::CommonProperties> :s prover=abc
 labs::Transposition::CommonProperties> 
 ```
@@ -215,7 +232,7 @@ labs::Transposition::CommonProperties>
 for any given `key`.  Do not mention `pt`s in your proof command.  
 Meditate on the nature of lambda and the (f)utility of names.
 
-```sh
+```shell
 labs::Transposition::CommonProperties> :s prover=boolector
 labs::Transposition::CommonProperties> 
 ```
@@ -227,7 +244,7 @@ clause, but do not mention `key` in the lambda function you pass to
 your command.  Guess whether such a collision will be found before 
 you observe a collision of black holes in nearby outer space.
 
-```sh
+```shell
 labs::Transposition::CommonProperties> :s prover=abc
 labs::Transposition::CommonProperties> 
 ```
@@ -237,7 +254,7 @@ equivalent keys; i.e., prove that keyed `DES.encrypt` and
 `DES.decrypt`, respectively, are equivalent for *all* `pt`/`ct`.  
 Avoid lambda.
 
-```sh
+```shell
 labs::Transposition::CommonProperties> :s prover=abc
 labs::Transposition::CommonProperties> 
 ```
@@ -246,7 +263,7 @@ labs::Transposition::CommonProperties>
 to (DES.encrypt (DESFixParity)).  Do not mention `pt` in your 
 proof command.
 
-```sh
+```shell
 labs::Transposition::CommonProperties> :s prover=abc
 labs::Transposition::CommonProperties> 
 ```
@@ -257,7 +274,7 @@ parity; alternatively, try to prove that no such collision exists.
 go crazy with lambda.  Ponder the abject hopelessness of classical 
 crypto in a post-quantum world...
 
-```sh
+```shell
 labs::Transposition::CommonProperties> :s prover=abc
 labs::Transposition::CommonProperties> 
 ```

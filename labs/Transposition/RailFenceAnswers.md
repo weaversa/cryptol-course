@@ -35,8 +35,15 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```shell
+```icry
 Cryptol> :m labs::Transposition::RailFenceAnswers
+Loading module Cryptol
+Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
+Loading module specs::Primitive::Symmetric::Cipher::Block::DES
+Loading module labs::CryptoProofs::CryptoProofsAnswers
+Loading module labs::Transposition::CommonPropertiesAnswers
+Loading module labs::Transposition::TranspositionAnswers
+Loading module labs::Transposition::RailFenceAnswers
 ```
 
 We start by defining the module for this lab:
@@ -82,7 +89,8 @@ of rails.  The main article goes on to describe "cycles", which form
 Rail Fence's block-like components of the cipher.
 
 **EXERCISE**: Given a number of rails `type r`, return the indices 
-occurring in the first cycle.  Here's a starter:
+occurring in the first cycle.  Check your definition using 
+`cycle_test`.  Here's a starter:
 
 ``cycle`{r=1} == [0]``
 0 ...
@@ -110,8 +118,7 @@ helper function that keeps this distinction intact for computation of
 ```cryptol
 /** indices per cycle, tupled */
 cycle':
-    {r}
-    (fin r, r >= 1) =>
+    {r} (fin r, r >= 1) =>
     ([width (max 1 (2*(r - 1)))], [max 2 r - 2][2][width (max 1 (2*(r - 1)))], [width (max 1 (2*(r - 1)))])
 cycle' = (0, m, `r - 1)
   where
@@ -121,14 +128,28 @@ cycle' = (0, m, `r - 1)
 
 /** indices per cycle */
 cycle:
-    {r}
-    (fin r, r >= 1) =>
+    {r} (fin r, r >= 1) =>
     [max 1 (2*(r - 1))][width (max 1 (2*(r - 1)))]
 cycle = take`{max 1 (2*(r - 1))} ([0] # join m # [`r - 1])
   where
     ml = take`{max 2 r - 2} [1...]
     mr = reverse (take`{max 2 r - 2} [`r...])
     m = transpose [ ml, mr ]
+
+/** `cycle` is defined correctly for various numbers of rails */
+property cycle_test = and
+    [ cycle`{1} == [0]
+    , cycle`{2} == [0,1]
+    , cycle`{3} == [0,1,3,2]
+    , cycle`{4} == [0,1,5,2,4,3]
+    ]
+```
+
+```icry
+labs::Transposition::RailFenceAnswers> :check cycle_test
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
 ```
 
 Having broken down a Rail Fence message into cycles, we can try to 
@@ -179,6 +200,13 @@ property pi_test = and
     , decrypt pi`{1} test_msg == test_msg
     , decrypt pi`{1} "I_REALLY_LIKE_PUZZLES" == "I_REALLY_LIKE_PUZZLES"
     ]
+```
+
+```icry
+labs::Transposition::RailFenceAnswers> :check pi_test
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
 ```
 
 # Conclusion
