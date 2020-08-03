@@ -217,7 +217,7 @@ To load a literate document into Cryptol, change to your
 `cryptol-course` directory in a terminal (Linux) or command prompt
 (Windows 10), then run Cryptol via a locally installed binary or
 Docker container. We'll use
-[labs/Demos/OneTimePad.md](labs/Demos/OneTimePad.md) as an
+[labs/Demos/Cryptol/OneTimePad.md](labs/Demos/Cryptol/OneTimePad.md) as an
 example. That markdown file is a literate Cryptol module (as are all
 the labs) and as such can be loaded into the Cryptol interpreter.
 
@@ -243,9 +243,9 @@ is used by both Cryptol and SAW.
 .../cryptol-course> docker run --rm -it --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course cryptolcourse/cryptol
     ...
 Loading module Cryptol
-Cryptol> :module labs::Demos::OneTimePad
-Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad>
+Cryptol> :module labs::Demos::Cryptol::OneTimePad
+Loading module labs::Demos::Cryptol::OneTimePad
+labs::Demos::Cryptol::OneTimePad>
 ```
 
 ### Using Docker on Windows 10
@@ -254,9 +254,9 @@ labs::Demos::OneTimePad>
 ...\cryptol-course> docker run --rm -it --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course cryptolcourse/cryptol
     ...
 Loading module Cryptol
-Cryptol> :module labs::Demos::OneTimePad
-Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad>
+Cryptol> :module labs::Demos::Cryptol::OneTimePad
+Loading module labs::Demos::Cryptol::OneTimePad
+labs::Demos::Cryptol::OneTimePad>
 ```
 
 ## Running from a Direct Install
@@ -270,9 +270,9 @@ command from within Cryptol to load the lab.
 .../cryptol-course$ cryptol
     ...
 Loading module Cryptol
-Cryptol> :module labs::Demos::OneTimePad
-Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad>
+Cryptol> :module labs::Demos::Cryptol::OneTimePad
+Loading module labs::Demos::Cryptol::OneTimePad
+labs::Demos::Cryptol::OneTimePad>
 ```
 -----
 
