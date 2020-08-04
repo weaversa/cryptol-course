@@ -1,5 +1,5 @@
 {
-    "version": "3.0.0",
+    "version": "2.0.0",
     "tasks": [
         {
             "label": "Cryptol",
@@ -7,7 +7,7 @@
             "command": "cryptol",
             "problemMatcher": []
         },
-            {
+        {
             "label": "Software Analysis Workbench",
             "type": "shell",
             "command": "saw",
