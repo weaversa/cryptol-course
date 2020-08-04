@@ -9,7 +9,7 @@ property andSelf x = x /\ ~x
 Cryptol> :m scripts::Test::CorrectUnsat
 Loading module Cryptol
 Loading module scripts::Test::CorrectUnsat
-scripts::Test::CorrectUnsat> :sat \(x:Bit) -> x /\ (~x)
+scripts::Test::CorrectUnsat> :sat andSelf
 Unsatisfiable
 (Total Elapsed Time: 0.005s, using Z3)
 ```
