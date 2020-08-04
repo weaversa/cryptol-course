@@ -800,7 +800,7 @@ Here is an English-language breakdown of the type definition for `sayHello`:
 |||||||||||||
 |-|-|-|-|-|-|-|-|-|-|-|-|
 | `sayHello` | `:` | `{` | `n` | `}` | `(` | `fin n` | `)` | `=>` | `[n][8]` | `->` | `[7+n][8]` |
-| The function `sayHello` | has a type | with type variable | `n` || and the constraint | that `n` is finite || applied to a the type definition | that takes a list of `n` `8`-bit vectors | and returns | a list of `7+n` `8`-bit vectors |
+| The function `sayHello` | has a type | with type variable | `n` || and the constraint | that `n` is finite || applied to the type definition | that takes a list of `n` `8`-bit vectors | and returns | a list of `7+n` `8`-bit vectors |
 |||||||||||||
 
 This function's name is `sayHello`, it takes in a sequence called
