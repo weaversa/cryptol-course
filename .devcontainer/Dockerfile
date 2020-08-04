@@ -9,6 +9,6 @@ RUN adduser cryptol sudo
 RUN echo "Defaults        lecture = never" >> /etc/sudoers
 USER cryptol
 ENV LANG C.UTF-8
-RUN echo 'export PS1="\$(pwd)> "' >> /home/cryptol/.bashrc
+RUN echo 'export PS1="$(pwd)> "' >> /home/cryptol/.bashrc
 
 ENTRYPOINT ["/bin/bash"]
