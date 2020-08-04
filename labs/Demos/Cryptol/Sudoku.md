@@ -31,6 +31,8 @@ running in the `cryptol-course` directory with:
 
 ```shell
 Cryptol> :m labs::Demos::Cryptol::Sudoku
+Loading module Cryptol
+Loading module labs::Demos::Cryptol::Sudoku
 ```
 
 We start by defining a new module for this lab and importing some accessory
@@ -272,6 +274,7 @@ f x = x*x - 7*x + 12 == 0
 > solution to the quadratic equation `x^^2 - 7x + 12 = 0`. We have:
 
 ```shell
+labs::Demos::Cryptol::Sudoku> :s base=10
 labs::Demos::Cryptol::Sudoku> :sat f
 f 4 = True
 (Total Elapsed Time: 0.151s, using "Z3")
@@ -483,13 +486,12 @@ hard_puzzle
 ```
 
 ```shell
+labs::Demos::Cryptol::Sudoku> :s base=10
 labs::Demos::Cryptol::Sudoku> :sat hard_puzzle
 hard_puzzle
-  [0x1, 0x2, 0x7, 0x5, 0x3, 0x6, 0x4, 0x9, 0x9, 0x4, 0x8, 0x2, 0x1,
-   0x7, 0x5, 0x6, 0x5, 0x4, 0x1, 0x8, 0x3, 0x1, 0x4, 0x2, 0x3, 0x8,
-   0x9, 0x6, 0x3, 0x6, 0x9, 0x8, 0x2, 0x1, 0x2, 0x8, 0x7, 0x6, 0x9,
-   0x5, 0x4, 0x5, 0x2, 0x9, 0x7, 0x4, 0x3, 0x4, 0x3, 0x2, 0x6, 0x9,
-   0x7, 0x7, 0x6, 0x3, 0x1, 0x8, 0x5, 0x2] = True
+  [1, 2, 7, 5, 3, 6, 4, 9, 9, 4, 8, 2, 1, 7, 5, 6, 5, 4, 1, 8, 3, 1,
+   4, 2, 3, 8, 9, 6, 3, 6, 9, 8, 2, 1, 2, 8, 7, 6, 9, 5, 4, 5, 2, 9,
+   7, 4, 3, 4, 3, 2, 6, 9, 7, 7, 6, 3, 1, 8, 5, 2] = True
 (Total Elapsed Time: 2.031s, using "Z3")
 ```
 
