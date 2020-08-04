@@ -11,8 +11,7 @@ function extract_test_diff {
         echo "$0: Processing Markdown file $md ..."
 
         echo "$0:   Replacing Windows newlines in $md with Linux newlines..."
-        dos2unix -n $md $tmp
-        mv $tmp $md
+        dos2unix -n $md $tmp && mv $tmp $md
 
         icry=$dirbasename.icry
         expected=$dirbasename.expected
