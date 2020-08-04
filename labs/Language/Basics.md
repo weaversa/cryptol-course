@@ -795,6 +795,13 @@ sayHello:
     [n][8] -> [7+n][8]
 sayHello name = "Hello, " # name
 ```
+Here is an English-language breakdown of the type definition for `sayHello`:
+
+|||||||||||||
+|-|-|-|-|-|-|-|-|-|-|-|-|
+| `sayHello` | `:` | `{` | `n` | `}` | `(` | `fin n` | `)` | `=>` | `[n][8]` | `->` | `[7+n][8]` |
+| The function `sayHello` | has a type | with type variable | `n` || and the constraint | that `n` is finite || applied to a the type definition | that takes a list of `n` `8`-bit vectors | and returns | a list of `7+n` `8`-bit vectors |
+|||||||||||||
 
 This function's name is `sayHello`, it takes in a sequence called
 `name` that is `n` octets long and produces a sequence that is `7+n`
