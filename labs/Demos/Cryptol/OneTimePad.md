@@ -272,7 +272,6 @@ deduce the pre-shared key Bob just used:
 
 ```shell
 labs::Demos::Cryptol::OneTimePad> :sat \psk2 -> (encrypt`{7} psk2 pt2) == ct2
-Satisfiable
 (\psk2 -> (encrypt`{7} psk2 pt2) == ct2) "ZUGESAG" = True
 (Total Elapsed Time: 0.044s, using "Z3")
 ```
