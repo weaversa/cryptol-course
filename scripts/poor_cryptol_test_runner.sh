@@ -37,11 +37,11 @@ function extract_test_diff {
                 echo "Found Q.E.D. or Unsatisfiable; exiting..."
                 exit 1
             fi
+
+            # rm $icry $expected $actual $delta
         else
             echo "$0:   $md did not have any \`\`\`icry fences; skipping..."
         fi
-
-        # rm $icry $expected $actual $delta
     done
 }
 
