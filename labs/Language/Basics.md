@@ -806,7 +806,6 @@ Here's an English-language breakdown:
 |-|-|-|-|-|
 | `inputType0` | `->` | `inputType1` | `->` | `outputType`
 | that takes `inputType0` | and | `inputType1` | and returns | `outputType`
-|
 
 
 Let's make an example to work with:
@@ -822,9 +821,8 @@ And the breakdown:
 
 |||||||||||||
 |-|-|-|-|-|-|-|-|-|-|-|-|
-| `sayHello` | `:` | `{` | `n` | `}` | `(` | `fin n` | `)` | `=>` | `[n][8]` | `->` | `[7+n][8]` |
-| The function `sayHello` | has a type | with type variable | `n` || and the constraint | that `n` is finite || applied to the type definition | that takes a list of `n` `8`-bit vectors | and returns | a list of `7+n` `8`-bit vectors |
-|||||||||||||
+| `sayHello` | `:` | `{` | `n` | `}` | `(` | `fin n` | `)` | `=>` | `[n][8]` | `->` | `[7+n][8]`
+| The function `sayHello` | has a type | with type variable | `n` || and the constraint | that `n` is finite || applied to the type definition | that takes a list of `n` `8`-bit vectors | and returns | a list of `7+n` `8`-bit vectors
 
 This function's name is `sayHello`, it takes in a sequence called
 `name` that is `n` octets long and produces a sequence that is `7+n`
@@ -1215,7 +1213,6 @@ Here's a breakdown of how to read it:
 |-|-|-|-|-|
 | `inputType0` | `->` | `inputType1` | `->` | `outputType`
 | that takes `inputType0` | and | `inputType1` | and returns | `outputType`
-|
 
 |||||
 |-|-|-|-|
@@ -1246,7 +1243,6 @@ Here's a breakdown of how to read it:
 |-|-|-|
 | `output` | `=` | `expression2`
 | `output` | is assigned | the value of `expression0`
-|
 
 Here's an example that demonstrates the use of a `where` clause:
 
@@ -1266,7 +1262,6 @@ And the breakdown:
 |-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
 | `addMult` | `:` | `{` | `n` | `}` | `(` | `fin n` | `)` | `=>` | `[n]` | `->` | `[n]` | `->` | `[n]` | `->` | `[n]`
 | The function `sayHello` | has a type | with type variable | `n` || and the constraint | that `n` is finite || applied to the type definition | that takes an `n`-bit vector | and | an `n`-bit vector | and | an `n`-bit vector | and returns | an `n`-bit vector
-|
 
 ## Properties
 
