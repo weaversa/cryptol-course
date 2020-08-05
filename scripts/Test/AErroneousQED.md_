@@ -8,8 +8,9 @@ property andSelf x = x /\ ~x
 ```icry
 Cryptol> :m scripts::Test::AErroneousQED
 Loading module Cryptol
+Loading module Cryptol
 Loading module scripts::Test::AErroneousQED
 scripts::Test::AErroneousQED> :prove andSelf
 Q.E.D.
-(Total Elapsed Time: 0.005s, using Z3)
+(Total Elapsed Time: 0.005s, using "Z3")
 ```
