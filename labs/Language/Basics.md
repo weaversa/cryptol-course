@@ -777,14 +777,37 @@ Standard
 (AES)](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
 accepts key sizes of 128, 192, and 256 bits. Also, stream ciphers and
 hash functions work over arbitrary sized streams of input. So, in
-general, the full type of a function looks something like this:
+general, the full type of a function looks something like the following. (For the numbered identifiers, we limit ourselves to two examples, but in reality there can be any number.)
 
 ```comment
 functionName :
-    {typeVariable, typeVariable, ...}
-    (typeConstraint, typeConstraint, ...) =>
-    inputType -> ... inputType -> outputType
+    {typeVariable0, typeVariable1}
+    (typeConstraint0, typeConstraint1) =>
+    inputType0 -> inputType1 -> outputType
 ```
+Here's an English-language breakdown:
+
+|||
+|-|-|
+| `functionName` | `:`
+| The function `functionName` | has a type
+
+||||||
+|-|-|-|-|-|
+| `{` | `typeVariable0` | `,` | `typeVariable1` | `}`
+| with type variables | `typeVariable0` | and | `typeVariable1`
+
+|||||||
+|-|-|-|-|-|-|
+| `(` | `typeConstraint0` | `,` | `typeConstraint1` | `)` | `=>`
+| and the constraints | `typeConstraint0` | and | `typeConstraint1` || applied to the type definition
+
+||||||
+|-|-|-|-|-|
+| `inputType0` | `->` | `inputType1` | `->` | `outputType`
+| that takes `inputType0` | and | `inputType1` | and returns | `outputType`
+|
+
 
 Let's make an example to work with:
 
@@ -795,7 +818,7 @@ sayHello:
     [n][8] -> [7+n][8]
 sayHello name = "Hello, " # name
 ```
-Here is an English-language breakdown of the type definition for `sayHello`:
+And the breakdown:
 
 |||||||||||||
 |-|-|-|-|-|-|-|-|-|-|-|-|
@@ -1157,21 +1180,73 @@ that allows you to create local definitions in functions. There's
 really not too much to this, but you'll use it in almost every Cryptol
 function you'll ever write, so consider it important.
 
-Here we fully describe what a function looks like in Cryptol:
+Here we describe what a function looks like in Cryptol. (For the numbered identifiers, we limit ourselves to two or three examples, but in reality there can be any number.)
 
 ```comment
 functionName :
-    {typeVariable, typeVariable, ...}
-    (typeConstraint, typeConstraint, ...) =>
-    inputType -> ... inputType -> outputType
-functionName input ... input =
+    {typeVariable0, typeVariable1}
+    (typeConstraint0, typeConstraint1) =>
+    inputType0 -> inputType1 -> outputType
+functionName input0 input1 =
     output
   where
-    localVariable = ...
-    localVariable = ...
-    ...
-    output = ...
+    localVariable0 = expression0
+    localVariable1 = expression1
+    output = expression2
 ```
+Here's a breakdown of how to read it:
+
+|||
+|-|-|
+| `functionName` | `:`
+| The function `functionName` | has a type
+
+||||||
+|-|-|-|-|-|
+| `{` | `typeVariable0` | `,` | `typeVariable1` | `}`
+| with type variables | `typeVariable0` | and | `typeVariable1`
+
+|||||||
+|-|-|-|-|-|-|
+| `(` | `typeConstraint0` | `,` | `typeConstraint1` | `)` | `=>`
+| and the constraints | `typeConstraint0` | and | `typeConstraint1` || applied to the type definition
+
+||||||
+|-|-|-|-|-|
+| `inputType0` | `->` | `inputType1` | `->` | `outputType`
+| that takes `inputType0` | and | `inputType1` | and returns | `outputType`
+|
+
+|||||
+|-|-|-|-|
+| `functionName` | `input0` | `input1` | `=`
+| The function `functionName` | takes `input0` | and `input1` | and returns
+
+||
+|-|
+| `output` |
+| the value of `output`
+
+||
+|-|
+| `where` |
+| which is computed after the following where
+
+||||
+|-|-|-|
+| `localVariable0` | `=` | `expression0`
+| `localVariable0` | is assigned | the value of `expression0`
+
+||||
+|-|-|-|
+| `localVariable1` | `=` | `expression1`
+| `localVariable1` | is assigned | the value of `expression1`
+
+||||
+|-|-|-|
+| `output` | `=` | `expression2`
+| `output` | is assigned | the value of `expression0`
+|
 
 Here's an example that demonstrates the use of a `where` clause:
 
@@ -1185,6 +1260,13 @@ addMult a b c = ab + bc
     ab = a * b
     bc = b * c
 ```
+And the breakdown:
+
+|||||||||||||||||
+|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
+| `addMult` | `:` | `{` | `n` | `}` | `(` | `fin n` | `)` | `=>` | `[n]` | `->` | `[n]` | `->` | `[n]` | `->` | `[n]`
+| The function `sayHello` | has a type | with type variable | `n` || and the constraint | that `n` is finite || applied to the type definition | that takes an `n`-bit vector | and | an `n`-bit vector | and | an `n`-bit vector | and returns | an `n`-bit vector
+|
 
 ## Properties
 
