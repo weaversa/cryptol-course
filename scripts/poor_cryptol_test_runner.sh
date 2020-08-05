@@ -19,8 +19,8 @@ function extract_test_diff {
 
         icry=$dirbasename.icry
         expected=$dirbasename.icry.stdout
-        actual=$dirbasename.actual
-        delta=$dirbasename.diff
+        # actual=$dirbasename.actual
+        # delta=$dirbasename.diff
 
         if grep -q '^```icry' $md; then
             echo "$0:   Extracting \`\`\`icry fences from $md; exporting commands to $icry and output to $expected ..."
