@@ -5,7 +5,7 @@ andSelf : Bit -> Bit
 property andSelf x = x /\ ~x
 ```
 
-```cryptol interpreter
+```icry
 Cryptol> :m scripts::Test::AErroneousQED
 Loading module Cryptol
 Loading module Cryptol

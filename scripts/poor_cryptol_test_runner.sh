@@ -29,10 +29,10 @@ function extract_test_diff {
         echo "$0:   Replacing Windows newlines in $md with Linux newlines..."
         dos2unix -n "$md" "$tmp" && mv "$tmp" "$md"
 
-        if grep -q '^```cryptol interpreter' "$md"; then
-            echo "$0:   Extracting \`\`\`cryptol interpreter fences from $md; exporting commands to $icry and output to $expected ..."
-            sed -n '/^```cryptol interpreter/,/^```/ p' < "$md" | sed '/^```/ d' | grep -E "^[A-Za-z0-9:_']+?>" | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$/\1/" > $icry
-            sed -n '/^```cryptol interpreter/,/^```/ p' < "$md" | sed '/^```/ d' | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$//" | sed "/^$/d" | sed -rn '/^(Loading module )|(Counterexample)|(Q.E.D.)|(Satisfiable)|(Unsatisfiable)/ p' > $expected
+        if grep -q '^```icry' "$md"; then
+            echo "$0:   Extracting \`\`\`icry fences from $md; exporting commands to $icry and output to $expected ..."
+            sed -n '/^```icry/,/^```/ p' < "$md" | sed '/^```/ d' | grep -E "^[A-Za-z0-9:_']+?>" | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$/\1/" > $icry
+            sed -n '/^```icry/,/^```/ p' < "$md" | sed '/^```/ d' | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$//" | sed "/^$/d" | sed -rn '/^(Loading module )|(Counterexample)|(Q.E.D.)|(Satisfiable)|(Unsatisfiable)/ p' > $expected
 
             echo "$0:   Replacing Windows newlines in $expected with Linux newlines..."
             dos2unix -n "$expected" "$tmp" && mv "$tmp" "$expected"
@@ -55,7 +55,7 @@ function extract_test_diff {
 
             # rm $icry $expected $actual $delta
         else
-            echo "$0:   $md did not have any \`\`\`cryptol interpreter fences; skipping..."
+            echo "$0:   $md did not have any \`\`\`icry fences; skipping..."
         fi
     done
 
