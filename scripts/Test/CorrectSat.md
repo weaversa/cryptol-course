@@ -1,17 +1,16 @@
 ```cryptol
-module scripts::Test::CorrectSat where
+module scripts::Test::CorrectQED where
 
 orSelf : Bit -> Bit
 property orSelf x = x \/ ~x
 ```
 
-```icry
-Cryptol> :m scripts::Test::CorrectSat
+```cryptol interpreter
+Cryptol> :m scripts::Test::CorrectQED
 Loading module Cryptol
 Loading module Cryptol
-Loading module scripts::Test::CorrectSat
-scripts::Test::CorrectSat> :sat orSelf
-Satisfiable
-orSelf False = True
-(Total Elapsed Time: 0.013s, using "Z3")
+Loading module scripts::Test::CorrectQED
+scripts::Test::CorrectQED> :prove orSelf
+Q.E.D.
+(Total Elapsed Time: 0.005s, using "Z3")
 ```

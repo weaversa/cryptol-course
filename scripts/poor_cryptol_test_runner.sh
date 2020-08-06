@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -x
 
 # poor_cryptol_test_runner - a janky script to generate, run, and analyze interactive Cryptol
 
@@ -7,28 +7,39 @@
 #   * `CRYPTOL_HOME` environment variable set to base directory of Cryptol repo (to run `$CRYPTOL`/cry test` on extracted `.icry` and `.icry.stdout` files)
 
 function extract_test_diff {
-    for md in $( ls $1/*.md )
+    SAVEIFS=$IFS   # Save current IFS
+    IFS=$'\n'      # Change IFS to new line
+    md_list=($(git status -s | grep -E '^[AM]\s+"?.*\.md"?$' | sed -nr 's/^[AM]\s+"?(.*\.md)"?$/\1/ p'))
+    IFS=$SAVEIFS   # Restore IFS
+    icry_list=()
+
+    for md in "${md_list[@]}"
     do
-        dirbasename=$1/`basename $md .md`
-        tmp=$dirbasename.tmp
+        echo "Trying and failing miserably to process Markdown file $md ..."
+
+        base_dir=`dirname "$md"`
+        tmp="${md%.md}.tmp"
+        icry="${md%.md}.icry"
+        expected="${md%.md}.icry.stdout"
+        # actual=$dirbasename.actual
+        # delta=$dirbasename.diff
 
         echo "$0: Processing Markdown file $md ..."
 
         echo "$0:   Replacing Windows newlines in $md with Linux newlines..."
-        dos2unix -n $md $tmp && mv $tmp $md
+        dos2unix -n "$md" "$tmp" && mv "$tmp" "$md"
 
-        icry=$dirbasename.icry
-        expected=$dirbasename.icry.stdout
-        # actual=$dirbasename.actual
-        # delta=$dirbasename.diff
-
-        if grep -q '^```icry' $md; then
-            echo "$0:   Extracting \`\`\`icry fences from $md; exporting commands to $icry and output to $expected ..."
-            sed -n '/^```icry/,/^```/ p' < $md | sed '/^```/ d' | grep -E "^[A-Za-z0-9:_']+?>" | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$/\1/" > $icry
-            sed -n '/^```icry/,/^```/ p' < $md | sed '/^```/ d' | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$//" | sed "/^$/d" | sed -rn '/^(Loading module )|(Counterexample)|(Q.E.D.)|(Satisfiable)|(Unsatisfiable)/ p' > $expected
+        if grep -q '^```cryptol interpreter' "$md"; then
+            echo "$0:   Extracting \`\`\`cryptol interpreter fences from $md; exporting commands to $icry and output to $expected ..."
+            sed -n '/^```cryptol interpreter/,/^```/ p' < "$md" | sed '/^```/ d' | grep -E "^[A-Za-z0-9:_']+?>" | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$/\1/" > $icry
+            sed -n '/^```cryptol interpreter/,/^```/ p' < "$md" | sed '/^```/ d' | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$//" | sed "/^$/d" | sed -rn '/^(Loading module )|(Counterexample)|(Q.E.D.)|(Satisfiable)|(Unsatisfiable)/ p' > $expected
 
             echo "$0:   Replacing Windows newlines in $expected with Linux newlines..."
-            dos2unix -n $expected $tmp && mv $tmp $expected
+            dos2unix -n "$expected" "$tmp" && mv "$tmp" "$expected"
+
+            echo "$0:   Adding $icry to list of .icry files to test..."
+            icry_list+=("$icry")
+            echo "$0:   List of .icry files is now: ${icry_list[@]}"
 
             # echo "$0:   Logging interactive Cryptol running $icry to $actual ..."
             # cryptol -b $icry > $actual
@@ -44,12 +55,15 @@ function extract_test_diff {
 
             # rm $icry $expected $actual $delta
         else
-            echo "$0:   $md did not have any \`\`\`icry fences; skipping..."
+            echo "$0:   $md did not have any \`\`\`cryptol interpreter fences; skipping..."
         fi
-
-        echo "Running Cryptol test runner on all .icry files in $1..."
-        $CRYPTOL_HOME/cry test -c `which cryptol` -r . $1/*.icry
     done
+
+    echo "Running Cryptol test runner on all .icry files..."
+    ./bin/test-runner "${icry_list[@]}"
 }
 
-extract_test_diff $1
+extract_test_diff
+
+# ls $1/*.md
+# git status -s | grep -E '^[AM]\s+"?.*\.md"?$' | sed -nr 's/^[AM]\s+("?.*\.md"?)$/\1/ p' | tr '\n' ' '

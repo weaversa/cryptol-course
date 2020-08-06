@@ -5,7 +5,7 @@ orSelf : Bit -> Bit
 property orSelf x = x \/ ~x
 ```
 
-```icry
+```cryptol interpreter
 Cryptol> :m scripts::Test::CorrectQED
 Loading module Cryptol
 Loading module Cryptol
