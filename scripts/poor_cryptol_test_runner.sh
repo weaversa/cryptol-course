@@ -60,7 +60,7 @@ function extract_test_diff {
     done
 
     echo "Running Cryptol test runner on all .icry files..."
-    ./bin/test-runner "${icry_list[@]}"
+    ./bin/test-runner -c `which cryptol` -r ../cryptol-course --ext=icry --exe=cabal -F v2-run -F -v0 -F exe:cryptol -F -- -F -b "${icry_list[@]}"
 }
 
 extract_test_diff
