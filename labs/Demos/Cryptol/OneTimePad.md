@@ -29,6 +29,8 @@ running in the `cryptol-course` directory with:
 
 ```shell
 Cryptol> :m labs::Demos::Cryptol::OneTimePad
+Loading module Cryptol
+Loading module labs::Demos::Cryptol::OneTimePad
 ```
 
 We start by defining a new module for this lab and importing some accessory
@@ -201,7 +203,7 @@ labs::Demos::Cryptol::OneTimePad> :h encrypt
 Cool. Let's do a quick sanity check:
 
 ```shell
-labs::Demos::Cryptol::OneTimePad> (decrypt psk ct)
+labs::Demos::Cryptol::OneTimePad> decrypt psk ct
 "HELLO"
 ```
 
@@ -269,9 +271,9 @@ reasonably have been "GOODBYE". Then Eve can exploit Cryptol to
 deduce the pre-shared key Bob just used:
 
 ```shell
-labs::Demos::Cryptol::OneTimePad> :sat \psk -> (encrypt psk pt2) == ct2
-(\psk -> (encrypt (psk : String 7) pt2) == ct2) "ZUGESAG" = True
-(Total Elapsed Time: 0.042s, using Z3)
+labs::Demos::Cryptol::OneTimePad> :sat \psk2 -> (encrypt`{7} psk2 pt2) == ct2
+(\psk2 -> (encrypt`{7} psk2 pt2) == ct2) "ZUGESAG" = True
+(Total Elapsed Time: 0.044s, using "Z3")
 ```
 
 (That "`->`" syntax defines a [lambda function](
@@ -288,14 +290,14 @@ stash it and try it on the message Bob received earlier:
 labs::Demos::Cryptol::OneTimePad> it
 {result = True, arg1 = "ZUGESAG"}
 labs::Demos::Cryptol::OneTimePad> let psk' = it.arg1
-labs::Demos::Cryptol::OneTimePad> :sat \pt -> (encrypt psk' pt) == ct
-(\pt -> (encrypt psk' pt) == ct) "HELLO" = True
+labs::Demos::Cryptol::OneTimePad> :sat \pt3 -> (encrypt psk' pt3) == ct
+(\pt3 -> (encrypt psk' pt3) == ct) "HELLO" = True
 (Total Elapsed Time: 0.028s, using Z3)
 ```
 
 Hello!!! So much for communications security...
 
-## Review
+# Conclusion
 
 Well that was fun. We have clearly expressed the one-time pad using
 Cryptol, demonstrated it on some test cases, verified some simple
