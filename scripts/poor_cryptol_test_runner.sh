@@ -7,16 +7,19 @@
 #   * `CRYPTOL_HOME` environment variable set to base directory of Cryptol repo (to run `$CRYPTOL`/cry test` on extracted `.icry` and `.icry.stdout` files)
 
 function extract_test_diff {
-    SAVEIFS=$IFS   # Save current IFS
-    IFS=$'\n'      # Change IFS to new line
-    md_list=($(git status -s | grep -E '^[AM]\s+"?.*\.md"?$' | sed -nr 's/^[AM]\s+"?(.*\.md)"?$/\1/ p'))
-    IFS=$SAVEIFS   # Restore IFS
+    if [ "$#" -ne 0 ]; then
+        md_list=($*)
+    else
+        SAVEIFS=$IFS   # Save current IFS
+        IFS=$'\n'      # Change IFS to new line
+        md_list=($(git status -s | grep -E '^[AM]\s+"?.*\.md"?$' | sed -nr 's/^[AM]\s+"?(.*\.md)"?$/\1/ p'))
+        IFS=$SAVEIFS   # Restore IFS
+    fi
+
     icry_list=()
 
     for md in "${md_list[@]}"
     do
-        echo "Trying and failing miserably to process Markdown file $md ..."
-
         base_dir=`dirname "$md"`
         tmp="${md%.md}.tmp"
         icry="${md%.md}.icry"
@@ -60,10 +63,8 @@ function extract_test_diff {
     done
 
     echo "Running Cryptol test runner on all .icry files..."
-    ./bin/test-runner -c `which cryptol` -r ../cryptol-course --ext=icry --exe=cabal -F v2-run -F -v0 -F exe:cryptol -F -- -F -b "${icry_list[@]}"
+    /cryptol/bin/test-runner -c `which cryptol` -r ../cryptol-course --ext=icry --exe=cabal -F v2-run -F -v0 -F exe:cryptol -F -- -F -b "${icry_list[@]}"
 }
 
-extract_test_diff
-
-# ls $1/*.md
-# git status -s | grep -E '^[AM]\s+"?.*\.md"?$' | sed -nr 's/^[AM]\s+("?.*\.md"?)$/\1/ p' | tr '\n' ' '
+echo $0
+extract_test_diff $*
