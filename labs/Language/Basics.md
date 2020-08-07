@@ -1866,7 +1866,7 @@ Here's an English-language breakdown of the first self-referential sequence comp
 ||||||||||||
 |-|-|-|-|-|-|-|-|-|-|-|
 | `roundKeys` | `=` | `[key]` | `#` | `[` | `roundKey <<< 1` | `\|` | `roundKey` | `<-` | `roundKeys` | `]`
-| The sequence `roundKeys` | `is defined as` | an initial `key` | followed by | the sequence | with elements of the form `roundKey <<< 1` | where | `roundKey` | draws from | the generated sequence `roundKeys` itself
+| The sequence `roundKeys` | is defined as | an initial `key` | followed by | the sequence | with elements of the form `roundKey <<< 1` | where | `roundKey` | draws from | the generated sequence `roundKeys` itself
 ||||||||||||
 
 Many block ciphers are just variations of the above theme. 
