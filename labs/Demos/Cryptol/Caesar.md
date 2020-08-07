@@ -28,6 +28,8 @@ running in the `cryptol-course` directory with:
 
 ```shell
 Cryptol> :m labs::Demos::Cryptol::Caesar
+Loading module Cryptol
+Loading module labs::Demos::Cryptol::Caesar
 ```
 
 We start by defining a new module for this lab and importing some accessory
@@ -59,6 +61,7 @@ caesar msg = map rot3 msg
 ```
 
 ```shell
+labs::Demos::Cryptol::Caesar> :s prover=abc
 labs::Demos::Cryptol::Caesar> :s ascii=on
 labs::Demos::Cryptol::Caesar> caesar "ATTACK AT DAWN"
 "XQQXZH XQ AXTK"
@@ -118,7 +121,7 @@ property charIsAtIndex = indexCorrect alphabet
 ```shell
 labs::Demos::Cryptol::Caesar> :prove charIsAtIndex
 Q.E.D.
-(Total Elapsed Time: 0.072s, using "Z3")
+(Total Elapsed Time: 0.072s, using ABC)
 ```
 
 The property even holds for other sequences, repeating or not:
@@ -126,10 +129,10 @@ The property even holds for other sequences, repeating or not:
 ```shell
 labs::Demos::Cryptol::Caesar> :prove \(A : [64]Char) -> indexCorrect A
 Q.E.D.
-(Total Elapsed Time: 1.172s, using "Z3")
-labs::Demos::Cryptol::Caesar> :prove \(L : [33]Integer) -> indexCorrect L
+(Total Elapsed Time: 1.172s, using ABC)
+labs::Demos::Cryptol::Caesar> :prove \(L : [33][32]) -> indexCorrect L
 Q.E.D.
-(Total Elapsed Time: 0.347s, using "Z3")
+(Total Elapsed Time: 0.347s, using ABC)
 ```
 
 But to work for a Caesar cipher, each character in the alphabet needs
@@ -258,10 +261,10 @@ property recovery_14 = recovery`{14}
 ```shell
 labs::Demos::Cryptol::Caesar> :prove recovery_4
 Q.E.D.
-(Total Elapsed Time: 4.226s, using "Z3")
+(Total Elapsed Time: 0.245s, using ABC)
 labs::Demos::Cryptol::Caesar> :prove recovery_14
 Q.E.D.
-(Total Elapsed Time: 28.246s, using "Z3")
+(Total Elapsed Time: 0.956s, using ABC)
 ```
 
 
@@ -305,13 +308,13 @@ solving...
 
 ```shell
 labs::Demos::Cryptol::Caesar> :sat \k -> encrypt k "ILLUMINATI CONFIRMED" == "NQQZRNSFYN HTSKNWRJI"
+Satisfiable
 (\k -> encrypt k "ILLUMINATI CONFIRMED" == "NQQZRNSFYN HTSKNWRJI")
   21 = True
-(Total Elapsed Time: 0.089s, using "Z3")
+(Total Elapsed Time: 0.089s, using ABC)
 ```
 
-
-## Conclusion
+# Conclusion
 
 You came, you saw, and you conquered the Caesar cipher in Cryptol.
 Ave, Caesar!
