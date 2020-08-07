@@ -336,10 +336,10 @@ gives `Q.E.D`.
 rowround [y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14, y15] =
     [z0, z1, z2, z3, z4, z5, z6, z7, z8, z9, z10, z11, z12, z13, z14, z15]
   where
-    [ z0,  z1,  z2,  z3] = undefined
-    [ z5,  z6,  z7,  z4] = undefined
-    [z10, z11,  z8,  z9] = undefined
-    [z15, z12, z13, z14] = undefined
+    [ z0,  z1,  z2,  z3] = quarterround [ y0,  y1,  y2,  y3]
+    [ z5,  z6,  z7,  z4] = quarterround [ y5,  y6,  y7,  y4]
+    [z10, z11,  z8,  z9] = quarterround [y10, y11,  y8,  y9]
+    [z15, z12, z13, z14] = quarterround [y15, y12, y13, y14]
 ```
 
 
@@ -412,10 +412,10 @@ gives `Q.E.D`.
 columnround [x0, x1, x2, x3, x4, x5, x6, x7, x8, x9, x10, x11, x12, x13, x14, x15] =
     [y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13, y14, y15]
   where
-    [ y0,  y4,  y8, y12] = undefined
-    [ y5,  y9, y13,  y1] = undefined
-    [y10, y14,  y2,  y6] = undefined
-    [y15,  y3,  y7, y11] = undefined
+    [ y0,  y4,  y8, y12] = quarterround [ x0,  x4,  x8, x12]
+    [ y5,  y9, y13,  y1] = quarterround [ x5,  x9, x13,  x1]
+    [y10, y14,  y2,  y6] = quarterround [x10, x14,  x2,  x6]
+    [y15,  y3,  y7, y11] = quarterround [x15,  x3,  x7, x11]
 ```
 
 
@@ -467,10 +467,10 @@ with an appropriate rejigger function and use it to prove that
 `columnround` is the transpose of `rowround`.
 
 ```cryptol
-property columnroundIsTransposeOfRowround ys =
+property columnroundIsTransposeOfRowround (ys : [16][32]) =
     columnround ys == rejigger (rowround (rejigger ys))
   where
-    rejigger a = undefined
+    rejigger a = join (transpose (split`{4} a))
 ```
 
 
@@ -493,7 +493,7 @@ looks like the specification and when `:prove doubleroundExamplesProp`
 gives `Q.E.D`.
 
 ```cryptol
-doubleround xs = undefined
+doubleround x = rowround (columnround x)
 ```
 
 
@@ -532,7 +532,7 @@ we'll move on.
 ### Inputs and outputs
 
 ```cryptol
-littleendian : Bytes 4 -> [32]
+//littleendian : Bytes 4 -> [32]
 ```
 
 
@@ -553,7 +553,19 @@ with 24 zeroes, and then do the arithmetic in the
 specification. However, there is a much simpler solution. Good luck!
 
 ```cryptol
-littleendian [b0, b1, b2, b3] = undefined
+littleendian : Bytes 4 -> [32]
+littleendian bs = join (reverse bs)
+
+//littleendian [b0, b1, b2, b3] = join [b3, b2, b1, b0]
+
+
+//
+    b0' + 2^^8 * b1' + 2^^16 * b2' + 2^^24 * b3'
+  where
+    b0' = zext b0 : [32]
+    b1' = zext b1 : [32]
+    b2' = zext b2 : [32]
+    b3' = zext b3 : [32]
 ```
 
 

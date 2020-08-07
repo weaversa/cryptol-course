@@ -806,7 +806,7 @@ Here's an English-language breakdown:
 |-|-|-|-|-|
 | `inputType0` | `->` | `inputType1` | `->` | `outputType`
 | that takes `inputType0` | and | `inputType1` | and returns | `outputType`
-|
+
 
 
 Let's make an example to work with:
@@ -1215,7 +1215,6 @@ Here's a breakdown of how to read it:
 |-|-|-|-|-|
 | `inputType0` | `->` | `inputType1` | `->` | `outputType`
 | that takes `inputType0` | and | `inputType1` | and returns | `outputType`
-|
 
 |||||
 |-|-|-|-|
@@ -1246,7 +1245,6 @@ Here's a breakdown of how to read it:
 |-|-|-|
 | `output` | `=` | `expression2`
 | `output` | is assigned | the value of `expression0`
-|
 
 Here's an example that demonstrates the use of a `where` clause:
 
