@@ -104,10 +104,11 @@ help you get it right.
 ```cryptol
 CRCSimple :
     {n, m}
-    (fin n, fin m, m >= 1) =>
+    (fin n, fin m) =>
     [n+1] -> [m] -> [n]
 CRCSimple G M = R
-  where R  = pmod (M # (0 : [n])) G  // M' modulus G
+  where R  = undefined  // M' modulus G
+        M' = undefined  // Concatenate M with n zero bits
 ```
 
 This test-case is from [1].
