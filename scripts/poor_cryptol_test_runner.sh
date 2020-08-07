@@ -1,15 +1,13 @@
 #!/bin/bash -x
 
-# 
-
-# Requires
+# Requires (in addition to other requirements of `weaversa/cryptol-course` GitHub repo)
 #   * `dos2unix` (to remove newlines)
-#   * `CRYPTOL_HOME` environment variable set to base directory of Cryptol repo (to run `$CRYPTOL`/cry test` on extracted `.icry` and `.icry.stdout` files)
+#   * a Cryptol `test-runner` binary (to run on extracted `.icry` and `.icry.stdout` files)
 
 usage() {
   cat << EOM
 $0 - a janky script to extract interactive Cryptol snippets and expected output from Markdown
-     and pass them to Cryptol's `test-runner`
+and pass them to Cryptol's `test-runner`
 
 Usage: $0 COMMAND_LINE_OPTIONS FILES/DIRS
 Command line options:
@@ -29,7 +27,7 @@ EOM
 }
 
 function extract_test_diff {
-    # flags passed to test runner
+    # flags to pass to test runner
     FLAGS=()
     # arguments to pass to test runner
     TEST_RUNNER_ARGS=()
@@ -187,10 +185,10 @@ function extract_test_diff {
         echo "$0:   Replacing Windows newlines in $md with Linux newlines..."
         dos2unix -n "$md" "$tmp" && mv "$tmp" "$md"
 
-        if grep -q '^```icry' "$md"; then
-            echo "$0:   Extracting \`\`\`icry fences from $md; exporting commands to $icry and output to $expected ..."
-            sed -n '/^```icry/,/^```/ p' < "$md" | sed '/^```/ d' | grep -E "^[A-Za-z0-9:_']+?>" | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$/\1/" > $icry
-            sed -n '/^```icry/,/^```/ p' < "$md" | sed '/^```/ d' | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$//" | sed "/^$/d" | sed -rn '/^(Loading module )|(Counterexample)|(Q.E.D.)|(Satisfiable)|(Unsatisfiable)/ p' > $expected
+        if grep -q '^```Xcryptol session' "$md"; then
+            echo "$0:   Extracting \`\`\`Xcryptol session fences from $md; exporting commands to $icry and output to $expected ..."
+            sed -n '/^```Xcryptol session/,/^```/ p' < "$md" | sed '/^```/ d' | grep -E "^[A-Za-z0-9:_']+?>" | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$/\1/" > $icry
+            sed -n '/^```Xcryptol session/,/^```/ p' < "$md" | sed '/^```/ d' | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$//" | sed "/^$/d" | sed -rn '/^(Loading module )|(Counterexample)|(Q.E.D.)|(Satisfiable)|(Unsatisfiable)/ p' > $expected
 
             echo "$0:   Replacing Windows newlines in $expected with Linux newlines..."
             dos2unix -n "$expected" "$tmp" && mv "$tmp" "$expected"
@@ -213,7 +211,7 @@ function extract_test_diff {
 
             # rm $icry $expected $actual $delta
         else
-            echo "$0:   $md did not have any \`\`\`icry fences; skipping..."
+            echo "$0:   $md did not have any \`\`\`Xcryptol session fences; skipping..."
         fi
     done
 
