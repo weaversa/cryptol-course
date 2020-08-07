@@ -1,15 +1,170 @@
 #!/bin/bash -x
 
-# poor_cryptol_test_runner - a janky script to generate, run, and analyze interactive Cryptol
+# 
 
 # Requires
 #   * `dos2unix` (to remove newlines)
 #   * `CRYPTOL_HOME` environment variable set to base directory of Cryptol repo (to run `$CRYPTOL`/cry test` on extracted `.icry` and `.icry.stdout` files)
 
+usage() {
+  cat << EOM
+$0 - a janky script to extract interactive Cryptol snippets and expected output from Markdown
+     and pass them to Cryptol's `test-runner`
+
+Usage: $0 COMMAND_LINE_OPTIONS FILES/DIRS
+Command line options:
+-x PATH    --runner=PATH      path to Cryptol `test-runner` or equivalent
+-c PATH    --exe=PATH         path to Cryptol binary
+-F STRING  --flag=STRING      add a flag to the test binary
+-r PATH    --result-dir=PATH  the result directory for test runs
+-p PROG    --diff-prog=PROG   use this diffing program on failures
+-T STRING                     add an argument to pass to the test-runner main
+-i         --ignore-expected  ignore expected failures
+           --ext=STRING       files with this extension are tests
+-h or -?   --help             display this message and exit
+
+Parameters:
+FILES/DIRS                    Markdown files/directories from which to extract tests
+EOM
+}
+
 function extract_test_diff {
-    if [ "$#" -ne 0 ]; then
-        md_list=($*)
-    else
+    # flags passed to test runner
+    FLAGS=()
+    # arguments to pass to test runner
+    TEST_RUNNER_ARGS=()
+    # files/directories to check for Markdown files
+    md_list=()
+
+    # Process argument/environment variable for location of Cryptol `test-runner` in addition to its command line arguments
+    while [ "$1" != "" ]; do
+        case $1 in
+        (*=*)
+            val=${1#*=}
+            key=${1%"=$val"}
+            if [ $key != --runner ]; then
+                TEST_RUNNER_ARGS+=($1)
+            fi
+            ;;
+        (*)
+            key=$1
+            ;;
+        esac
+
+        case $key in
+            # poor_cryptol_test_runner.sh CLI
+
+            # path to Cryptol `test-runner` or equivalent
+            # -x PATH
+            -x )
+                shift
+                val=$1
+                TEST_RUNNER_ARGS+=($key $val)
+                ;&
+            # --runner=PATH
+            --runner )
+                CRYPTOL_TEST_RUNNER=$val
+                ;;
+
+
+            # Cryptol `test-runner` CLI
+
+            # path to Cryptol binary
+            # -c PATH
+            -c )
+                shift
+                val=$1
+                TEST_RUNNER_ARGS+=($key $val)
+                ;&
+            # --exe=PATH
+            --exe )
+                CRYPTOL_BINARY=$val
+                ;;
+
+            # add a flag to the test binary
+            # -F STRING
+            -F )
+                shift
+                val=$1
+                TEST_RUNNER_ARGS+=($key $val)
+                ;&
+            # --flag=STRING
+            --flag )
+                FLAGS+=(-F $val)
+                ;;
+
+            # the result directory for test runs
+            # -r PATH
+            -r )
+                shift
+                val=$1
+                TEST_RUNNER_ARGS+=($key $val)
+                ;&
+            # --result-dir=PATH
+            --result-dir )
+                RESULT_DIR=$val
+                ;;
+
+            # use this diffing program on failures
+            # -p PROG
+            -p )
+                shift
+                val=$1
+                TEST_RUNNER_ARGS+=($key $val)
+                ;&
+            # --diff-prog=PROG
+            --diff-prog )
+                DIFF_PROG=$val
+                ;;
+
+            # add an argument to pass to the test-runner main
+            # -T STRING
+            -T ) 
+                shift
+                val=$1
+                MAIN_ARG=$val
+                TEST_RUNNER_ARGS+=($key $val)
+                ;;
+
+            # ignore expected failures
+            # -i
+            # --ignore-expected
+            -i | --ignore-expected )
+                val=true
+                IGNORE_EXPECTED=$val
+                TEST_RUNNER_ARGS+=($key)
+                ;;
+
+            # files with this extension are tests
+            # --ext=STRING
+            --ext )
+                EXT=$val
+                ;;
+
+            # display this message
+            # -h
+            # --help
+            -h | -? | --help )
+                usage
+                exit
+                ;;
+
+            * )
+                md_list+=("$1")
+        esac
+
+        shift
+
+        key=
+        val=
+    done
+
+    echo "FLAGS: ${FLAGS[*]}"
+    echo "TEST_RUNNER_ARGS: ${TEST_RUNNER_ARGS[*]}"
+    echo "FILES/DIRS: ${md_list[*]}"
+
+    # If no files/dirs are provided, default to the added/modified files in `git status -s`
+    if [ "${#md_list[@]}" -eq 0 ]; then
         SAVEIFS=$IFS   # Save current IFS
         IFS=$'\n'      # Change IFS to new line
         md_list=($(git status -s | grep -E '^[AM]\s+"?.*\.md"?$' | sed -nr 's/^[AM]\s+"?(.*\.md)"?$/\1/ p'))
@@ -63,8 +218,12 @@ function extract_test_diff {
     done
 
     echo "Running Cryptol test runner on all .icry files..."
-    /cryptol/bin/test-runner -c `which cryptol` -r ../cryptol-course --ext=icry --exe=cabal -F v2-run -F -v0 -F exe:cryptol -F -- -F -b "${icry_list[@]}"
+    ${CRYPTOL_TEST_RUNNER:-/cryptol/bin/test-runner} \
+        -c ${CRYPTOL_BINARY:-`which cryptol`} \
+        -r ${RESULT_DIR:-"${pwd}"} \
+        --ext=${EXT:-icry} \
+        "${FLAGS[@]:-"-F v2-run -F -v0 -F exe:cryptol -F -- -F -b"}" \
+        "${icry_list[@]}"
 }
 
-echo $0
 extract_test_diff $*
