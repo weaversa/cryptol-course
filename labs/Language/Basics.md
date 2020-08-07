@@ -807,7 +807,6 @@ Here's an English-language breakdown:
 | `inputType0` | `->` | `inputType1` | `->` | `outputType`
 | that takes `inputType0` | and | `inputType1` | and returns | `outputType`
 
-
 Let's make an example to work with:
 
 ```comment
