@@ -1,7 +1,7 @@
 #!/bin/bash -x
 
 # Requires (in addition to other requirements of `weaversa/cryptol-course` GitHub repo)
-#   * `dos2unix` (to remove newlines)
+#   * `dos2unix` (to remove Windows carriage returns from newlines)
 #   * a Cryptol `test-runner` binary (to run on extracted `.icry` and `.icry.stdout` files)
 
 usage() {
@@ -188,7 +188,7 @@ function extract_test_diff {
 
         echo "$0: Processing Markdown file $md ..."
 
-        echo "$0:   Replacing Windows newlines in $md with Linux newlines..."
+       echo "$0:   Removing Windows carriage returns in $md..."
         dos2unix -n "$md" "$tmp" && mv "$tmp" "$md"
 
         if grep -q '^```Xcryptol session' "$md"; then
@@ -196,10 +196,10 @@ function extract_test_diff {
             sed -n '/^```Xcryptol session/,/^```/ p' < "$md" | sed '/^```/ d' | grep -E "^[A-Za-z0-9:_']+?>" | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$/\1/" > $icry
             sed -n '/^```Xcryptol session/,/^```/ p' < "$md" | sed '/^```/ d' | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$//" | sed "/^$/d" | sed -rn '/^(Loading module )|(Counterexample)|(Q.E.D.)|(Satisfiable)|(Unsatisfiable)/ p' > $expected
 
-            echo "$0:   Replacing Windows newlines in $expected with Linux newlines..."
+            echo "$0:   Removing Windows carriage returns in $icry..."
             dos2unix -n "$icry" "$tmp" && mv "$tmp" "$icry"
 
-            echo "$0:   Replacing Windows newlines in $expected with Linux newlines..."
+            echo "$0:   Removing Windows carriage returns in $expected..."
             dos2unix -n "$expected" "$tmp" && mv "$tmp" "$expected"
 
             echo "$0:   Adding $icry to list of .icry files to test..."
