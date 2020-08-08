@@ -28,7 +28,7 @@ EOM
 
 function extract_test_diff {
     # flags to pass to test runner
-    FLAGS=()
+    TEST_FLAGS=()
     # arguments to pass to test runner
     TEST_RUNNER_ARGS=()
     # files/directories to check for Markdown files
@@ -88,7 +88,7 @@ function extract_test_diff {
                 ;&
             # --flag=STRING
             --flag )
-                FLAGS+=(-F $val)
+                TEST_FLAGS+=(-F $val)
                 ;;
 
             # the result directory for test runs
@@ -100,7 +100,7 @@ function extract_test_diff {
                 ;&
             # --result-dir=PATH
             --result-dir )
-                RESULT_DIR=$val
+                TEST_RESULT_DIR=$val
                 ;;
 
             # use this diffing program on failures
@@ -136,7 +136,7 @@ function extract_test_diff {
             # files with this extension are tests
             # --ext=STRING
             --ext )
-                EXT=$val
+                TEST_RESULT_EXT=$val
                 ;;
 
             # display this message
@@ -157,7 +157,13 @@ function extract_test_diff {
         val=
     done
 
-    echo "FLAGS: ${FLAGS[*]}"
+    CRYPTOL_TEST_RUNNER=${CRYPTOL_TEST_RUNNER:-/cryptol/bin/test-runner}
+    CRYPTOL_BINARY=${CRYPTOL_BINARY:-`which cryptol`}
+    TEST_RESULT_DIR=${TEST_RESULT_DIR:-$PWD}
+    TEST_FLAGS=${TEST_FLAGS[@]:--F v2-run -F -v0 -F exe:cryptol -F -- -F -b}
+    TEST_RESULT_EXT="${TEST_RESULT_EXT:-icry}"
+
+    echo "TEST_FLAGS: ${TEST_FLAGS[*]}"
     echo "TEST_RUNNER_ARGS: ${TEST_RUNNER_ARGS[*]}"
     echo "FILES/DIRS: ${md_list[*]}"
 
@@ -177,8 +183,8 @@ function extract_test_diff {
         tmp="${md%.md}.tmp"
         icry="${md%.md}.icry"
         expected="${md%.md}.icry.stdout"
-        # actual=$dirbasename.actual
-        # delta=$dirbasename.diff
+        actual=$dirbasename.actual
+        delta=$dirbasename.diff
 
         echo "$0: Processing Markdown file $md ..."
 
@@ -191,23 +197,26 @@ function extract_test_diff {
             sed -n '/^```Xcryptol session/,/^```/ p' < "$md" | sed '/^```/ d' | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$//" | sed "/^$/d" | sed -rn '/^(Loading module )|(Counterexample)|(Q.E.D.)|(Satisfiable)|(Unsatisfiable)/ p' > $expected
 
             echo "$0:   Replacing Windows newlines in $expected with Linux newlines..."
+            dos2unix -n "$icry" "$tmp" && mv "$tmp" "$icry"
+
+            echo "$0:   Replacing Windows newlines in $expected with Linux newlines..."
             dos2unix -n "$expected" "$tmp" && mv "$tmp" "$expected"
 
             echo "$0:   Adding $icry to list of .icry files to test..."
             icry_list+=("$icry")
             echo "$0:   List of .icry files is now: ${icry_list[@]}"
 
-            # echo "$0:   Logging interactive Cryptol running $icry to $actual ..."
-            # cryptol -b $icry > $actual
-            # dos2unix -n $actual $tmp && mv $tmp $actual
+            echo "$0:   Logging interactive Cryptol running $icry to $actual ..."
+            cryptol -b $icry > $actual
+            dos2unix -n $actual $tmp && mv $tmp $actual
             
-            # echo "$0:   Logging difference between $expected and $actual to $delta ..."
-            # diff $expected $actual > $delta
+            echo "$0:   Logging difference between $expected and $actual to $delta ..."
+            diff $expected $actual > $delta
 
-            # if grep -qE "Counterexample|Satisfiable|Q.E.D.|Unsatisfiable" $delta; then
-            #     echo "Found Q.E.D. or Unsatisfiable; exiting..."
-            #     exit 1
-            # fi
+            if grep -qE "Counterexample|Satisfiable|Q.E.D.|Unsatisfiable" $delta; then
+                echo "Found Q.E.D. or Unsatisfiable; exiting..."
+                exit 1
+            fi
 
             # rm $icry $expected $actual $delta
         else
@@ -215,13 +224,13 @@ function extract_test_diff {
         fi
     done
 
-    echo "Running Cryptol test runner on all .icry files..."
-    ${CRYPTOL_TEST_RUNNER:-/cryptol/bin/test-runner} \
-        -c ${CRYPTOL_BINARY:-`which cryptol`} \
-        -r ${RESULT_DIR:-"${pwd}"} \
-        --ext=${EXT:-icry} \
-        "${FLAGS[@]:-"-F v2-run -F -v0 -F exe:cryptol -F -- -F -b"}" \
-        "${icry_list[@]}"
+    # echo "Running Cryptol test runner on all .icry files..."
+    # $CRYPTOL_TEST_RUNNER \
+    #     -c $CRYPTOL_BINARY \
+    #     -r $TEST_RESULT_DIR \
+    #     --ext=$TEST_RESULT_EXT \
+    #     $TEST_FLAGS \
+    #     "${icry_list[@]}"
 }
 
 extract_test_diff $*
