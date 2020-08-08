@@ -19,9 +19,6 @@ extract_snippets() {
         echo "$0:   Extracting \`\`\`Xcryptol session fences from $FILE; exporting commands to $icry and output to $expected ..."
         sed -n '/^```Xcryptol session/,/^```/ p' < "$FILE" | sed '/^```/ d' | grep -E "^[A-Za-z0-9:_']+?>" | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$/\1/" > $icry
         sed -n '/^```Xcryptol session/,/^```/ p' < "$FILE" | sed '/^```/ d' | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$//" | sed "/^$/d" | sed -rn '/^(Loading module )|(Counterexample)|(Q.E.D.)|(Satisfiable)|(Unsatisfiable)/ p' > $expected
-
-        echo "$0:   Replacing Windows newlines in $icry with Linux newlines..."
-        echo "$0:   Replacing Windows newlines in $expected with Linux newlines..."
     done
 }
 
