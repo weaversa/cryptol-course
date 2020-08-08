@@ -30,6 +30,8 @@ running in the `cryptol-course` directory with:
 
 ```shell
 Cryptol> :m labs::Demos::Cryptol::NQueens
+Loading module Cryptol
+Loading module labs::Demos::Cryptol::NQueens
 ```
 
 We start by defining a new module for this lab and importing some accessory
