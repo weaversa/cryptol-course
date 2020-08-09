@@ -1,7 +1,18 @@
 **/.DS_Store
+bin/*
+
+# C derivatives
+# **/*.bc # debatable
+**/*.o
+
+# Haskell derivatives
 **/*.hi
 **/*.ho
-**/*.o
-bin/*
+
+# binary derived from scripts/dependencies.hs Haskell source
 scripts/dependencies
-scripts/Test/*.icry*
+
+# extracted snippet code (.icry, .icry.stdout, .icry.actual, .icry.diff)
+*.icry*
+# temporary files
+*.tmp
