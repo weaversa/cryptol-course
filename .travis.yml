@@ -112,7 +112,6 @@ script:
   - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_128_128"
   - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_64_128"
   - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_96_144"
-  - cryptol -e -c ":m labs::SimonSpeck::Speck::SpeckTestVectors"
   - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_128_192"
   - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_128_256"
   - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_96_96"
