@@ -188,7 +188,7 @@ function extract_test_diff {
 
         echo "$0: Processing Markdown file $md ..."
 
-       echo "$0:   Removing Windows carriage returns in $md..."
+        echo "$0:   Removing Windows carriage returns in $md..."
         dos2unix -n "$md" "$tmp" && mv "$tmp" "$md"
 
         if grep -q '^```Xcryptol session' "$md"; then
