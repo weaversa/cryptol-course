@@ -8,9 +8,9 @@ jobs:
         - wget https://github.com/GaloisInc/cryptol/releases/download/2.9.0/cryptol-2.9.0-macOS-x86_64.tar.gz
 	- tar -xzf cryptol-2.9.0-macOS-x86_64.tar.gz
 	- export PATH=$PATH:$(pwd)/cryptol-2.9.0-macOS-x86_64/bin
-        - wget https://saw.galois.com/builds/nightly/saw-0.4.0.99-2020-05-21-OSX-64.tar.gz
-        - tar -xzf saw-0.4.0.99-2020-05-21-OSX-64.tar.gz
-        - export PATH=$PATH:$(pwd)/saw-0.4.0.99-2020-05-21-OSX-64/bin
+        - wget https://github.com/GaloisInc/saw-script/releases/download/v0.5/saw-0.5-OSX-64.tar.gz
+        - tar -xzf saw-0.5-OSX-64.tar.gz
+        - export PATH=$PATH:$(pwd)/saw-0.5-OSX-64/bin
 	- cryptol --version
         - saw --version
         - curl -fsSL https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-osx-10.14.6.zip -o z3-4.8.8-x64-osx-10.14.6.zip
