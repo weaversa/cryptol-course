@@ -1,15 +1,61 @@
 # Introduction
 
+Key Wrapping is an important technique for storing and transmitting
+cryptographic keys. This module introduces a family of NIST's general
+purpose Key Wrapping algorithms.
+
+## Prerequisites
+
+Before working through this lab, you'll need
+  * Cryptol to be installed,
+  * this module to load successfully, and
+  * an editor for completing the exercises in this file.
+  
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter,
+  * Cryptol's sequence and `Integer` types,
+  * demoting types variables to value variables,
+  * the `:prove` command,
+  * manipulating sequences using `#`, `take`, `drop`, `split`, `join`,
+    `head`, and `tail`,
+  * writing functions and properties,
+  * sequence comprehensions,
+  * functions with curried parameters,
+  * logical, comparison, arithmetic, and conditional operators.
+
+## Skills You Will Learn
+
+By the end of this lab you will have read through a NIST standard and
+implemented a few real-world block cipher modes for authenticated
+encryption and decryption.
+
+You'll also gain experience with
+  * type parameters and type constraints,
+  * pattern matching,
+  * the use of pre-written cryptographic routines from other modules,
+  * navigating some nuances of Cryptol's type checking system, and
+  * the `foldl` operator.
+
+## Load This Module
+
 This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::KeyWrapping::KeyWrappingAnswers
+Cryptol> :m labs::KeyWrapping::KeyWrappingAnswers
 ```
 
-This lab will take the student through developing wrapping algorithms
+We start by defining a new module for this lab:
+
+```cryptol
+module labs::KeyWrapping::KeyWrappingAnswers where
+```
+
+# Writing Key Wrapping Routines in Cryptol
+
+This lab takes the student through developing wrapping algorithms
 described in [NIST Special Publication
 800-38F](https://csrc.nist.gov/publications/detail/sp/800-38f/final)
 "Recommendation for Block Cipher Modes of Operation: Methods for Key
@@ -19,7 +65,7 @@ document open side-by-side.
 Here is the abstract from this document:
 
 > This publication describes cryptographic methods that are approved
-> for “key wrapping,” i.e., the protection of the confidentiality and
+> for "key wrapping," i.e., the protection of the confidentiality and
 > integrity of cryptographic keys. In addition to describing existing
 > methods, this publication specifies two new, deterministic
 > authenticated-encryption modes of operation of the Advanced
@@ -35,13 +81,6 @@ subcomponents. In fact each of these is a family of algorithms: `KW`
 is composed of an *authenticated encryption* component `KW-AE` and an
 *authenticated decryption* component `KW-AD`; similarly for `TKW` and
 `KWP`.
-
-Since we are creating a new module, the first line needs to be the
-module definition:
-
-```
-module labs::KeyWrapping::KeyWrappingAnswers where
-```
 
 # Preliminaries
 
@@ -94,7 +133,7 @@ primitives. The algorithms are found under the `specs/` directory in
 `specs/Primitive/Symmetric/Cipher/Block` and we import them into our
 module with the following:
 
-```
+```cryptol
 import specs::Primitive::Symmetric::Cipher::Block::AES_parameterized as AES
 import specs::Primitive::Symmetric::Cipher::Block::TripleDES as TDEA
 ```
@@ -121,23 +160,88 @@ a sense of the overall organization:
      in this standard. Let's scan through this to see if we find
      anything useful...
 
-Section `4.3` provides some constants `ICV1`, `ICV2`, and `ICV3` which
-are defined to have special values. Since we are working inside of a
-module we can define these variables without fear of polluting another
-namespace by placing them in a `private` code block:
+Section 4.3 provides some constants `ICV1`, `ICV2`, and `ICV3` which
+are defined to have special values.
 
-```
-private
-    ICV1 = 0xA6A6A6A6A6A6A6A6
-    ICV2 = 0xA65959A6
-    ICV3 = 0xA6A6A6A6
+```cryptol
+ICV1 = 0xA6A6A6A6A6A6A6A6
+ICV2 = 0xA65959A6
+ICV3 = 0xA6A6A6A6
 ```
 
-Section `4.4` introduces operators and notation for cryptographic
+Section 4.4 introduces operators and notation for cryptographic
 functions and their building blocks. We have already imported the
 required block ciphers and we will be building some of these for
 ourselves. For the remainder, Cryptol provides analogous functionality
 to us in some fashion or another.
+
+**EXERCISE**: Fill in definitions for the operators given in Section
+4.4. Use the properties defined in Section 4.5 (also given below) to
+show that your answers are correct.
+
+```cryptol
+//0^^s -- The bit string that consists of s consecutive '0' bits.
+//0 : [s]
+
+/**
+ * The integer for which the bit string X is the binary
+ * representation.
+ */ 
+int X = toInteger X
+
+/**
+ * The bit length of bit string X.
+ */
+len X = length X
+
+/**
+ * The bit string consisting of the s right-most bits
+ * of the bit string X.
+ */
+LSB : {s, a} (fin s, fin a, a >= s) => [a] -> [s]
+LSB X = drop X
+
+/**
+ * The bit string consisting of the s left-most bits of
+ * the bit string X.
+ */
+MSB : {s, a} (fin s, a >= s) => [a] -> [s]
+MSB X = take X
+
+// [x]s -- The binary representation of the non-negative integer
+//         x as a string as a string of s bits, where x < 2^^s.
+//`fromInteger` transforms an Integer into a bitvector.
+
+// The bitwise exclusive-OR of bit strings X and Y whose bit
+// lengths are equal.
+// X ^ Y
+
+// The concatenation of bit strings X and Y
+// X # Y
+```
+
+Section 4.5 contains properties of the operators given in Section
+4.4.
+
+```cryptol
+property hexadecimalProp = 0xA659 == 0b1010011001011001
+
+property zeroBitsProp = (0 : [8]) == 0b00000000
+
+property concatenationProp = 0b001 # 0b10111 == 0b00110111
+
+property XORProp = 0b10011 ^ 0b10101 == 0b00110
+
+property lenProp = len 0b00010 == 5
+
+property LSBProp = LSB`{3} 0b111011010 == 0b010
+
+property MSBProp = MSB`{4} 0b111011010 == 0b1110
+
+property bitstringProp = fromInteger 39 == 0b00100111
+
+property intProp = int 0b00011010 == 26
+```
 
  * **Section 5, Preliminaries** -- This section covers usage and
      information about data size restrictions. The most pertinent
@@ -159,7 +263,6 @@ to us in some fashion or another.
  * **Section 8, Conformance** -- This section has information about
      how implementations may claim conformance to the algorithms
      described in this standard.
-
 
 # Formal Specification of `KW`
 
@@ -184,14 +287,17 @@ of the underlying block cipher, `CIPHk`. Since `KW-AE` uses `AES` as
 its `CIPHk`, semiblocks will be 64-bit blocks. Also notice that the
 specification for `W` defines the *Input* to be a string `S` of `n`
 semiblocks and the *Output* will be a transformed string `C` of `n`
-semiblocks. This is enough to build a simple type signature for `W`
-which will contain the following components:
+semiblocks. *`W` was previously defined in Section 4.4 to take a
+bitstring, not a sequence of semiblocks*, so we will write `W` to
+consume bitstrings, but we will have to split `W` into semiblocks
+internally. We now have enough to build a simple type signature for
+`W` which will contain the following components:
 
  * `n` -- A *type parameter* which controls the number of semiblocks
    in our inputs and outputs
  * `([128] -> [128])` -- The type of our *keyed* block cipher `CIPHk`
- * `[n][64]` -- The type of our string of input semiblocks
- * `[n][64]` -- The type of our transformed output
+ * `[n * 64]` -- The type of our string of input semiblocks
+ * `[n * 64]` -- The type of our transformed output
 
 Putting these together we have our preliminary type signature:
 
@@ -199,70 +305,69 @@ Putting these together we have our preliminary type signature:
 W_prelim :
   {n}
   (fin n) =>
-  ([128] -> [128]) -> [n][64] -> [n][64]
+  ([128] -> [128]) -> [n * 64] -> [n * 64]
 ```
 
 We haven't quite captured enough about the type of `W` -- for the
 algorithm to operate correctly, and according to the standard, we will
-have to make two more assumptions about `n`.
-
-1. `n >= 3`: we can add this restriction to our type signature.
-2. `n <= 2^^54`: this comes directly from the limits imposed by Table
-   1 (Section 5.3.1, page 10). As an aside, if this constraint is left
-   off, Cryptol's type checker will point out that `64 >= width
-   (6*(n-1))` (which can be re-expressed as `6*(n-1) < 2^^64`). This
-   constraint comes from the fact that the value `t` (which iterates
-   over `[1..6*(n-1)]`) has to fit into a 64-bit word when passed to
-   `WStep`. Of course, `2^^54` is less than `6 * (2^^54 - 1)` which is
-   less than `2^^64`, so the tighter lower bound from Table 1 is
-   acceptable.
+have to add two more constraints on `n`, namely, that `n >= 3` and
+`fin n`.
 
 ```comment
 W :
   {n}
-  (fin n, 3 <= n, n <= 2^^54) =>
-  ([128] -> [128]) -> [n][64] -> [n][64]
+  (fin n, 3 <= n) =>
+  ([128] -> [128]) -> [n * 64] -> [n * 64]
 ```
 
-Taking a close look at `Algorithm 1` we can see that `W` transforms
-our inputs over a series of rounds using the same "step function",
-which we will call `WStep`, in each round. It will make our job easier
-to model this step function first. Also, it may be easiest to
-understand this step function by studying `Figure 2` on page 12.
+Taking a close look at `Algorithm 1` we can see that `W`'s step 2
+transforms its inputs over a series of `s` rounds. It will make our
+job easier to model this step of the function first. Also, it may help
+to understand this step by studying `Figure 2` on page 12.
 
-`WStep` will inherit the same type parameters, inputs, and outputs as
-`W`. We add a new input `t` of type `[64]` which serves as the round
-counter found in step 2 of `Algorithm 1`.
+`WStep2` will inherit the same type parameters, inputs, and outputs as
+`W`. We add a new input `t` of type `Integer` which serves as the
+round counter found in step 2 of `Algorithm 1`. We also use pattern
+matching to pull out specific entries in the sequence of semiblocks,
+i.e. `([A, R2] # Rs)` gives names to the first two semiblocks of the
+input.
 
-**EXERCISE**: Study `Algorithm 1` and `Figure 2`. Implement `WStep`
-  below assuming the appropriate input for `CIPHk` and assignments for
-  `A'` and `Rs'` found in the body of the function. *Hint*: R2 mentioned
-  in the spec is actually the first (`head`) semi-block from Rs.
+**EXERCISE**: Study `Algorithm 1` and `Figure 2` and implement
+`WStep2`.
 
-```
-WStep:
+```cryptol
+WStep2:
     {n}
     (fin n, n >= 3) =>
-    ([128] -> [128]) -> [n][64] -> [64] -> [n][64]
-WStep CIPHk ([A] # Rs) t = [A'] # Rs'
+    ([128] -> [128]) -> [n][64] -> Integer -> [n][64]
+WStep2 CIPHk ([A, R2] # Rs) t = [A'] # Rs # [Rn]
   where
-    [MSB, LSB] = split (CIPHk (A # head Rs))
-    A'         = MSB ^ t
-    Rs'        = tail Rs # [LSB]
+    A'  = MSB (CIPHk (A # R2)) ^ (fromInteger t)
+    Rn  = LSB (CIPHk (A # R2))
 ```
 
 *Note:* Pattern matching (a kind of shorthand) is used for one of the
-parameters to `WStep`. According to the type signature, the second
+parameters to `WStep2`. According to the type signature, the second
 parameter is of type `[n][64]` -- a sequence of semiblocks. In the
-definition of `WStep` we see that this parameter is identified as
-`([A] # Rs)`. Cryptol assigns the *first* semiblock to `A` and all the
-remaining semiblocks to `Rs`. Since we have the type parameter
-condition `n >= 3` We know that there are at least three such blocks
-to assign, and at least two will be assigned to `Rs`.
+definition of `WStep2` we see that this parameter is identified as
+`([A, R2] # Rs)`. Cryptol assigns the *first* semiblock to `A`, the
+*second* semiblock to `R2`, and all the remaining semiblocks to
+`Rs`. Since we have the type parameter condition `n >= 3` We know that
+there are at least three such blocks to assign, and at least one will
+be assigned to `Rs`.
 
-Given `WStep` it is a simple matter to complete our definition for `W`
-we started above. But first we take a quick aside to recall the
-`foldl` operator which will come in very handy.
+*Observation*: It's possible that requiring `n >= 3` is a mistake. We
+say this because (and you can test this) Cryptol also accepts the
+definitions of `W` and `WStep2` with type constraint `n >= 2` instead
+of `n >= 3`. In the case where `n == 2`, `Rs` is simply the empty
+sequence. Unfortunately, this and the use of 1-based indexing
+(starting `t` at `1`) causes reverberations throughout the rest of the
+specification, culminating in a more-complex-than-necessary `KWP`
+function.
+
+Given `WStep2`, it is a simple matter to complete the definition for
+`W` that we started above. But first we take a quick aside to recall
+the `foldl` operator which will come in very handy.
 
 *But first...*
 
@@ -292,7 +397,7 @@ iterative process. For instance, we **could** find a list of partial
 sums from the sequence `[1..10]` as follows:
 
 ```shell
-Cryptol> [0] # [ x + partial | x <- [1..10] | partial <- sums]
+Cryptol> sums where sums = [0] # [ x + partial | x <- [1..10] | partial <- sums]
 [0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55]
 ```
 
@@ -305,22 +410,22 @@ Cryptol> foldl (+) 0 [1..10]
 ```
 *...we now return to our regularly scheduled program.*
 
-We will use `foldl` along with our step function `WStep` to write a
+We will use `foldl` along with our step function `WStep2` to write a
 definition for `W`.
 
 **EXERCISE**: Complete the definition of `W` below by filling in the
   function skeleton provided.
 
-```
+```cryptol
 W :
     {n}
-    (fin n, 3 <= n, n <= 2^^54) =>
-    ([128] -> [128]) -> [n][64] -> [n][64]
-W CIPHk S = C
+    (fin n, 3 <= n) =>
+    ([128] -> [128]) -> [n * 64] -> [n * 64]
+W CIPHk S = join C
   where
-    type s = 6*(n-1)
-    ts     = [ 1 .. s ]
-    C      = foldl (WStep CIPHk) S ts
+    type s = 6 * (n-1)
+    S'     = split S
+    C      = foldl (WStep2 CIPHk) S' [1..s]
 ```
 
 With `W` in hand there it isn't much more work to complete the `KW-AE`
@@ -328,18 +433,18 @@ algorithm.
 
 **EXERCISE**: Study `Algorithm 3` and complete the specification for
   `KW-AE` by filling in the snippet below with the correct definition
-  for `S`. Remember that `ICV1` has already been defined in this
+  for `S`. Remember that `ICV1` was defined earlier in this
   module. Also, notice that the bounds from Table 1 (Section 5.3.1,
   page 10) are included as type constraints.
 
-```
+```cryptol
 KWAE :
     {n}
     (fin n, 2 <= n, n < 2^^54) =>
-    ([128] -> [128]) -> [n][64] -> [n+1][64]
+    ([128] -> [128]) -> [n * 64] -> [(n+1) * 64]
 KWAE CIPHk P = C
   where
-    S = [ICV1] # P
+    S = ICV1 # P
     C = W CIPHk S
 ```
 
@@ -363,8 +468,8 @@ the algorithm *authenticates* the decryption we will need to add an
 authentication check and slightly alter the type for `KW-AD`.
 
 **EXERCISE**: Review `Algorithm 2` and `Figure 3` of the document and
-complete the definitions for the inverse routines to `W` and `WStep`
-which we shall call `W'` and `WStep'` respectively. The type
+complete the definitions for the inverse routines to `W` and `WStep2`
+which we shall call `W'` and `WStep2'` respectively. The type
 declarations for these functions are provided.
 
 *Hint:* Notice that, except for the names, the type declarations are
@@ -373,34 +478,33 @@ special attention to the order of the index variable for the main
 loop, the sequence of operations, and how the sequence of `Rs`
 transforms:
 
-```
-WStep' :
+```cryptol
+WStep2' :
     {n}
     (fin n, n >= 3) =>
-    ([128] -> [128]) -> [n][64] -> [64] -> [n][64]
-WStep' CIPHk' ([A] # Rs) t = [A'] # Rs'
+    ([128] -> [128]) -> [n][64] -> Integer -> [n][64]
+WStep2' CIPHk' ([A] # Rs # [Rn]) t = [A', R2] # Rs
   where
-    [MSB, LSB] = split (CIPHk' ((A ^ t) # last Rs))
-    A'         = MSB
-    Rs'        = [LSB] # take Rs
+    A'  = MSB (CIPHk' ((A ^ (fromInteger t)) # Rn))
+    R2  = LSB (CIPHk' ((A ^ (fromInteger t)) # Rn))
 
 W' :
     {n}
-    (fin n, 3 <= n, n <= 2^^54) =>
-    ([128] -> [128]) -> [n][64] -> [n][64]
-W' CIPHk' C = S
+    (fin n, 3 <= n) =>
+    ([128] -> [128]) -> [n * 64] -> [n * 64]
+W' CIPHk' C = join S
   where
-    type s = 6*(n-1)
-    ts     = [ s, s-1 .. 1 ]
-    S      = foldl (WStep' CIPHk') C ts
+    type s = 6 * (n-1)
+    C'     = split C
+    S      = foldl (WStep2' CIPHk') C' [ s, s-1 .. 1 ]
 ```
 
 Once you have these completed you should be able to check your work by
-having Cryptol `:prove` the properties `WStep'Prop` and
+having Cryptol `:prove` the properties `WStep2'Prop` and
 `W'Prop`. Your output should look something like the following:
 
 ```shell
-Cryptol> :prove WStep'Prop
+Cryptol> :prove WStep2'Prop
 Q.E.D.
 (Total Elapsed Time: 0.079s, using Z3)
 Cryptol> :prove W'Prop
@@ -409,19 +513,19 @@ Q.E.D.
 ```
 
 These two properties state that for a fixed, dummy CIPHk and S of
-length 3 semiblocks, `WStep` and `WStep'` are inverses and `W` and
+length 3 semiblocks, `WStep2` and `WStep2'` are inverses and `W` and
 `W'` are inverses. Here are the definitions of these properties:
 
-```
-property WStep'Prop ARs t =
-    WStep'`{3} (\a -> a-1) (WStep (\a -> a+1) ARs t) t == ARs
+```cryptol
+property WStep2'Prop ARs t =
+    WStep2'`{3} (\a -> a-1) (WStep2 (\a -> a+1) ARs t) t == ARs
 
 property W'Prop S =
     W'`{3} (\a -> a-1) (W (\a -> a+1) S) == S
 ```
 
 The final step is to use these components to write the authenticated
-decryption algorithm `KW-AD`. Unlike `W'` and `WStep'` this function
+decryption algorithm `KW-AD`. Unlike `W'` and `WStep2'` this function
 will have a different type than its related routine in the `KW-AE`
 family because it needs to capture whether or not the ciphertext
 authenticates *as well as* computes the corresponding plaintext.
@@ -438,16 +542,16 @@ authenticate.
 
 *Hint:* Review the Cryptol primitives `head` and `tail`.
 
-```
+```cryptol
 KWAD :
     {n}
     (fin n, 2 <= n, n < 2^^54) =>
-    ([128] -> [128]) -> [n+1][64] -> (Bit, [n][64])
+    ([128] -> [128]) -> [(n+1) * 64] -> (Bit, [n * 64])
 KWAD CIPHk' C = (FAIL, P)
   where
-    S = W' CIPHk' C
-    FAIL = head S != ICV1
-    P = tail S
+    S    = W' CIPHk' C
+    FAIL = MSB S != ICV1
+    P    = LSB S
 ```
 
 When you have successfully defined this function, you can test your
@@ -457,7 +561,7 @@ least for a dummy CIPHk and P of length 3 semiblocks) using the
 by using the property `KWADTests` (this is defined later on
 in this document).
 
-```
+```cryptol
 property KWAEInvProp S =
     KWAD`{3} (\a -> a-1) (KWAE (\a -> a+1) S) == (False, S)
 ```
@@ -475,7 +579,7 @@ Section 7 are very similar to `KW-AE` and `KW-AD`. We'll come back to
   (also known as
   [Triple-DES](https://en.wikipedia.org/wiki/Triple_DES)). We
   recommend following the same steps from above and defining the helper
-  functions `TWStep`, `TWStep'`, `TW`, and `TW'` before you attempt
+  functions `TWStep2`, `TWStep2'`, `TW`, and `TW'` before you attempt
   `TKW-AE` and `TKW-AD`. Test vectors are available in the
   [kwtestvectors directory](kwtestvectors).
 
@@ -485,82 +589,88 @@ opportunity to go back through and take a close look at the type
 parameters and conditions and be sure you understand what they mean
 and how to use them. One important thing to note is that had we
 defined our functions above using a `semigroup` type parameter (rather
-than hard-code 64), our work defining the TKW family of functions
-would already be done!
+than hard-code `128` and `64`), our work defining the TKW family of
+functions would already be done! Consider working through the [Simon
+and Speck lab](../SimonSpeck/SimonSpeck.md) next. There you'll learn
+how to write parameterized modules -- imagine writing a Cryptol module
+that takes in the semiblock size as a parameter and defines `W` and
+`W'`, and then importing that module with `semiblock = 64` into an AES
+key wrap module, and with `semiblock = 32` into a TDES key wrap
+module. This concept of parameterized, hierarchical modules can really
+help you make clear, duplication free, reusable Cryptol
+specifications.
 
-One important difference in the TKW family is you will use the
-Triple-DES algorithm that's implemented in the `TDEA` module we
-imported earlier. You can check the type of `TDEA` in the interpreter
-via `:t TDEA::blockEncrypt` and `:t TDEA::blockDecrypt`. This has a
-slightly different interface than the block cipher we used from the
-`AES` module earlier. You can view how we use it here by looking at
-`TestTKWAE` and `TestTKWAD`. It is worth taking a quick look through
-the `TripleDES.cry` to learn a little bit about a particularly famous
-NIST test vector.
+**Back to TDES**: One important difference in the TKW family is you
+will use the Triple-DES algorithm that's implemented in the `TDEA`
+module we imported earlier. You can check the type of `TDEA` in the
+interpreter via `:t TDEA::blockEncrypt` and `:t
+TDEA::blockDecrypt`. This has a slightly different interface than the
+block cipher we used from the `AES` module earlier. You can view how
+we use it here by looking at `TestTKWAE` and `TestTKWAD`. It is worth
+taking a quick look through the `TripleDES.cry` to learn a little bit
+about a particularly famous NIST test vector.
 
 You can test your work with the `TKWAETests` and `TKWADTests`
 properties. Though, if you want to use them, you'll have to uncomment
 them after finishing your work here. Good luck!
 
-```
-TWStep:
+```cryptol
+TWStep2:
     {n}
     (fin n, n >= 3) =>
-    ([64] -> [64]) -> [n][32] -> [32] -> [n][32]
-TWStep CIPHk ([A] # Rs) t = [A'] # Rs'
+    ([64] -> [64]) -> [n][32] -> Integer -> [n][32]
+TWStep2 CIPHk ([A, R2] # Rs) t = [A'] # Rs # [Rn]
   where
-    [MSB, LSB] = split (CIPHk (A # head Rs))
-    A'         = MSB ^ t
-    Rs'        = tail Rs # [LSB]
+    A'  = MSB (CIPHk (A # R2)) ^ (fromInteger t)
+    Rn  = LSB (CIPHk (A # R2))
 
 TW :
     {n}
-    (fin n, 3 <= n, n <= 2^^28) =>
-    ([64] -> [64]) -> [n][32] -> [n][32]
-TW CIPHk S = C
+    (fin n, 3 <= n) =>
+    ([64] -> [64]) -> [n * 32] -> [n * 32]
+TW CIPHk S = join C
   where
-    type s = 6*(n-1)
-    ts     = [ 1 .. s ]
-    C      = foldl (TWStep CIPHk) S ts
+    type s = 6 * (n-1)
+    S'     = split S
+    C      = foldl (TWStep2 CIPHk) S' [1..s]
 
 TKWAE :
     {n}
     (fin n, 2 <= n, n < 2^^28) =>
-    ([64] -> [64]) -> [n][32] -> [n+1][32]
+    ([64] -> [64]) -> [n * 32] -> [(n+1) * 32]
 TKWAE CIPHk P = C
   where
-    S = [ICV3] # P
+    S = ICV3 # P
     C = TW CIPHk S
 
-TWStep' :
+TWStep2' :
     {n}
     (fin n, n >= 3) =>
-    ([64] -> [64]) -> [n][32] -> [32] -> [n][32]
-TWStep' CIPHk' ([A] # Rs) t = [A'] # Rs'
+    ([64] -> [64]) -> [n][32] -> Integer -> [n][32]
+TWStep2' CIPHk' ([A] # Rs # [Rn]) t = [A', R2] # Rs
   where
-    [MSB, LSB] = split (CIPHk' ((A ^ t) # last Rs))
-    A'         = MSB
-    Rs'        = [LSB] # take Rs
+    A'  = MSB (CIPHk' ((A ^ (fromInteger t)) # Rn))
+    R2  = LSB (CIPHk' ((A ^ (fromInteger t)) # Rn))
 
 TW' :
     {n}
-    (fin n, 3 <= n, n <= 2^^28) =>
-    ([64] -> [64]) -> [n][32] -> [n][32]
-TW' CIPHk' C = S
+    (fin n, 3 <= n) =>
+    ([64] -> [64]) -> [n * 32] -> [n * 32]
+TW' CIPHk' C = join S
   where
-    type s = 6*(n-1)
-    ts     = [ s, s-1 .. 1 ]
-    S      = foldl (TWStep' CIPHk') C ts
+    type s = 6 * (n-1)
+    C'     = split C
+    S      = foldl (TWStep2' CIPHk') C' [ s, s-1 .. 1 ]
 
 TKWAD :
     {n}
     (fin n, 2 <= n, n < 2^^28) =>
-    ([64] -> [64]) -> [n+1][32] -> (Bit, [n][32])
+    ([64] -> [64]) -> [(n+1) * 32] -> (Bit, [n * 32])
 TKWAD CIPHk' C = (FAIL, P)
   where
-    S = TW' CIPHk' C
-    FAIL = head S != ICV3
-    P = tail S
+    S    = TW' CIPHk' C
+    FAIL = MSB S != ICV3
+    P    = LSB S
 ```
 
 
@@ -584,7 +694,7 @@ want to pad it to fit into some number of 32-bit words. Well, the next
 largest multiple of `32` is `64`, and `64 - 37` is `27`, so we'll need
 to pad with `27` zeros. We can demonstrate this using Cryptol:
 
-```
+```cryptol
 bits = 0b1001100101110011111010000001110011011 : [37]
 bits_padded = bits # (0 : [27]) : [64]
 ```
@@ -633,7 +743,7 @@ labs::KeyWrapping::KeyWrapping> `(37 %^ 32)
 Now we can revisit creating a function that pads any size input
 into a bitvector with a size that is a multiple of 32.
 
-```
+```cryptol
 pad32 : {a} (fin a) => [a] -> [a + a %^ 32]
 pad32 x = x # 0
 ```
@@ -660,8 +770,8 @@ octets to pad as
 
 > ![](https://render.githubusercontent.com/render/math?math=8\cdot\lceil%20len(P)/64\rceil%20-len(P)/8)
 
-where `len(P)` is the number of bits in P per the definition in
-Section 4.1.
+where `len(P)` is the number of bits in `P` per the definition in
+Section 4.4.
 
 In general,
 ![](https://render.githubusercontent.com/render/math?math=b\cdot\lceil%20a/b\rceil%20-a=a%5C%25\hat{}b),
@@ -670,17 +780,19 @@ use that instead.
 
 **EXERCISE**: Study the first four lines of `Algorithm 5` from the
   standard and complete the definition of `KWPAEPad` below by filling
-  in the function skeleton provided with appropriate logic.
+  in the function skeleton provided with appropriate logic. 
 
-```
+```cryptol
 KWPAEPad :
     {k, l}               // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
     , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S
     ) =>
-    [k][8] -> [l]
+    [k * 8] -> [l]
 KWPAEPad P = S
-  where S = ICV2 # (`k : [32]) # (join P) # zero
+  where type padlen = 8 * (k * 8 /^ 64) - (k * 8) / 8
+        PAD = 0 : [8 * padlen]  // also PAD = 0 : [k*8 %^ 64]
+        S   = ICV2 # (fromInteger (len P / 8) : [32]) # P # PAD
 ```
 
 ## Concept 2: Oddly Typed `if-then-else` Statements
@@ -713,7 +825,7 @@ thing, we can either give up, or try and unify the two cases.
 Here is a silly example that closely models the behavior we'll see in
 `KWP-AE` and `KWP-AD`:
 
-```
+```cryptol
 g : [32] -> [32]
 g x = x + 1
 
@@ -778,7 +890,7 @@ bits to `64` bits, and shrink the result back down to `48` bits. To
 help us do this resizing work, we'll introduce `shrink` and `widen`
 functions.
 
-```
+```cryptol
 widen : {a, b} (fin a, fin b) => [b] -> [a + b]
 widen a = 0 # a
 
@@ -790,7 +902,7 @@ shrink a = drop a
 bits. `shrink` takes any sized input and removes `0` or more bits from
 the front. Using these two functions, we can fix our `f` from above:
 
-```
+```cryptol
 f : {a} (32 <= a, a <= 64) => [a] -> [48]
 f x = if `a <= 0x30 then
         widen (g (shrink x))
@@ -827,25 +939,33 @@ and type constraints from `W` and relate `n` and `l` (the type of both
 variable `n` is the same type variable that it uses. This can be
 achieved by calling `W` like so: ```W`{n=n}```.
 
-```
+```cryptol
 KWPAE :
     {k, l, n}            // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
     , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C
     , 64*n == max 192 l               // Here we relate n and l
     ) =>
-    ([128] -> [128]) -> [k][8] -> [l]
+    ([128] -> [128]) -> [k * 8] -> [l]
 KWPAE CIPHk P = C
   where
     S = KWPAEPad P
-    C = if (`k : [32]) <= 8 then
+    C = if len P <= 64 then
           widen (CIPHk (shrink S))
         else
-          shrink (join (W`{n} CIPHk (split (widen S))))
+          shrink (W`{n} CIPHk (widen S))
 ```
 
 Feel free to use the provided `KWPAETests` property to check your
 work.
+
+Here we point out our observation from earlier -- if the type
+constraint on `n` in `W` had been `n >= 2` and had `t` started at `0`
+rather than `1`, then `W CIPHk S == CIPHK S` and we wouldn't have
+needed to test on the length of `P`. The definition of `C` would then
+have been `C = W'{n} CIPHk S`. So, hopefully you see how an arbitrary
+(mistaken?) constraint (compounded by 1-based indexing) percolated
+through this specification and caused trouble.
 
 
 # A Formal Specification of `KWP-AD`
@@ -856,45 +976,49 @@ previously defined `W'`.
 **EXERCISE**: Study `Algorithm 6` from the standard and complete the
   definition of `KWPAD` below by filling in the function skeleton
   provided with appropriate logic. We suggest splitting the algorithm
-  into two again, so we're providing a skeleton for `KWPADUnpad`
-  (which is roughly the inverse of `KWPAEPad`) and `KWPAD`. *Hint*:
-  FAIL can be a Boolean expression, that is, it does not need to be an
-  `if-then-else` statement.
+  into two again, so we're providing a full specification of
+  `KWPADUnpad` (which is roughly the inverse of `KWPAEPad`) and
+  `KWPAD`. You'll notice we've used types and pattern matching to
+  separate out the 4 components of S, rather than ask you to muck
+  about defining `Plen`, `padlen`, `LSB...`, etc. In truth, it's not
+  possible to follow the spec verbatim here because `Plen` is derived
+  from a value variable (`S`) but later used to derive a type variable
+  (`padlen` on line 6 which is then used as the size of `0` on line
+  8), and promotion of value variables to a type variables is
+  explicitly forbidden in Cryptol.
 
-```
+```cryptol
 KWPADUnpad :
     {k, l}               // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
     , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S
     ) =>
-    [l] -> (Bit, [k][8])
-KWPADUnpad S = (FAIL, split P)
+    [l] -> (Bit, [k * 8])
+KWPADUnpad S = (FAIL, P)
   where
-    MSB32 : [32]
     k     : [32]
-    P     : [k*8]
     PAD   : [k*8 %^ 64]
-    MSB32 # k # P # PAD = S
-    FAIL = MSB32 != ICV2 \/
+    ICV2' # k # P # PAD = S
+    FAIL = ICV2' != ICV2 \/
            k     != `k   \/
            PAD   != 0
 ```
 
-```
+```cryptol
 KWPAD :
     {k, l, n}            // k is [len(P)/8], Algorithm 5
     ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
     , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C
     , 64*n == max 192 l               // Here we relate n and l
     ) =>
-    ([128] -> [128]) -> [l] -> (Bit, [k][8])
+    ([128] -> [128]) -> [l] -> (Bit, [k * 8])
 KWPAD CIPHk' C = (FAIL, P)
   where
     (FAIL, P) = KWPADUnpad S
-    S = if (`k : [32]) <= 8 then
+    S = if len P <= 64 then
           widen (CIPHk' (shrink C))
         else
-          shrink (join (W'`{n} CIPHk' (split (widen C))))
+          shrink (W'`{n} CIPHk' (widen C))
 ```
 
 Feel free to use the provided `KWPADTests` property to check your
@@ -918,7 +1042,7 @@ Asking Cryptol for the type of `KWPAE` after plugging in `2^^32-1` for
 ```shell
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1}
 KWPAE`{k = 2 ^^ 32 -
-           1} : ([128] -> [128]) -> [4294967295][8] -> [34359738432]
+           1} : ([128] -> [128]) -> [34359738360] -> [34359738432]
 ```
 
 Well, what's `34359738432`? Is it `2^^29` 64-bit words? Let's first
@@ -943,7 +1067,12 @@ here is a command that tests the `2^^29` upper bound from Table 1:
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29)}
 
 [error] at <interactive>:1:1--1:6:
-  Unsolvable constraint: 34359738368 == 34359738432
+  Unsolvable constraints:
+    • 34359738368 == 34359738432
+        arising from
+        use of expression KWPAE
+        at <interactive>:1:1--1:6
+    • Reason: It is not the case that 34359738368 == 34359738432
 ```
 
 And here is a command that tests the bound we just found, `2^^29 + 1`.
@@ -952,8 +1081,7 @@ And here is a command that tests the bound we just found, `2^^29 + 1`.
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29 + 1)}
 KWPAE`{k = 2 ^^ 32 - 1,
        l = 64 *
-           (2 ^^ 29 +
-            1)} : ([128] -> [128]) -> [4294967295][8] -> [34359738432]
+           (2 ^^ 29 + 1)} : ([128] -> [128]) -> [34359738360] -> [34359738432]
 ```
 
 Well folks, it appears we (...well, Cryptol) just found a bug (albeit
@@ -972,36 +1100,36 @@ Recall that you can check individual properties with the `:check`
 command in the interpreter.  Here are some test vectors from [RFC
 3394](rfc3394.pdf) that are useful for testing `KW-AE` and `KW-AD`.
 
-```
+```cryptol
 TestKWAE :
    {a, n}
    (a >= 2, 4 >= a, n >= 2, 2^^54-1 >= n) =>
    [a*64] -> [n*64] -> [(n+1)*64]
-TestKWAE k pt = join ct
+TestKWAE k pt = ct
   where
-    ct = KWAE (\p -> AES::encrypt k p) (split pt)
+    ct = KWAE (\p -> AES::encrypt k p) pt
 
 property KWAETests =
     (TestKWAE (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F ])
-               (join [ 0x0011223344556677, 0x8899AABBCCDDEEFF ]) ==
+              (join [ 0x0011223344556677, 0x8899AABBCCDDEEFF ]) ==
      join [ 0x1fa68b0a8112b447, 0xaef34bd8fb5a7b82, 0x9d3e862371d2cfe5 ]) /\
     (TestKWAE (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F, 0x1011121314151617 ])
-               (join [ 0x0011223344556677, 0x8899AABBCCDDEEFF ]) ==
+              (join [ 0x0011223344556677, 0x8899AABBCCDDEEFF ]) ==
      join [ 0x96778b25ae6ca435, 0xf92b5b97c050aed2, 0x468ab8a17ad84e5d ]) /\
     (TestKWAE (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F,
                        0x1011121314151617, 0x18191A1B1C1D1E1F ])
-               (join [ 0x0011223344556677, 0x8899AABBCCDDEEFF ]) ==
+              (join [ 0x0011223344556677, 0x8899AABBCCDDEEFF ]) ==
      join [ 0x64e8c3f9ce0f5ba2, 0x63e9777905818a2a, 0x93c8191e7d6e8ae7 ])
 ```
 
-```
+```cryptol
 TestKWAD :
    {a, n}
    (a >= 2, 4 >= a, n >= 2, 2^^54-1 >= n) =>
    [a*64] -> [(n+1)*64] -> (Bit, [n*64])
-TestKWAD k ct = (FAIL, join pt)
+TestKWAD k ct = (FAIL, pt)
   where
-    (FAIL, pt) = KWAD (\c -> AES::decrypt k c) (split ct)
+    (FAIL, pt) = KWAD (\c -> AES::decrypt k c) ct
 
 property KWADTests =
     (TestKWAD (join [ 0x0001020304050607, 0x08090A0B0C0D0E0F ])
@@ -1023,14 +1151,14 @@ property KWADTests =
                    0x3a6d614e94ba1ac5, 0xfe957c5963100091]))
 ```
 
-```
+```cryptol
 TestTKWAE :
    {n}
    (n >= 2, 2^^28-1 >= n) =>
    [192] -> [n*32] -> [(n+1)*32]
-TestTKWAE (k0#k1#k2) pt = join ct
+TestTKWAE (k0#k1#k2) pt = ct
   where
-    ct = TKWAE (\p -> TDEA::blockEncrypt (k0, k1, k2, p)) (split pt)
+    ct = TKWAE (\p -> TDEA::blockEncrypt (k0, k1, k2, p)) pt
 
 property TKWAETests =
     (TestTKWAE 0x12b84c663120c196f8fc17428bc86a110d92cc7c4d3cb695
@@ -1038,14 +1166,14 @@ property TKWAETests =
             == 0x7a72bbca3aa323aa1ac231ba)
 ```
 
-```
+```cryptol
 TestTKWAD :
    {n}
    (n >= 2, 2^^28-1 >= n) =>
    [192] -> [(n+1)*32] -> (Bit, [n*32])
-TestTKWAD (k0#k1#k2) pt = (FAIL, join ct)
+TestTKWAD (k0#k1#k2) pt = (FAIL, ct)
   where
-    (FAIL, ct) = TKWAD (\p -> TDEA::blockDecrypt (k0, k1, k2, p)) (split pt)
+    (FAIL, ct) = TKWAD (\p -> TDEA::blockDecrypt (k0, k1, k2, p)) pt
 
 property TKWADTests =
     (TestTKWAD 0xe273cd9d7210a973b4113c5772474938d353b54e265dd944
@@ -1056,7 +1184,7 @@ property TKWADTests =
             == True)
 ```
 
-```
+```cryptol
 TestKWPAE :
    {a, k, l, n}
    ( a >= 2, 4 >= a
@@ -1064,14 +1192,14 @@ TestKWPAE :
    , l == 32 + 32 + k*8 + k*8 %^ 64
    , 64*n == max 192 l
    ) =>
-   [a*64] -> [k*8] -> [l]
+   [a*64] -> [k][8] -> [l]
 TestKWPAE k pt = ct
   where
-    ct = KWPAE`{k, l, n} (\p -> AES::encrypt k p) (split pt)
+    ct = KWPAE`{k, l, n} (\p -> AES::encrypt k p) (join pt)
 
 property KWPAETests =
     (TestKWPAE 0x6decf10a1caf8e3b80c7a4be8c9c84e8
-               0x49
+               [0x49]
             == 0x01a7d657fc4a5b216f261cca4d052c2b)
 
 TestKWPAD :
@@ -1081,21 +1209,21 @@ TestKWPAD :
    , l == 32 + 32 + k*8 + k*8 %^ 64
    , 64*n == max 192 l
    ) =>
-   [a*64] -> [l] -> (Bit, [k*8])
-TestKWPAD k ct = (FAIL, join pt)
+   [a*64] -> [l] -> (Bit, [k][8])
+TestKWPAD k ct = (FAIL, split pt)
   where
     (FAIL, pt) = KWPAD`{k, l, n} (\c -> AES::decrypt k c) ct
 
 property KWPADTests =
     (TestKWPAD 0x49319c331231cd6bf74c2f70b07fcc5c
                0x9c211f32f8b341f32b052fed5f31a387
-            == (False, 0xe4)) /\
+            == (False, [0xe4])) /\
     ((TestKWPAD`{k=1} 0x30be7ff51227f0eef786cb7be2482510
                       0x7f61a0a8b2fe7803f2947d233ec3a255).0
             == True) /\
     (TestKWPAD 0x58e7c85b60c7675002bd66e290d20cc694279f0bfc766840
                0xf2edd87dabb4a6ae568662f20fcc4770
-            == (False, 0x76)) /\
+            == (False, [0x76])) /\
     ((TestKWPAD`{k=1} 0x94c8dae772a43b5e00468e0947699b239dfe30ab5f90e2f6
                       0x239c6bceee3583fe7825011e02f01cc0).0
             == True)
@@ -1104,7 +1232,7 @@ property KWPADTests =
 # The end
 
 How was your experience with this lab? Suggestions are welcome in the
-form of a ticket on the course Github page:
+form of a ticket on the course GitHub page:
 [https://github.com/weaversa/cryptol-course/issues](https://github.com/weaversa/cryptol-course/issues)
 
 # References

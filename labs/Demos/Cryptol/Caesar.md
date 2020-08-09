@@ -1,31 +1,56 @@
-# Caesar Cipher
+# Introduction
 
-This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
-Cryptol document --- that is, it can be loaded directly into the Cryptol
-interpreter. Load this module from within the Cryptol interpreter running
-in the `cryptol-course` directory with:
+This demo gives an overview of the famous Caesar cipher.
+
+## Prerequisites
+
+Before working through this lab, you'll need 
+  * Cryptol to be installed and
+  * this module to load successfully.
+
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter and
+  * the `:prove` and `:sat` commands.
+
+## Skills You'll Learn
+
+By the end of this demo you'll understand a bit more about the Cryptol
+language and how to use the interpreter to prove properties or find
+bugs in Cryptol specifications.
+
+## Load This Module
+
+This lab is a
+[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
+document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter
+running in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::Demos::Caesar
+Cryptol> :m labs::Demos::Cryptol::Caesar
+Loading module Cryptol
+Loading module labs::Demos::Cryptol::Caesar
 ```
 
-## Overview
+We start by defining a new module for this lab and importing some accessory
+modules that we will use:
+
+```cryptol
+module labs::Demos::Cryptol::Caesar where
+```
+
+# Caesar Cipher
 
 The [Caesar cipher](https://en.wikipedia.org/wiki/Caesar_cipher) is a
 simple shift cipher named after Julius Caesar. This cipher was...
 evidently effective against illiterate adversaries of ancient Rome,
 but will it protect its secrets from you and Cryptol...?
 
-```
-/* Simple Caesar cipher */
-module labs::Demos::Caesar where
-```
-
 A Caesar cipher simply rotates characters in the alphabet by a fixed
 amount. (Caesar himself used a left rotation by 3, according to
 Suetonius.) We could define this simply and directly in Cryptol:
 
-```
+```cryptol
 caesar msg = map rot3 msg
   where
     rot3 c =
@@ -36,8 +61,9 @@ caesar msg = map rot3 msg
 ```
 
 ```shell
-labs::Demos::Caesar> :s ascii=on
-labs::Demos::Caesar> caesar "ATTACK AT DAWN"
+labs::Demos::Cryptol::Caesar> :s prover=abc
+labs::Demos::Cryptol::Caesar> :s ascii=on
+labs::Demos::Cryptol::Caesar> caesar "ATTACK AT DAWN"
 "XQQXZH XQ AXTK"
 ```
 
@@ -50,7 +76,7 @@ labs::Demos::Caesar> caesar "ATTACK AT DAWN"
 
 OK, we can explore this a little further. Let's generalize it:
 
-```
+```cryptol
 /** number of characters in alphabet */
 type w = 26
 
@@ -67,13 +93,13 @@ alphabet = ['A'..'Z'] : Alphabet
 
 ## Aside: A confounding search
 
-The above definition assumed a continguous character set, which does
+The above definition assumed a contiguous character set, which does
 not necessarily hold in general. So we'll need a function to find a
 character in the alphabet:
 
-```
+```cryptol
 /**
- * index (from end) of first occurence (from start) of item `x` in
+ * index (from end) of first occurrence (from start) of item `x` in
  * sequence `L`
  */
 index L x = if (or M) then (lg2 ((0b0 # M) + 1) - 1) else (length M)
@@ -84,7 +110,7 @@ index L x = if (or M) then (lg2 ((0b0 # M) + 1) - 1) else (length M)
 It's...not obvious how this function works, so let's establish a
 property to verify its correctness:
 
-```
+```cryptol
 /** `index` is correct for any sequence */
 indexCorrect L x = elem x L ==> L ! (index L x) == x
 
@@ -93,20 +119,20 @@ property charIsAtIndex = indexCorrect alphabet
 ```
 
 ```shell
-labs::Demos::Caesar> :prove charIsAtIndex
+labs::Demos::Cryptol::Caesar> :prove charIsAtIndex
 Q.E.D.
-(Total Elapsed Time: 0.072s, using "Z3")
+(Total Elapsed Time: 0.072s, using ABC)
 ```
 
 The property even holds for other sequences, repeating or not:
 
 ```shell
-labs::Demos::Caesar> :prove \(A : [64]Char) -> indexCorrect A
+labs::Demos::Cryptol::Caesar> :prove \(A : [64]Char) -> indexCorrect A
 Q.E.D.
-(Total Elapsed Time: 1.172s, using "Z3")
-labs::Demos::Caesar> :prove \(L : [33]Integer) -> indexCorrect L
+(Total Elapsed Time: 1.172s, using ABC)
+labs::Demos::Cryptol::Caesar> :prove \(L : [33][32]) -> indexCorrect L
 Q.E.D.
-(Total Elapsed Time: 0.347s, using "Z3")
+(Total Elapsed Time: 0.347s, using ABC)
 ```
 
 But to work for a Caesar cipher, each character in the alphabet needs
@@ -119,7 +145,7 @@ Our encryption strategy will mimic the Romans in preselecting a key
 and generating a cipher alphabet, then generating cipher characters
 by matching position:
 
-```
+```cryptol
 encrypt : {n} Key -> String n -> String n
 encrypt key msg = map rot msg
   where
@@ -135,22 +161,22 @@ Note the `alphabet >>> key` part: Cryptol allows rotation not only
 over bit sequences, ...
 
 ```shell
-labs::Demos::Caesar> :s ascii=off
-labs::Demos::Caesar> :s base=2
-labs::Demos::Caesar> 0b11001010 <<< 4
+labs::Demos::Cryptol::Caesar> :s ascii=off
+labs::Demos::Cryptol::Caesar> :s base=2
+labs::Demos::Cryptol::Caesar> 0b11001010 <<< 4
 0b10101100
 ```
 
 ...but over sequences of arbitrary shape...
 
 ```shell
-labs::Demos::Caesar> :s base=10
-labs::Demos::Caesar> [1, 2, 3, 4, 5 : Integer] <<< 3
+labs::Demos::Cryptol::Caesar> :s base=10
+labs::Demos::Cryptol::Caesar> [1, 2, 3, 4, 5 : Integer] <<< 3
 [4, 5, 1, 2, 3]
-labs::Demos::Caesar> :s ascii=on
-labs::Demos::Caesar> "RACECAR " <<< 4
+labs::Demos::Cryptol::Caesar> :s ascii=on
+labs::Demos::Cryptol::Caesar> "RACECAR " <<< 4
 "CAR RACE"
-labs::Demos::Caesar> :t (<<<)
+labs::Demos::Cryptol::Caesar> :t (<<<)
 (<<<) : {n, ix, a} (fin n, fin ix) => [n]a -> [ix] -> [n]a
 ```
 
@@ -160,7 +186,7 @@ labs::Demos::Caesar> :t (<<<)
 To decrypt, simply swap the plaintext and cipher alphabets in the
 search and output operations:
 
-```
+```cryptol
 decrypt : {n} Key -> String n -> String n
 decrypt key msg' = map rot msg'
   where
@@ -177,7 +203,7 @@ decrypt key msg' = map rot msg'
 
 For a sanity check, we can check some examples...
 
-```
+```cryptol
 /** classic test vector */
 property v1 = encrypt 3 "ATTACK AT DAWN" == "XQQXZH XQ AXTK"
 
@@ -195,15 +221,15 @@ variables, it makes more sense to `:check` these (this saves
 the solver some work and often speeds up such tests).
 
 ```shell
-labs::Demos::Caesar> :check v1
+labs::Demos::Cryptol::Caesar> :check v1
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::Demos::Caesar> :check v2
+labs::Demos::Cryptol::Caesar> :check v2
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::Demos::Caesar> :check v3
+labs::Demos::Cryptol::Caesar> :check v3
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
@@ -214,7 +240,7 @@ Q.E.D.
 In addition to test vectors, we would like to know whether decryption
 with the same key recovers the original plaintext for all messages:
 
-```
+```cryptol
 /** Decryption with same key recovers original message */
 recovery : {n} fin n => Key -> String n -> Bit
 recovery key msg = decrypt key (encrypt key msg) == msg
@@ -233,12 +259,12 @@ property recovery_14 = recovery`{14}
 ```
 
 ```shell
-labs::Demos::Caesar> :prove recovery_4
+labs::Demos::Cryptol::Caesar> :prove recovery_4
 Q.E.D.
-(Total Elapsed Time: 4.226s, using "Z3")
-labs::Demos::Caesar> :prove recovery_14
+(Total Elapsed Time: 0.245s, using ABC)
+labs::Demos::Cryptol::Caesar> :prove recovery_14
 Q.E.D.
-(Total Elapsed Time: 28.246s, using "Z3")
+(Total Elapsed Time: 0.956s, using ABC)
 ```
 
 
@@ -248,7 +274,7 @@ So is this a good cipher?  Well, no.  Let's...here.  We can manually
 deduce a key from known ciphertext...
 
 ```shell
-labs::Demos::Caesar> map (\k -> (k, decrypt k "SXQW SJLXK FJB J SRWPUNQNRVNA BLQVRMC")) [0..25]
+labs::Demos::Cryptol::Caesar> map (\k -> (k, decrypt k "SXQW SJLXK FJB J SRWPUNQNRVNA BLQVRMC")) [0..25]
 [(0, "SXQW SJLXK FJB J SRWPUNQNRVNA BLQVRMC"),
  (1, "TYRX TKMYL GKC K TSXQVOROSWOB CMRWSND"),
  (2, "UZSY ULNZM HLD L UTYRWPSPTXPC DNSXTOE"),
@@ -281,14 +307,14 @@ labs::Demos::Caesar> map (\k -> (k, decrypt k "SXQW SJLXK FJB J SRWPUNQNRVNA BLQ
 solving...
 
 ```shell
-labs::Demos::Caesar> :sat \k -> encrypt k "ILLUMINATI CONFIRMED" == "NQQZRNSFYN HTSKNWRJI"
+labs::Demos::Cryptol::Caesar> :sat \k -> encrypt k "ILLUMINATI CONFIRMED" == "NQQZRNSFYN HTSKNWRJI"
+Satisfiable
 (\k -> encrypt k "ILLUMINATI CONFIRMED" == "NQQZRNSFYN HTSKNWRJI")
   21 = True
-(Total Elapsed Time: 0.089s, using "Z3")
+(Total Elapsed Time: 0.089s, using ABC)
 ```
 
-
-## Conclusion
+# Conclusion
 
 You came, you saw, and you conquered the Caesar cipher in Cryptol.
 Ave, Caesar!

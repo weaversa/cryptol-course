@@ -1,17 +1,50 @@
 # Introduction
 
+This lab provides a series of exercises focused on Cyclic Redundancy
+Checks.
+
+## Prerequisites
+
+Before working through this lab, you'll need 
+  * Cryptol to be installed,
+  * this module to load successfully, and
+  * an editor for completing the exercises in this file.
+  
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter,
+  * Cryptol's sequence types,
+  * the `:prove` command,
+  * manipulating sequences using `#`, `join`, and `reverse`,
+  * writing functions,
+  * sequence comprehensions, and
+  * logical, comparison, arithmetic, and conditional operators.
+
+## Skills You'll Learn
+
+By the end of this lab you will have implemented a family of 32-bit
+Cyclic Redundancy Checks.
+
+You'll also gain experience with
+  * Cryptol's support for polynomials including expressing polynomials
+    and using `pmod`,
+  * functions with curried parameters,
+  * writing functions, and
+  * sequence comprehensions.
+  
+## Load This Module
+
 This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::CRC::CRCAnswers
+Cryptol> :m labs::CRC::CRCAnswers
 ```
 
 We start by defining a new module for this lab:
 
-```
+```cryptol
 module labs::CRC::CRCAnswers where
 ```
 
@@ -26,7 +59,7 @@ From [1],
 CRCs are important to cryptography because they are often used, in
 part, to protect the integrity of key material (see Section 6.1 of
 NIST's [Recommendation for Key
-Management](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf).
+Management](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.800-57pt1r5.pdf)).
 
 In this lab we will create Cryptol specifications for a family of
 different CRCs.
@@ -53,35 +86,36 @@ x^^3 + x + 1 |>` which is simply the four bit string `0b1011`. It's
 important to note that even though this is a degree three polynomial,
 it takes four bits to represent. Generally, Cryptol's representation
 of a degree `n` polynomial is a sequence of `n+1` bits where each
-monomial is represented by a `True` bit in the sequence.  We'll also
-need a message `M` which is simply a sequence of `m` bits. Notice that
-the definition from [2] tells us that `M` is extended (concatenated)
-with `n` zeroes prior to calculating the modulus.
+monomial is represented by a `True` bit in the sequence. For more on
+polynomials in Cryptol, see Section 5.2 of [Programming
+Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf).
 
-Cryptol supports multiplying (`pmul`), dividing (`pdiv`), and
-performing the modulus (`pmod`) of polynomials. This is more than we
-need to define a simple CRC function.
+We'll also need a message `M` which is simply a sequence of `m`
+bits. Notice that the definition from [2] tells us that `M` is
+extended (concatenated) with `n` zeroes prior to performing the
+modulus operation. Cryptol supports multiplying (`pmult`), dividing
+(`pdiv`), and performing the modulus (`pmod`) of polynomials. This is
+more than we need to define a simple CRC function.
 
 **EXERCISE**: Here we provide a skeleton CRC for you to fill in
 according to the definition above. Use the `CRCSimpleTest` property to
 help you get it right.
 
-```
+```cryptol
 CRCSimple :
     {n, m}
     (fin n, fin m) =>
     [n+1] -> [m] -> [n]
-CRCSimple G M = pmod M' G
-  where M' = M # (0 : [n])
+CRCSimple G M = R
+  where R  = pmod M' G
+        M' = M # (0 : [n])
 ```
 
 This test-case is from [1].
 
-```
-property CRCSimpleTest =
-    CRCSimple G 0b11010011101100 == 0b100
-  where
-    G  = <| x^^3 + x + 1 |>
+```cryptol
+property CRCSimpleTest = CRCSimple G 0b11010011101100 == 0b100
+  where G  = <| x^^3 + x + 1 |>
 ```
 
 
@@ -111,16 +145,16 @@ are simple enough to be compatible with `CRCSimple`.
 Here we define a test message using the [canonical
 pangram](https://en.wikipedia.org/wiki/The_quick_brown_fox_jumps_over_the_lazy_dog).
 
-```
+```cryptol
 testM = "The quick brown fox jumps over the lazy dog"
 ```
 
-```
+```cryptol
 property CRCSimple_QTest = CRCSimple G (join testM) == 0xf4965ffc
   where G = <| x^^32 + x^^31 + x^^24 + x^^22 + x^^16 + x^^14 + x^^8 + x^^7 + x^^5 + x^^3 + x + 1 |>
 ```
 
-```
+```cryptol
 property CRCSimple_XFERTest = CRCSimple G (join testM) == 0x140493e5
   where G = <| x^^32 + x^^7 + x^^5 + x^^3 + x^^2 + x + 1 |>
 ```
@@ -139,10 +173,10 @@ parameters.
      feedback shift register. Since we're implementing CRC here with
      polynomial arithmetic, we can add this parameter by XORing the
      initial fill into the high-order bits of the zero-expanded
-     message before calculating the modulus.
+     message before performing the modulus operation.
 * Post-XOR (`post`)
-    * A sequence of bits that are XOR'd into the remainder to create the
-      final output.
+    * A sequence of bits that are XOR'd into the remainder polynomial
+      to create the final output.
 * Reflect Input Bytes (`rib`)
     * Denotes whether or not the input (when viewed as a sequence of
       bytes) should have the bits inside each byte reversed.
@@ -151,15 +185,15 @@ parameters.
       should be reversed.
 
 **EXERCISE**: Here we provide a skeleton for a fully parameterized CRC
-for you to fill in. Please augment the `CRCSimple` function with the
-four extra parameters given above. Use the `CRC32Test` property to
-help you get it right.
+for you to fill in. It is essentially the `CRCSimple` function
+augmented with the four extra parameters given above. Use the
+`CRC32Test` property to help you get it right.
 
 Note, since there is now a parameter that possibly reflects the input
 bytes, to make things a little easier here, we've reshaped the input
 `M` as a sequence of bytes.
 
-```
+```cryptol
 CRC :
     {n, m}
     (fin n, fin m) =>
@@ -175,7 +209,7 @@ CRC G fill post rib ro M =
 
 Here is a definition of CRC32, using the parameterized `CRC` function.
 
-```
+```cryptol
 CRC32 = CRC G 0xffffffff 0xffffffff True True
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
@@ -192,7 +226,7 @@ simulator](http://www.sunshine2k.de/coding/javascript/crc/crc_js.html)
 
 ### BZIP2
 
-```
+```cryptol
 CRC32_BZIP2 = CRC G 0xffffffff 0xffffffff False False
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
@@ -204,7 +238,7 @@ property CRC32_BZIP2Test =
 
 ### C
 
-```
+```cryptol
 CRC32_C = CRC G 0xffffffff 0xffffffff True True
   where G = <| x^^32 + x^^28 + x^^27 + x^^26 + x^^25 + x^^23 + x^^22 + x^^20 + x^^19 + x^^18 + x^^14 + x^^13 + x^^11 + x^^10 + x^^9 + x^^8 + x^^6 + 1 |>
 
@@ -216,7 +250,7 @@ property CRC32_CTest =
 
 ### D
 
-```
+```cryptol
 CRC32_D = CRC G 0xffffffff 0xffffffff True True
   where G = <| x^^32 + x^^31 + x^^29 + x^^27 + x^^21 + x^^20 + x^^17 + x^^16 + x^^15 + x^^12 + x^^11 + x^^5 + x^^3 + x + 1 |>
 
@@ -227,7 +261,7 @@ property CRC32_DTest =
 
 ### MPEG2
 
-```
+```cryptol
 CRC32_MPEG2 = CRC G 0xffffffff 0x00000000 False False
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
@@ -238,18 +272,18 @@ property CRC32_MPEG2Test =
 
 ### POSIX
 
-```
+```cryptol
 CRC32_POSIX = CRC G 0x00000000 0xffffffff False False
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
-property CRC_POSIXTest =
+property CRC32_POSIXTest =
     CRC32_POSIX testM == 0x36B78081
 ```
 
 
 ### Q
 
-```
+```cryptol
 CRC32_Q = CRC G 0x00000000 0x00000000 False False
   where G = <| x^^32 + x^^31 + x^^24 + x^^22 + x^^16 + x^^14 + x^^8 + x^^7 + x^^5 + x^^3 + x + 1 |>
 
@@ -260,7 +294,7 @@ property CRC32_QTest =
 
 ### JAMCRC
 
-```
+```cryptol
 CRC32_JAMCRC = CRC G 0xffffffff 0x00000000 True True
   where G = <| x^^32 + x^^26 + x^^23 + x^^22 + x^^16 + x^^12 + x^^11 + x^^10 + x^^8 + x^^7 + x^^5 + x^^4 + x^^2 + x + 1 |>
 
@@ -271,7 +305,7 @@ property CRC32_JAMCRCTest =
 
 ### XFER
 
-```
+```cryptol
 CRC32_XFER = CRC G 0x00000000 0x00000000 False False
   where G = <| x^^32 + x^^7 + x^^5 + x^^3 + x^^2 + x + 1 |>
 
@@ -282,12 +316,10 @@ property CRC32_XFERTest =
 
 ## Parting Exercises
 
-It would be nice for the `CRC` function to accept arbitrary
-bitvectors, rather than strings of bytes. As an exercise, try to do
-this. This lab defined the 32-bit CRCs from [3]. You might also
-consider defining the 8, 16, and 64-bit CRC's from [3] or any of the
-CRCs given in [1], Section "Polynomial representations of cyclic
-redundancy checks".
+This lab defined the 32-bit CRCs from [3]. You might also consider
+defining the 8, 16, and 64-bit CRC's from [3] or any of the CRCs given
+in [1], Section "Polynomial representations of cyclic redundancy
+checks".
 
 
 # Bibliography

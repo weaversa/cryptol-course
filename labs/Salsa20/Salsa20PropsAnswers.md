@@ -1,4 +1,35 @@
-# Salsa20 Security Properties
+# Introduction
+
+This lab provides a series of exercises focused on security proofs
+about a cryptographic algorithm called Salsa20, by Daniel
+J. Bernstein.
+
+## Prerequisites
+
+Before working through this lab, you'll need 
+  * Cryptol to be installed,
+  * this module to load successfully, and
+  * an editor for completing the exercises in this file.
+  
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter,
+  * Cryptol's sequence types,
+  * the `:prove` command,
+  * manipulating sequences using `map`, `iterate`,
+  * writing functions and properties, and
+  * logical, comparison, arithmetic, and indexing operators.
+
+## Skills You'll Learn
+
+By the end of this lab you will have proven some security properties
+about Salsa20.
+
+You'll also gain experience with
+  * type parameters and type constraints,
+  * manipulating sequences, and
+  * writing functions and properties.
+
+## Load This Module
 
 This lab is a [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol document --- that is, it can be loaded directly into the Cryptol
@@ -6,23 +37,28 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```shell
-cryptol> :m labs::Salsa20::Salsa20PropsAnswers
+Cryptol> :m labs::Salsa20::Salsa20PropsAnswers
 ```
 
-In this lab, we consider additional properties of the [Salsa20 stream
-cipher](Salsa20Spec.md) [5], which has undergone much scrutiny since
-being proposed for [eSTREAM, the ECRYPT Stream Cipher Project]
-(https://www.ecrypt.eu.org/stream).
+We start by defining a new module for this lab and importing the
+Salsa20 specification from a prior lab:
 
-```
+```cryptol
 module labs::Salsa20::Salsa20PropsAnswers where
 
 import labs::Salsa20::Salsa20Answers
 ```
 
+# Salsa20 Security Properties
+
+In this lab, we consider additional properties of the [Salsa20 stream
+cipher](Salsa20Spec.md) [5], which has undergone much scrutiny since
+being proposed for [eSTREAM, the ECRYPT Stream Cipher
+Project](https://www.ecrypt.eu.org/stream).
+
 ## Invertibility
 
-Throughout [the original spec](Salsa20Spec.pdf) [5], various functions
+Throughout [the Salsa20 spec](Salsa20Spec.pdf) [5], various functions
 are noted as being "invertible". In the [Salsa20
 lab](Salsa20Answers.md), we proved that the `quarterround` and
 `littleendian` functions are invertible. We did this because the
@@ -37,7 +73,7 @@ property for each that attempts to prove invertibility.
 
 ### rowround
 
-```
+```cryptol
 property rowroundIsInvertibleProp y y' =
     y != y' ==> rowround y != rowround y'
 ```
@@ -45,7 +81,7 @@ property rowroundIsInvertibleProp y y' =
 
 ### columnround
 
-```
+```cryptol
 property columnroundIsInvertibleProp x x' =
     x != x' ==> columnround x != columnround x'
 ```
@@ -58,7 +94,7 @@ the `z3` solver. It may also seem a bit frustrating to have to wait,
 but please keep in mind that the solver is searching over a space of
 about `2^^1024` possibilities.
 
-```
+```cryptol
 property doubleroundIsInvertibleProp xs xs' =
     xs != xs' ==> doubleround xs != doubleround xs'
 ```
@@ -131,7 +167,7 @@ Theorem 6 states the collision property for `Salsa20Core`:
 > of the `Salsa20` "hash" [core] function, producing `h` (defined
 > below) as a common hash value.
 >
-> ```
+> ```comment
 > M =  [  Z , -Z ,  Z , -Z
 >      , -Z ,  Z , -Z ,  Z
 >      ,  Z , -Z ,  Z , -Z
@@ -151,7 +187,7 @@ Bytes 64`.  Thus, we will reshape `Salsa20Core` before proceeding:
 `Words 16` rather than `Bytes 64`: (Hint: This can be defined in one
 line with `doubleround`, `iterate`, and basic Cryptol operators.)
 
-```
+```cryptol
 /** `Salsa20Core` equivalent over `Words 16` */
 Salsa20Core' : Words 16 -> Words 16
 Salsa20Core' x =
@@ -160,21 +196,22 @@ Salsa20Core' x =
 
 **EXERCISE**: Verify that `Salsa20Core'` agrees with `Salsa20Core`:
 
-```
+```cryptol
 property Salsa20CoreEquivProp w =
     Salsa20Core' (rejigger w) == rejigger (Salsa20Core w)
   where
     rejigger x = map littleendian (split x)
 ```
 
-Theorem 6 states that collisions should happen for any number of
-iterations of `Salsa20Core`. However, we're just going to ask that you
-prove it for one iteration. If you are highly motivated, feel free to
-attempt the more general proof (though don't expect any extra credit).
+Theorem 6 (from above) states that collisions should happen for any
+number of iterations of `Salsa20Core`. However, we're just going to
+ask that you prove it for one iteration. If you are highly motivated,
+feel free to attempt the more general proof (though don't expect any
+extra credit).
 
-**EXERCISE** Formalize Theorem 6:
+**EXERCISE**: Formalize Theorem 6:
 
-```
+```cryptol
 Salsa20CoreCollidesProp : [32] -> Bit
 property Salsa20CoreCollidesProp Z =
     h == h'
@@ -199,7 +236,7 @@ Finally, we want to show that `Salsa20Encrypt` is invertible
 (i.e. there exists a `Salsa20Decrypt` function that inverts
 `Salsa20Encrypt` for a given key and nonce). It turns out that
 `Salsa20Encrypt` is its own inverse, a so-called
-[involution](https://en.wikipedia.org/wiki/Involution_(mathematics). That
+[involution](https://en.wikipedia.org/wiki/Involution_(mathematics)). That
 is, composing `Salsa20Encrypt` twice on a given key and nonce yields
 the original plaintext.
 
@@ -207,7 +244,7 @@ the original plaintext.
 **EXERCISE**: Specify that `Salsa20_encrypt` is an involution and use
 the myriad of properties below to help verify your work.
 
-```
+```cryptol
 Salsa20EncryptInvolutionProp :
     {a, l}
     (a >= 1, 2 >= a, l <= 2^^70) =>
@@ -217,7 +254,7 @@ Salsa20EncryptInvolutionProp k v m =
 ```
 
 
-```
+```cryptol
 property Salsa20EncryptInvolutionProp_1_1 = Salsa20EncryptInvolutionProp`{1,1}
 property Salsa20EncryptInvolutionProp_1_8 = Salsa20EncryptInvolutionProp`{1,8}
 property Salsa20EncryptInvolutionProp_1_64 = Salsa20EncryptInvolutionProp`{1,64}
