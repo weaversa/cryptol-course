@@ -15,6 +15,7 @@ RUN mkdir -p rootfs/usr/local/bin
 RUN cabal v2-update
 RUN cabal v2-install --install-method=copy --installdir=rootfs/usr/local/bin exe:cryptol
 RUN cabal v2-install --install-method=copy --installdir=bin test-lib
+RUN cabal v2-install --lib lib:cryptol
 #RUN ./bin/test-runner --ext=.icry --exe=./rootfs/usr/local/bin/cryptol -F -b tests
 ENV PATH=/usr/local/bin:/cryptol/rootfs/usr/local/bin:$PATH
 RUN mkdir -p rootfs/"${CRYPTOLPATH}" \

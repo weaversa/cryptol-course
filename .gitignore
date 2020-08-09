@@ -1,3 +1,7 @@
 **/.DS_Store
+**/*.hi
+**/*.ho
+**/*.o
 bin/*
+scripts/dependencies
 scripts/Test/*.icry*

@@ -21,6 +21,7 @@
     
     // Add the IDs of extensions you want installed when the container is created in the array below.
     "extensions": [
+        "haskell.haskell",
         "jldodds.cryptol",
         "ms-azuretools.vscode-docker"
     ]

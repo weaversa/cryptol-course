@@ -1,0 +1,5 @@
+\begin{code}
+// 2
+module scripts::Test::Ambig where
+ext="tex"
+\end{code}
