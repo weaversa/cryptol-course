@@ -43,7 +43,7 @@ module labs::Demos::Cryptol::NQueens where
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.  
-In general, you should enter run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # N-Queens
