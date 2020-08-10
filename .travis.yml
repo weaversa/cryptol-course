@@ -136,3 +136,4 @@ script:
   - cryptol -e -c ":m labs::Transposition::RailFence"
   - cryptol -e -c ":m labs::Transposition::RailFenceAnswers"
   - cryptol -e -c ":m labs::Transposition::Route"
+  - scripts/extract_snippets.sh labs/Transposition/*Answers.md && scripts/poor_test_runner.sh labs/Transposition/*Answers.md.icry
