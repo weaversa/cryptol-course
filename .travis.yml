@@ -5,9 +5,13 @@ jobs:
   include:
     -
       before_install:
-        - wget https://saw.galois.com/builds/nightly/saw-0.4.0.99-2020-05-21-OSX-64.tar.gz
-        - tar -xzf saw-0.4.0.99-2020-05-21-OSX-64.tar.gz
-        - export PATH=$PATH:$(pwd)/saw-0.4.0.99-2020-05-21-OSX-64/bin
+        - wget https://github.com/GaloisInc/cryptol/releases/download/2.9.0/cryptol-2.9.0-macOS-x86_64.tar.gz
+        - tar -xzf cryptol-2.9.0-macOS-x86_64.tar.gz
+        - export PATH=$PATH:$(pwd)/cryptol-2.9.0-macOS-x86_64/bin
+        - wget https://github.com/GaloisInc/saw-script/releases/download/v0.5/saw-0.5-OSX-64.tar.gz
+        - tar -xzf saw-0.5-OSX-64.tar.gz
+        - export PATH=$PATH:$(pwd)/saw-0.5-OSX-64/bin
+        - cryptol --version
         - saw --version
         - curl -fsSL https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-osx-10.14.6.zip -o z3-4.8.8-x64-osx-10.14.6.zip
         - unzip -j z3-4.8.8-x64-osx-10.14.6.zip -d z3_downloaded
@@ -22,14 +26,20 @@ jobs:
       os: osx
     -
       before_install:
-        - docker pull cryptolcourse/cryptol:latest
+        - docker pull galoisinc/cryptol:2.9.0
+#        - docker pull galoisinc/saw:0.5
         - shopt -s expand_aliases
-        - alias cryptol='docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol'
+        - alias cryptol='docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it galoisinc/cryptol:2.9.0'
+#        - alias saw='docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it galoisinc/saw:0.5'
     -
       before_install:
-        - wget https://saw.galois.com/builds/nightly/saw-0.4.0.99-2020-05-21-Ubuntu14.04-64.tar.gz
-        - tar -xzf saw-0.4.0.99-2020-05-21-Ubuntu14.04-64.tar.gz
-        - export PATH=$PATH:$(pwd)/saw-0.4.0.99-2020-05-21-Ubuntu14.04-64/bin
+        - wget https://github.com/GaloisInc/cryptol/releases/download/2.9.0/cryptol-2.9.0-Linux-x86_64.tar.gz
+        - tar -xzf cryptol-2.9.0-Linux-x86_64.tar.gz
+        - export PATH=$PATH:$(pwd)/cryptol-2.9.0-Linux-x86_64/bin
+        - wget https://github.com/GaloisInc/saw-script/releases/download/v0.5/saw-0.5-Ubuntu14.04-64.tar.gz
+        - tar -xzf saw-0.5-Ubuntu14.04-64.tar.gz
+        - export PATH=$PATH:$(pwd)/saw-0.5-Ubuntu14.04-64/bin
+        - cryptol --version
         - saw --version
         - curl -fsSL https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-ubuntu-16.04.zip -o z3-4.8.8-x64-ubuntu-16.04.zip
         - unzip -j z3-4.8.8-x64-ubuntu-16.04.zip -d z3_downloaded
@@ -52,7 +62,7 @@ script:
   - cryptol -e -c ":m labs::Demos::SAW::Bittwiddling::Bittwiddling"
   - clang -emit-llvm -c labs/Demos/SAW/Bittwiddling/bittwiddling.c -o labs/Demos/SAW/Bittwiddling/bittwiddling.bc
   - cryptol -e -c ":m labs::Demos::SAW::Bittwiddling::BittwiddlingAnswers"
-  - "! command -v saw >/dev/null 2>&1 || saw labs/Demos/SAW/Bittwiddling/BittwiddlingAnswers.saw"
+  - "! command -v saw >/dev/null 2>&1 || (cd labs/Demos/SAW/Bittwiddling && saw BittwiddlingAnswers.saw)"
 # Salsa20 lab tests
   - cryptol -e -c ":m labs::Salsa20::Salsa20"
   - cryptol -e -c ":m labs::Salsa20::Salsa20Answers"
@@ -90,31 +100,30 @@ script:
   - cryptol -e -c ":m labs::KeyWrapping::KeyWrappingAnswers"
   - cryptol -e -c ":m labs::KeyWrapping::spec::NISTKeyWrapping"
 # Simon and Speck lab tests
-  - cryptol -e -c ":m labs/SimonSpeck/SimonSpeck.md"
-  - cryptol -e -c ":m labs/SimonSpeck/Simon/simon_64_96.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/Simon/simon_128_256.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/Simon/simon_32_64.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/Simon/simon_48_96.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/Simon/simon_128_192.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/Simon/simon_96_96.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/Simon/simon_48_72.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/Simon/Simon.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/Simon/simon_128_128.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/Simon/simon_64_128.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/Simon/simon_96_144.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/Speck/SpeckTestVectors.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/SpeckAnswers/speck_128_192.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/SpeckAnswers/speck_128_256.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/SpeckAnswers/speck_96_96.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/SpeckAnswers/speck_48_72.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/SpeckAnswers/speck_128_128.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/SpeckAnswers/speck_32_64.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/SpeckAnswers/speck_48_96.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/SpeckAnswers/Speck.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/SpeckAnswers/speck_64_96.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/SpeckAnswers/speck_96_144.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/SpeckAnswers/speck_64_128.cry"
-  - cryptol -e -c ":m labs/SimonSpeck/SpeckAnswers/SpeckTestVectors.cry"
+  - cryptol -e -c ":m labs::SimonSpeck::SimonSpeck"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_64_96"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_128_256"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_32_64"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_48_96"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_128_192"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_96_96"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_48_72"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::Simon"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_128_128"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_64_128"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_96_144"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_128_192"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_128_256"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_96_96"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_48_72"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_128_128"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_32_64"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_48_96"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::Speck"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_64_96"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_96_144"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_64_128"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::SpeckTestVectors"
 # Transpostion Lab Tests
   - cryptol -e -c ":m labs::Transposition::CommonProperties"
   - cryptol -e -c ":m labs::Transposition::CommonPropertiesAnswers"

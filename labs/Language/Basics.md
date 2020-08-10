@@ -792,22 +792,20 @@ Here's an English-language breakdown:
 | `functionName` | `:`
 | The function `functionName` | has a type
 
-||||||
-|-|-|-|-|-|
-| `{` | `typeVariable0` | `,` | `typeVariable1` | `}`
-| with type variables | `typeVariable0` | and | `typeVariable1`
+||
+|-|
+| `{` `typeVariable0` `,` `typeVariable1` `}`
+| with type variables `typeVariable0` and `typeVariable1`
 
-|||||||
-|-|-|-|-|-|-|
-| `(` | `typeConstraint0` | `,` | `typeConstraint1` | `)` | `=>`
-| and the constraints | `typeConstraint0` | and | `typeConstraint1` || applied to the type definition
+|||
+|-|-|
+| `(` `typeConstraint0` `,` `typeConstraint1` `)` | `=>`
+| and the constraints `typeConstraint0` and `typeConstraint1` | applied to the type definition
 
 ||||||
 |-|-|-|-|-|
 | `inputType0` | `->` | `inputType1` | `->` | `outputType`
 | that takes `inputType0` | and | `inputType1` | and returns | `outputType`
-
-
 
 Let's make an example to work with:
 
@@ -820,17 +818,16 @@ sayHello name = "Hello, " # name
 ```
 And the breakdown:
 
-|||||||||||||
-|-|-|-|-|-|-|-|-|-|-|-|-|
-| `sayHello` | `:` | `{` | `n` | `}` | `(` | `fin n` | `)` | `=>` | `[n][8]` | `->` | `[7+n][8]` |
-| The function `sayHello` | has a type | with type variable | `n` || and the constraint | that `n` is finite || applied to the type definition | that takes a list of `n` `8`-bit vectors | and returns | a list of `7+n` `8`-bit vectors |
-|||||||||||||
+|||||||||
+|-|-|-|-|-|-|-|-|
+| `sayHello` | `:` | `{` `n` `}` | `(` `fin n` `)` | `=>` | `[n][8]` | `->` | `[7+n][8]`
+| The function `sayHello` | has a type | with type variable `n` | and the constraint that `n` is finite | applied to the type definition | that takes a list of `n` `8`-bit vectors | and returns | a list of `7+n` `8`-bit vectors
 
 This function's name is `sayHello`, it takes in a sequence called
 `name` that is `n` octets long and produces a sequence that is `7+n`
 octets long, where `n` is finite. The function itself outputs the
 concatenation (using the `#` operator) of the string "Hello, " with
-`name`. If we wanted to enforce that the length of `n` was less than
+ the value of `name`. If we wanted to enforce that the length of `n` was less than
 some value, we could add another constraint, like so:
 
 ```cryptol
@@ -1196,26 +1193,28 @@ functionName input0 input1 =
 ```
 Here's a breakdown of how to read it:
 
+Function type specification:
 |||
 |-|-|
 | `functionName` | `:`
 | The function `functionName` | has a type
 
-||||||
-|-|-|-|-|-|
-| `{` | `typeVariable0` | `,` | `typeVariable1` | `}`
-| with type variables | `typeVariable0` | and | `typeVariable1`
+||
+|-|
+| `{` `typeVariable0` `,` `typeVariable1` `}`
+| with type variables `typeVariable0` and `typeVariable1`
 
-|||||||
-|-|-|-|-|-|-|
-| `(` | `typeConstraint0` | `,` | `typeConstraint1` | `)` | `=>`
-| and the constraints | `typeConstraint0` | and | `typeConstraint1` || applied to the type definition
+|||
+|-|-|
+| `(` `typeConstraint0` `,` `typeConstraint1` `)` | `=>`
+| and the constraints `typeConstraint0` and `typeConstraint1` | applied to the type definition
 
 ||||||
 |-|-|-|-|-|
 | `inputType0` | `->` | `inputType1` | `->` | `outputType`
 | that takes `inputType0` | and | `inputType1` | and returns | `outputType`
 
+Function definition:
 |||||
 |-|-|-|-|
 | `functionName` | `input0` | `input1` | `=`
@@ -1229,22 +1228,22 @@ Here's a breakdown of how to read it:
 ||
 |-|
 | `where` |
-| which is computed after the following where
+| which is computed after 
 
-||||
-|-|-|-|
-| `localVariable0` | `=` | `expression0`
-| `localVariable0` | is assigned | the value of `expression0`
+||
+|-|
+| `localVariable0` `=` `expression0`
+| `localVariable0` is assigned the value of `expression0`
 
-||||
-|-|-|-|
-| `localVariable1` | `=` | `expression1`
-| `localVariable1` | is assigned | the value of `expression1`
+||
+|-|
+| `localVariable1` `=` `expression1`
+| `localVariable1` is assigned the value of `expression1`
 
-||||
-|-|-|-|
-| `output` | `=` | `expression2`
-| `output` | is assigned | the value of `expression0`
+||
+|-|
+| `output` `=` `expression2`
+| `output` is assigned the value of `expression0`
 
 Here's an example that demonstrates the use of a `where` clause:
 
@@ -1260,11 +1259,10 @@ addMult a b c = ab + bc
 ```
 And the breakdown:
 
-|||||||||||||||||
-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|-|
-| `addMult` | `:` | `{` | `n` | `}` | `(` | `fin n` | `)` | `=>` | `[n]` | `->` | `[n]` | `->` | `[n]` | `->` | `[n]`
-| The function `sayHello` | has a type | with type variable | `n` || and the constraint | that `n` is finite || applied to the type definition | that takes an `n`-bit vector | and | an `n`-bit vector | and | an `n`-bit vector | and returns | an `n`-bit vector
-|
+|||||||||||||
+|-|-|-|-|-|-|-|-|-|-|-|-|
+| `addMult` | `:` | `{n}` | `(fin n)` | `=>` | `[n]` | `->` | `[n]` | `->` | `[n]` | `->` | `[n]`
+| The function `addmult` | has a type | with type variable `n` | and the constraint that `n` is finite | applied to the type definition | that takes an `n`-bit vector | and&nbsp;  | an `n`-bit vector | and&nbsp; | an `n`-bit vector | and returns | an `n`-bit vector
 
 ## Properties
 
@@ -1772,8 +1770,13 @@ labs::Language::Basics> [ n^^3 | n <- [0..10] ]
 
 Star Trek's (T.O.S.) warp factor light speed multipliers!
 
-We read this as "make the sequence `n^^3` where `n` draws from the
-sequence `[0..10]`." We refer to the right-hand side (`n <- [0..10]`)
+||||||||
+|-|-|-|-|-|-|-|
+| `[` | `n^^3` | `\|` | `n` | `<-` | `[0..10]` | `]`
+| Generate the sequence | with elements of the form `n^^3` | where | `n` | draws from | the sequence `0` through `10`
+||||||||
+
+We refer to the right-hand side (`n <- [0..10]`)
 as a branch. With multiple branches, there are two choices for how the
 values are drawn from the branches, *cartesian* (`,` between
 branches), or in *parallel* (`|` between branches). For example:
@@ -1853,6 +1856,16 @@ encrypt key plainText = cipherText
                                  ]
     cipherText = last roundResults
 ```
+
+Here's an English-language breakdown of the first self-referential sequence comprehension above:
+
+
+
+||||||||||||
+|-|-|-|-|-|-|-|-|-|-|-|
+| `roundKeys` | `=` | `[key]` | `#` | `[` | `roundKey <<< 1` | `\|` | `roundKey` | `<-` | `roundKeys` | `]`
+| The sequence `roundKeys` | is defined as | an initial `key` | followed by | the sequence | with elements of the form `roundKey <<< 1` | where | `roundKey` | draws from | the generated sequence `roundKeys` itself
+||||||||||||
 
 Many block ciphers are just variations of the above theme. 
 Here's a sample of it in action:
