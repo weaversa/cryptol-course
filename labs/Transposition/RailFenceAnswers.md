@@ -35,8 +35,9 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```icry
+```Xcryptol session
 Cryptol> :m labs::Transposition::RailFenceAnswers
+Loading module Cryptol
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
@@ -145,7 +146,7 @@ property cycle_test = and
     ]
 ```
 
-```icry
+```Xcryptol session
 labs::Transposition::RailFenceAnswers> :check cycle_test
 Using exhaustive testing.
 Passed 1 tests.
@@ -202,7 +203,7 @@ property pi_test = and
     ]
 ```
 
-```icry
+```Xcryptol session
 labs::Transposition::RailFenceAnswers> :check pi_test
 Using exhaustive testing.
 Passed 1 tests.

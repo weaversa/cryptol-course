@@ -34,8 +34,9 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```icry
+```Xcryptol session
 Cryptol> :m labs::Transposition::EsreverAnswers
+Loading module Cryptol
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
@@ -89,7 +90,7 @@ pi_correct: {n, a} (fin n, Cmp a) => [n]a -> Bit
 pi_correct msg = (encrypt pi) msg == reverse msg
 ```
 
-```icry
+```Xcryptol session
 labs::Transposition::EsreverAnswers> :check pi_test
 Using exhaustive testing.
 Passed 1 tests.
@@ -114,7 +115,7 @@ encrypt_decrypt_equiv: {n, a} (fin n, Cmp a) => [n]a -> Bit
 encrypt_decrypt_equiv = encrypt pi === decrypt pi
 ```
 
-```icry
+```Xcryptol session
 labs::Transposition::EsreverAnswers> :prove encrypt_decrypt_equiv`{32, Char}
 Q.E.D.
 (Total Elapsed Time: 0.008s, using Z3)

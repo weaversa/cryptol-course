@@ -30,7 +30,7 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```icry
+```Xcryptol session
 Cryptol> :m labs::Transposition::Transposition
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
@@ -45,6 +45,12 @@ We start by defining the module for this lab:
 ```cryptol
 module labs::Transposition::Transposition where
 ```
+
+You do not need to enter the above into the interpreter; the previous 
+`:m ...` command loaded this literate Cryptol file automatically.
+In general, you should run `Xcryptol session` commands in the 
+interpreter and only change `cryptol` code as directed by the 
+exercises, reloading for `:m ...` to import your changes.
 
 Additionally, we will import some common properties to apply to this 
 spec:
@@ -124,25 +130,25 @@ a different order.)
 
 ```cryptol
 /** Is `pi` a permutation of `[0,n)`? */
-isPermutationMapping: {n, ix} [n][ix] -> Bit
+isPermutationMapping: {n, w} [n]w -> Bit
 isPermutationMapping pi = undefined
 
 /** `isPermutationMapping` test vectors */
 property isPermutationMapping_test = and
-    [   isPermutationMapping`{ix=0} []
-    ,   isPermutationMapping`{ix=1} [0]
-    ,   isPermutationMapping`{ix=2} [0,1]
-    ,   isPermutationMapping`{ix=2} [1,0]
-    ,   isPermutationMapping`{ix=2} [0,1,2]
-    ,   isPermutationMapping`{ix=2} [0,2,1]
-    ,   isPermutationMapping`{ix=2} [2,0,1]
+    [   isPermutationMapping []
+    ,   isPermutationMapping [0]
+    ,   isPermutationMapping [0,1]
+    ,   isPermutationMapping [1,0]
+    ,   isPermutationMapping [0,1,2]
+    ,   isPermutationMapping [0,2,1]
+    ,   isPermutationMapping [2,0,1]
 
-    , ~ isPermutationMapping`{ix=1} [1]
-    , ~ isPermutationMapping`{ix=2} [0,0]
-    , ~ isPermutationMapping`{ix=2} [0,2]
-    , ~ isPermutationMapping`{ix=2} [1,2]
-    , ~ isPermutationMapping`{ix=2} [0,1,1]
-    , ~ isPermutationMapping`{ix=2} [2,0,2]
+    , ~ isPermutationMapping [1]
+    , ~ isPermutationMapping [0,0]
+    , ~ isPermutationMapping [0,2]
+    , ~ isPermutationMapping [1,2]
+    , ~ isPermutationMapping [0,1,1]
+    , ~ isPermutationMapping [2,0,2]
     ]
 ```
 
@@ -153,17 +159,17 @@ property isPermutationMapping_test = and
 
 ```cryptol
 permute:
-    {n, a, ix} [n][ix] -> [n]a -> [n]a
+    {n, a, w} [n]w -> [n]a -> [n]a
 permute pi seq = undefined
 ```
 
 **EXERCISE**: Define a predicate `permute_permutes` that, given a 
 permutation mapping `pi: [n]w` and a sequence `seq: [n]a`, `permute` 
-returns a permutation of `seq`.  Prove this predicate for various 
-sequence lengths and types.
+returns a permutation of `seq`.  Prove/check this predicate for 
+various sequence lengths and types.
 
 ```cryptol
-permute_permutes: {n, a, ix} [n][ix] -> [n]a -> Bit
+permute_permutes: {n, a, w} [n]w -> [n]a -> Bit
 permute_permutes pi seq = undefined
 ```
 
@@ -172,12 +178,12 @@ inverse `pi'` such that `permute pi'` `inverts` `permute pi`.
 (`inverts` is imported from `labs::Transposition::CommonProperties`.)
 
 (Hint: The idiomatic solution to this exercise, where `inverse` is 
-defined with ``take`{m} [0...]`` as one of the arguments to 
+defined with ``take`{n} [0...]`` as one of the arguments to 
 `updates`, is perhaps the most elegant in all of Cryptol.)
 
 ```cryptol
 /** return the inverse of a permutation mapping `pi` */
-inverse: {n, ix} [n][ix] -> [n][ix]
+inverse: {n, w} [n]w -> [n]w
 inverse pi = undefined
 ```
 
@@ -187,7 +193,7 @@ sequence lengths and types.
 
 ```cryptol
 /** `inverse` inverts permutation mapping `pi` */
-inverse_inverts: {n, a, ix} [n][ix] -> [n]a -> Bit
+inverse_inverts: {n, w, a} [n]w -> [n]a -> Bit
 inverse_inverts pi seq = undefined
 ```
 
@@ -198,7 +204,7 @@ lengths and types.  (`injective` is imported from
 
 ```cryptol
 /** `permute pi` is `injective` if `pi` is a permutation mapping */
-permute_injective: {n, a, ix} [n][ix] -> [n]a -> [n]a -> Bit
+permute_injective: {n, a, w} [n]w -> [n]a -> [n]a -> Bit
 permute_injective pi seq seq' = undefined
 ```
 
@@ -271,29 +277,22 @@ permutation mappings provide a more efficient mechanism to swap all
 characters at once, swapping turns out to be useful for the sequence 
 filtering problem...
 
-**EXERCISE**: Define a function of type `SwapFunction` below to swap 
-items at indices `i` and `j` of a sequence `seq: [n]a` for number `n` 
-and arbitrary character type `a`, using `@` and `update`, then again 
-using `@@` and `updates` (do not use a temporary variable in either 
-definition).  Use the `swap_equiv` predicate to verify that your 
-definitions are equivalent, then the `swap_correct` predicate to show 
-that one of them is correct.  (Because they are equivalent, this will 
-infer that the other swap function is also correct.)
-
-```cryptol
-/** constraint on type variables of a `SwapFunction` */
-type constraint _SwapFunction_ n ix = (fin n, fin ix, ix >= width n)
-/** type of function that swaps items at index-pair */
-type SwapFunction n a ix = [n]a -> [ix] -> [ix] -> [n]a
-```
+**EXERCISE**: Define a function to swap items at indices `i` and `j` 
+of a sequence `seq: [n]a` for number `n` and arbitrary character type 
+`a`, using `@` and `update`, then again using `@@` and `updates` (do 
+not use a temporary variable in either definition).  Use the 
+`swap_equiv` predicate to verify that your definitions are equivalent, 
+then the `swap_correct` predicate to show that one of them is correct.  
+(Because they are equivalent, this will infer that the other swap 
+function is also correct.)
 
 ```cryptol
 /** Swap `i`th and `j`th entries of sequence `a` via `@`/`update` */
-swap_update : {n, a, ix} _SwapFunction_ n ix => SwapFunction n a ix
+swap_update : {n, a, v, w} [n]a -> v -> w -> [n]a
 swap_update seq i j = undefined
 
 /** Swap `i`th and `j`th entries of sequence `a` via `@@`/`updates` */
-swap_updates : {n, a, ix} _SwapFunction_ n ix => SwapFunction n a ix
+swap_updates : {n, a, w} [n]a -> w -> w -> [n]a
 swap_updates seq i j = undefined
 
 // Define `swap` as either of above swap functions
@@ -303,19 +302,18 @@ swap = swap_updates
 ```cryptol
 /** `swap_update` is functionally equivalent to `swap_updates` */
 swap_equiv:
-    {n, a, ix}
-    (_SwapFunction_ n ix, Cmp a) =>
-    [n]a -> [ix] -> [ix] -> Bit
+    {n, a, w} [n]a -> w -> w -> Bit
+
 swap_equiv seq i j =
-    swap_update seq i j == swap_updates seq i j
+    swap_update`{v = w} seq i j == swap_updates seq i j
 
 /** `swap` is correct; it just swaps values at specified indices */
 swap_correct:
-    {n, a, ix}
-    (_SwapFunction_ n ix, Cmp a) =>
-    [n]a -> [ix] -> [ix] -> [ix] -> Bit
+    {n, a, w} [n]a -> w -> w -> w -> Bit
 swap_correct seq i j k =
-    i < `n ==> j < `n ==> k < `n ==> 
+    0 <= i ==> i < `n ==>
+    0 <= j ==> j < `n ==>
+    0 <= k ==> k < `n ==>
     seq' @ k ==
         if k == i then seq @ j
         |  k == j then seq @ i
@@ -374,7 +372,9 @@ rearrange_trace w = out
 
 Here's how this function works for the string `"HE-LL-O-"`:
 
-```icry
+```Xcryptol session
+labs::Transposition::TranspositionAnswers> :s ascii=on
+labs::Transposition::TranspositionAnswers> :s base=10
 labs::Transposition::Transposition> rearrange_trace "HE-LL-O-" 
 [("HE-LL-O--", 0, 0), ("HE-LL-O--", 1, 0), ("HE-LL-O--", 2, 0),
  ("HE-LL-O--", 2, 3), ("HEL-L-O--", 3, 4), ("HELL--O--", 4, 5),

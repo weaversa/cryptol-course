@@ -33,7 +33,7 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```icry
+```Xcryptol session
 Cryptol> :m labs::Transposition::Route
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher

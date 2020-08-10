@@ -30,7 +30,7 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```icry
+```Xcryptol session
 Cryptol> :m labs::Transposition::TranspositionAnswers
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
@@ -45,6 +45,12 @@ We start by defining the module for this lab:
 ```cryptol
 module labs::Transposition::TranspositionAnswers where
 ```
+
+You do not need to enter the above into the interpreter; the previous 
+`:m ...` command loaded this literate Cryptol file automatically.
+In general, you should run `Xcryptol session` commands in the 
+interpreter and only change `cryptol` code as directed by the 
+exercises, reloading for `:m ...` to import your changes.
 
 Additionally, we will import some common properties to apply to this 
 spec:
@@ -90,7 +96,7 @@ using `isPermutation_test`.
 /** number of occurrences of `item` in `seq` */
 itemCount:
     {n, a}
-    (fin n, Cmp a) =>
+    (fin n, Eq a) =>
     [n]a -> a -> Integer
 itemCount seq item = counts ! 0
   where
@@ -103,7 +109,7 @@ itemCount seq item = counts ! 0
 /** is `seq'` a permutation of `seq`? */
 isPermutation:
     {n, a}
-    (fin n, Cmp a) =>
+    (fin n, Eq a) =>
     [n]a -> [n]a -> Bit
 isPermutation seq seq' = and
     [ itemCount seq x == itemCount seq' x
@@ -130,7 +136,7 @@ property isPermutation_test = and
     ]
 ```
 
-```icry
+```Xcryptol session
 labs::Transposition::TranspositionAnswers> :check isPermutation_test
 Using exhaustive testing.
 Passed 1 tests.
@@ -151,33 +157,33 @@ a different order.)
 ```cryptol
 /** Is `pi` a permutation of `[0,n)`? */
 isPermutationMapping:
-    {n, ix}
-    (fin n, fin ix, ix >= width n) =>
-    [n][ix] -> Bit
+    {n, w}
+    (fin n, Eq w, Integral w, Literal 0 w) =>
+    [n]w -> Bit
 isPermutationMapping pi = all (elem' pi) (take`{n} [0...])
   where
     elem' p x = elem x p
 
 /** `isPermutationMapping` test vectors */
 property isPermutationMapping_test = and
-    [   isPermutationMapping`{ix=0} []
-    ,   isPermutationMapping`{ix=1} [0]
-    ,   isPermutationMapping`{ix=2} [0,1]
-    ,   isPermutationMapping`{ix=2} [1,0]
-    ,   isPermutationMapping`{ix=2} [0,1,2]
-    ,   isPermutationMapping`{ix=2} [0,2,1]
-    ,   isPermutationMapping`{ix=2} [2,0,1]
+    [   isPermutationMapping []
+    ,   isPermutationMapping [0]
+    ,   isPermutationMapping [0,1]
+    ,   isPermutationMapping [1,0]
+    ,   isPermutationMapping [0,1,2]
+    ,   isPermutationMapping [0,2,1]
+    ,   isPermutationMapping [2,0,1]
 
-    , ~ isPermutationMapping`{ix=1} [1]
-    , ~ isPermutationMapping`{ix=2} [0,0]
-    , ~ isPermutationMapping`{ix=2} [0,2]
-    , ~ isPermutationMapping`{ix=2} [1,2]
-    , ~ isPermutationMapping`{ix=2} [0,1,1]
-    , ~ isPermutationMapping`{ix=2} [2,0,2]
+    , ~ isPermutationMapping [1]
+    , ~ isPermutationMapping [0,0]
+    , ~ isPermutationMapping [0,2]
+    , ~ isPermutationMapping [1,2]
+    , ~ isPermutationMapping [0,1,1]
+    , ~ isPermutationMapping [2,0,2]
     ]
 ```
 
-```icry
+```Xcryptol session
 labs::Transposition::TranspositionAnswers> :check isPermutationMapping_test
 Using exhaustive testing.
 Passed 1 tests.
@@ -191,38 +197,37 @@ Q.E.D.
 
 ```cryptol
 permute:
-    {n, ix, a}
-    (fin ix, ix >= width n) =>
-    [n][ix] -> [n]a -> [n]a
+    {n, a, w}
+    Integral w =>
+    [n]w -> [n]a -> [n]a
 permute pi seq = seq @@ pi
 ```
 
 **EXERCISE**: Define a predicate `permute_permutes` that, given a 
 permutation mapping `pi: [n]w` and a sequence `seq: [n]a`, `permute` 
-returns a permutation of `seq`.  Prove/check this predicate for various 
-sequence lengths and types.
+returns a permutation of `seq`.  Prove/check this predicate for 
+various sequence lengths and types.
 
 ```cryptol
 permute_permutes:
-    {n, a, ix}
-    (fin n, Cmp a, fin ix, ix >= width n) =>
-    [n][ix] -> [n]a -> Bit
+    {n, a, w}
+    (fin n, Eq a, Eq w, Integral w, Literal 0 w) =>
+    [n]w -> [n]a -> Bit
 permute_permutes pi seq =
     isPermutationMapping pi ==> 
     isPermutation seq (permute pi seq)
 ```
 
-```icry
-labs::Transposition::TranspositionAnswers> :prove permute_permutes`{4, Char, width 4}
+```Xcryptol session
+labs::Transposition::TranspositionAnswers> :prove permute_permutes`{4, Char, Integer}
 Q.E.D.
-(Total Elapsed Time: 0.157s, using Z3)
-labs::Transposition::TranspositionAnswers> :prove permute_permutes`{6, Char, width 6}
+(Total Elapsed Time: 0.157s, using "Z3")
+labs::Transposition::TranspositionAnswers> :prove permute_permutes`{6, Char, Integer}
 Q.E.D.
-(Total Elapsed Time: 22.503s, using Z3)
-labs::Transposition::TranspositionAnswers> :check permute_permutes`{8, [2]Char, width 8}
+(Total Elapsed Time: 22.503s, using "Z3")
+labs::Transposition::TranspositionAnswers> :check permute_permutes`{8, [2]Char, Integer}
 Using random testing.
 Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^160 values)
 ```
 
 **EXERCISE**: Given a permutation mapping `pi: [n]w`, return its 
@@ -230,15 +235,15 @@ inverse `pi'` such that `permute pi'` `inverts` `permute pi`.
 (`inverts` is imported from `labs::Transposition::CommonProperties`.)
 
 (Hint: The idiomatic solution to this exercise, where `inverse` is 
-defined with ``take`{m} [0...]`` as one of the arguments to 
+defined with ``take`{n} [0...]`` as one of the arguments to 
 `updates`, is perhaps the most elegant in all of Cryptol.)
 
 ```cryptol
 /** return the inverse of a permutation mapping `pi` */
 inverse:
-    {n, ix}
-    (fin n, fin ix, ix >= width n) =>
-    [n][ix] -> [n][ix]
+    {n, w}
+    (fin n, Integral w, Literal 0 w) =>
+    [n]w -> [n]w
 inverse pi = updates pi pi (take [0...])
 ```
 
@@ -249,25 +254,24 @@ sequence lengths and types.
 ```cryptol
 /** `inverse` inverts permutation mapping `pi` */
 inverse_inverts:
-    {n, a, ix}
-    (fin n, Cmp a, fin ix, ix >= width n) =>
-    [n][ix] -> [n]a -> Bit
+    {n, a, w}
+    (fin n, Eq a, Eq w, Integral w, Literal 0 w) =>
+    [n]w -> [n]a -> Bit
 inverse_inverts pi seq =
     isPermutationMapping pi ==>
     inverts (permute (inverse pi)) (permute pi) seq
 ```
 
-```icry
-labs::Transposition::TranspositionAnswers> :prove inverse_inverts`{4, Char, width 4}
+```Xcryptol session
+labs::Transposition::TranspositionAnswers> :prove inverse_inverts`{4, Char, Integer}
 Q.E.D.
-(Total Elapsed Time: 0.022s, using Z3)
-labs::Transposition::TranspositionAnswers> :prove inverse_inverts`{16, Char, width 16}
+(Total Elapsed Time: 0.022s, using "Z3")
+labs::Transposition::TranspositionAnswers> :prove inverse_inverts`{8, Char, Integer}
 Q.E.D.
-(Total Elapsed Time: 1.750s, using Z3)
-labs::Transposition::TranspositionAnswers> :check inverse_inverts`{128, [2]Char, width 128}
+(Total Elapsed Time: 3.038s, using "Z3")
+labs::Transposition::TranspositionAnswers> :check inverse_inverts`{128, [2]Char, Integer}
 Using random testing.
 Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^3072 values)
 ```
 
 **EXERCISE**: Define a predicate that `permute pi` is `injective` if 
@@ -278,24 +282,23 @@ lengths and types.  (`injective` is imported from
 ```cryptol
 /** `permute pi` is `injective` if `pi` is a permutation mapping */
 permute_injective:
-    {n, a, ix}
-    (fin n, Cmp a, fin ix, ix >= width n) =>
-    [n][ix] -> [n]a -> [n]a -> Bit
+    {n, a, w}
+    (fin n, Eq a, Eq w, Integral w, Literal 0 w) =>
+    [n]w -> [n]a -> [n]a -> Bit
 permute_injective pi seq seq' =
     isPermutationMapping pi ==> injective (permute pi) seq seq'
 ```
 
-```icry
-labs::Transposition::TranspositionAnswers> :prove permute_injective`{4, Char, width 4}
+```Xcryptol session
+labs::Transposition::TranspositionAnswers> :prove permute_injective`{4, Char, Integer}
 Q.E.D.
-(Total Elapsed Time: 0.019s, using Z3)
-labs::Transposition::TranspositionAnswers> :prove permute_injective`{32, Char, width 32}
-Q.E.D.
-(Total Elapsed Time: 9.077s, using Z3)
-labs::Transposition::TranspositionAnswers> :check permute_injective`{128, [3]Char, width 128}
+(Total Elapsed Time: 0.019s, using "Z3")
+labs::Transposition::TranspositionAnswers> :check permute_injective`{16, Char, Integer}
 Using random testing.
 Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^7168 values)
+labs::Transposition::TranspositionAnswers> :check permute_injective`{128, [3]Char, Integer}
+Using random testing.
+Passed 100 tests.
 ```
 
 # Encryption and Decryption
@@ -367,29 +370,28 @@ permutation mappings provide a more efficient mechanism to swap all
 characters at once, swapping turns out to be useful for the sequence 
 filtering problem...
 
-**EXERCISE**: Define a function of type `SwapFunction` below to swap 
-items at indices `i` and `j` of a sequence `seq: [n]a` for number `n` 
-and arbitrary character type `a`, using `@` and `update`, then again 
-using `@@` and `updates` (do not use a temporary variable in either 
-definition).  Use the `swap_equiv` predicate to verify that your 
-definitions are equivalent, then the `swap_correct` predicate to show 
-that one of them is correct.  (Because they are equivalent, this will 
-infer that the other swap function is also correct.)
-
-```cryptol
-/** constraint on type variables of a `SwapFunction` */
-type constraint _SwapFunction_ n ix = (fin n, fin ix, ix >= width n)
-/** type of function that swaps items at index-pair */
-type SwapFunction n a ix = [n]a -> [ix] -> [ix] -> [n]a
-```
+**EXERCISE**: Define a function to swap items at indices `i` and `j` 
+of a sequence `seq: [n]a` for number `n` and arbitrary character type 
+`a`, using `@` and `update`, then again using `@@` and `updates` (do 
+not use a temporary variable in either definition).  Use the 
+`swap_equiv` predicate to verify that your definitions are equivalent, 
+then the `swap_correct` predicate to show that one of them is correct.  
+(Because they are equivalent, this will infer that the other swap 
+function is also correct.)
 
 ```cryptol
 /** Swap `i`th and `j`th entries of sequence `a` via `@`/`update` */
-swap_update : {n, a, ix} _SwapFunction_ n ix => SwapFunction n a ix
+swap_update:
+    {n, a, v, w}
+    (Integral v, Integral w) =>
+    [n]a -> v -> w -> [n]a
 swap_update seq i j = update (update seq i (seq @ j)) j (seq @ i)
 
 /** Swap `i`th and `j`th entries of sequence `a` via `@@`/`updates` */
-swap_updates : {n, a, ix} _SwapFunction_ n ix => SwapFunction n a ix
+swap_updates:
+    {n, a, w}
+    Integral w =>
+    [n]a -> w -> w -> [n]a
 swap_updates seq i j = updates seq [i,j] (seq @@ [j,i])
 
 // Define `swap` as either of above swap functions
@@ -399,20 +401,23 @@ swap = swap_updates
 ```cryptol
 /** `swap_update` is functionally equivalent to `swap_updates` */
 swap_equiv:
-    {n, a, ix}
-    (_SwapFunction_ n ix, Cmp a) =>
-    [n]a -> [ix] -> [ix] -> Bit
+    {n, a, w}
+    (fin n, Eq a, Cmp w, Integral w, Literal (max n n) w) =>
+    [n]a -> w -> w -> Bit
 swap_equiv seq i j =
-    i < `n ==> j < `n ==>
-    swap_update seq i j == swap_updates seq i j
+    0 <= i ==> i < `n ==>
+    0 <= j ==> j < `n ==>
+    swap_update`{v = w} seq i j == swap_updates seq i j
 
 /** `swap` is correct; it just swaps values at specified indices */
 swap_correct:
-    {n, a, ix}
-    (_SwapFunction_ n ix, Cmp a) =>
-    [n]a -> [ix] -> [ix] -> [ix] -> Bit
+    {n, a, w}
+    (Eq a, Cmp w, Integral w, Literal (max n (max n n)) w) =>
+    [n]a -> w -> w -> w -> Bit
 swap_correct seq i j k =
-    i < `n ==> j < `n ==> k < `n ==> 
+    0 <= i ==> i < `n ==>
+    0 <= j ==> j < `n ==>
+    0 <= k ==> k < `n ==>
     seq' @ k ==
         if k == i then seq @ j
         |  k == j then seq @ i
@@ -421,24 +426,23 @@ swap_correct seq i j k =
         seq' = swap seq i j
 ```
 
-```icry
-labs::Transposition::TranspositionAnswers> :prove swap_equiv`{32, Char, width 32}
+```Xcryptol session
+labs::Transposition::TranspositionAnswers> :prove swap_equiv`{32, Char, Integer}
 Q.E.D.
-(Total Elapsed Time: 0.025s, using Z3)
-labs::Transposition::TranspositionAnswers> :prove swap_equiv`{512, Char, width 512}
+(Total Elapsed Time: 0.025s, using "Z3")
+labs::Transposition::TranspositionAnswers> :prove swap_equiv`{512, Char, Integer}
 Q.E.D.
-(Total Elapsed Time: 0.304s, using Z3)
-labs::Transposition::TranspositionAnswers> :check swap_equiv`{4096, Char, width 4096}
-Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^32794 values)
-labs::Transposition::TranspositionAnswers> :prove swap_correct`{32, Char, width 32}
+(Total Elapsed Time: 0.304s, using "Z3")
+labs::Transposition::TranspositionAnswers> :prove swap_equiv`{4096, Char, Integer}
 Q.E.D.
-(Total Elapsed Time: 0.049s, using Z3)
-labs::Transposition::TranspositionAnswers> :prove swap_correct`{512, Char, width 512}
+(Total Elapsed Time: 6.001s, using "Z3")
+labs::Transposition::TranspositionAnswers> :prove swap_correct`{32, Char, Integer}
 Q.E.D.
-(Total Elapsed Time: 3.686s, using Z3)
-labs::Transposition::TranspositionAnswers> :check swap_correct`{4096, Char, width 4096}
+(Total Elapsed Time: 0.049s, using "Z3")
+labs::Transposition::TranspositionAnswers> :prove swap_correct`{256, Char, Integer}
+Q.E.D.
+(Total Elapsed Time: 3.686s, using "Z3")
+labs::Transposition::TranspositionAnswers> :check swap_correct`{4096, Char, Integer}
 Using random testing.
 Passed 100 tests.
 Expected test coverage: 0.00% (100 of 2^^32807 values)
@@ -494,7 +498,7 @@ rearrange_trace w = out
 
 Here's how this function works for the string `"HE-LL-O-"`:
 
-```icry
+```Xcryptol session
 labs::Transposition::TranspositionAnswers> :s ascii=on
 labs::Transposition::TranspositionAnswers> :s base=10
 labs::Transposition::TranspositionAnswers> rearrange_trace "HE-LL-O-" 
@@ -524,11 +528,12 @@ partition f seq = take (last out).0
   where
     out = ([(seq, 0, 0)] : [1]([n]a, [max 1 (width n)], [max 1 (width n)]))
         # [ if f (w' @ i) then (w', i', j)
-             | j <= i     then (w', i, i')
-             | f (w' @ j) then (swap w' i j, i', j')
+             | j <= i    then (w', i, i')
+             | f (w' @ j)  then (swap w' i j, i', j')
             else (w', i, j')
-            where i' = i + 1
-                  j' = j + 1
+            where
+                i' = i + 1
+                j' = j + 1
           | (w', i, j) <- out
           | _ <- tail [0 .. n : [width n]] ]
 ```
@@ -542,13 +547,13 @@ partition_rearranges =
         isNotPadding c = c != '-'
 ```
 
-```icry
+```Xcryptol session
+labs::Transposition::TranspositionAnswers> :prove partition_rearranges`{4}
+Q.E.D.
+(Total Elapsed Time: 0.242s, using "Z3")
 labs::Transposition::TranspositionAnswers> :prove partition_rearranges`{16}
 Q.E.D.
-(Total Elapsed Time: 0.242s, using Z3)
-labs::Transposition::TranspositionAnswers> :prove partition_rearranges`{64}
-Q.E.D.
-(Total Elapsed Time: 4.377s, using Z3)
+(Total Elapsed Time: 4.377s, using "Z3")
 labs::Transposition::TranspositionAnswers> :check partition_rearranges`{512}
 Using random testing.
 Passed 100 tests.
@@ -606,13 +611,13 @@ rearrange_equiv:
 rearrange_equiv = rearrange`{n} === rearrange'`{n}
 ```
 
-```icry
+```Xcryptol session
 labs::Transposition::TranspositionAnswers> :prove rearrange_equiv`{8}
 Q.E.D.
-(Total Elapsed Time: 0.477s, using Z3)
+(Total Elapsed Time: 0.477s, using "Z3")
 labs::Transposition::TranspositionAnswers> :prove rearrange_equiv`{12}
 Q.E.D.
-(Total Elapsed Time: 10.214s, using Z3)
+(Total Elapsed Time: 10.214s, using "Z3")
 labs::Transposition::TranspositionAnswers> :check rearrange_equiv`{128}
 Using random testing.
 Passed 100 tests.
@@ -651,13 +656,13 @@ partition'_rearranges =
         isNotPadding c = c != '-'
 ```
 
-```icry
+```Xcryptol session
 labs::Transposition::TranspositionAnswers> :prove partition'_rearranges`{8}
 Q.E.D.
-(Total Elapsed Time: 0.040s, using Z3)
+(Total Elapsed Time: 0.040s, using "Z3")
 labs::Transposition::TranspositionAnswers> :prove partition'_rearranges`{16}
 Q.E.D.
-(Total Elapsed Time: 12.524s, using Z3)
+(Total Elapsed Time: 12.524s, using "Z3")
 labs::Transposition::TranspositionAnswers> :check partition'_rearranges`{256}
 Using random testing.
 Passed 100 tests.
@@ -670,19 +675,20 @@ not?  Can either or both still be used for transposition ciphers?
 
 ```cryptol
 /** `partition` and `partition'` are functionally equivalent...or are they? */
-partition_equiv: {n, a} (fin n, Cmp a) => (a -> Bit) -> [n]a -> Bit
+partition_equiv: {n, a} (fin n, Eq a) => (a -> Bit) -> [n]a -> Bit
 partition_equiv f = partition`{n} f === partition'`{n} f
 ```
 
-```icry
+```Xcryptol session
 labs::Transposition::TranspositionAnswers> :prove partition_equiv`{8, Bit} (\b -> b)
 Q.E.D.
-(Total Elapsed Time: 1.669s, using Z3)
+(Total Elapsed Time: 1.669s, using "Z3")
 labs::Transposition::TranspositionAnswers> :prove partition_equiv`{8, [32]} (\b -> b ! 0)
+Counterexample
 partition_equiv`{8, [32]} (\b -> b ! 0)
   [0x00000000, 0x01000000, 0x00000020, 0x40000020, 0x00000040,
    0x00000001, 0x00000001, 0x00000002] = False
-(Total Elapsed Time: 0.147s, using Z3)
+(Total Elapsed Time: 0.147s, using "Z3")
 ```
 
 ## Reduction of Padded Partition Mappings
@@ -720,13 +726,13 @@ unpad_unpads pi =
     isPermutationMapping`{n + p} pi ==> isPermutationMapping`{n} (unpad pi)
 ```
 
-```icry
+```Xcryptol session
 labs::Transposition::TranspositionAnswers> :prove unpad_unpads`{4, 2}
 Q.E.D.
-(Total Elapsed Time: 0.031s, using Z3)
+(Total Elapsed Time: 0.031s, using "Z3")
 labs::Transposition::TranspositionAnswers> :prove unpad_unpads`{8, 4}
 Q.E.D.
-(Total Elapsed Time: 7.033s, using Z3)
+(Total Elapsed Time: 7.033s, using "Z3")
 labs::Transposition::TranspositionAnswers> :check unpad_unpads`{25, 7}
 Using random testing.
 Passed 100 tests.

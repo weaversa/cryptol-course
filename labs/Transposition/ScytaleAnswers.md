@@ -36,8 +36,9 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```icry
+```Xcryptol session
 Cryptol> :m labs::Transposition::ScytaleAnswers
+Loading module Cryptol
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
@@ -86,7 +87,7 @@ dScytale msg = join (transpose msg')
 While informative, this definition only accepts messages whose length 
 is a multiple of the rod diameter:
 
-```icry
+```Xcryptol session
 labs::Transposition::ScytaleAnswers> :s ascii=on
 labs::Transposition::ScytaleAnswers> scytale`{3} "ATTACKATDAWN"
 "ACDTKATAWATN"
@@ -109,7 +110,7 @@ block size.  Revisiting the earlier example, `"ATTACKDAWN"` is length
 10, requiring 4 blocks and 2 padding characters to divide into blocks 
 of size 3:
 
-```icry
+```Xcryptol session
 labs::Transposition::ScytaleAnswers> `numBlocks:Integer where type numBlocks = 10 /^ 3
 4
 labs::Transposition::ScytaleAnswers> `padLength:Integer where type padLength = 10 %^ 3 
@@ -151,7 +152,7 @@ property pi_test = and
     , decrypt pi`{3} "WOEEVEAEARRTEEODDNIFCSLEC" == "WEAREDISCOVEREDFLEEATONCE" ]
 ```
 
-```icry
+```Xcryptol session
 labs::Transposition::ScytaleAnswers> :check pi_test
 Using exhaustive testing.
 Passed 1 tests.
@@ -193,7 +194,7 @@ pi_correct msg =
 (Note: `rearrange'` accommodates larger message sizes than 
 `rearrange`, but proving this property blows up around `n = 16`.)
 
-```icry
+```Xcryptol session
 labs::Transposition::ScytaleAnswers> :prove pi_correct`{3, 10}
 Q.E.D.
 (Total Elapsed Time: 0.141s, using Z3)
