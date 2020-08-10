@@ -1,0 +1,3 @@
+// 1
+module scripts::Test::Ambig where
+ext="cry"
