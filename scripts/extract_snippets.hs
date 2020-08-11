@@ -1,11 +1,13 @@
+import Control.Monad (forM_, when)
 import Data.List (partition, unzip)
 import Data.Text (Text, pack, splitOn, unlines)
 import Data.Text.IO (hGetContents, writeFile)
+import System.Environment (getArgs)
 import System.FilePath ((<.>))
 import System.IO (IOMode (ReadMode, WriteMode), withFile)
-import Text.Regex.TDFA
 
 import CMarkGFM (NodeType (CODE_BLOCK), CMarkExtension, CMarkOption, Info, Node, Node (Node), commonmarkToNode)
+import Text.Regex.TDFA
 
 
 xCryptolSessionBlocks :: Node -> [Text]
@@ -40,23 +42,22 @@ blockSnippets block =
             Expected _ _ -> False
 
 
-readMarkdown :: [CMarkOption] -> [CMarkExtension] -> FilePath -> IO Node
-readMarkdown opts exts path = do 
-    contents <- (withFile path ReadMode hGetContents)
-    return (commonmarkToNode opts exts contents)
-
-goofusMarkdown opts exts path = do
+extractSnippets :: [CMarkOption] -> [CMarkExtension] -> FilePath -> IO ()
+extractSnippets opts exts path = do
     contents <- withFile path ReadMode hGetContents ;
     let
         markdown = commonmarkToNode opts exts contents
-        (commandBlocks, expectedBlocks) = unzip (map blockSnippets (xCryptolSessionBlocks markdown))
+        sessionBlocks = xCryptolSessionBlocks markdown
+        hasSessions = sessionBlocks /= []
+        (commandBlocks, expectedBlocks) = unzip (map blockSnippets (sessionBlocks))
         commands = concat commandBlocks
         expected = concat expectedBlocks
         stdout = filter isStdOut expected
-      in do
-        Data.Text.IO.writeFile (path <.> "icry") (combine commands);
-        Data.Text.IO.writeFile (path <.> "icry.expected") (combine expected);
-        Data.Text.IO.writeFile (path <.> "icry.stdout") (combine stdout)
+      in when hasSessions (do
+          writeSnippets (path <.> "icry")          commands;
+          writeSnippets (path <.> "icry.expected") expected;
+          writeSnippets (path <.> "icry.stdout")   stdout
+      )
   where
     snippetText snippetLine =
         case snippetLine of
@@ -68,8 +69,9 @@ goofusMarkdown opts exts path = do
             Command _ -> False
             Expected _ b -> b
     
-    combine = Data.Text.unlines . map snippetText
-
-
-
-
+    writeSnippets path = Data.Text.IO.writeFile path . Data.Text.unlines . map snippetText
+    
+main :: IO ()
+main = do
+    args <- getArgs
+    forM_ args $ \arg -> extractSnippets [] [] arg
