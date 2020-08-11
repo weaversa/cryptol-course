@@ -40,7 +40,8 @@ RUN curl -L https://yices.csl.sri.com/releases/2.6.2/yices-2.6.2-src.tar.gz | ta
     && cp build/*/bin/* /usr/local/bin \
     && cp build/*/bin/yices_smt2 /usr/local/bin/yices-smt2 \
     && cd .. && rm -rf yices*
-RUN useradd -m -p '' cryptol && chown -R cryptol:cryptol /home/cryptol
+RUN chown -R cryptol:cryptol /home/cryptol
+RUN passwd -d cryptol
 RUN adduser cryptol sudo
 RUN echo "Defaults lecture = never" >> /etc/sudoers \
     && echo "cryptol ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
