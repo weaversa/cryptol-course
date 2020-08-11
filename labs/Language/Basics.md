@@ -1770,13 +1770,8 @@ labs::Language::Basics> [ n^^3 | n <- [0..10] ]
 
 Star Trek's (T.O.S.) warp factor light speed multipliers!
 
-||||||||
-|-|-|-|-|-|-|-|
-| `[` | `n^^3` | `\|` | `n` | `<-` | `[0..10]` | `]`
-| Generate the sequence | with elements of the form `n^^3` | where | `n` | draws from | the sequence `0` through `10`
-||||||||
-
-We refer to the right-hand side (`n <- [0..10]`)
+We read this as "make the sequence `n^^3` where `n` draws from the
+sequence `[0..10]`." We refer to the right-hand side (`n <- [0..10]`)
 as a branch. With multiple branches, there are two choices for how the
 values are drawn from the branches, *cartesian* (`,` between
 branches), or in *parallel* (`|` between branches). For example:
@@ -1856,16 +1851,6 @@ encrypt key plainText = cipherText
                                  ]
     cipherText = last roundResults
 ```
-
-Here's an English-language breakdown of the first self-referential sequence comprehension above:
-
-
-
-||||||||||||
-|-|-|-|-|-|-|-|-|-|-|-|
-| `roundKeys` | `=` | `[key]` | `#` | `[` | `roundKey <<< 1` | `\|` | `roundKey` | `<-` | `roundKeys` | `]`
-| The sequence `roundKeys` | is defined as | an initial `key` | followed by | the sequence | with elements of the form `roundKey <<< 1` | where | `roundKey` | draws from | the generated sequence `roundKeys` itself
-||||||||||||
 
 Many block ciphers are just variations of the above theme. 
 Here's a sample of it in action:

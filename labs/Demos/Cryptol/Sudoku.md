@@ -16,7 +16,7 @@ You'll also need experience with
 ## Skills You'll Learn
 
 By the end of this demo you'll understand a bit more about how Cryptol
-can use its interface to automated theorem provers to perform
+can use it's interface to automated theorem provers to perform
 computation. Rather than write a search algorithm in Cryptol, one only
 needs to write a solution checker in Cryptol (much easier) and then
 let the automated theorem prover carry out the search.
@@ -29,9 +29,8 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```shell
 Cryptol> :m labs::Demos::Cryptol::Sudoku
-Loading module Cryptol
 Loading module Cryptol
 Loading module labs::Demos::Cryptol::Sudoku
 ```
@@ -42,11 +41,6 @@ modules that we will use:
 ```cryptol
 module labs::Demos::Cryptol::Sudoku where
 ```
-
-You do not need to enter the above into the interpreter; the previous 
-`:m ...` command loaded this literate Cryptol file automatically.  
-In general, you should run `Xcryptol session` commands in the 
-interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 ## Sudoku in Cryptol
 
@@ -279,10 +273,9 @@ f x = x*x - 7*x + 12 == 0
 > The function `f` returns `True` if its given 8-bit argument is a
 > solution to the quadratic equation `x^^2 - 7x + 12 = 0`. We have:
 
-```Xcryptol session
+```shell
 labs::Demos::Cryptol::Sudoku> :s base=10
 labs::Demos::Cryptol::Sudoku> :sat f
-Satisfiable
 f 4 = True
 (Total Elapsed Time: 0.151s, using "Z3")
 ```
@@ -291,9 +284,8 @@ f 4 = True
 > solution? It is easy to formulate a similar query using the lambda
 > notation:
 
-```Xcryptol session
+```shell
 labs::Demos::Cryptol::Sudoku> :sat (\x -> f x && (x != 4))
-Satisfiable
 (\x -> f x && (x != 4)) 3 = True
 (Total Elapsed Time: 0.034s, using "Z3")
 ```
@@ -301,7 +293,7 @@ Satisfiable
 > Cryptol tells us 3 is a solution as well! There happen to only be two
 > solutions to this equation; let's verify:
 
-```Xcryptol session
+```shell
 labs::Demos::Cryptol::Sudoku> :sat (\x -> f x && (x != 4) && (x != 3))
 Unsatisfiable
 (Total Elapsed Time: 0.034s, using "Z3")
@@ -375,9 +367,9 @@ Ahem...sorry.
 > the function return `True`, i.e., we need to find a satisfying
 > assignment. Here's the response from Cryptol:
 
-```Xcryptol session
+```shell
 labs::Demos::Cryptol::Sudoku> :sat puzzle
-Satisfiable
+puzzle
 puzzle
   [2, 5, 4, 3, 1, 4, 8, 6, 9, 7, 7, 1, 9, 2, 5, 4, 3, 3, 8, 4, 9, 2,
    1, 6, 1, 2, 8, 4, 9, 5, 4, 9, 2, 6, 3, 8, 7, 6, 3, 5, 2, 4, 8, 9,
@@ -445,7 +437,7 @@ property puzzle_unique
            [i1,  5,  4, i4, i5,  8, i7,  7, i9]]
 ```
 
-```Xcryptol session
+```shell
 labs::Demos::Cryptol::Sudoku> :prove puzzle_unique
 Q.E.D.
 (Total Elapsed Time: 0.813s, using "Z3")
@@ -493,10 +485,9 @@ hard_puzzle
        [i1,  9, i3, i4, i5, i6,  4, i8, i9]]
 ```
 
-```Xcryptol session
+```shell
 labs::Demos::Cryptol::Sudoku> :s base=10
 labs::Demos::Cryptol::Sudoku> :sat hard_puzzle
-Satisfiable
 hard_puzzle
   [1, 2, 7, 5, 3, 6, 4, 9, 9, 4, 8, 2, 1, 7, 5, 6, 5, 4, 1, 8, 3, 1,
    4, 2, 3, 8, 9, 6, 3, 6, 9, 8, 2, 1, 2, 8, 7, 6, 9, 5, 4, 5, 2, 9,
@@ -556,7 +547,7 @@ property hard_unique
            [i1,  9, i3, i4, i5, i6,  4, i8, i9]]
 ```
 
-```Xcryptol session
+```shell
 labs::Demos::Cryptol::Sudoku> :prove hard_unique
 Q.E.D.
 (Total Elapsed Time: 5.431s, using "Z3")

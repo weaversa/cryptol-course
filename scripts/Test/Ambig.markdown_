@@ -1,0 +1,5 @@
+```cryptolicious
+// 3
+module scripts::Test::Ambig where
+ext="markdown"
+```
