@@ -937,8 +937,8 @@ constraints can represent more, but these extensions are not used or
 covered in this course.
 
 With this idea in mind (type variables as sizes), many procedural
-programming languages treat the sizes of sequences as value variables.
-For example, in C, one needs to pass the length of an array as
+programming languages treat the sizes of sequences as variable
+values. For example, in C, one needs to pass the length of an array as
 a value variable, like so:
 
 ```C
