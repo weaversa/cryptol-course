@@ -302,14 +302,19 @@ swap = swap_updates
 ```cryptol
 /** `swap_update` is functionally equivalent to `swap_updates` */
 swap_equiv:
-    {n, a, w} [n]a -> w -> w -> Bit
-
+    {n, a, w}
+    (fin n, Eq a, Cmp w, Integral w, Literal (max n n) w) =>
+    [n]a -> w -> w -> Bit
 swap_equiv seq i j =
+    0 <= i ==> i < `n ==>
+    0 <= j ==> j < `n ==>
     swap_update`{v = w} seq i j == swap_updates seq i j
 
 /** `swap` is correct; it just swaps values at specified indices */
 swap_correct:
-    {n, a, w} [n]a -> w -> w -> w -> Bit
+    {n, a, w}
+    (Eq a, Cmp w, Integral w, Literal (max n (max n n)) w) =>
+    [n]a -> w -> w -> w -> Bit
 swap_correct seq i j k =
     0 <= i ==> i < `n ==>
     0 <= j ==> j < `n ==>
