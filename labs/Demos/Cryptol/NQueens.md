@@ -15,7 +15,7 @@ You'll also need experience with
 ## Skills You'll Learn
 
 By the end of this demo you'll understand a bit more about how Cryptol
-can use it's interface to automated theorem provers to perform
+can use its interface to automated theorem provers to perform
 computation. Rather than write a search algorithm in Cryptol, one only
 needs to write a solution checker in Cryptol (much easier) and then
 let the automated theorem prover carry out the search.
@@ -28,18 +28,23 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```shell
+```Xcryptol session
 Cryptol> :m labs::Demos::Cryptol::NQueens
+Loading module Cryptol
 Loading module Cryptol
 Loading module labs::Demos::Cryptol::NQueens
 ```
 
-We start by defining a new module for this lab and importing some accessory
-modules that we will use:
+We start by defining a new module for this lab:
 
 ```cryptol
 module labs::Demos::Cryptol::NQueens where
 ```
+
+You do not need to enter the above into the interpreter; the previous 
+`:m ...` command loaded this literate Cryptol file automatically.  
+In general, you should run `Xcryptol session` commands in the 
+interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # N-Queens
 
@@ -69,10 +74,10 @@ violating the N-Queens constraint.)
 
 ```cryptol
 /** whether sequence `X` comprises unique items */
-distinct : {a, n} (Cmp a, fin n, n >= 1) => [n]a -> Bit
+distinct : {n, a} (fin n, Eq a) => [n]a -> Bit
 distinct X = U == zero
   where
-    M = map ((>>>) (1:[n])) [(1 : [n])...]
+    M = map ((>>>) `(min 1 n)) [`(min 1 n)...]
     U = foldl (||) zero [ (map ((==) x) X) ^ m | x <- X | m <- M ]
 ```
 
@@ -85,6 +90,10 @@ This `distinct` function works roughly as follows:
 - Compute bitwise-or over remaining matches.
   (Remaining matches reflect duplicates.)
 - Return `True` iff no matches remain.
+- `(min 1 n)` evaluates to `1` unless an empty sequence is provided; 
+  such a sequence trivially comprises `distinct` elements.  Without 
+  this generalization and using `1` instead, Cryptol would have 
+  required the sequence to be nonempty (`n >= 1`).
 
 (The counterpart in [1] works roughly as follows:
 - Enumerate an index over the sequence.
@@ -174,7 +183,7 @@ The instructions for [1] also work here:
 
 > To see this in action, try:
 >
-> ```shell
+> ```Xcryptol session
 > > :sat nQueens : (Solution n)
 > ```
 > where n is the board size.
@@ -184,21 +193,22 @@ The instructions for [1] also work here:
 >
 > To do that,
 >
-> ```shell
+> ```Text
 > > :set prover=z3
 > ```
 >
 > or
 >
-> ```shell
+> ```Text
 > > :set prover=yices
 > ```
 
 Here is one possible outcome for `n = 8`:
 
-```shell
+```Xcryptol session
 labs::Demos::Cryptol::NQueens> :s base=10
 labs::Demos::Cryptol::NQueens> :sat nQueens : (Solution 8)
+Satisfiable
 (nQueens : Solution 8)
   [1, 7, 5, 0, 2, 4, 6, 3] = True
 (Total Elapsed Time: 0.053s, using "Z3")
