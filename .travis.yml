@@ -39,7 +39,7 @@ jobs:
     - name: "Cryptol, SAW, and Z3 Releases on Linux"
       before_install:
         - sudo ln -s /usr/lib/libncursesw.so.6.0 /usr/lib/libncurses.so.5
-        - sudo ln -s /usr/lib/libncursesw.so.6.0 /usr/lib/libtinfo.so.5
+        - sudo ln -s /usr/lib/libtinfo.so.6.0 /usr/lib/libtinfo.so.5
         - wget https://github.com/GaloisInc/cryptol/releases/download/2.9.0/cryptol-2.9.0-Linux-x86_64.tar.gz
         - tar -xzf cryptol-2.9.0-Linux-x86_64.tar.gz
         - export PATH=$PATH:$(pwd)/cryptol-2.9.0-Linux-x86_64/bin
@@ -56,7 +56,7 @@ jobs:
       dist: focal
       os: linux
       script:
-        - chmod +x scripts/extract_snippets && scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
+        - chmod +x scripts/extract_snippets && chmod +x scripts/poor_test_runner.sh && scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
     - name: "Cryptol and SAW Docker on Linux Host"
       services:
         - docker
@@ -70,7 +70,7 @@ jobs:
       dist: focal
       os: linux
       script:
-        - chmod +x scripts/extract_snippets && scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
+        - chmod +x scripts/extract_snippets && chmod +x scripts/poor_test_runner.sh && scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
 
 script:
   - export CRYPTOLPATH=$(pwd)
