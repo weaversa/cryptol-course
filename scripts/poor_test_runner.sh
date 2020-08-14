@@ -21,6 +21,7 @@ function log () {
 }
 
 run_tests() {
+    CRYPTOL_ALIAS=${CRYPTOL_ALIAS:cryptol}
 
     # Process command line arguments
     while [ "$1" != "" ]; do
@@ -80,7 +81,7 @@ run_tests() {
         dos2unix -q -n "$STDOUT" "$TMP" && mv "$TMP" "$STDOUT"
 
         log "$0:   Logging interactive Cryptol running $ICRY to $ACTUAL ..."
-        cryptol -b $ICRY > $ACTUAL
+        $CRYPTOL_ALIAS -b $ICRY > $ACTUAL
         log "$0:   Removing Windows carriage returns in $ACTUAL..."
         dos2unix -q -n $ACTUAL $TMP && mv $TMP $ACTUAL
 
@@ -97,6 +98,5 @@ run_tests() {
     done
 }
 
-shopt -s expand_aliases
 shopt -s globstar
 run_tests $@
