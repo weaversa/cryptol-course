@@ -4,7 +4,7 @@ addons:
   apt:
     packages:
       - libgmp-dev
-      - libncurses6
+      - libncurses-dev
   homebrew:
     packages:
       - gmp
