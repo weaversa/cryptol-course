@@ -133,7 +133,6 @@ main = do
 
     let (actions, nonOptions, errors) = getOpt RequireOrder options args
 
-    -- Here we thread startOptions through all supplied option actions
     opts <- foldl (>>=) (return defaults) actions
 
     let Options { optVerbose = verbose
