@@ -97,5 +97,6 @@ run_tests() {
     done
 }
 
+shopt -s expand_aliases
 shopt -s globstar
 run_tests $@

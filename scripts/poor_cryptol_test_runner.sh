@@ -248,4 +248,5 @@ function extract_test_diff {
     #     "${icry_list[@]}"
 }
 
+shopt -s expand_aliases
 extract_test_diff $*
