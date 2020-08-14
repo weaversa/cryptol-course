@@ -4,9 +4,11 @@ addons:
   apt:
     packages:
       - libgmp-dev
+      - libncurses6
   homebrew:
     packages:
       - gmp
+      - ncurses
 jobs:
   include:
     - name: "Cryptol, SAW, and Z3 Releases on OSX"
