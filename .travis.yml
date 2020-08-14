@@ -5,7 +5,6 @@ addons:
     packages:
       - libgmp-dev
       - libncurses6-dev
-      - libncurses5-dev
   # homebrew:
   #   packages:
   #     - gmp
@@ -39,6 +38,8 @@ jobs:
       os: osx
     - name: "Cryptol, SAW, and Z3 Releases on Linux"
       before_install:
+        - sudo ln -s /usr/lib/libncursesw.so.6.0 /usr/lib/libncurses.so.5
+        - sudo ln -s /usr/lib/libncursesw.so.6.0 /usr/lib/libtinfo.so.5
         - wget https://github.com/GaloisInc/cryptol/releases/download/2.9.0/cryptol-2.9.0-Linux-x86_64.tar.gz
         - tar -xzf cryptol-2.9.0-Linux-x86_64.tar.gz
         - export PATH=$PATH:$(pwd)/cryptol-2.9.0-Linux-x86_64/bin
