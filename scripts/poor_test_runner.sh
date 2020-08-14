@@ -64,6 +64,9 @@ run_tests() {
         val=
     done
 
+    # Run tests for each .icry file against the corresponding .icry.out, 
+    # log batch output to .icry.actual, and log difference to .diff;
+    # exit if a keyword indicating a major inconcistency is found.
     ls ${icry_list[@]} | while read -r ICRY ; do
         TMP="$ICRY.tmp"
         STDOUT="$ICRY.stdout"
@@ -84,8 +87,8 @@ run_tests() {
         log "$0:   Logging difference between $STDOUT and $ACTUAL to $DELTA ..."
         diff --minimal $STDOUT $ACTUAL > $DELTA
 
-        if grep -qE "Loading|Counterexample|Satisfiable|Q.E.D.|Unsatisfiable" $DELTA; then
-            log "Found Q.E.D. or Unsatisfiable; exiting..."
+        if grep -qE "^(Loading .*)|(Q\.E\.D\.)|(Counterexample)|(Satisfiable)|(Unsatisfiable)$" $DELTA; then
+            log "Found major inconsistency in diff; exiting..."
             exit 1
         fi
 
