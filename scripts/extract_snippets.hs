@@ -48,7 +48,7 @@ lineSnippet line =
   where
     (_, _, _, groups) = line =~ "^[A-Za-z0-9_:]+> ?(.*)$" :: (Text, Text, Text, [Text])
     isResponse = groups == []
-    isStdOut = isResponse && (line =~ "^Loading .*$|^Counterexample$|^Q.E.D.$|^Satisfiable$|^Unsatisfiable$" :: Bool)
+    isStdOut = isResponse && (line =~ "^(Loading .*)|(Counterexample)|(Q\\.E\\.D\\.)|(Satisfiable)|(Unsatisfiable)$" :: Bool)
 
 -- | Partition a snippet block into (Commands, Responses)
 -- | 
