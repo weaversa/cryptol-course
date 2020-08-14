@@ -88,6 +88,7 @@ run_tests() {
         diff --minimal $STDOUT $ACTUAL > $DELTA
 
         if grep -qE "^(Loading .*)|(Q\.E\.D\.)|(Counterexample)|(Satisfiable)|(Unsatisfiable)$" $DELTA; then
+            log "$(< $DELTA)"
             log "Found major inconsistency in diff; exiting..."
             exit 1
         fi
