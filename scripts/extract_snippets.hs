@@ -10,10 +10,11 @@ import System.FilePath (takeDirectory, (</>), (<.>))
 import System.IO (IOMode (ReadMode, WriteMode), stderr, withFile)
 
 import CMarkGFM (CMarkExtension, CMarkOption, Info, Node (Node), NodeType (CODE_BLOCK), commonmarkToNode)
-import Text.Regex.TDFA
+import Text.Regex.TDFA ((=~))
 import System.Directory (createDirectoryIfMissing)
 
 
+-- | Extract ```Xcryptol session code fences from Markdown
 xCryptolSessionBlocks :: Node -> [Text]
 xCryptolSessionBlocks (Node _ nodeType children) =
     case nodeType of
@@ -24,18 +25,36 @@ xCryptolSessionBlocks (Node _ nodeType children) =
   where
     childBlocks = concat (map xCryptolSessionBlocks children)
 
+-- | Lines from interactive/batch mode are commands (input) or responses (output)
 data SnippetLine =
+    -- | Command passed to interpreter, e.g. `:prove myProp` or `:s ascii=on`
     Command Text
-  | Expected Text Bool
+    -- | Expected response e.g. status (`Q.E.D.`, `Counterexample`) 
+    -- | or evaluation output (`"HELLO"`, `ascii = on`)
+    -- | 
+    -- | `Bool` field is `True` if response is a test runner status, 
+    -- | one of:
+    -- | `Q.E.D.` or `Counterexample` (`:prove` response) or
+    -- | `Satisfiable` or `Unsatisfiable` (`:sat` response) or
+    -- | `Loading ...` (`:m` response)
+  | Response Text Bool
 
+-- | Parse a line from an interactive/batch Cryptol session snippet
+-- | Lines beginning with alphanumeric characters delimited by `::` 
+-- | and followed by `>` with no spaces are probably prompt commands.
 lineSnippet :: Text -> SnippetLine
 lineSnippet line =
-    if isExpected then Expected line isStdOut else Command (head groups)
+    if isResponse then Response line isStdOut else Command (head groups)
   where
     (_, _, _, groups) = line =~ "^[A-Za-z0-9_:]+> ?(.*)$" :: (Text, Text, Text, [Text])
-    isExpected = groups == []
-    isStdOut = isExpected && (line =~ "^Loading module .*$|^Counterexample$|^Q.E.D.$|^Satisfiable$|^Unsatisfiable$" :: Bool)
+    isResponse = groups == []
+    isStdOut = isResponse && (line =~ "^Loading .*$|^Counterexample$|^Q.E.D.$|^Satisfiable$|^Unsatisfiable$" :: Bool)
 
+-- | Partition a snippet block into (Commands, Responses)
+-- | 
+-- | Commands are for an `.icry` file to be run via `cryptol -b`
+-- | Responses are for an `.icry.stdout` file for test runners to 
+-- | compare against actual output.
 blockSnippets :: Text -> ([SnippetLine], [SnippetLine])
 blockSnippets block =
     partition isCommand (map lineSnippet (splitOn (pack "\n") block))
@@ -43,20 +62,22 @@ blockSnippets block =
     isCommand line =
         case line of
             Command _ -> True
-            Expected _ _ -> False
+            Response _ _ -> False
 
-
+-- | Command Line Interface (CLI) Options
 data Options = Options 
-    { optVerbose    :: Bool
-    , optOutput     :: String
+    { optVerbose    :: Bool    -- ^ Log stages of snippet extraction to stdOut
+    , optOutput     :: String  -- ^ Write extracted .icry and .icry.stdout
     }
 
+-- | Default values for CLI options
 defaults :: Options
 defaults = Options
     { optVerbose    = False
     , optOutput     = ""
     }
 
+-- | Extract snippets from the specified file `path` using CLI `opts`
 extractSnippets :: Options -> FilePath -> IO ()
 extractSnippets opts path = do
     when verbose (putStrLn ("Extracting snippets from " ++ path)) ;
@@ -65,13 +86,13 @@ extractSnippets opts path = do
         markdown = commonmarkToNode [] [] contents
         sessionBlocks = xCryptolSessionBlocks markdown
         hasSessions = sessionBlocks /= []
-        (commandBlocks, expectedBlocks) = unzip (map blockSnippets (sessionBlocks))
+        (commandBlocks, expectedBlocks) = unzip (map blockSnippets sessionBlocks)
         commands = concat commandBlocks
-        expected = concat expectedBlocks
-        stdout = filter isStdOut expected
+        responses = concat expectedBlocks
+        stdout = filter isStdOut responses
       in when hasSessions ( do
           logSnippets "commands"        "icry"          commands ;
-          logSnippets "expected output" "icry.expected" expected ;
+          logSnippets "expected output" "icry.expected" responses ;
           logSnippets "batch output"    "icry.stdout"   stdout
       )
   where
@@ -82,13 +103,13 @@ extractSnippets opts path = do
     snippetText snippetLine =
         case snippetLine of
             Command c -> c
-            Expected x _ -> x
+            Response x _ -> x
 
     isStdOut snippetLine =
         case snippetLine of
             Command _ -> False
-            Expected _ b -> b
-    
+            Response _ b -> b
+
     logSnippets label ext commands = do
         when verbose ( putStrLn ("Writing " ++ label ++ " to " ++ outPathExt ++ " ..." ))
         createDirectoryIfMissing True (takeDirectory outPathExt)
@@ -99,6 +120,7 @@ extractSnippets opts path = do
     writeSnippets outPathExt =
         Data.Text.IO.writeFile outPathExt . Data.Text.unlines . map snippetText
 
+-- | Process CLI options, exiting if help is requested
 options :: [ OptDescr (Options -> IO Options) ]
 options =
     [ Option "r" ["output"]

@@ -29,7 +29,7 @@ EOM
 
 function log () {
     if [[ $VERBOSE -eq true ]]; then
-        echo "log: $@"
+        echo "$@"
     fi
 }
 
