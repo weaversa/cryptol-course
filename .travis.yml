@@ -54,8 +54,8 @@ jobs:
       compiler: clang
       dist: bionic
       os: linux
-      script:
-        - chmod +x scripts/extract_snippets && chmod +x scripts/poor_test_runner.sh && scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
+      # script:
+      #   - chmod +x scripts/extract_snippets && chmod +x scripts/poor_test_runner.sh && scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
     - name: "Cryptol and SAW Docker on Linux Host"
       services:
         - docker
@@ -69,7 +69,7 @@ jobs:
       dist: focal
       os: linux
       script:
-        - chmod +x scripts/extract_snippets && chmod +x scripts/poor_test_runner.sh && scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
+        - chmod +x scripts/extract_snippets && chmod +x scripts/poor_test_runner.sh && scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && ls output/labs/Demos/Cryptol/* && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
 
 script:
   - export CRYPTOLPATH=$(pwd)
