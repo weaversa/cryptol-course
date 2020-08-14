@@ -2,7 +2,12 @@
 
 usage() {
     cat << EOM
-$0 - a janky script to run `.icry` tests and compare output against `.icry.stdout` files
+$0 - a janky script to run .icry tests and compare output against .icry.stdout files
+
+Usage: $0 COMMAND_LINE_OPTIONS FILES/DIRS
+Command line options:
+-v         --verbose          echo status messages
+-h or -?   --help             display this message and exit
 
 Parameters:
 FILES/DIRS                    test fileglobs to run
