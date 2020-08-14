@@ -5,10 +5,10 @@ addons:
     packages:
       - libgmp-dev
       - libncurses-dev
-  homebrew:
-    packages:
-      - gmp
-      - ncurses
+  # homebrew:
+  #   packages:
+  #     - gmp
+  #     - ncurses
 jobs:
   include:
     - name: "Cryptol, SAW, and Z3 Releases on OSX"
@@ -29,12 +29,12 @@ jobs:
       compiler: clang
       os: osx
     - name: "Cryptol Homebrew on OSX"
-      addons:
-        homebrew:
-          packages:
-            - cryptol
-      # before_install:
-      #   - brew install cryptol
+      # addons:
+      #   homebrew:
+      #     packages:
+      #       - cryptol
+      before_install:
+        - brew install cryptol
       compiler: clang
       os: osx
     - name: "Cryptol, SAW, and Z3 Releases on Linux"
@@ -53,8 +53,10 @@ jobs:
         - z3 --version
         - chmod +x scripts/extract_snippets scripts/poor_test_runner.sh
       compiler: clang
-      dist: bionic
+      dist: focal
       os: linux
+      script:
+        - scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
     - name: "Cryptol and SAW Docker on Linux Host"
       services:
         - docker
@@ -65,8 +67,10 @@ jobs:
         - alias cryptol='docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it galoisinc/cryptol:2.9.0'
 #        - alias saw='docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it galoisinc/saw:0.5'
       compiler: clang
-      dist: bionic
+      dist: focal
       os: linux
+      script:
+        - scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
 
 script:
   - export CRYPTOLPATH=$(pwd)
@@ -101,7 +105,6 @@ script:
   - cryptol -e -c ":m labs::Demos::Cryptol::OneTimePad"
   - cryptol -e -c ":m labs::Demos::Cryptol::NQueens"
   - cryptol -e -c ":m labs::Demos::Cryptol::Sudoku"
-  - scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
 # Overview lab tests
   - cryptol -e -c ":m labs::Overview::Overview"
 # Language Basics lab tests
