@@ -39,9 +39,6 @@ jobs:
       os: osx
     - name: "Cryptol, SAW, and Z3 Releases on Linux"
       before_install:
-        - find . -name *ncurses*
-        # - sudo ln -s /usr/lib/libncursesw.so.6.0 /usr/lib/libncurses.so.5
-        # - sudo ln -s /usr/lib/libtinfo.so.6.0 /usr/lib/libtinfo.so.5
         - wget https://github.com/GaloisInc/cryptol/releases/download/2.9.0/cryptol-2.9.0-Linux-x86_64.tar.gz
         - tar -xzf cryptol-2.9.0-Linux-x86_64.tar.gz
         - export PATH=$PATH:$(pwd)/cryptol-2.9.0-Linux-x86_64/bin
@@ -55,7 +52,7 @@ jobs:
         - export PATH=$PATH:$(pwd)/z3_downloaded
         - z3 --version
       compiler: clang
-      dist: focal
+      dist: bionic
       os: linux
       script:
         - chmod +x scripts/extract_snippets && chmod +x scripts/poor_test_runner.sh && scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
