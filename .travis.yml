@@ -45,6 +45,7 @@ jobs:
         - unzip -j z3-4.8.8-x64-ubuntu-16.04.zip -d z3_downloaded
         - export PATH=$PATH:$(pwd)/z3_downloaded
         - z3 --version
+        - chmod +x scripts/extract_snippets scripts/poor_test_runner.sh
       compiler: clang
       dist: bionic
       os: linux
