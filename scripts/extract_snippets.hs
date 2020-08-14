@@ -99,49 +99,6 @@ extractSnippets opts path = do
     writeSnippets outPathExt =
         Data.Text.IO.writeFile outPathExt . Data.Text.unlines . map snippetText
 
-{-
-options :: [ OptDescr (Options -> IO Options) ]
-options =
-    [ Option "i" ["input"]
-        (ReqArg
-            (\arg opt -> return opt { optInput = readFile arg })
-            "FILE")
-        "Input file"
-
-    , Option "o" ["output"]
-        (ReqArg
-            (\arg opt -> return opt { optOutput = writeFile arg })
-            "FILE")
-        "Output file"
-
-    , Option "s" ["string"]
-        (ReqArg
-            (\arg opt -> return opt { optInput = return arg })
-            "FILE")
-        "Input string"
-
-    , Option "v" ["verbose"]
-        (NoArg
-            (\opt -> return opt { optVerbose = True }))
-        "Enable verbose messages"
-
-    , Option "V" ["version"]
-        (NoArg
-            (\_ -> do
-                hPutStrLn stderr "Version 0.01"
-                exitWith ExitSuccess))
-        "Print version"
-
-    , Option "h" ["help"]
-        (NoArg
-            (\_ -> do
-    	        prg <- getProgName
-                hPutStrLn stderr (usageInfo prg options)
-                exitWith ExitSuccess))
-        "Show help"
-    ]
--}
-
 options :: [ OptDescr (Options -> IO Options) ]
 options =
     [ Option "r" ["output"]
