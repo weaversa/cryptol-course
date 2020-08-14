@@ -228,7 +228,8 @@ function extract_test_diff {
             diff $expected $actual > $delta
 
             if grep -qE "Counterexample|Satisfiable|Q.E.D.|Unsatisfiable" $delta; then
-                cat $delta
+                delta_error=$(<$delta)
+                echo "$delta_error"
                 log "-----\nFound Q.E.D. or Unsatisfiable; exiting..."
                 exit 1
             fi
