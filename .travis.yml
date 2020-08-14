@@ -82,6 +82,7 @@ script:
   - cryptol -e -c ":m labs::Demos::Cryptol::OneTimePad"
   - cryptol -e -c ":m labs::Demos::Cryptol::NQueens"
   - cryptol -e -c ":m labs::Demos::Cryptol::Sudoku"
+  - ghc scripts/extract_snippets.hs && scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
 # Overview lab tests
   - cryptol -e -c ":m labs::Overview::Overview"
 # Language Basics lab tests
