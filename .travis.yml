@@ -4,7 +4,8 @@ addons:
   apt:
     packages:
       - libgmp-dev
-      - libncurses-dev
+      - libncurses6-dev
+      - libncurses5-dev
   # homebrew:
   #   packages:
   #     - gmp
@@ -25,7 +26,6 @@ jobs:
         - unzip -j z3-4.8.8-x64-osx-10.14.6.zip -d z3_downloaded
         - export PATH=$PATH:$(pwd)/z3_downloaded
         - z3 --version
-        - chmod +x scripts/extract_snippets scripts/poor_test_runner.sh
       compiler: clang
       os: osx
     - name: "Cryptol Homebrew on OSX"
@@ -51,12 +51,11 @@ jobs:
         - unzip -j z3-4.8.8-x64-ubuntu-16.04.zip -d z3_downloaded
         - export PATH=$PATH:$(pwd)/z3_downloaded
         - z3 --version
-        - chmod +x scripts/extract_snippets scripts/poor_test_runner.sh
       compiler: clang
       dist: focal
       os: linux
       script:
-        - scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
+        - chmod +x scripts/extract_snippets && scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
     - name: "Cryptol and SAW Docker on Linux Host"
       services:
         - docker
@@ -70,7 +69,7 @@ jobs:
       dist: focal
       os: linux
       script:
-        - scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
+        - chmod +x scripts/extract_snippets && scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
 
 script:
   - export CRYPTOLPATH=$(pwd)
