@@ -2,12 +2,16 @@ import Control.Monad (forM_, when)
 import Data.List (partition, unzip)
 import Data.Text (Text, pack, splitOn, unlines)
 import Data.Text.IO (hGetContents, writeFile)
+import System.Console.GetOpt (ArgDescr (NoArg, OptArg), ArgOrder(RequireOrder), OptDescr (Option), getOpt, usageInfo)
 import System.Environment (getArgs)
-import System.FilePath ((<.>))
-import System.IO (IOMode (ReadMode, WriteMode), withFile)
+import System.Environment.Blank (getProgName)
+import System.Exit (ExitCode (ExitSuccess), exitWith)
+import System.FilePath (takeDirectory, (</>), (<.>))
+import System.IO (IOMode (ReadMode, WriteMode), stderr, withFile)
 
-import CMarkGFM (NodeType (CODE_BLOCK), CMarkExtension, CMarkOption, Info, Node, Node (Node), commonmarkToNode)
+import CMarkGFM (CMarkExtension, CMarkOption, Info, Node (Node), NodeType (CODE_BLOCK), commonmarkToNode)
 import Text.Regex.TDFA
+import System.Directory (createDirectoryIfMissing)
 
 
 xCryptolSessionBlocks :: Node -> [Text]
@@ -42,23 +46,39 @@ blockSnippets block =
             Expected _ _ -> False
 
 
-extractSnippets :: [CMarkOption] -> [CMarkExtension] -> FilePath -> IO ()
-extractSnippets opts exts path = do
+data Options = Options 
+    { optVerbose    :: Bool
+    , optOutput     :: String
+    }
+
+defaults :: Options
+defaults = Options
+    { optVerbose    = False
+    , optOutput     = ""
+    }
+
+extractSnippets :: Options -> FilePath -> IO ()
+extractSnippets opts path = do
+    when verbose (putStrLn ("Extracting snippets from " ++ path)) ;
     contents <- withFile path ReadMode hGetContents ;
     let
-        markdown = commonmarkToNode opts exts contents
+        markdown = commonmarkToNode [] [] contents
         sessionBlocks = xCryptolSessionBlocks markdown
         hasSessions = sessionBlocks /= []
         (commandBlocks, expectedBlocks) = unzip (map blockSnippets (sessionBlocks))
         commands = concat commandBlocks
         expected = concat expectedBlocks
         stdout = filter isStdOut expected
-      in when hasSessions (do
-          writeSnippets (path <.> "icry")          commands;
-          writeSnippets (path <.> "icry.expected") expected;
-          writeSnippets (path <.> "icry.stdout")   stdout
+      in when hasSessions ( do
+          logSnippets "commands"        "icry"          commands ;
+          logSnippets "expected output" "icry.expected" expected ;
+          logSnippets "batch output"    "icry.stdout"   stdout
       )
   where
+    Options { optVerbose = verbose
+            , optOutput = output
+            } = opts
+
     snippetText snippetLine =
         case snippetLine of
             Command c -> c
@@ -69,9 +89,102 @@ extractSnippets opts exts path = do
             Command _ -> False
             Expected _ b -> b
     
-    writeSnippets path = Data.Text.IO.writeFile path . Data.Text.unlines . map snippetText
-    
+    logSnippets label ext commands = do
+        when verbose ( putStrLn ("Writing " ++ label ++ " to " ++ outPathExt ++ " ..." ))
+        createDirectoryIfMissing True (takeDirectory outPathExt)
+        writeSnippets outPathExt commands
+      where
+        outPathExt = output </> path <.> ext
+
+    writeSnippets outPathExt =
+        Data.Text.IO.writeFile outPathExt . Data.Text.unlines . map snippetText
+
+{-
+options :: [ OptDescr (Options -> IO Options) ]
+options =
+    [ Option "i" ["input"]
+        (ReqArg
+            (\arg opt -> return opt { optInput = readFile arg })
+            "FILE")
+        "Input file"
+
+    , Option "o" ["output"]
+        (ReqArg
+            (\arg opt -> return opt { optOutput = writeFile arg })
+            "FILE")
+        "Output file"
+
+    , Option "s" ["string"]
+        (ReqArg
+            (\arg opt -> return opt { optInput = return arg })
+            "FILE")
+        "Input string"
+
+    , Option "v" ["verbose"]
+        (NoArg
+            (\opt -> return opt { optVerbose = True }))
+        "Enable verbose messages"
+
+    , Option "V" ["version"]
+        (NoArg
+            (\_ -> do
+                hPutStrLn stderr "Version 0.01"
+                exitWith ExitSuccess))
+        "Print version"
+
+    , Option "h" ["help"]
+        (NoArg
+            (\_ -> do
+    	        prg <- getProgName
+                hPutStrLn stderr (usageInfo prg options)
+                exitWith ExitSuccess))
+        "Show help"
+    ]
+-}
+
+options :: [ OptDescr (Options -> IO Options) ]
+options =
+    [ Option "r" ["output"]
+        (OptArg
+            (\arg opt ->
+                return opt {
+                    optOutput = case arg of
+                        Just x -> x
+                        Nothing -> optOutput opt
+                }
+            )
+            "DIR")
+        "base directory for extracted snippets"
+
+    , Option "v" ["verbose"]
+        (NoArg
+            (\opt -> return opt { optVerbose = True }))
+        "report stages of snippet extraction"
+
+    , Option "h?" ["help"]
+        (NoArg
+            (\_ -> do
+                prg <- getProgName
+                putStrLn (usageInfo prg options)
+                exitWith ExitSuccess))
+        "usage info"
+    ]
+
 main :: IO ()
 main = do
     args <- getArgs
-    forM_ args $ \arg -> extractSnippets [] [] arg
+
+    let (actions, nonOptions, errors) = getOpt RequireOrder options args
+
+    -- Here we thread startOptions through all supplied option actions
+    opts <- foldl (>>=) (return defaults) actions
+
+    let Options { optVerbose = verbose
+                , optOutput  = output
+                } = opts
+    
+    prog <- getProgName
+
+    when verbose (putStrLn ("Running " ++ prog ++ " verbosely " ++ " with output to: " ++ output))
+
+    forM_ nonOptions $ \path -> extractSnippets opts path
