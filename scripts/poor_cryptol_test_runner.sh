@@ -171,6 +171,8 @@ function extract_test_diff {
         val=
     done
 
+    CRYPTOL_ALIAS=${CRYPTOL_ALIAS:cryptol}
+
     CRYPTOL_TEST_RUNNER=${CRYPTOL_TEST_RUNNER:-/cryptol/bin/test-runner}
     CRYPTOL_BINARY=${CRYPTOL_BINARY:-`which cryptol`}
     TEST_RESULT_DIR=${TEST_RESULT_DIR:-$PWD}
@@ -220,8 +222,8 @@ function extract_test_diff {
             icry_list+=("$icry")
             log "$0:   List of .icry files is now: ${icry_list[@]}"
 
-            log "$0:   Logging interactive Cryptol running $icry to $actual ..."
-            cryptol -b $icry > $actual
+            log "$0:   Logging `$CRYPTOL_ALIAS` in batch mode running $ICRY to $ACTUAL ..."
+            cryptol -b $icry # > $actual
             dos2unix -n $actual $tmp && mv $tmp $actual
             
             log "$0:   Logging difference between $expected and $actual to $delta ..."
