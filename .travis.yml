@@ -68,8 +68,9 @@ jobs:
       dist: focal
       os: linux
       script:
-        - chmod +x scripts/extract_snippets && chmod +x scripts/poor_test_runner.sh && scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && ls output/labs/Demos/Cryptol/* && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
-
+        - chmod +x scripts/extract_snippets && chmod +x scripts/poor_test_runner.sh
+        - scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
+        - scripts/extract_snippets --output=output -v labs/Transposition/*Answers.md && scripts/poor_test_runner.sh -v output/labs/Transposition/*.md.icry
 script:
   - export CRYPTOLPATH=$(pwd)
 # README tests
