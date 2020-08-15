@@ -21,7 +21,9 @@ function log () {
 }
 
 run_tests() {
-    CRYPTOL_ALIAS=${CRYPTOL_ALIAS:cryptol}
+    [[ $TRAVIS_JOB_NAME = "Cryptol and SAW Docker on Linux Host" ]] \
+        && CRYPTOL_ALIAS="docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course galoisinc/cryptol:2.9.0" \
+        || CRYPTOL_ALIAS="cryptol"
 
     # Process command line arguments
     while [ "$1" != "" ]; do
