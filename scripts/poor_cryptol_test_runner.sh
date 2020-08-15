@@ -11,6 +11,7 @@ and pass them to Cryptol's `test-runner`
 
 Usage: $0 COMMAND_LINE_OPTIONS FILES/DIRS
 Command line options:
+-v         --verbose          echo status messages
 -x PATH    --runner=PATH      path to Cryptol `test-runner` or equivalent
 -c PATH    --exe=PATH         path to Cryptol binary
 -F STRING  --flag=STRING      add a flag to the test binary
@@ -24,6 +25,12 @@ Command line options:
 Parameters:
 FILES/DIRS                    Markdown files/directories from which to extract tests
 EOM
+}
+
+function log () {
+    if [[ $VERBOSE -eq true ]]; then
+        echo "$@"
+    fi
 }
 
 function extract_test_diff {
@@ -52,12 +59,19 @@ function extract_test_diff {
         case $key in
             # poor_cryptol_test_runner.sh CLI
 
+            # echo status messages
+            # -v
+            # --verbose
+            -v | --verbose )
+                val=true
+                VERBOSE=$val
+                ;;
+
             # path to Cryptol `test-runner` or equivalent
             # -x PATH
             -x )
                 shift
                 val=$1
-                TEST_RUNNER_ARGS+=($key $val)
                 ;&
             # --runner=PATH
             --runner )
@@ -157,15 +171,17 @@ function extract_test_diff {
         val=
     done
 
+    CRYPTOL_ALIAS=${CRYPTOL_ALIAS:cryptol}
+
     CRYPTOL_TEST_RUNNER=${CRYPTOL_TEST_RUNNER:-/cryptol/bin/test-runner}
     CRYPTOL_BINARY=${CRYPTOL_BINARY:-`which cryptol`}
     TEST_RESULT_DIR=${TEST_RESULT_DIR:-$PWD}
     TEST_FLAGS=${TEST_FLAGS[@]:--F v2-run -F -v0 -F exe:cryptol -F -- -F -b}
     TEST_RESULT_EXT="${TEST_RESULT_EXT:-icry}"
 
-    echo "TEST_FLAGS: ${TEST_FLAGS[*]}"
-    echo "TEST_RUNNER_ARGS: ${TEST_RUNNER_ARGS[*]}"
-    echo "FILES/DIRS: ${md_list[*]}"
+    log "TEST_FLAGS: ${TEST_FLAGS[*]}"
+    log "TEST_RUNNER_ARGS: ${TEST_RUNNER_ARGS[*]}"
+    log "FILES/DIRS: ${md_list[*]}"
 
     # If no files/dirs are provided, default to the added/modified files in `git status -s`
     if [ "${#md_list[@]}" -eq 0 ]; then
@@ -186,45 +202,46 @@ function extract_test_diff {
         actual=$dirbasename.actual
         delta=$dirbasename.diff
 
-        echo "$0: Processing Markdown file $md ..."
+        log "$0: Processing Markdown file $md ..."
 
-        echo "$0:   Removing Windows carriage returns in $md..."
+        log "$0:   Removing Windows carriage returns in $md..."
         dos2unix -n "$md" "$tmp" && mv "$tmp" "$md"
 
         if grep -q '^```Xcryptol session' "$md"; then
-            echo "$0:   Extracting \`\`\`Xcryptol session fences from $md; exporting commands to $icry and output to $expected ..."
+            log "$0:   Extracting \`\`\`Xcryptol session fences from $md; exporting commands to $icry and output to $expected ..."
             sed -n '/^```Xcryptol session/,/^```/ p' < "$md" | sed '/^```/ d' | grep -E "^[A-Za-z0-9:_']+?>" | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$/\1/" > $icry
             sed -n '/^```Xcryptol session/,/^```/ p' < "$md" | sed '/^```/ d' | sed -r "s/^[A-Za-z0-9:_']+?> ?(.*)$//" | sed "/^$/d" | sed -rn '/^(Loading module )|(Counterexample)|(Q.E.D.)|(Satisfiable)|(Unsatisfiable)/ p' > $expected
 
-            echo "$0:   Removing Windows carriage returns in $icry..."
+            log "$0:   Removing Windows carriage returns in $icry..."
             dos2unix -n "$icry" "$tmp" && mv "$tmp" "$icry"
 
-            echo "$0:   Removing Windows carriage returns in $expected..."
+            log "$0:   Removing Windows carriage returns in $expected..."
             dos2unix -n "$expected" "$tmp" && mv "$tmp" "$expected"
 
-            echo "$0:   Adding $icry to list of .icry files to test..."
+            log "$0:   Adding $icry to list of .icry files to test..."
             icry_list+=("$icry")
-            echo "$0:   List of .icry files is now: ${icry_list[@]}"
+            log "$0:   List of .icry files is now: ${icry_list[@]}"
 
-            echo "$0:   Logging interactive Cryptol running $icry to $actual ..."
-            cryptol -b $icry > $actual
+            log "$0:   Logging `$CRYPTOL_ALIAS` in batch mode running $ICRY to $ACTUAL ..."
+            cryptol -b $icry # > $actual
             dos2unix -n $actual $tmp && mv $tmp $actual
             
-            echo "$0:   Logging difference between $expected and $actual to $delta ..."
+            log "$0:   Logging difference between $expected and $actual to $delta ..."
             diff $expected $actual > $delta
 
-            if grep -qE "Counterexample|Satisfiable|Q.E.D.|Unsatisfiable" $delta; then
-                echo "Found Q.E.D. or Unsatisfiable; exiting..."
+            if grep -qE "^(Loading .*)|(Q\.E\.D\.)|(Counterexample)|(Satisfiable)|(Unsatisfiable)$" $delta; then
+                log "$(< $delta)"
+                log "Found Q.E.D. or Unsatisfiable; exiting..."
                 exit 1
             fi
 
             # rm $icry $expected $actual $delta
         else
-            echo "$0:   $md did not have any \`\`\`Xcryptol session fences; skipping..."
+            log "$0:   $md did not have any \`\`\`Xcryptol session fences; skipping..."
         fi
     done
 
-    # echo "Running Cryptol test runner on all .icry files..."
+    # log "Running Cryptol test runner on all .icry files..."
     # $CRYPTOL_TEST_RUNNER \
     #     -c $CRYPTOL_BINARY \
     #     -r $TEST_RESULT_DIR \
@@ -233,4 +250,5 @@ function extract_test_diff {
     #     "${icry_list[@]}"
 }
 
+shopt -s expand_aliases
 extract_test_diff $*
