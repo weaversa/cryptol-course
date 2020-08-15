@@ -21,9 +21,13 @@ function log () {
 }
 
 run_tests() {
-    [[ $TRAVIS_JOB_NAME = "Cryptol and SAW Docker on Linux Host" ]] \
-        && CRYPTOL_ALIAS="docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course galoisinc/cryptol:2.9.0" \
-        || CRYPTOL_ALIAS="cryptol"
+    if [[ $TRAVIS_JOB_NAME = "Cryptol and SAW Docker on Linux Host" ]]; then
+        CRYPTOL_ALIAS="docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course galoisinc/cryptol:2.9.0" \
+        CRYPTOL_MNT="/mnt/cryptol-course/"
+    else
+        CRYPTOL_ALIAS="cryptol"
+        CRYPTOL_MNT=""
+    fi
 
     # Process command line arguments
     while [ "$1" != "" ]; do
@@ -83,7 +87,7 @@ run_tests() {
         dos2unix -q -n "$STDOUT" "$TMP" && mv "$TMP" "$STDOUT"
 
         log "$0:   Logging \"$CRYPTOL_ALIAS\" in batch mode running $ICRY to $ACTUAL ..."
-        $CRYPTOL_ALIAS -b $ICRY # > $ACTUAL
+        $CRYPTOL_ALIAS -b $CRYPTOL_MNT$ICRY > $ACTUAL
         log "$0:   Removing Windows carriage returns in $ACTUAL..."
         dos2unix -q -n $ACTUAL $TMP && mv $TMP $ACTUAL
 
