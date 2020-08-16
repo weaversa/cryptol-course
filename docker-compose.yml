@@ -1,0 +1,20 @@
+version: '3'
+services:
+  container-student:
+    build:
+      context:
+        ./container-student
+    tty: true
+
+  container-author:
+    build:
+      context:
+        ./container-author
+    tty: true
+  
+  # container-dev:
+  #   build:
+  #     context:
+  #       ./container-dev
+  #   tty: true
+  
