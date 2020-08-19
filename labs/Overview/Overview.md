@@ -38,10 +38,12 @@ You'll also gain experience with
 
 ## Load This Module
 
-This lab is a
+This lab -- like most of the labs throughout the course -- is a
 [literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
-document --- that is, it can be loaded directly into the Cryptol
-interpreter. Load this module from within the Cryptol interpreter
+document. It can be loaded directly into the Cryptol
+interpreter, edited, and interacted with.
+
+Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```shell
@@ -74,11 +76,10 @@ evaluation. More information about Cryptol is available at
 
 # First Steps: Hello, Cryptol!
 
-A grand tradition when learning a new programming language is to test
-the waters with a Hello World program. In this file we've defined a
-function `sayHello` which is specified as follows:
+A grand tradition when learning a new programming language is to test the waters with a Hello World program.
 
-void sayHello (uint8_t *name, size_t a)
+In this file we've defined a Cryptol
+function `sayHello` which is specified as follows:
 
 ```cryptol
 sayHello : {a} (fin a) => [a][8] -> [7+a][8]
