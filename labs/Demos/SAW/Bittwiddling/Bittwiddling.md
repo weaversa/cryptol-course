@@ -67,6 +67,7 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::Demos::SAW::Bittwiddling::Bittwiddling
 Loading module Cryptol
 Loading module labs::Demos::SAW::Bittwiddling::Bittwiddling

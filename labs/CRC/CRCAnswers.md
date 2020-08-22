@@ -39,6 +39,7 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::CRC::CRCAnswers
 Loading module Cryptol
 Loading module labs::CRC::CRCAnswers
@@ -239,7 +240,6 @@ CRC32_BZIP2 = CRC G 0xffffffff 0xffffffff False False
 
 property CRC32_BZIP2Test =
     CRC32_BZIP2 testM == 0x459DEE61
-
 ```
 
 
@@ -251,7 +251,6 @@ CRC32_C = CRC G 0xffffffff 0xffffffff True True
 
 property CRC32_CTest =
     CRC32_C testM == 0x22620404
-
 ```
 
 

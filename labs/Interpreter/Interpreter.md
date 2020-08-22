@@ -37,6 +37,7 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::Interpreter::Interpreter
 Loading module Cryptol
 Loading module labs::Interpreter::Interpreter
@@ -396,17 +397,20 @@ To load a module by its name (rather than by filename), we use
 The latter is preferred. To set the CRYPTOLPATH variable such that we
 can access the labs and specs here, do this:
 
-```Xcryptol session
+```Xcryptol shell
 $ export CRYPTOLPATH=<path-to-cryptol-course>
-cryptol-course]$ cryptol
+cryptol-course$ cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
 version 2.9.0
 https://cryptol.net  :? for help
-
 Loading module Cryptol
+```
+
+```Xcryptol session
 Cryptol> :m labs::Interpreter::Interpreter
+Loading module Cryptol
 Loading module labs::Interpreter::Interpreter
 labs::Interpreter::Interpreter>
 ```
@@ -423,7 +427,7 @@ an environment variable called `EDITOR`. For example, if in a Linux
 like environment, the following command will change the default to
 [Emacs](https://www.gnu.org/software/emacs/).
 
-```Xcryptol session
+```Xcryptol shell
 $ export EDITOR="emacs -nw"
 ```
 
@@ -433,9 +437,9 @@ Interpreter commands can be issued directly from the command line, or
 from a batch file. For example, here we issue some commands from the
 command line using the interpreter's `-c` flag:
 
-```Xcryptol session
-$ cryptol -c ":m labs::Interpreter::Interpreter" -c ":s base=10" -c "x + 2"
+```Xcryptol shell
 Loading module Cryptol
+$ cryptol -c ":m labs::Interpreter::Interpreter" -c ":s base=10" -c "x + 2"
 Loading module Cryptol
 Loading module labs::Interpreter::Interpreter
 3
@@ -444,13 +448,12 @@ Loading module labs::Interpreter::Interpreter
 And here we issue the same commands by running the `test.sry` batch
 file using the interpreter's `-b` flag:
 
-```Xcryptol session
+```Xcryptol shell
 $ cat labs/Interpreter/test.sry
 :m labs::Interpreter::Interpreter
 :s base=10
 x + 2
 $ cryptol -b labs/Interpreter/test.sry
-Loading module Cryptol
 Loading module Cryptol
 Loading module labs::Interpreter::Interpreter
 3
@@ -460,7 +463,7 @@ Loading module labs::Interpreter::Interpreter
 
 The last few items covered here (and more) can be found querying Cryptol's usage options via:
 
-```Xcryptol session
+```Xcryptol shell
 $ cryptol --help
 Usage: cryptol [OPTIONS]
   -b FILE     --batch=FILE             run the script provided and exit

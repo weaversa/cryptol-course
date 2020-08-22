@@ -53,6 +53,7 @@ interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::Language::Basics
 Loading module Cryptol
 Loading module labs::Overview::Overview
@@ -1575,7 +1576,7 @@ correct by printing `Q.E.D.`. This means Cryptol has proven that your
 `R` is correct for all possible inputs (which is either `2^^96` for
 the 32-bit proof or `2^^192` for the 64-bit proof).
 
-```Xcryptol session
+```Xcryptol session ci-none
 labs::Language::Basics> :prove RInverseProperty`{32}
 Q.E.D.
 (Total Elapsed Time: 0.008s, using "Z3")
