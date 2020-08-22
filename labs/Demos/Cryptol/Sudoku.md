@@ -32,7 +32,6 @@ running in the `cryptol-course` directory with:
 ```Xcryptol session
 Cryptol> :m labs::Demos::Cryptol::Sudoku
 Loading module Cryptol
-Loading module Cryptol
 Loading module labs::Demos::Cryptol::Sudoku
 ```
 

@@ -37,8 +37,13 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```shell
+```Xcryptol session
 Cryptol> :m labs::ProjectEuler::ProjectEulerAnswers
+Loading module Cryptol
+Loading module labs::ProjectEuler::cipher1
+Loading module labs::ProjectEuler::keylog
+Loading module labs::ProjectEuler::cipher2
+Loading module labs::ProjectEuler::ProjectEulerAnswers
 ```
 
 We start by defining a new module for this lab and importing some accessory
@@ -51,6 +56,11 @@ import labs::ProjectEuler::cipher1
 import labs::ProjectEuler::keylog
 import labs::ProjectEuler::cipher2
 ```
+
+You do not need to enter the above into the interpreter; the previous 
+`:m ...` command loaded this literate Cryptol file automatically.
+In general, you should run `Xcryptol session` commands in the 
+interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 ### [Problem 9](https://projecteuler.net/problem=9)
 
@@ -128,14 +138,14 @@ property factorionprop n l =
     sumfactorial l == n
 ```
 
-```shell
+```Xcryptol session
 labs::ProjectEuler::ProjectEulerAnswers> :s satNum=all
 labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [1]Integer -> _
 Satisfiable
 (factorionprop : _ -> [1]Integer -> _) 2 [2] = True
 (factorionprop : _ -> [1]Integer -> _) 1 [1] = True
 (Total Elapsed Time: 0.029s, using "Z3")
-labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [2]Integer -> _ :sat factorionprop : _ -> [2]Integer -> _
+labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [2]Integer -> _
 Unsatisfiable
 (Total Elapsed Time: 0.038s, using "Z3")
 labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [3]Integer -> _
@@ -150,7 +160,6 @@ Satisfiable
 (factorionprop : _ -> [5]Integer -> _) 40585 [4, 0, 5, 8, 5] = True
 (Total Elapsed Time: 0.404s, using "Z3")
 labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [6]Integer -> _
-Unsatisfiable
 Unsatisfiable
 (Total Elapsed Time: 53.026s, using "Z3")
 ```
@@ -194,15 +203,18 @@ property doublepalindrome x l =
       nocarryprods = [ carrymult i p | i <- l | p <- powersoften ] == 0
 ```
 
-```shell
+```Xcryptol session
 labs::ProjectEuler::ProjectEulerAnswers> :s base=10
 labs::ProjectEuler::ProjectEulerAnswers> :s satNum=all
 labs::ProjectEuler::ProjectEulerAnswers> :sat doublepalindrome`{3, 9}
+Satisfiable
 doublepalindrome`{3, 9} 313 [3, 1, 3] = True
+(Total Elapsed Time: 0.036s, using "Z3")
 labs::ProjectEuler::ProjectEulerAnswers> :sat doublepalindrome`{3, 10}
+Satisfiable
 doublepalindrome`{3, 10} 585 [5, 8, 5] = True
 doublepalindrome`{3, 10} 717 [7, 1, 7] = True
-...
+(Total Elapsed Time: 0.040s, using "Z3")
 ```
 
 
@@ -259,17 +271,18 @@ pandigital n l =
       n890 = formnumber (l @@ ([7,8,9] : [3][16]))
 ```
 
-```shell
+```Xcryptol session
 labs::ProjectEuler::ProjectEulerAnswers> :s satNum=all
 labs::ProjectEuler::ProjectEulerAnswers> :s base=10
 labs::ProjectEuler::ProjectEulerAnswers> :sat pandigital
-pandigital 1430952867 [1, 4, 3, 0, 9, 5, 2, 8, 6, 7] = True
-pandigital 4130952867 [4, 1, 3, 0, 9, 5, 2, 8, 6, 7] = True
+Satisfiable
+pandigital 4160357289 [4, 1, 6, 0, 3, 5, 7, 2, 8, 9] = True
 pandigital 1406357289 [1, 4, 0, 6, 3, 5, 7, 2, 8, 9] = True
 pandigital 4106357289 [4, 1, 0, 6, 3, 5, 7, 2, 8, 9] = True
-pandigital 4160357289 [4, 1, 6, 0, 3, 5, 7, 2, 8, 9] = True
+pandigital 4130952867 [4, 1, 3, 0, 9, 5, 2, 8, 6, 7] = True
+pandigital 1430952867 [1, 4, 3, 0, 9, 5, 2, 8, 6, 7] = True
 pandigital 1460357289 [1, 4, 6, 0, 3, 5, 7, 2, 8, 9] = True
-...
+(Total Elapsed Time: 1.820s, using "Z3")
 ```
 
 ### [Problem 52](https://projecteuler.net/problem=52)
@@ -288,10 +301,10 @@ twolistssamedigits :
 twolistssamedigits l1 l2 =
     [ listhasdigit l1 i | i <- l2 ] == ~0
 
-//productdigits :
-//    {a, b}
-//    (fin a, a >= 1, Cmp b, Arith b, Literal 10 b) =>
-//    b -> [6][a]b -> Bit
+productdigits :
+    {n, a}
+    (Cmp a, Ring a, Literal 10 a, fin n) =>
+    a -> [6][1 + n]a -> Bit
 property productdigits n ls =
     basetenrep n l1                 /\
     alltwolists                     /\
@@ -307,12 +320,20 @@ property productdigits n ls =
                | i <- [2..6] ] == ~0
 ```
 
-```shell
+```Xcryptol session
 labs::ProjectEuler::ProjectEulerAnswers> :sat productdigits`{6, [32]}
+Satisfiable
 productdigits`{6, [32]}
-  142857
-  [[1, 4, 2, 8, 5, 7], [2, 8, 5, 7, 1, 4], [4, 2, 8, 5, 7, 1],
-   [5, 7, 1, 4, 2, 8], [7, 1, 4, 2, 8, 5], [8, 5, 7, 1, 4, 2]] = True
+  1428570
+  [[1, 4, 2, 8, 5, 7, 0], [2, 8, 5, 7, 1, 4, 0],
+   [4, 2, 8, 5, 7, 1, 0], [5, 7, 1, 4, 2, 8, 0],
+   [7, 1, 4, 2, 8, 5, 0], [8, 5, 7, 1, 4, 2, 0]] = True
+productdigits`{6, [32]}
+  1429857
+  [[1, 4, 2, 9, 8, 5, 7], [2, 8, 5, 9, 7, 1, 4],
+   [4, 2, 8, 9, 5, 7, 1], [5, 7, 1, 9, 4, 2, 8],
+   [7, 1, 4, 9, 2, 8, 5], [8, 5, 7, 9, 1, 4, 2]] = True
+(Total Elapsed Time: 1.658s, using "Z3")
 ```
 
 ### [Problem 59](https://projecteuler.net/problem=59) (Modified)
@@ -394,12 +415,14 @@ decrypt s key = s ^ (take ks)
     keys = [ key ] # [ k | k <- keys ]
 ```
 
-```shell
+```Xcryptol session
 labs::ProjectEuler::ProjectEulerAnswers> :s ascii=on
 labs::ProjectEuler::ProjectEulerAnswers> :sat XORtowords cipher1
+Satisfiable
 XORtowords cipher1 "abe" = True
 XORtowords cipher1 "aba" = True
-labs::ProjectEuler::ProjectEulerAnswers> decrypt cipher1 "aba"
+(Total Elapsed Time: 1.594s, using "Z3")
+labs::ProjectEuler::ProjectEulerAnswers> decrypt cipher1 "abe"
 "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal.  Now we are engaged in a great civil war, testing whether that nation, or any nation so conceived and so dedicated, can long endure. We are met on a great battle-field of that war. We have come to dedicate a portion of that field, as a final resting place for those who here gave their lives that that nation might live. It is altogether fitting and proper that we should do this.  But, in a larger sense, we can not dedicate-we can not consecrate-we can not hallow-this ground. The brave men, living and dead, who struggled here, have consecrated it, far above our poor power to add or detract. The world will little note, nor long remember what we say here, but it can never forget what they did here. It is for us the living, rather, to be dedicated here to the unfinished work which they who fought here have thus far so nobly advanced. It is rather for us to be here dedicated to the great task remaining before us-that from these honored dead we take increased devotion to that cause for which they gave the last full measure of devotion-that we here highly resolve that these dead shall not have died in vain-that this nation, under God, shall have a new birth of freedom-and that government of the people, by the people, for the people, shall not perish from the earth."
 ```
 
@@ -432,24 +455,33 @@ passcode l = [ loop l kl != 0 | kl <- keylog ] == ~0
                     k <- [0..a-1] ]
 ```
 
-```shell
+```Xcryptol session
 labs::ProjectEuler::ProjectEulerAnswers> :s base=10
 labs::ProjectEuler::ProjectEulerAnswers> :sat passcode`{1}
 Unsatisfiable
+(Total Elapsed Time: 0.024s, using "Z3")
 labs::ProjectEuler::ProjectEulerAnswers> :sat passcode`{2}
 Unsatisfiable
+(Total Elapsed Time: 0.032s, using "Z3")
 labs::ProjectEuler::ProjectEulerAnswers> :sat passcode`{3}
 Unsatisfiable
+(Total Elapsed Time: 0.072s, using "Z3")
 labs::ProjectEuler::ProjectEulerAnswers> :sat passcode`{4}
 Unsatisfiable
+(Total Elapsed Time: 0.161s, using "Z3")
 labs::ProjectEuler::ProjectEulerAnswers> :sat passcode`{5}
 Unsatisfiable
+(Total Elapsed Time: 0.316s, using "Z3")
 labs::ProjectEuler::ProjectEulerAnswers> :sat passcode`{6}
 Unsatisfiable
+(Total Elapsed Time: 0.656s, using "Z3")
 labs::ProjectEuler::ProjectEulerAnswers> :sat passcode`{7}
 Unsatisfiable
+(Total Elapsed Time: 1.275s, using "Z3")
 labs::ProjectEuler::ProjectEulerAnswers> :sat passcode`{8}
+Satisfiable
 passcode`{8} [7, 3, 1, 6, 2, 8, 9, 0] = True
+(Total Elapsed Time: 2.282s, using "Z3")
 ```
 
 ### Throwback
@@ -460,9 +492,11 @@ passcode`{8} [7, 3, 1, 6, 2, 8, 9, 0] = True
 > EXTRA CHALLENGE:
 > What about five-digit numbers? Other numbers of digits?
 
-```shell
+```Xcryptol session
 labs::ProjectEuler::ProjectEulerAnswers> :sat \(x : [32]) -> x > 999 /\ x ^^ 2 % 10000 == x
+Satisfiable
 (\(x : [32]) -> x > 999 /\ x ^^ 2 % 10000 == x) 9376 = True
+(Total Elapsed Time: 0.699s, using "Z3")
 ```
 
 ```cryptol
@@ -475,7 +509,9 @@ squaredrop n l =
     formnumber (drop`{back = ((a)/2)} l) == n
 ```
 
-```shell
+```Xcryptol session
 labs::ProjectEuler::ProjectEulerAnswers> :sat squaredrop`{8}
+Satisfiable
 squaredrop`{8} 9376 [8, 7, 9, 0, 9, 3, 7, 6] = True
+(Total Elapsed Time: 6.377s, using "Z3")
 ```

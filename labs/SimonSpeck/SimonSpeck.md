@@ -31,8 +31,12 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```shell
+```Xcryptol session
 Cryptol> :m labs::SimonSpeck::SimonSpeck
+Loading module Cryptol
+Loading module labs::SimonSpeck::Simon::Simon
+Loading module labs::SimonSpeck::Simon::simon_32_64
+Loading module labs::SimonSpeck::SimonSpeck
 ```
 
 We start by defining a new module for this lab:
@@ -40,6 +44,11 @@ We start by defining a new module for this lab:
 ```cryptol
 module labs::SimonSpeck::SimonSpeck where
 ```
+
+You do not need to enter the above into the interpreter; the previous 
+`:m ...` command loaded this literate Cryptol file automatically.  
+In general, you should run `Xcryptol session` commands in the 
+interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # Learning to use Parameterized Modules with Simon and Speck
 
@@ -356,9 +365,9 @@ then you should be able to load the `SpeckTestVectors` module also
 located in the `Speck` folder as follows and verify that you have
 correctly implemented the functions:
 
-```shell
+```Xcryptol session
 Cryptol> :m labs::SimonSpeck::Speck::SpeckTestVectors
-Cryptol> :prove all_speck_vectors_pass 
+labs::SimonSpeck::Simon::SpeckTestVectors> :prove all_speck_vectors_pass 
 Q.E.D.
 (Total Elapsed Time: 0.021s, using "Z3")
 ```
