@@ -1,0 +1,25 @@
+{
+    "name": "Cryptol Course - Dev",
+
+    "settings": {
+        "terminal.integrated.shell.linux": "/bin/bash"
+    },
+
+    "dockerComposeFile": [
+        "../docker-compose.yml",
+        "../docker-compose.devcontainer.yml",
+    ],
+    "service": "container-dev",
+    "remoteUser": "cryptol",
+    "shutdownAction": "none",
+    "workspaceFolder": "/workspace/cryptol-course",
+
+    "runArgs": [],
+    "postCreateCommand": "sudo apt-get update",
+
+    "extensions": [
+        "haskell.haskell",
+        "jldodds.cryptol",
+        "ms-azuretools.vscode-docker"
+    ],
+}

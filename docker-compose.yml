@@ -5,16 +5,13 @@ services:
       context:
         ./container-student
     tty: true
-
   container-author:
     build:
       context:
         ./container-author
     tty: true
-  
-  # container-dev:
-  #   build:
-  #     context:
-  #       ./container-dev
-  #   tty: true
-  
+  container-dev:
+    build:
+      context:
+        ./container-dev
+    tty: true

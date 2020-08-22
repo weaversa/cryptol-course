@@ -5,23 +5,13 @@ services:
       - ./labs:/workspace/cryptol-course/labs
       - ./misc:/workspace/cryptol-course/misc
       - ./spec:/workspace/cryptol-course/spec
-
   container-author:
     volumes:
       - ./labs:/workspace/cryptol-course/labs
       - ./misc:/workspace/cryptol-course/misc
       - ./spec:/workspace/cryptol-course/spec
-
       - ./output:/workspace/cryptol-course/output
       - ./scripts:/workspace/cryptol-course/scripts
-
-  # container-dev:
-  #   volumes:
-  #     - ./labs:/workspace/cryptol-course/labs
-  #     - ./misc:/workspace/cryptol-course/misc
-  #     - ./spec:/workspace/cryptol-course/spec
-
-  #     - ./output:/workspace/cryptol-course/output
-  #     - ./scripts:/workspace/cryptol-course/scripts
-
-  #     - ./dev:/workspace/cryptol-course/dev
+  container-dev:
+    volumes:
+      - .:/workspace/cryptol-course

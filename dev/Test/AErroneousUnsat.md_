@@ -1,0 +1,16 @@
+```cryptol
+module scripts::Test::AErroneousUnsat where
+
+orSelf : Bit -> Bit
+property orSelf x = x \/ ~x
+```
+
+```Xcryptol session
+Loading module Cryptol
+Cryptol> :m scripts::Test::AErroneousUnsat
+Loading module Cryptol
+Loading module scripts::Test::AErroneousUnsat
+scripts::Test::AErroneousUnsat> :sat orSelf
+Unsatisfiable
+(Total Elapsed Time: 0.005s, using "Z3")
+```

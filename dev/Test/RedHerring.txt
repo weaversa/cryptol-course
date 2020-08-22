@@ -1,0 +1,1 @@
+I'm a non-Markdown file that a Markdown snippet extractor shouldn't concern itself with.

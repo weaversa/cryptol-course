@@ -68,8 +68,8 @@ jobs:
       dist: focal
       os: linux
       script:
-        - chmod +x scripts/extract_snippets && chmod +x scripts/poor_test_runner.sh
-        - scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && ls output/labs/Demos/Cryptol/* && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
+        - shopt -s globstar
+        - scripts/extract_snippets --output=output -v **/*Answers.md labs/Demos/Cryptol/*.md labs/Interpreter/Interpreter.md labs/Language/Basics.md labs/Overview/Overview.md labs/SimonSpeck/SimonSpeck.md && scripts/poor_test_runner.sh -v output/**/*.md.icry
 
 script:
   - export CRYPTOLPATH=$(pwd)
