@@ -73,7 +73,7 @@ here.
 If a terminal window appears with the Cryptol logo, you're done. Feel
 free to load the next lab into the interpreter by typing:
 
-```shell
+```Xcryptol session
 Cryptol> :m labs::Overview::Overview
 ```
 
@@ -271,6 +271,7 @@ command from within Cryptol to load the lab.
     ...
 Loading module Cryptol
 Cryptol> :module labs::Demos::Cryptol::OneTimePad
+Loading module Cryptol
 Loading module labs::Demos::Cryptol::OneTimePad
 labs::Demos::Cryptol::OneTimePad>
 ```

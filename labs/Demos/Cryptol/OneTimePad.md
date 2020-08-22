@@ -30,7 +30,6 @@ running in the `cryptol-course` directory with:
 ```Xcryptol session
 Cryptol> :m labs::Demos::Cryptol::OneTimePad
 Loading module Cryptol
-Loading module Cryptol
 Loading module labs::Demos::Cryptol::OneTimePad
 ```
 

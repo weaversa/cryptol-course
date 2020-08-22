@@ -62,18 +62,20 @@ property CBCInverts iv (pt : [100][128]) =
     CBCDecrypt (\x -> x - 1) iv (CBCEncrypt (\x -> x + 1) iv pt) == pt
 ```
 
-```shell
- ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
- ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
- ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
- version 2.8.0
+```Xcryptol session
+┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
+┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
+┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
+version 2.9.0
+https://cryptol.net  :? for help
 
- Loading module Cryptol
- Cryptol> :module README
- Loading module README
- README> :prove CBCInverts
- Q.E.D.
- (Total Elapsed Time: 0.081s, using Z3)
+Loading module Cryptol
+Cryptol> :module README
+Loading module Cryptol
+Loading module README
+README> :prove CBCInverts
+Q.E.D.
+(Total Elapsed Time: 0.081s, using "Z3")
 ```
 
 Don't worry if Cryptol is not yet installed on your computer -- the
