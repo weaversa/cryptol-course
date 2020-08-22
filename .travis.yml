@@ -67,7 +67,7 @@ jobs:
       os: linux
       script:
         - shopt -s globstar
-        - scripts/extract_snippets --output=output -v **/*Answers.md labs/Demos/Cryptol/*.md labs/Interpreter/Interpreter.md labs/Language/Basics.md labs/Overview/Overview.md labs/SimonSpeck/SimonSpeck.md && scripts/poor_test_runner.sh -v output/**/*.md.icry
+        - scripts/extract_snippets --output=output -v *.md **/*Answers.md labs/Demos/Cryptol/*.md labs/Interpreter/Interpreter.md labs/Language/Basics.md labs/Overview/Overview.md labs/SimonSpeck/SimonSpeck.md && scripts/poor_test_runner.sh -v output/**/*.md.icry
 
 script:
   - export CRYPTOLPATH=$(pwd)

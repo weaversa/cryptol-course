@@ -93,8 +93,9 @@ run_tests() {
 
         log "$0:   Logging difference between $STDOUT and $ACTUAL to $DELTA ..."
         diff --minimal $STDOUT $ACTUAL > $DELTA
+        dos2unix -q -n "$DELTA" "$TMP" && mv "$TMP" "$DELTA"
 
-        if grep -qE "^((Loading .*)|(Q\.E\.D\.)|(Counterexample)|(Satisfiable)|(Unsatisfiable))$" $DELTA; then
+        if grep -qE "^[<>] ((Loading module .*)|(Q\.E\.D\.)|(Counterexample)|(Satisfiable)|(Unsatisfiable))$" $DELTA; then
             log "$(< $DELTA)"
             log "Found major inconsistency in diff; exiting..."
             exit 1
