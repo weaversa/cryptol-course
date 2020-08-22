@@ -54,16 +54,14 @@ jobs:
       compiler: clang
       dist: bionic
       os: linux
-      # script:
-      #   - chmod +x scripts/extract_snippets && chmod +x scripts/poor_test_runner.sh && scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
     - name: "Cryptol and SAW Docker on Linux Host"
       services:
         - docker
       before_install:
         - docker pull galoisinc/cryptol:2.9.0
-#        - docker pull galoisinc/saw:0.5
+        - docker pull galoisinc/saw:0.5
         - alias cryptol="docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course galoisinc/cryptol:2.9.0"
-#        - alias saw='docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course galoisinc/saw:0.5'
+        - alias saw='docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course galoisinc/saw:0.5'
       compiler: clang
       dist: focal
       os: linux
