@@ -40,6 +40,7 @@ interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::CryptoProofs::CryptoProofs
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
@@ -81,6 +82,7 @@ When you loaded the `labs::CryptoProofs::CryptoProofs` module, these
 lines should have been printed:
 
 ```Xcryptol session
+Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
 Loading module labs::CryptoProofs::CryptoProofs
@@ -354,7 +356,6 @@ need to edit this file directly.)
 DESFixParity : [64] -> [64]
 DESFixParity = zero // Replace "zero" with your code
 ```
-
 
 **EXERCISE**: 2.5.3 Proving DES Key Equivalence
 

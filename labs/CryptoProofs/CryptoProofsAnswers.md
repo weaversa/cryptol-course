@@ -40,6 +40,7 @@ interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::CryptoProofs::CryptoProofsAnswers
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
@@ -80,7 +81,8 @@ import specs::Primitive::Symmetric::Cipher::Block::DES
 When you loaded the `labs::CryptoProofs::CryptoProofsAnswers` module,
 these lines should have been printed:
 
-```Xcryptol session
+```example
+Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
 Loading module labs::CryptoProofs::CryptoProofsAnswers
@@ -233,7 +235,7 @@ provided: `0x1234567890ab`.
 
 > Solution:
 >
->```Xcryptol session
+>```Xcryptol session ci-none
 >labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct
 >```
 > At this point, the solver hangs, unable to find a solution in any
@@ -344,7 +346,7 @@ be used to prove that a function is injective.
 **EXERCISE**: 2.3.1 DES Injectivity
 
 Show that, for any given key, `DES.encrypt` is injective
-with respect to plaintext.
+(collision-free) with respect to plaintext.
 
 Technically, `DES.encrypt` (for any given key) is also *surjective*
 (*onto*) due to the fact that its domain and range are the same (The
@@ -384,6 +386,7 @@ that both keys encrypt that plaintext to the same ciphertext.
 >```Xcryptol session
 >labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
 >labs::CryptoProofs::CryptoProofsAnswers> :sat \k1 k2 pt -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2 pt
+>Satisfiable
 >(\k1 k2 pt -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2 pt)
 >  0x0000000000000000 0x0100000000000000 0x0000000000000000 = True
 >(Total Elapsed Time: 1.258s, using "Yices")

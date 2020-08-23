@@ -32,6 +32,7 @@ interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::SimonSpeck::SimonSpeck
 Loading module Cryptol
 Loading module labs::SimonSpeck::Simon::Simon
@@ -365,7 +366,8 @@ then you should be able to load the `SpeckTestVectors` module also
 located in the `Speck` folder as follows and verify that you have
 correctly implemented the functions:
 
-```Xcryptol session
+```Xcryptol session ci-none
+Loading module Cryptol
 Cryptol> :m labs::SimonSpeck::Speck::SpeckTestVectors
 labs::SimonSpeck::Simon::SpeckTestVectors> :prove all_speck_vectors_pass 
 Q.E.D.
