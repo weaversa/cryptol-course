@@ -28,7 +28,7 @@ RUN chown -R root:root /cryptol/rootfs
 
 RUN apt-get update \
     && apt-get install -y libgmp10 libgomp1 libffi6 wget libncurses5 unzip libreadline7 vim emacs-nox sudo git curl dos2unix \
-    make libgmp-dev gperf gcc autoconf pandoc \
+    make libgmp-dev gperf gcc autoconf graphviz \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY --from=galoisinc/cryptol:2.9.0 /usr/local/bin /usr/local/bin
 COPY --from=galoisinc/saw:0.5 /usr/local/bin /usr/local/bin

@@ -18,8 +18,9 @@
     "postCreateCommand": "sudo apt-get update",
 
     "extensions": [
-        "haskell.haskell",
         "jldodds.cryptol",
-        "ms-azuretools.vscode-docker"
+        "ms-azuretools.vscode-docker",
+        "haskell.haskell",
+        "joaompinto.vscode-graphviz",
     ],
 }
