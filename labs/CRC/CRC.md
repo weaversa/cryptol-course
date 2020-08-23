@@ -39,6 +39,7 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::CRC::CRC
 Loading module Cryptol
 Loading module labs::CRC::CRC
@@ -250,7 +251,6 @@ CRC32_C = CRC G undefined undefined undefined undefined
 
 property CRC32_CTest =
     CRC32_C testM == 0x22620404
-
 ```
 
 

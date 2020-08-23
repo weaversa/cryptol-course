@@ -44,6 +44,7 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::KeyWrapping::KeyWrapping
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::AES::GF28
