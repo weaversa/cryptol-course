@@ -74,7 +74,10 @@ If a terminal window appears with the Cryptol logo, you're done. Feel
 free to load the next lab into the interpreter by typing:
 
 ```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::Overview::Overview
+Loading module Cryptol
+Loading module labs::Overview::Overview
 ```
 
 You may now start using Visual Studio Code to work through the
@@ -109,7 +112,7 @@ for user-mode solutions.)*
 The Cryptol and *optional* SAW docker images can be downloaded by
 issuing the following Docker commands in your computer's terminal.
 
-```shell
+```
 $ docker pull cryptolcourse/cryptol
 ...
 $ docker pull cryptolcourse/saw
@@ -129,7 +132,7 @@ pasting a simple command into a shell prompt.
 Once Homebrew is installed, Cryptol (along with its `z3` dependency)
 can be installed via:
 
-```shell
+```
 brew update && brew install cryptol
 ```
 
@@ -155,7 +158,7 @@ you downloaded should be placed in your system path.
 For CentOS, Ubuntu, or MacOS, the whole process would look something
 like (depending on the which OS variant you have):
 
-```shell
+```
 $ curl -fsSL https://github.com/GaloisInc/saw-script/releases/download/v0.5/saw-0.5-Ubuntu14.04-64.tar.gz | tar -xz
 $ export PATH=$(pwd)/saw-0.5-Ubuntu14.04-64/bin:${PATH}
 ```
@@ -186,7 +189,7 @@ your system path.
 For CentOS, Ubuntu, or MacOS, the whole process would look something
 like (depending on which OS build and version you download):
 
-```shell
+```
 $ curl -fsSL https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-osx-10.14.6.zip -o z3-4.8.8-x64-osx-10.14.6.zip
 $ unzip -j z3-4.8.8-x64-osx-10.14.6.zip -d z3-4.8.8
 $ export PATH=$(pwd)/z3-4.8.8:${PATH}
@@ -239,22 +242,30 @@ is used by both Cryptol and SAW.
 
 ### Using Docker on Linux and MacOS
 
-```shell
+```
 .../cryptol-course> docker run --rm -it --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course cryptolcourse/cryptol
     ...
 Loading module Cryptol
+```
+
+```Xcryptol session
 Cryptol> :module labs::Demos::Cryptol::OneTimePad
+Loading module Cryptol
 Loading module labs::Demos::Cryptol::OneTimePad
 labs::Demos::Cryptol::OneTimePad>
 ```
 
 ### Using Docker on Windows 10
 
-```shell
+```
 ...\cryptol-course> docker run --rm -it --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course cryptolcourse/cryptol
     ...
 Loading module Cryptol
+```
+
+```Xcryptol session
 Cryptol> :module labs::Demos::Cryptol::OneTimePad
+Loading module Cryptol
 Loading module labs::Demos::Cryptol::OneTimePad
 labs::Demos::Cryptol::OneTimePad>
 ```
@@ -266,10 +277,13 @@ First ensure that the cryptol intepreter is started in the
 CRYPTOLPATH to point to that directory. Then, use the `:module`
 command from within Cryptol to load the lab.
 
-```shell
+```
 .../cryptol-course$ cryptol
     ...
 Loading module Cryptol
+```
+
+```Xcryptol session
 Cryptol> :module labs::Demos::Cryptol::OneTimePad
 Loading module Cryptol
 Loading module labs::Demos::Cryptol::OneTimePad

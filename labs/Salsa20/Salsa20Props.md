@@ -37,6 +37,7 @@ interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
 ```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::Salsa20::Salsa20Props
 Loading module Cryptol
 Loading module labs::Salsa20::Salsa20Answers
