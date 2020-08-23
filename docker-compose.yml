@@ -3,15 +3,15 @@ services:
   container-student:
     build:
       context:
-        ./container-student
+        ./containers/student
     tty: true
   container-author:
     build:
       context:
-        ./container-author
+        ./containers/author
     tty: true
   container-dev:
     build:
       context:
-        ./container-dev
+        ./containers/dev
     tty: true

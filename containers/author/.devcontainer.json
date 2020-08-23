@@ -1,15 +1,15 @@
 {
-    "name": "Cryptol Course - Student",
+    "name": "Cryptol Course - Author",
 
     "settings": {
         "terminal.integrated.shell.linux": "/bin/bash"
     },
 
     "dockerComposeFile": [
-        "../docker-compose.yml",
-        "../docker-compose.devcontainer.yml",
+        "../../docker-compose.yml",
+        "../../docker-compose.devcontainer.yml",
     ],
-    "service": "container-student",
+    "service": "container-author",
     "remoteUser": "cryptol",
     "shutdownAction": "none",
     "workspaceFolder": "/workspace/cryptol-course",
