@@ -44,15 +44,30 @@ Loading module labs::Interpreter::Interpreter
 labs::Interpreter::Interpreter>
 ```
 
-We start by defining a new module for this lab:
+A Cryptol `module` is a named codeblock within a file.  The module
+name is used when `import`-ing code into a larger Cryptol project, or
+for interactively incorporating the code in the interpreter via the
+`:module` command (described in the [Loading
+Modules](#loading-modules) section below).  A file can only contain
+one module, and the name of the module should match the filename.
+Additionally, the module can have namespace characteristics, separated
+by `::` delimiters.  The namespace values directly correlate with
+directory structure surrounding the file.
+
+In this file, we start by defining a new module for this lab:
 
 ```cryptol
 module labs::Interpreter::Interpreter where
 ```
-You do not need to enter the above into the interpreter; the previous 
-`:m ...` command loaded this literate Cryptol file automatically.  
-In general, you should run `Xcryptol session` commands in the 
-interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
+
+That indicates that this file `Interpreter.md` will be found in the
+directory `labs/Interpreter`.
+
+*(Note: you do not need to enter the `module` instruction into the
+interpreter; the previous `:m ...` command loaded this literate
+Cryptol file automatically.  In general, you should run `Xcryptol
+session` commands in the interpreter and leave `cryptol` code alone to
+be parsed by `:m ...`.)*
 
 # Using the Cryptol interpreter
 
@@ -385,8 +400,12 @@ symbols.
 
 ## Loading Modules
 
-To load a module by its name (rather than by filename), we use
-`:module` (or `:m`). In order for the module to be found, either
+To load a module by its name (rather than by filename), we use the
+`:module` (or `:m`) command. Namespace elements of a module name
+directly correlate with directory structure; e.g., this module
+`labs::Interpreter::Interpreter` maps directly to the file at
+`labs/Interpreter/Interpreter.md`. Thus in order for the module to be
+found, either
 
   1) the Cryptol interpreter must have been started at the same base
      directory as the module, or
