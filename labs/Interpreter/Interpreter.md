@@ -350,8 +350,8 @@ labs::Interpreter::Interpreter>
 ```
 
 Here we see that this file contains a module named
-`labs::Interpreter::Interpreter`, which really just describes it's filename
-and directory path from the root of the repository.
+`labs::Interpreter::Interpreter`, which really just describes its filename
+and directory path (labs/Interpreter/Interpreter.md).
 
 We can browse the currently loaded module to see what new symbols it
 provides. Remember that the interpreter supports TAB completion so you
@@ -386,16 +386,18 @@ symbols.
 ## Loading Modules
 
 To load a module by its name (rather than by filename), we use
-`:m`. For this command to work, either
+`:module` (or `:m`). In order for the module to be found, either
 
-  1) the Cryptol interpreter must have been started in the root
-     directory of the module, or
+  1) the Cryptol interpreter must have been started at the same base
+     directory as the module, or
 
-  2) the root directory of the module must be in the CRYPTOLPATH
-     environment variable.
+  2) the (fully-qualified) base directory of the module must be in
+     the CRYPTOLPATH environment variable.
 
-The latter is preferred. To set the CRYPTOLPATH variable such that we
-can access the labs and specs here, do this:
+The CRYPTOLPATH approach is more robust, as it will work no matter
+what directory Cryptol is started in. To set the CRYPTOLPATH variable
+(in Linux) such that we can access the labs and specs for this class,
+do this:
 
 ```Xcryptol shell
 $ export CRYPTOLPATH=<path-to-cryptol-course>
