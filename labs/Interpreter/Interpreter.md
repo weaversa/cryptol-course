@@ -102,7 +102,7 @@ warnShadowing = on
 ```
 
 The most common setting to change is `base`. The default is `base =
-16` which means the interpreter will display bitvectors by printing
+16`, which means the interpreter will display bitvectors by printing
 their hexadecimal representations. For example,
 
 ```Xcryptol session
@@ -112,8 +112,8 @@ labs::Interpreter::Interpreter> 10 : [4]
 0xa
 ```
 
-To make the interpreter display bitvectors in decimal (base 10) type
-`:set base=10`. To change back to hexadecimal type `:set base=16`.
+To make the interpreter display bitvectors in decimal (base 10), type
+`:set base=10`. To change back to hexadecimal, type `:set base=16`.
 
 ```Xcryptol session
 labs::Interpreter::Interpreter> :set base=10
@@ -246,7 +246,7 @@ Type Synonyms
 ```
 
 Type synonyms are helper functions used to express the type of some
-data. For example, The number `10` can be expressed as a 32-bit word
+data. For example, the number `10` can be expressed as a 32-bit word
 via,
 
 ```Xcryptol session
@@ -272,7 +272,7 @@ labs::Interpreter::Interpreter> :t 10 : [width 32]
 (10 : [width 32]) : [6]
 ```
 
-In the last section you'll see with `:b` are Cryptol's symbols. This
+In the last section that you'll see with `:b` are Cryptol's symbols. This
 is where you'll find all of the value operators (as opposed to type
 operators). These are used when defining the value of a function or
 variable. For example, `reverse` can be used to reverse the order of a
@@ -289,8 +289,8 @@ Each of the items in the environment can be queried using `:h`.
 ## Tab Completion and Scrolling
 
 The interpreter supports [TAB
-completion](https://en.wikipedia.org/wiki/Command-line_completion),
-that is, pressing TAB will display all of available symbols. And, if
+completion](https://en.wikipedia.org/wiki/Command-line_completion);
+that is, pressing TAB will display all available symbols. And, if
 you start typing a symbol and then press TAB, the interpreter will
 attempt to complete the symbol you've started typing.
 
@@ -318,7 +318,7 @@ labs::Interpreter::Interpreter> reverse it
 [1, 2, 3]
 ```
 
-Though, now the value of `it` has also become `[1, 2, 3]`. To bind a
+Though, in the same way, now the value of `it` has become `[1, 2, 3]`. To bind a
 value to a name (save it for later) we can use the `let` command. For
 example, here we bind the result of `reverse [1, 2, 3] : [3][2]` to
 `r`, then `reverse r` and show that the result is as expected and that
@@ -334,7 +334,7 @@ labs::Interpreter::Interpreter> r
 [3, 2, 1]
 ```
 
-`let` is very helpful for debugging and program understanding,
+`let` is very helpful for debugging and program understanding;
 however, it can cause confusion (as demonstrated in the simple example
 below). Thus, industrial use of `let` is discouraged.
 
@@ -395,7 +395,7 @@ Symbols
 ```
 
 Here we see that this module provides one type synonym and three
-symbols.
+symbols.  (If your result does not match, try reloading the module.)
 
 
 ## Loading Modules
@@ -405,7 +405,7 @@ To load a module by its name (rather than by filename), we use the
 directly correlate with directory structure; e.g., this module
 `labs::Interpreter::Interpreter` maps directly to the file at
 `labs/Interpreter/Interpreter.md`. Thus in order for the module to be
-found, either
+found (essentially, finding the base directory for that path), either
 
   1) the Cryptol interpreter must have been started at the same base
      directory as the module, or
@@ -441,8 +441,9 @@ labs::Interpreter::Interpreter>
 The Cryptol interpreter supports editing the currently loaded file or
 module via `:e`. However, if no file or module is loaded `:e` will
 allow you to edit the Cryptol prelude, which is very dangerous. When
-you type `:e`, Cryptol will load the current file or module in a text
-editor, and reload the file when the editor is closed. The default
+you type `:e`, Cryptol will open the current file or module in a text
+editor, and will then reload the file into the interpreter when the editor
+is closed. The default
 editor is [vim](https://www.vim.org/), but can be changed via setting
 an environment variable called `EDITOR`. For example, if in a Linux
 like environment, the following command will change the default to
