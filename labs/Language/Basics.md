@@ -174,9 +174,7 @@ import labs::Overview::Overview as OVLab
 ```
 
 When the Cryptol interpreter loads this lab, it gains access to all
-public definitions in the Overview lab. It may seem quite strange to
-you to see a Cryptol module importing itself. This is not something
-done in practice. Here we're just demonstrating qualified imports.
+public definitions in the Overview lab.
 
 To keep a definition private, meaning it won't be imported by other
 modules, use the `private` clause.
