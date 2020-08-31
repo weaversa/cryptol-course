@@ -2,14 +2,14 @@
 
 This lab will provide a quick overview of Cryptol, some motivating
 applications where the language and technology have been deployed, and
-to the language features which make Cryptol an excellent choice for
-these applications.
+an introduction to the language features which make Cryptol an excellent
+choice for these applications.
 
 ## Prerequisites
 
 Before working through this lab, you'll need
   * Cryptol to be installed and
-  * this module to load successfully.
+  * this module to load successfully (instructions below).
 
 ## Skills You'll Learn
 
@@ -26,7 +26,7 @@ You'll also gain experience with
     `sum`, `min`, `max`, `tail`, `last`, and `foldl`,
   * lambda functions,
   * enumerations and sequence comprehensions,
-  * `/\`, `\/`, `==>` -- single bit logical operations,
+  * `/\`, `\/`, `==>` -- logical operations for single bits,
   * `~`, `&&`, `||`, `^` -- logical operations for sequences,
   * `==`, `!=` -- structural comparison,
   * `==`, `>=`, `>`, `<=`, `<` -- nonnegative word comparisons,
@@ -126,18 +126,18 @@ A thorough description of the research, design decisions, and application of Cry
 
 You can review the code for yourself on [Amazon's s2n Github Repository](https://github.com/awslabs/s2n). The code relevant to the specification and evaluation of the HMAC routines can be found in the `tests/saw/` directory.
 
-Further exposition on the development of these integration tests can be found in a three part series on the [Galois Inc. Blog](https://galois.com/blog/):
+Further exposition on the development of these integration tests can be found in a three-part series on the [Galois Inc. Blog](https://galois.com/blog/):
  * [Part 1](https://galois.com/blog/2016/09/verifying-s2n-hmac-with-saw/) - **Verifying s2n HMAC with SAW**
  * [Part 2](https://galois.com/blog/2016/09/specifying-hmac-in-cryptol/) - **Specifying HMAC in Cryptol**
  * [Part 3](https://galois.com/blog/2016/09/proving-program-equivalence-with-saw/) - **Proving Program Equivalence with SAW**
 
 ## Verifying Cryptographic Implementations: The `xxhash` Algorithm
 
-The tools that Cryptol provides access to allows users to bring together cryptographic implementations from other languages like *Java* or *C* and prove that they are equivalent to "gold standard" specifications one can create in Cryptol. This allows users to iteratively optimize code in performance-centric or system languages while maintaining a single trusted specification in Cryptol.
+The tools that Cryptol provides access to allow users to bring together cryptographic implementations from other languages, like Java or C, and prove that they are equivalent to "gold standard" specifications one can create in Cryptol. This allows users to iteratively optimize code in performance-centric or system languages while maintaining a single trusted specification in Cryptol.
 
-Take a look through the [`saw-demos` repository](https://github.com/GaloisInc/saw-demos) by GaloisInc hosted on GitHub which highlights several of these applications. We will do a brief survey of the `xxhash` example which you can find in the `demos/xxhash` directory of this repository. This is a demo of using Cryptol algorithm specifications (along with SAW).
+Take a look through the [`saw-demos` repository](https://github.com/GaloisInc/saw-demos) by GaloisInc hosted on GitHub, which highlights several of these applications. We will do a brief survey of the `xxhash` example which you can find in the `demos/xxhash` directory of this repository. This is a demo of using Cryptol algorithm specifications (along with SAW).
 
-This directory contains the following files:
+The directory contains the following files:
 
 ```shell
 .
@@ -166,7 +166,7 @@ XXH32 input seed = XXH32_avalanche acc1
 
 This function depends on other components defined in this file, such as `XXH32_avalanche`, `XXH32_rounds`, and `XXH32_init` which you can take a look at as well. At a glance, we see that this function has the type signature `{L} (fin L) => [L][8] -> [32] -> [32]` which indicates that this function takes a finite sequence of bytes and a 32-bit seed, and produces a 32-bit result (the hash).
 
-[`xxhash32-ref.c`](https://github.com/GaloisInc/saw-demos/blob/master/demos/xxhash/xxhash32-ref.saw) and [`xxhash64-ref.c`](https://github.com/GaloisInc/saw-demos/blob/master/demos/xxhash/xxhash64-ref.c) contain `C` implementations of the `xxhash` algorithm which might commonly be seen in a real-world system implementation where performance was critical. Here is a snippet containing the `C` implementation of the hash function called`XXH32`:
+[`xxhash32-ref.c`](https://github.com/GaloisInc/saw-demos/blob/master/demos/xxhash/xxhash32-ref.saw) and [`xxhash64-ref.c`](https://github.com/GaloisInc/saw-demos/blob/master/demos/xxhash/xxhash64-ref.c) contain C implementations of the `xxhash` algorithm which might commonly be seen in a real-world system implementation where performance was critical. Here is a snippet containing the C implementation of the hash function called`XXH32`:
 
 ```C
 /* The XXH32 hash function.
@@ -230,7 +230,7 @@ uint32_t XXH32(void const *const input, size_t const length, uint32_t const seed
     return XXH32_avalanche(hash);
 }
 ```
-Finally the files [`xxhash32-ref.saw`](https://github.com/GaloisInc/saw-demos/blob/master/demos/xxhash/xxhash32-ref.saw) and [`xxhash64-ref.saw`](https://github.com/GaloisInc/saw-demos/blob/master/demos/xxhash/xxhash64-ref.saw) contain SAW scripts which drive the verification that this `C` code is equivalent to the specification found in this Cryptol specification of `xxhash`.
+Finally the files [`xxhash32-ref.saw`](https://github.com/GaloisInc/saw-demos/blob/master/demos/xxhash/xxhash32-ref.saw) and [`xxhash64-ref.saw`](https://github.com/GaloisInc/saw-demos/blob/master/demos/xxhash/xxhash64-ref.saw) contain SAW scripts which drive the verification that this C code is equivalent to the specification found in this Cryptol specification of `xxhash`.
 
 Running `make` at the commandline will initiate the verification for both the 32- and 64-bit implementations, producing the following output:
 
@@ -252,11 +252,11 @@ saw xxhash32-ref.saw
 [17:48:54.311] Proof succeeded! XXH64
 ```
 
-These scripts will check that the `C` implementations match the Cryptol specification for *every possible* input for the hash lengths specified. This is important to highlight because this is far beyond the capability of unit testing to detect errors. For instance, for inputs of length `128` bits, there are 2<sup>160</sup> input/seed combinations to check. Unit tests -- even random unit tests -- may only typically cover a few hundred or thousand cases. Cryptol and SAW are able to provide confidence on a space many orders of magnitude larger.
+These scripts will check that the C implementations match the Cryptol specification for *every possible* input for the hash lengths specified. This is important to highlight because this is far beyond the capability of unit testing to detect errors. For instance, for inputs of length `128` bits, there are 2<sup>160</sup> input/seed combinations to check. Unit tests -- even random unit tests -- may only cover typically a few hundred or thousand cases. Cryptol and SAW are able to provide confidence on a space many orders of magnitude larger.
 
 ## Verifying Properties about Algorithms
 
-Cryptol provides an easy interface for using powerful tools such as SMT solvers for verifying properties about algorithms we care about. Throughout this course, we will introduce examples and explain how to take advantage of these tools in your own designs and evaluations. Here is an example packaged with the Cryptol source that demonstrates a simple but important property about an encryption algorithm which only uses the (XOR) operation:
+Cryptol provides an easy interface for using powerful tools such as SMT solvers ("satisfiability modulo theories") for verifying properties about algorithms we care about. Throughout this course, we will introduce examples and explain how to take advantage of these tools in your own designs and evaluations. Here is an example packaged with the Cryptol source that demonstrates a simple but important property about an encryption algorithm that only uses the (XOR) operation (`^`):
 
 ```cryptol
 encrypt : {a}(fin a) => [8] -> [a][8] -> [a][8]
@@ -268,7 +268,7 @@ decrypt key ciphertext = [ ct ^ key | ct <- ciphertext ]
 property roundtrip key plaintext = decrypt key (encrypt key plaintext) == plaintext
 ```
 
-This file defines an `encrypt` operation, a `decrypt` operation, and a property called `roundtrip` which checks for all keys `key` and all input plaintexts `plaintext` that `decrypt key (encrypt key plaintext) == plaintext` (*i.e.* that these operations are the inverse of each other).
+This file defines an `encrypt` operation, a `decrypt` operation, and a property called `roundtrip` which checks, for all keys `key` and all input plaintexts `plaintext`, that `decrypt key (encrypt key plaintext) == plaintext` (*i.e.* that these operations are the inverse of each other).
 
 We can see the effect of encrypting the particular input `attack at dawn` with the key `0xff`:
 
@@ -278,7 +278,7 @@ labs::Overview::Overview> encrypt 0xff "attack at dawn"
  0x9e, 0x88, 0x91]
 ```
 
-Cryptol interprets the string `"attack at dawn"` as a sequence of bytes suitable for the encrypt operations. (We will introduce Cryptol types later in this lab and discuss them in detail throughout this course.)
+Cryptol interprets the string `"attack at dawn"` as a sequence of bytes suitable for the encrypt operations, applying (XOR) to one byte at a time. (We will introduce Cryptol types later in this lab and discuss them in detail throughout this course.)
 
 We can prove the `roundtrip` property holds in the interpreter using the `:prove` command and the currently configured SMT solver (Z3 by default):
 
@@ -288,7 +288,7 @@ Q.E.D.
 (Total Elapsed Time: 0.010s, using Z3)
 ```
 
-Cryptol reports `Q.E.D.`, indicating that our property is indeed true for all keys and all 16-character inputs. Cryptol currently only supports proofs of [total](https://en.wikipedia.org/wiki/Partial_function#Function) [monomorphic](https://en.wikipedia.org/wiki/Polymorphism_(computer_science)) properties with a finite domain. Here we must specify the length of the messages that we want to check this property for. This example checks the property for 16 character messages, but we could check this for any (reasonable) length.
+Cryptol reports `Q.E.D.`, indicating that our property is indeed true for all keys and all 16-character inputs. Cryptol currently only supports proofs of [total](https://en.wikipedia.org/wiki/Partial_function#Function) [monomorphic](https://en.wikipedia.org/wiki/Polymorphism_(computer_science)) properties with a finite domain. Here we must specify the length of the messages that we want to check this property for. This example checks the property for 16-character messages, but we could check this for any (reasonable) length.
 
 # Language Features
 
@@ -298,7 +298,7 @@ Cryptol is a language designed with Cryptography specifically in mind -- much of
 
 Furthermore, Cryptol provides direct access to and easily integrates with powerful tools such as SMT solvers and the Software Analysis Workbench (SAW). These tools allow the user to *prove* facts and demonstrate properties about their code which can provide assurance guarantees that go far beyond simple unit testing.
 
-We will introduce some of these features below and discuss how they support building Cryptographic specifications and evaluations. If you have access to the Cryptol interpreter, you can follow along with some of the examples; detailed introduction to the Cryptol interpreter will be provided in future lessons.
+We will introduce some of these features below and discuss how they support building Cryptographic specifications and evaluations. If you have access to the Cryptol interpreter, you can follow along with some of the examples; a detailed introduction to the Cryptol interpreter will be provided in future lessons.
 
 ## Basic Data Types
 
