@@ -964,9 +964,9 @@ constraints can represent more, but these extensions are not used or
 covered in this course.
 
 With this idea in mind (type variables as sizes), many procedural
-programming languages treat the sizes of sequences as variable
-values. For example, in C, one needs to pass the length of an array as
-a value variable, like so:
+programming languages treat the sizes of sequences as value variables
+. For example, in C, one needs to pass the length of an array as a
+value variable, like so:
 
 ```C
 int F (int *array, int size)
@@ -1080,7 +1080,7 @@ labs::Language::Basics> :s base=16
 
 ### Demoting Types to Values
 
-Because type values and variable values are different classes of
+Because type variables and value variables are different classes of
 variables, they cannot interact directly. If we think of these two
 classes being in a hierarchy, type variables would be above value
 variables. With this hierarchy in mind, Cryptol does allow type variables
