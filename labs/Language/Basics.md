@@ -1056,6 +1056,13 @@ the curly braces, so you don't need to provide the `name=` part.
 `repeat` function we wrote above, though there are solutions that
 don't require it.
 
+(Note:  Many times in this course you will be asked to do a coding exercise in
+which your assignment is to alter a snippet of code.  If when doing so you
+find you need to start over, but you have saved over the original code snippet
+and do not know what the original looked like, you may find the original by
+locating the current module in the course repository on
+[GitHub](https://github.com/weaversa/cryptol-course).)
+
 ```cryptol
 // Uncomment and fill in
 //zeroPrepend : {} (?) => ? -> ?
