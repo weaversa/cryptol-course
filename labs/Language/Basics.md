@@ -982,13 +982,13 @@ F : {size} (fin size) => [size][32] -> [32]
 In Cryptol, `array` and `size` are different classes of variables, and they are 
 strongly linked so that `F` doesn't have to trust that the length of
 `array` really is `size`. This kind of linkage is called [Strong
-typing](https://en.wikipedia.org/wiki/Strong_and_weak_typing) and generally 
+typing](https://en.wikipedia.org/wiki/Strong_and_weak_typing) and >generally 
 refers to use of programming language types in order to both
 capture invariants of the code, and ensure its correctness, and
 definitely exclude certain classes of programming errors.
 
-Now, because there are two classes of variables, there are distinct
-ways of passing type variables and value variables to a function. The
+Now, because there are two classes of variables, type variables and value 
+variables, there are distinct ways of passing them to a function. The
 material above demonstrated passing value variables. We'll now
 demonstrate how to pass type variables using the backtick `` ` ``
 character (usually on a key shared with `~` positioned in the upper
@@ -998,6 +998,11 @@ Let's make a function that repeats a value of type `a` exactly `n`
 times, where `a` and `n` are type variables. To create a repeating sequence,
 this function uses what's called a **sequence comprehension**, but you
 can ignore that for now; it gets covered later.
+
+(To clarify:  The value of the type variable `n` will be a number.  The 
+value of the type variable `a` will be a type, such as Bit or [16].  This 
+value of `a` will be the type of the value that will get repeated. That 
+value to be repeated is input as the argument of the `repeat` function.) 
 
 ```cryptol
 repeat :
@@ -1011,6 +1016,18 @@ repeat value = [ value | _ <- zero : [n] ]
 and value variables to this function. Please try typing these examples
 into the interpreter and consider the output, and trying your own
 examples as curiosity strikes you.
+
+To clarify some of the terminology used here: In Cryptol, when we speak
+of “passing a variable,” it’s basically a short way to say “passing the 
+value of (that) variable.” This applies both to passing a type variable/
+passing the value of a type variable, and to passing a value variable/
+passing the value of a value variable.  (The shorter form is in a sense 
+more abstract, though.)
+
+For instance, in the first example below (`polyType0`), we pass two type 
+variables to the `repeat` function as parameters, namely, `a` and `n`.  
+But specifically, we pass their values `[64]` and `2`, respectively.  We 
+also pass to the `repeat` function the value `7` as its argument.
 
 ```cryptol
 polyType0 = repeat`{a=[64], n=2} 7
@@ -1042,9 +1059,9 @@ polyType12 = repeat`{5, [16]} 7
 polyType13 = repeat`{5} (7 : [16])
 ```
 
-You'll see that you can either pass type variables or let Cryptol infer
-the type variables from the type of the output. Also, those last two examples
-are demonstrating that you can pass type parameters based on position,
+You'll notice that you can either pass type variable values or let Cryptol infer
+the type variable values from the type of the output. Also, those last two examples
+demonstrate that you can pass type parameters based on position,
 that is, since the type of repeat declares `{n, a}` as type variables
 **in that order** (`n` first, then `a` second), Cryptol will infer
 which value goes with which type variable based on its position inside
