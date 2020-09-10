@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-Before working through this lab, you'll need
+Before working through this lab, you should have the following:
   * Cryptol to be installed,
   * this module to load successfully, and
   * an editor for completing the exercises in associated files.
