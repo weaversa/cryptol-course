@@ -982,7 +982,7 @@ F : {size} (fin size) => [size][32] -> [32]
 In Cryptol, `array` and `size` are different classes of variables, and they are 
 strongly linked so that `F` doesn't have to trust that the length of
 `array` really is `size`. This kind of linkage is called [Strong
-typing](https://en.wikipedia.org/wiki/Strong_and_weak_typing) and >generally 
+typing](https://en.wikipedia.org/wiki/Strong_and_weak_typing) and generally 
 refers to use of programming language types in order to both
 capture invariants of the code, and ensure its correctness, and
 definitely exclude certain classes of programming errors.
