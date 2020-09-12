@@ -759,18 +759,18 @@ side. Again, `_` acts as a kind of hole (when it's by itself,
 not when it's part of an identifier, of course). For example:
 
 ```Xcryptol session
-labs::Language::Basics> let (a, b) = (4, 5)
-labs::Language::Basics> a
+labs::Language::Basics> let (fst, snd) = (4, 5)
+labs::Language::Basics> fst
 4
-labs::Language::Basics> b
+labs::Language::Basics> snd
 5
-labs::Language::Basics> let c = (0xa, 0xb)
-labs::Language::Basics> c
+labs::Language::Basics> let r = (0xa, 0xb)
+labs::Language::Basics> r
 (0xa, 0xb)
-labs::Language::Basics> let (a, b) = c
-labs::Language::Basics> a
+labs::Language::Basics> let (fst, snd) = r
+labs::Language::Basics> fst
 0xa
-labs::Language::Basics> b
+labs::Language::Basics> snd
 0xb
 labs::Language::Basics> let [ (a, b, _), (_, _, c), _ ] = [ (1, 2, 3), (4, 5, 6), (7, 8, 9) ] : [3]([4], [4], [4])
 labs::Language::Basics> a
