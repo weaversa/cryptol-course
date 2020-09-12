@@ -49,7 +49,7 @@ name is used when `import`-ing code into a larger Cryptol project, or
 for interactively incorporating the code in the interpreter via the
 `:module` command (described in the [Loading
 Modules](#loading-modules) section below).  A file can only contain
-one module, and the name of the module should match the filename.
+one module, and the name of the module must match the filename.
 Additionally, the module can have namespace characteristics, separated
 by `::` delimiters.  The namespace values directly correlate with
 directory structure surrounding the file.
