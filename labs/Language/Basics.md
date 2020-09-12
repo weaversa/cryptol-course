@@ -755,16 +755,22 @@ statements aren't restricted to just single variables. This
 flexibility comes from Cryptol's powerful **pattern matching**
 capabilities. Cryptol allows you to make assignments by writing
 patterns based on the type (*shape*) of the value on the right-hand
-side. Again, `_` acts a kind of hole. For example:
+side. Again, `_` acts as a kind of hole (when it's by itself,
+not when it's part of an identifier, of course). For example:
 
 ```Xcryptol session
-labs::Language::Basics> let ab = (0xa, 0xb)
-labs::Language::Basics> ab
+labs::Language::Basics> let (fst, snd) = (4, 5)
+labs::Language::Basics> fst
+4
+labs::Language::Basics> snd
+5
+labs::Language::Basics> let r = (0xa, 0xb)
+labs::Language::Basics> r
 (0xa, 0xb)
-labs::Language::Basics> let (a, b) = ab
-labs::Language::Basics> a
+labs::Language::Basics> let (fst, snd) = r
+labs::Language::Basics> fst
 0xa
-labs::Language::Basics> b
+labs::Language::Basics> snd
 0xb
 labs::Language::Basics> let [ (a, b, _), (_, _, c), _ ] = [ (1, 2, 3), (4, 5, 6), (7, 8, 9) ] : [3]([4], [4], [4])
 labs::Language::Basics> a
