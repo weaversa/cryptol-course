@@ -254,13 +254,13 @@ labs::Interpreter::Interpreter> 10 : Word 32
 0x0000000a
 ```
 
-The next things you'll see with `:b` are some constraint
+The next things you'll see with `:browse` are some constraint
 synonyms. These are helper functions used to express type
 constraints. The ones preloaded into the interpreter unify different
 types of comparison operators to `>=`. This just saves users from
 having to express type constraints using only `>=`.
 
-The next things you'll see with `:b` are some primitive types. These
+The next things you'll see with `:browse` are some primitive types. These
 include comparison and arithmetic operators, type classes, basic
 types, and some type constraints that help with expressing some
 cryptographic type constraints elegantly. These are used when defining
@@ -272,7 +272,7 @@ labs::Interpreter::Interpreter> :t 10 : [width 32]
 (10 : [width 32]) : [6]
 ```
 
-In the last section that you'll see with `:b` are Cryptol's symbols. This
+Cryptol's symbols are given in the last section provided by `:browse`. This
 is where you'll find all of the value operators (as opposed to type
 operators). These are used when defining the value of a function or
 variable. For example, `reverse` can be used to reverse the order of a
@@ -283,7 +283,7 @@ labs::Interpreter::Interpreter> reverse [1, 2, 3] : [3][2]
 [0x3, 0x2, 0x1]
 ```
 
-Each of the items in the environment can be queried using `:h`.
+Each of the items in the environment can be queried using `:help` (`:h` for short).
 
 
 ## Tab Completion and Scrolling
