@@ -404,7 +404,7 @@ previous `varType0` variable:
 varType0 = False : [10]
 ```
 
-When you reload this file in the interpreter, you would see the
+When you reload this file in the interpreter, you will see the
 following error:
 
 ```Xcryptol session
