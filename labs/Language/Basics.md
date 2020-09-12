@@ -476,7 +476,7 @@ middle of sequences, and so on. Please don't take these exercises to
 be considered *good* Cryptol. They were crafted to challenge you,
 something you should **never** do to someone who wants to use the
 specifications you write. Always strive to make elegant
-specifications. There is no need to optimize. Also, don't
+specifications. There is no need to optimize for performance. Also, don't
 write a spec "just to get it done" -- making something that loads and
 runs isn't good enough. Aim for creating specifications that *look*
 like the mathematics you're specifying. < rant over >
