@@ -1712,35 +1712,35 @@ Showing a specific instance of polymorphic result:
 [0, 3, 6, 9, 12, ...]
 ```
 
-The `foldl` operator transitions an initial state given a 'next state'
-function and a list of elements to act on at each transition. `scanl`
-works just like `foldl`, but returns the state at each transition,
-rather than the final state. In fact, `foldl == last scanl`.
+The `scanl` operator transitions an initial state given a 'next state'
+function and a sequence of elements to act on at each transition.  `scanl` 
+returns the sequence of initial and transitioned states. `foldl`, which 
+you may find more useful, works just like `scanl`, but returns only the final 
+state after all transitions. In fact, `foldl == last scanl`.
 
 ```Xcryptol session
-labs::Language::Basics> let step state c = if c == True then state+1 else state-1
-labs::Language::Basics> foldl step 0 [True, True, False, False, True]
-Showing a specific instance of polymorphic result:
-  * Using 'Integer' for 1st type argument of '<interactive>::step'
-1
-labs::Language::Basics> scanl step 0 [True, True, False, False, True]
-Showing a specific instance of polymorphic result:
-  * Using 'Integer' for 1st type argument of '<interactive>::step'
-[0, 1, 2, 1, 0, 1]
-labs::Language::Basics> foldl (+) 0 [1, 2, 3, 4, 5]
-Showing a specific instance of polymorphic result:
-  * Using 'Integer' for type of sequence member
-15
 labs::Language::Basics> scanl (+) 0 [1, 2, 3, 4, 5]
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for type of sequence member
 [0, 1, 3, 6, 10, 15]
+labs::Language::Basics> foldl (+) 0 [1, 2, 3, 4, 5]
+Showing a specific instance of polymorphic result:
+  * Using 'Integer' for type of sequence member
+15
+labs::Language::Basics> let step state c = if c == True then state+1 else state-1
+labs::Language::Basics> scanl step 0 [True, True, False, False, True]
+Showing a specific instance of polymorphic result:
+  * Using 'Integer' for 1st type argument of '<interactive>::step'
+[0, 1, 2, 1, 0, 1]
+labs::Language::Basics> foldl step 0 [True, True, False, False, True]
+Showing a specific instance of polymorphic result:
+  * Using 'Integer' for 1st type argument of '<interactive>::step'
+1
+labs::Language::Basics> scanl (<<) 1 [1, 2, 3, 4] : [5][12]
+[0b000000000001, 0b000000000010, 0b000000001000, 0b000001000000, 0b010000000000]
 labs::Language::Basics> :s base=2
 labs::Language::Basics> foldl (<<) 1 [1, 2, 3, 4] : [12]
 0b010000000000
-labs::Language::Basics> scanl (<<) 1 [1, 2, 3, 4] : [5][12]
-[0b000000000001, 0b000000000010, 0b000000001000, 0b000001000000,
- 0b010000000000]
 ```
 
 In most Cryptol programs, the context will enforce the size of things,
