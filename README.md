@@ -106,6 +106,9 @@ Cryptol](INSTALL.md).
    cryptographic properties and how to prove them with Cryptol.
     * [Salsa20 Properties](labs/Salsa20/Salsa20Props.md): Prove some
       cryptographic properties about Salsa20.
+    * [Transposition Ciphers](labs/Transposition/Contents.md):
+      Learn how to use higher-order functions to create and prove
+      properties about a number of common transposition ciphers.
     * [Project Euler](labs/ProjectEuler/ProjectEuler.md): If you
       enjoyed the last lab, go ahead and try your hand at using
       Cryptol's connection to automated provers (SMT solvers) to solve
