@@ -1,3 +1,6 @@
-module AES::AES192 = AES::AES where
+module AES::AES192 where
 
-type Nk = 6
+import SuiteB
+
+Encrypt KEK = aesEncryptBlock (aes192EncryptSchedule KEK)
+Decrypt KEK = aesDecryptBlock (aes192DecryptSchedule KEK)
