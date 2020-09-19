@@ -39,8 +39,13 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```shell
+```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::CryptoProofs::CryptoProofs
+Loading module Cryptol
+Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
+Loading module specs::Primitive::Symmetric::Cipher::Block::DES
+Loading module labs::CryptoProofs::CryptoProofs
 ```
 
 The proofs in this lab require an array of different theorem provers
@@ -53,6 +58,11 @@ module definition.
 ```cryptol
 module labs::CryptoProofs::CryptoProofs where
 ```
+
+You do not need to enter the above into the interpreter; the previous 
+`:m ...` command loaded this literate Cryptol file automatically.
+In general, you should run `Xcryptol session` commands in the 
+interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # Exploring Cryptography with Cryptol's Proof Tools
 
@@ -68,18 +78,24 @@ First, we import it.
 import specs::Primitive::Symmetric::Cipher::Block::DES
 ```
 
-When you loaded the module, these lines should have been printed:
+When you loaded the `labs::CryptoProofs::CryptoProofs` module, these
+lines should have been printed:
 
-```shell
+```Xcryptol session
+Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
 Loading module labs::CryptoProofs::CryptoProofs
 ```
-In reverse order: the third line says that this module has been loaded.  Since it imported the DES module, Cryptol helpfully tells you that DES has been loaded.  Since DES imported the Cipher module, Cryptol tells you that too.
+
+In reverse order: the third line says that this module has been
+loaded.  Since it imported the DES module, Cryptol helpfully tells you
+that DES has been loaded.  Since DES imported the Cipher module,
+Cryptol tells you that too.
 
 Next, we'll take a look at the type of the DES encryption function.
 
-```shell
+```Xcryptol session
 labs::CryptoProofs::CryptoProofs> :t DES.encrypt
 DES.encrypt : [64] -> [64] -> [64]
 ```
@@ -87,14 +103,14 @@ DES.encrypt : [64] -> [64] -> [64]
 DES takes two 64-bit values and returns a 64-bit value. (The key comes
 first and then the plaintext.) Let's encrypt something with DES.
 
-```shell
+```Xcryptol session
 labs::CryptoProofs::CryptoProofs> DES.encrypt 0x752979387592cb70 0x1122334455667788
 0xb5219ee81aa7499d
 ```
 
 Now decrypt:
 
-```shell
+```Xcryptol session
 labs::CryptoProofs::CryptoProofs> DES.decrypt 0x752979387592cb70 0xb5219ee81aa7499d
 0x1122334455667788
 ```
@@ -145,8 +161,9 @@ square x = x * x
 Now we can reverse it from the REPL. Let's use the solver to find a
 square root using only a squaring function!
 
-```shell
+```Xcryptol session
 labs::CryptoProofs::CryptoProofs> :sat \x -> square x == 1764
+Satisfiable
 (\x -> square x == 1764) 42 = True
 (Total Elapsed Time: 0.021s, using "Z3")
 ```
@@ -179,14 +196,14 @@ known_ct = 0xf2930290ea4db580
 Note: For whatever reason, the default Z3 solver has trouble with this
 one. Try one of the other solvers, such as YICES:
 
-```shell
+```Xcryptol session
 labs::CryptoProofs::CryptoProofs> :s prover=yices
 ```
 
 Or use all the installed solvers in a first-to-the-post race.
 *Caution! May exhaust system resources.*
 
-```shell
+```Xcryptol session
 labs::CryptoProofs::CryptoProofs> :s prover=any
 ```
 
@@ -227,7 +244,7 @@ We want to prove that function `g` inverts function `f`; that is,
 applying `g` to the result of `f x` gets `x` back. Here's the
 invocation:
 
-```shell
+```Xcryptol session
 labs::CryptoProofs::CryptoProofs> :prove \x -> g (f x) == x
 Q.E.D.
 (Total Elapsed Time: 0.023s, using "Z3")
@@ -339,7 +356,6 @@ need to edit this file directly.)
 DESFixParity : [64] -> [64]
 DESFixParity = zero // Replace "zero" with your code
 ```
-
 
 **EXERCISE**: 2.5.3 Proving DES Key Equivalence
 

@@ -6,20 +6,16 @@ addons:
       - dos2unix
       - libgmp-dev
       - libncurses-dev
-  # homebrew:
-  #   packages:
-  #     - gmp
-  #     - ncurses
 jobs:
   include:
     - name: "Cryptol, SAW, and Z3 Releases on OSX"
       before_install:
-        - wget https://github.com/GaloisInc/cryptol/releases/download/2.9.0/cryptol-2.9.0-macOS-x86_64.tar.gz
-        - tar -xzf cryptol-2.9.0-macOS-x86_64.tar.gz
-        - export PATH=$PATH:$(pwd)/cryptol-2.9.0-macOS-x86_64/bin
-        - wget https://github.com/GaloisInc/saw-script/releases/download/v0.5/saw-0.5-OSX-64.tar.gz
-        - tar -xzf saw-0.5-OSX-64.tar.gz
-        - export PATH=$PATH:$(pwd)/saw-0.5-OSX-64/bin
+        - wget https://github.com/GaloisInc/cryptol/releases/download/2.9.1/cryptol-2.9.1-macOS-x86_64.tar.gz
+        - tar -xzf cryptol-2.9.1-macOS-x86_64.tar.gz
+        - export PATH=$PATH:$(pwd)/cryptol-2.9.1-macOS-x86_64/bin
+        - wget https://github.com/GaloisInc/saw-script/releases/download/v0.6/saw-0.6-macOS-x86_64.tar.gz
+        - tar -xzf saw-0.6-macOS-x86_64.tar.gz
+        - export PATH=$PATH:$(pwd)/saw-0.6-macOS-x86_64/bin
         - cryptol --version
         - saw --version
         - curl -fsSL https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-osx-10.14.6.zip -o z3-4.8.8-x64-osx-10.14.6.zip
@@ -29,22 +25,18 @@ jobs:
       compiler: clang
       os: osx
     - name: "Cryptol Homebrew on OSX"
-      # addons:
-      #   homebrew:
-      #     packages:
-      #       - cryptol
       before_install:
         - brew install cryptol
       compiler: clang
       os: osx
     - name: "Cryptol, SAW, and Z3 Releases on Linux"
       before_install:
-        - wget https://github.com/GaloisInc/cryptol/releases/download/2.9.0/cryptol-2.9.0-Linux-x86_64.tar.gz
-        - tar -xzf cryptol-2.9.0-Linux-x86_64.tar.gz
-        - export PATH=$PATH:$(pwd)/cryptol-2.9.0-Linux-x86_64/bin
-        - wget https://github.com/GaloisInc/saw-script/releases/download/v0.5/saw-0.5-Ubuntu14.04-64.tar.gz
-        - tar -xzf saw-0.5-Ubuntu14.04-64.tar.gz
-        - export PATH=$PATH:$(pwd)/saw-0.5-Ubuntu14.04-64/bin
+        - wget https://github.com/GaloisInc/cryptol/releases/download/2.9.1/cryptol-2.9.1-Linux-x86_64.tar.gz
+        - tar -xzf cryptol-2.9.1-Linux-x86_64.tar.gz
+        - export PATH=$PATH:$(pwd)/cryptol-2.9.1-Linux-x86_64/bin
+        - wget https://github.com/GaloisInc/saw-script/releases/download/v0.6/saw-0.6-Linux-x86_64.tar.gz
+        - tar -xzf saw-0.6-Linux-x86_64.tar.gz
+        - export PATH=$PATH:$(pwd)/saw-0.6-Linux-x86_64/bin
         - cryptol --version
         - saw --version
         - curl -fsSL https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-ubuntu-16.04.zip -o z3-4.8.8-x64-ubuntu-16.04.zip
@@ -60,10 +52,9 @@ jobs:
       services:
         - docker
       before_install:
-        - docker pull galoisinc/cryptol:2.9.0
-#        - docker pull galoisinc/saw:0.5
-        - alias cryptol="docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course galoisinc/cryptol:2.9.0"
-#        - alias saw='docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course galoisinc/saw:0.5'
+        - docker pull cryptolcourse/dev
+        - shopt -s expand_aliases
+        - alias cryptol='docker run --entrypoint cryptol -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/dev'
       compiler: clang
       dist: focal
       os: linux
@@ -120,7 +111,6 @@ script:
 # Key Wrapping lab tests
   - cryptol -e -c ":m labs::KeyWrapping::KeyWrapping"
   - cryptol -e -c ":m labs::KeyWrapping::KeyWrappingAnswers"
-  - cryptol -e -c ":m labs::KeyWrapping::spec::NISTKeyWrapping"
 # Simon and Speck lab tests
   - cryptol -e -c ":m labs::SimonSpeck::SimonSpeck"
   - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_64_96"

@@ -1,6 +1,7 @@
 {
     "name": "Cryptol Course Dev",
-    "dockerFile": "Dockerfile",
+    "image": "cryptolcourse/dev",
+    //"dockerFile": "Dockerfile",
     "runArgs": [],
 
     // Use 'settings' to set *default* container specific settings.json values on container create. 
@@ -14,14 +15,13 @@
     // "appPort": [],
     
     // Uncomment the next line to run commands after the container is created.
-    "postCreateCommand": "sudo apt-get update",
+    //"postCreateCommand": "",
     
     // Comment out the next line if you want to run as root instead
     "remoteUser": "cryptol",
     
     // Add the IDs of extensions you want installed when the container is created in the array below.
     "extensions": [
-        "haskell.haskell",
         "jldodds.cryptol",
         "ms-azuretools.vscode-docker"
     ]

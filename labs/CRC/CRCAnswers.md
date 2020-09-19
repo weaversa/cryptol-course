@@ -38,8 +38,11 @@ Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
-```shell
+```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::CRC::CRCAnswers
+Loading module Cryptol
+Loading module labs::CRC::CRCAnswers
 ```
 
 We start by defining a new module for this lab:
@@ -47,6 +50,11 @@ We start by defining a new module for this lab:
 ```cryptol
 module labs::CRC::CRCAnswers where
 ```
+
+You do not need to enter the above into the interpreter; the previous 
+`:m ...` command loaded this literate Cryptol file automatically.
+In general, you should run `Xcryptol session` commands in the 
+interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # Cyclic Redundancy Checks
 
@@ -232,7 +240,6 @@ CRC32_BZIP2 = CRC G 0xffffffff 0xffffffff False False
 
 property CRC32_BZIP2Test =
     CRC32_BZIP2 testM == 0x459DEE61
-
 ```
 
 
@@ -244,7 +251,6 @@ CRC32_C = CRC G 0xffffffff 0xffffffff True True
 
 property CRC32_CTest =
     CRC32_C testM == 0x22620404
-
 ```
 
 

@@ -30,8 +30,11 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```shell
+```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::LoremIpsum::LoremIpsum
+Loading module Cryptol
+...
 ```
 
 We start by defining a new module for this lab and importing some
@@ -49,6 +52,11 @@ import labs::LoremIpsum::KLI20
 //import ???
 //import ???
 ```
+
+You do not need to enter the above into the interpreter; the previous 
+`:m ...` command loaded this literate Cryptol file automatically.
+In general, you should run `Xcryptol session` commands in the 
+interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # LoremIpsum Key
 

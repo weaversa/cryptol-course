@@ -29,6 +29,7 @@ interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::Demos::Cryptol::NQueens
 Loading module Cryptol
 Loading module Cryptol
@@ -193,13 +194,21 @@ The instructions for [1] also work here:
 >
 > To do that,
 >
+<<<<<<< HEAD
 > ```Text
+=======
+> ```example
+>>>>>>> origin/master
 > > :set prover=z3
 > ```
 >
 > or
 >
+<<<<<<< HEAD
 > ```Text
+=======
+> ```example
+>>>>>>> origin/master
 > > :set prover=yices
 > ```
 

@@ -36,8 +36,12 @@ Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
-```shell
+```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::Salsa20::Salsa20Props
+Loading module Cryptol
+Loading module labs::Salsa20::Salsa20Answers
+Loading module labs::Salsa20::Salsa20Props
 ```
 
 We start by defining a new module for this lab and importing the
@@ -48,6 +52,11 @@ module labs::Salsa20::Salsa20Props where
 
 import labs::Salsa20::Salsa20Answers
 ```
+
+You do not need to enter the above into the interpreter; the previous 
+`:m ...` command loaded this literate Cryptol file automatically.
+In general, you should run `Xcryptol session` commands in the 
+interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # Salsa20 Security Properties
 
