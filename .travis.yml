@@ -8,9 +8,9 @@ jobs:
         - wget https://github.com/GaloisInc/cryptol/releases/download/2.9.1/cryptol-2.9.1-macOS-x86_64.tar.gz
         - tar -xzf cryptol-2.9.1-macOS-x86_64.tar.gz
         - export PATH=$PATH:$(pwd)/cryptol-2.9.1-macOS-x86_64/bin
-        - wget https://github.com/GaloisInc/saw-script/releases/download/v0.6/saw-0.6-OSX-64.tar.gz
-        - tar -xzf saw-0.6-OSX-64.tar.gz
-        - export PATH=$PATH:$(pwd)/saw-0.6-OSX-64/bin
+        - wget https://github.com/GaloisInc/saw-script/releases/download/v0.6/saw-0.6-macOS-x86_64.tar.gz
+        - tar -xzf saw-0.6-macOS-x86_64.tar.gz
+        - export PATH=$PATH:$(pwd)/saw-0.6-macOS-x86_64/bin
         - cryptol --version
         - saw --version
         - curl -fsSL https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-osx-10.14.6.zip -o z3-4.8.8-x64-osx-10.14.6.zip
@@ -26,17 +26,17 @@ jobs:
       os: osx
     -
       before_install:
-        - docker pull cryptolcourse/cryptolcourse
+        - docker pull cryptolcourse/cryptolcourse:latest
         - shopt -s expand_aliases
-        - alias cryptol='docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptolcourse'
+        - alias cryptol='docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptolcourse:latest'
     -
       before_install:
         - wget https://github.com/GaloisInc/cryptol/releases/download/2.9.1/cryptol-2.9.1-Linux-x86_64.tar.gz
         - tar -xzf cryptol-2.9.1-Linux-x86_64.tar.gz
         - export PATH=$PATH:$(pwd)/cryptol-2.9.1-Linux-x86_64/bin
-        - wget https://github.com/GaloisInc/saw-script/releases/download/v0.6/saw-0.6-Ubuntu14.04-64.tar.gz
-        - tar -xzf saw-0.6-Ubuntu14.04-64.tar.gz
-        - export PATH=$PATH:$(pwd)/saw-0.6-Ubuntu14.04-64/bin
+        - wget https://github.com/GaloisInc/saw-script/releases/download/v0.6/saw-0.6-Linux-x86_64.tar.gz
+        - tar -xzf saw-0.6-Linux-x84_64.tar.gz
+        - export PATH=$PATH:$(pwd)/saw-0.6-Linux-x84_64/bin
         - cryptol --version
         - saw --version
         - curl -fsSL https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-ubuntu-16.04.zip -o z3-4.8.8-x64-ubuntu-16.04.zip
