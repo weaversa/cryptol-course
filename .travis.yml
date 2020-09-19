@@ -98,7 +98,6 @@ script:
 # Key Wrapping lab tests
   - cryptol -e -c ":m labs::KeyWrapping::KeyWrapping"
   - cryptol -e -c ":m labs::KeyWrapping::KeyWrappingAnswers"
-  - cryptol -e -c ":m labs::KeyWrapping::spec::NISTKeyWrapping"
 # Simon and Speck lab tests
   - cryptol -e -c ":m labs::SimonSpeck::SimonSpeck"
   - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_64_96"
