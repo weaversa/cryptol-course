@@ -28,7 +28,7 @@ jobs:
       before_install:
         - docker pull cryptolcourse/cryptolcourse:latest
         - shopt -s expand_aliases
-        - alias cryptol='docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptolcourse:latest'
+        - alias cryptol='docker run --entrypoint cryptol -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptolcourse:latest'
     -
       before_install:
         - wget https://github.com/GaloisInc/cryptol/releases/download/2.9.1/cryptol-2.9.1-Linux-x86_64.tar.gz
