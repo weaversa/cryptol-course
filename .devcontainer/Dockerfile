@@ -1,4 +1,4 @@
-# This is the Dockerfile used to build the container hosted at:
+# This is the Dockerfile used to build the image hosted at:
 # https://hub.docker.com/repository/docker/cryptolcourse/cryptolcourse
 # To use this Dockerfile directly, uncomment the appropriate line in
 # devcontainer.json

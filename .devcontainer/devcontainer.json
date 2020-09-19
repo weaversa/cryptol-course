@@ -1,6 +1,6 @@
 {
     "name": "Cryptol Course Dev",
-    "image": "cryptolcourse/cryptolcourse",
+    "image": "cryptolcourse/dev",
     //"dockerFile": "Dockerfile",
     //"runArgs": [],
 
