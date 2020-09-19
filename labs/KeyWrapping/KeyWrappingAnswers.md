@@ -623,7 +623,8 @@ that takes in the semiblock size as a parameter and defines `W` and
 key wrap module, and with `semiblock = 32` into a TDES key wrap
 module. This concept of parameterized, hierarchical modules can really
 help you make clear, duplication free, reusable Cryptol
-specifications.
+specifications. For those with poor imaginations, we've provided such
+a thing [here](spec/).
 
 **Back to TDES**: One important difference in the TKW family is you
 will use the Triple-DES algorithm that's implemented in the `TDEA`
@@ -839,12 +840,15 @@ With that consideration firmly under our belt, we can now tackle
 **EXERCISE**: Study `Algorithm 5` from the standard and complete the
   definition of `KWPAE` below by filling in the function skeleton
   provided with appropriate logic. Use the `shrink` and `widen`
-  functions to assist in resizing `S` and the function outputs on the
-  `then` and `else` branches of line 5.
+  functions to assist in resizing `S` and the outputs of `W` and
+  `CIPHk` on the `then` and `else` branches of line 5.
 
 *Hint:* You'll notice that we needed to pull in the type variable `n`
 and type constraints from `W` and relate `n` and `k` (the type of both
-`S` and `C`).
+`S` and `C`). You'll need to pass `n` into `W`, ensuring that if we
+avoid the `n == 2` case. This can be done by calling `W` like so
+``W`{max 3 n}``. Also, remember that `ICV2` was defined above, so we do
+not need to redefine it inside `KWPAE`.
 
 ```cryptol
 KWPAE :
