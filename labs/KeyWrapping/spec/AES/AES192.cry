@@ -1,0 +1,3 @@
+module AES::AES192 = AES::AES where
+
+type Nk = 6

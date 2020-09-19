@@ -1,0 +1,3 @@
+module AES::AES256 = AES::AES where
+
+type Nk = 8
