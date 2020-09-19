@@ -41,8 +41,8 @@ interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```Xcryptol session
-Cryptol> :m labs::Transposition::CommonPropertiesAnswers
 Loading module Cryptol
+Cryptol> :m labs::Transposition::CommonPropertiesAnswers
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
@@ -227,7 +227,7 @@ labs::Transposition::CommonPropertiesAnswers> :s prover=boolector
 labs::Transposition::CommonPropertiesAnswers> :sat maps_to (DES.encrypt known_key) known_ct
 Satisfiable
 maps_to (DES.encrypt known_key) known_ct 0x70617373776f7264 = True
-(Total Elapsed Time: 0.773s, using Boolector)
+(Total Elapsed Time: 0.773s, using "Boolector")
 ```
 
 (Hint: A curried function of two arguments can be viewed as a 
@@ -241,10 +241,10 @@ Do not mention `pt` in your proof commands.
 labs::Transposition::CommonPropertiesAnswers> :s prover=abc
 labs::Transposition::CommonPropertiesAnswers> :prove \key -> inverts (DES.decrypt key) (DES.encrypt key)
 Q.E.D.
-(Total Elapsed Time: 1.080s, using ABC)
+(Total Elapsed Time: 1.080s, using "ABC")
 labs::Transposition::CommonPropertiesAnswers> :prove \key -> inverts (DES.encrypt key) (DES.decrypt key)
 Q.E.D.
-(Total Elapsed Time: 1.139s, using ABC)
+(Total Elapsed Time: 1.139s, using "ABC")
 ```
 
 **EXERCISE**: Use Boolector to prove that `DES.encrypt` is injective 
@@ -255,7 +255,7 @@ Meditate on the nature of lambda and the (f)utility of names.
 labs::Transposition::CommonPropertiesAnswers> :s prover=boolector
 labs::Transposition::CommonPropertiesAnswers> :prove \key -> injective (DES.encrypt key)
 Q.E.D.
-(Total Elapsed Time: 48.986s, using Boolector)
+(Total Elapsed Time: 48.986s, using "Boolector")
 ```
 
 **EXERCISE**: Use ABC to find two different keys and a single 
@@ -274,7 +274,7 @@ Satisfiable
    encrypt_ pt key = DES.encrypt key pt
  )
   0x0000000000000000 0x0000010101000100 0x0000000100010001 = True
-(Total Elapsed Time: 5.675s, using ABC)
+(Total Elapsed Time: 5.675s, using "ABC")
 ```
 
 **EXERCISE**: Use ABC to prove that the two keys you just found are 
@@ -287,7 +287,7 @@ labs::Transposition::CommonPropertiesAnswers> :s prover=abc
 labs::Transposition::CommonPropertiesAnswers> let { result = _, arg1 = cx_pt, arg2 = cx_key, arg3 = cx_key_ } = it
 labs::Transposition::CommonPropertiesAnswers> :prove (DES.encrypt cx_key) === (DES.encrypt cx_key_)
 Q.E.D.
-(Total Elapsed Time: 0.497s, using ABC)
+(Total Elapsed Time: 0.497s, using "ABC")
 ```
 
 **EXERCISE**: Use ABC to prove that (DES.encrypt key) is equivalent 
@@ -298,7 +298,7 @@ proof command.
 labs::Transposition::CommonPropertiesAnswers> :s prover=abc
 labs::Transposition::CommonPropertiesAnswers> :prove \key -> DES.encrypt key === DES.encrypt (DESFixParity key)
 Q.E.D.
-(Total Elapsed Time: 0.915s, using ABC)
+(Total Elapsed Time: 0.915s, using "ABC")
 ```
 
 **EXERCISE**: Finally, try to find a collision with keys of distinct 
