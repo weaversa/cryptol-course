@@ -244,17 +244,14 @@ type), as reflected in the
 rather sesquipedalian name; let's use tab-completion to prove the
 property:
 
-<<<<<<< HEAD
 ```Text
-=======
-```example
->>>>>>> origin/master
 labs::Demos::Cryptol::OneTimePad> :prove dec<Tab>
 labs::Demos::Cryptol::OneTimePad> :prove decrypt_<Tab>
 labs::Demos::Cryptol::OneTimePad> :prove decrypt_of_encrypt_yields_original_plaintext_8_5<Enter>
 Q.E.D.
 (Total Elapsed Time: 0.028s, using Z3)
 ```
+
 ```Xcryptol session
 labs::Demos::Cryptol::OneTimePad> :prove decrypt_of_encrypt_yields_original_plaintext_8_5
 Q.E.D.
