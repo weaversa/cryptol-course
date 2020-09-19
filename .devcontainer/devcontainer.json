@@ -1,6 +1,7 @@
 {
     "name": "Cryptol Course Dev",
-    "dockerFile": "Dockerfile",
+    "image": "cryptolcourse/cryptolcourse",
+    //"dockerFile": "Dockerfile",
     "runArgs": [],
 
     // Use 'settings' to set *default* container specific settings.json values on container create. 
