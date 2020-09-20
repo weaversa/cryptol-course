@@ -2028,6 +2028,18 @@ labs::Language::Basics> lazyAbsMin 0 (0/0)
 0x00000000
 ```
 
-# Post face
+# Conclusion
 
 Go forth and write correct cryptographic algorithms!
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Course README](/README.md)
+Previous: [Interpreter](/labs/Interpreter/Interpreter.md)
+Next: [CRC](/labs/CRC/CRC.md)

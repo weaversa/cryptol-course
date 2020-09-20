@@ -466,8 +466,14 @@ of DES in terms of bits?
 > Since 8 of the 64 bits are ignored, DES has a maximum key strength
 > of 56 bits.
 
-# The end
+# Solicitation
 
 How was your experience with this lab? Suggestions are welcome in the
 form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Course README](/README.md)
+Previous: [Salsa20](/labs/Salsa20/Salsa20.md)
+Next: [Key Wrapping](/labs/KeyWrapping/KeyWrapping.md)

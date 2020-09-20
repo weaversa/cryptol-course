@@ -516,3 +516,23 @@ Satisfiable
 squaredrop`{8} 9376 [8, 7, 9, 0, 9, 3, 7, 6] = True
 (Total Elapsed Time: 6.377s, using "Z3")
 ```
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Course README](/README.md)
+Previous: [Cryptographic Properties](/labs/CryptoProofs/CryptoProofs.md)
+Next: [Capstone](/labs/LoremIpsum/LoremIpsum.md)

@@ -101,7 +101,18 @@ This output resulted from running the provided script on a relatively modest des
 
 This cleans up the workspace and unnecessary generated files.
 
-
 # References
 
 [[1](https://ieeexplore.ieee.org/document/73590)] Bryant, Randall E. "On the Complexity of VLSI Implementations and Graph Representations of Boolean Functions with Application to Integer Multiplication". Carnegie Mellon University, July 1998.
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Course README](/README.md)
+Previous: [Language Basics](/labs/Langauge/Basics.md)
+Next: [Salsa20](/labs/Salsa20/Salsa20.md)

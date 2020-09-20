@@ -228,3 +228,15 @@ This corresponds to the following arrangement (diagram produced by
 the Wikipedia article):
 
 <img src="NQueensSolution.png" alt="Solution to 8-Queens Puzzle">
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Cryptol Demos](/Demos/Cryptol/Demos.md)
+Previous: [Language Basics](/labs/Langauge/Basics.md)
+Next: [Salsa20](/labs/Salsa20/Salsa20.md)

@@ -264,7 +264,6 @@ property Salsa20EncryptInvolutionProp_2_64 = Salsa20EncryptInvolutionProp`{2,64}
 property Salsa20EncryptInvolutionProp_2_128 = Salsa20EncryptInvolutionProp`{2,128}
 ```
 
-
 # References
 
 [1] [The Salsa20 core](http://cr.yp.to/salsa20.html)
@@ -281,3 +280,15 @@ property Salsa20EncryptInvolutionProp_2_128 = Salsa20EncryptInvolutionProp`{2,12
 
 [5] [Salsa20 specification](https://cr.yp.to/snuffle/spec.pdf)
     D. Bernstein
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Course README](/README.md)
+Previous: [Cryptographic Properties](/labs/CryptoProofs/CryptoProofs.md)
+Next: [Capstone](/labs/LoremIpsum/LoremIpsum.md)

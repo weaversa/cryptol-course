@@ -918,9 +918,15 @@ just like Salsa20Encrypt except that it acts on a message which is
 some number of bits `b` (such that `b /^ 8 <= 2^^70`), rather than `l`
 bytes.
 
-
-# The end
+# Solicitation
 
 How was your experience with this lab? Suggestions are welcome in the
-form of a ticket on the course Github page:
+form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Course README](/README.md)
+Previous: [CRC](/labs/CRC/CRC.md)
+Next: [Cryptographic Properties](/labs/CryptoProofs/CryptoProofs.md)
+

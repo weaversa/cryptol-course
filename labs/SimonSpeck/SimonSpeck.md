@@ -387,3 +387,15 @@ complete in a reasonable amount of time.
 
 [2] Beaulieu R., Shors D., et. al. "SIMON and SPECK Implementation Guide".
 National Security Agency. January, 2019.
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Course README](/README.md)
+Previous: [Capstone](/labs/LoremIpsum/LoremIpsum.md)
+Next: [Course README](/README.md)

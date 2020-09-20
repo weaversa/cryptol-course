@@ -458,3 +458,15 @@ secretMessageIssue1 = 0x7f0f165e95c728ab1d1c07aa3c12cc10d5a975394c37eb5870be8b54
 
 secretMessageIssue2 = 0x4ba6d9eb8489faed2223bd5e3bbf5bf313708c38b369b0fea673c76843cf5312252984b024c2f4263ef318dfbade320920558cb7e475c54811f955a612ab9e18128e1adb056e5775
 ```
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Course README](/README.md)
+Previous: [Capstone](/labs/LoremIpsum/LoremIpsum.md)
+Next: [Course README](/README.md)

@@ -312,10 +312,22 @@ guarantees that go far beyond simple unit testing.
 A detailed introduction to the Cryptol interpreter is provided next in
 the [Interpreter lab](../Interpreter/Interpreter.md)
 
-# Documentation and References
+# References
 
 * [Programming Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf) -- A good overview and reference for the Cryptol language. Contains many examples and references for programming language features.
 
 * [Cryptol Version 2 Syntax](https://github.com/GaloisInc/cryptol/blob/master/docs/Syntax.pdf) -- A comprehensive guide to Cryptol Syntax
 
 * [Cryptol Semantics](https://github.com/GaloisInc/cryptol/blob/master/docs/Semantics.pdf) -- A guide to Cryptol language semantics and overview of the underlying representations of Cryptol's type system
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Course README](/README.md)
+Previous: [Installation](/INSTALL.md)
+Next: [Interpreter](/labs/Interpreter/Interpreter.md)
