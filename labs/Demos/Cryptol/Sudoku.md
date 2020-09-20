@@ -33,6 +33,7 @@ running in the `cryptol-course` directory with:
 Loading module Cryptol
 Cryptol> :m labs::Demos::Cryptol::Sudoku
 Loading module Cryptol
+Loading module Cryptol
 Loading module labs::Demos::Cryptol::Sudoku
 ```
 

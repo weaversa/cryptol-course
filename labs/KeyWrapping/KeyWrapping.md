@@ -623,7 +623,8 @@ that takes in the semiblock size as a parameter and defines `W` and
 key wrap module, and with `semiblock = 32` into a TDES key wrap
 module. This concept of parameterized, hierarchical modules can really
 help you make clear, duplication free, reusable Cryptol
-specifications.
+specifications. For those with poor imaginations, we've provided such
+a thing [here](spec/).
 
 **Back to TDES**: One important difference in the TKW family is you
 will use the Triple-DES algorithm that's implemented in the `TDEA`
@@ -680,127 +681,10 @@ TKWAD CIPHk' C = undefined
 # A Formal Specification of `KWP-AE`
 
 `KWP-AE` is the authenticated-encryption function and makes use of our
-previously defined `W`. There are two new concepts to introduce with
-this specification, so we'll break `KWP-AE` into two parts. The first
-concept is that of **padding**.
+previously defined `W`. There is a new concept to introduce with this
+specification.
 
-
-## Concept 1: Padding
-
-Many cryptographic specifications (especially hash functions) accept
-some arbitrary number of bits as input but operate over some number of
-words internally. Hence, it's common to see a bitvector **padded**
-with zeros (or sometimes a constant and zeroes) to inflate the
-bitvector until its size is a multiple of a word (usually 32 or
-64 bits). For example, say we have a bitvector of `37` bits and we
-want to pad it to fit into some number of 32-bit words. Well, the next
-largest multiple of `32` is `64`, and `64 - 37` is `27`, so we'll need
-to pad with `27` zeros. We can demonstrate this using Cryptol:
-
-```cryptol
-bits = 0b1001100101110011111010000001110011011 : [37]
-bits_padded = bits # (0 : [27]) : [64]
-```
-
-However, what if we need to create a function that pads any size input
-into a bitvector with a size that is a multiple of 32? In general, the
-pad is what's needed to make something a multiple of a
-word. Mathematically, this is identical to the **ceiling
-modulus**. Backing up a second -- `a % b` gives the amount of `a`
-remains after dividing by `b` (`%` is Cryptol's [remainder (or modulo)
-operator](https://en.wikipedia.org/wiki/Modulo_operation)). Consider
-we have `10` apples divided amongst `3` friends, after giving everyone
-three apples, we'll have `10 % 3 = 1` apple remaining. What we desire
-with padding isn't what's remaining, but rather the amount needed to
-get to the next multiple, that is, how many **more** apples do we need
-if we had another friend? --- To which the answer here is `2`. Or,
-said another way, we are **short** `2` apples.
-
-As it turns out, Cryptol has such a shortage operator (the ceiling
-modulus), namely, `%^`
-
-```Xcryptol session
-labs::KeyWrapping::KeyWrapping> :h (%^)
-
-    primitive type (%^) : # -> # -> #
-
-    `m %^ n` requires:
-      • fin m
-      • fin n
-      • n >= 1
-
-Precedence 90, associates to the left.
-
-How much we need to add to make a proper multiple of the second argument.
-```
-
-So, to revisit our padding example above, if we have a bitvector of
-length `37` and it needs to be padded to a multiple of `32`, we're
-short `27`, as demonstrated here using Cryptol:
-
-```Xcryptol session
-labs::KeyWrapping::KeyWrapping> `(37 %^ 32)
-Showing a specific instance of polymorphic result:
-  * Using 'Integer' for type argument 'rep' of 'Cryptol::number'
-27
-```
-
-Now we can revisit creating a function that pads any size input
-into a bitvector with a size that is a multiple of 32.
-
-```cryptol
-pad32 : {a} (fin a) => [a] -> [a + a %^ 32]
-pad32 x = x # 0
-```
-
-Here we take in a bitvector `x` of length `a` bits and produce a
-bitvector of length `a + a %^ 32` bits by concatenating `a %^ 32` zero
-bits onto `x`.
-
-
-## KWP-AE Padding
-
-The first 4 steps of `KWP-AE` describe how to create `S` from `P`.
-Here we introduce the type variable `k` to be the number of octets (or
-bytes) of `P`, and `l` to be the number of bits of `S`. You'll notice
-we constrain `k` to be between `1` and `2^^32-1`, as per Table 1.
-Since `S` is comprised of two 32-bit numbers concatenated with input
-`P` and then padded to a multiple of `64`, `l` is constrained to be
-`32 + 32 + k*8 + k*8 %^ 64`, that is, 32 bits for `ICV2` plus 32 bits
-for the number of octets of `P` plus `P` itself plus the shortage of
-`P` as a multiple of `64` bits.
-
-You may notice that the specification document gives the number of
-octets to pad as
-
-> ![](https://render.githubusercontent.com/render/math?math=8\cdot\lceil%20len(P)/64\rceil%20-len(P)/8)
-
-where `len(P)` is the number of bits in `P` per the definition in
-Section 4.4.
-
-In general,
-![](https://render.githubusercontent.com/render/math?math=b\cdot\lceil%20a/b\rceil%20-a=a%5C%25\hat{}b),
-and since Cryptol supports the more concise shortage operator, we'll
-use that instead.
-
-**EXERCISE**: Study the first four lines of `Algorithm 5` from the
-  standard and complete the definition of `KWPAEPad` below by filling
-  in the function skeleton provided with appropriate logic. 
-
-```cryptol
-KWPAEPad :
-    {k, l}               // k is [len(P)/8], Algorithm 5
-    ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
-    , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S
-    ) =>
-    [k * 8] -> [l]
-KWPAEPad P = S
-  where type padlen = 8 * (k * 8 /^ 64) - (k * 8) / 8
-        PAD = 0 : [8 * padlen]  // also PAD = 0 : [k*8 %^ 64]
-        S   = undefined
-```
-
-## Concept 2: Oddly Typed `if-then-else` Statements
+## Oddly Typed `if-then-else` Statements
 
 Sometimes, though not often, cryptographic algorithms will contain
 `if` statements where the `then` and `else` branches return different
@@ -928,34 +812,37 @@ labs::KeyWrapping::KeyWrapping> f (10 : [53])
 
 ## KWP-AE Top Level Function
 
-With those two considerations firmly under our belt, we can now tackle
+With that consideration firmly under our belt, we can now tackle
 `KWP-AE`.
 
 **EXERCISE**: Study `Algorithm 5` from the standard and complete the
   definition of `KWPAE` below by filling in the function skeleton
-  provided with appropriate logic. Use the `KWPAEPad` function from
-  above to create `S`. Use the `shrink` and `widen` functions to
-  assist in resizing `S` and the function outputs on the `then` and
-  `else` branches of line 5.
+  provided with appropriate logic. Use the `shrink` and `widen`
+  functions to assist in resizing `S` and the outputs of `W` and
+  `CIPHk` on the `then` and `else` branches of line 5.
 
 *Hint:* You'll notice that we needed to pull in the type variable `n`
-and type constraints from `W` and relate `n` and `l` (the type of both
-`S` and `C`). It may also be necessary to tell `W` that our type
-variable `n` is the same type variable that it uses. This can be
-achieved by calling `W` like so: ```W`{n=n}```.
+and type constraints from `W` and relate `n` and `k` (the type of both
+`S` and `C`). You'll need to pass `n` into `W`, ensuring that if we
+avoid the `n == 2` case. This can be done by calling `W` like so
+``W`{max 3 n}``. Also, remember that `ICV2` was defined above, so we do
+not need to redefine it inside `KWPAE`.
 
 ```cryptol
 KWPAE :
-    {k, l, n}            // k is [len(P)/8], Algorithm 5
-    ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
-    , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C
-    , 64*n == max 192 l               // Here we relate n and l
-    ) =>
-    ([128] -> [128]) -> [k * 8] -> [l]
+    {k, n}              // k is [len(P)/8], Algorithm 5
+    ( 1 <= k, k < 2^^32 // Bounds on the number of octets of P, from Table 1
+    , 2 <= n, n == 1 + k /^ 8) => // Here we relate n and k
+    ([128] -> [128]) -> [k * 8] -> [n * 64]
 KWPAE CIPHk P = C
   where
-    S = undefined
-    C = undefined
+    type padlen = 0
+    PAD = undefined : [8 * padlen]
+    S = undefined : [n * 64]
+    C = if len P <= 64 then
+          undefined
+        else
+          undefined
 ```
 
 Feel free to use the provided `KWPAETests` property to check your
@@ -977,47 +864,33 @@ previously defined `W'`.
 
 **EXERCISE**: Study `Algorithm 6` from the standard and complete the
   definition of `KWPAD` below by filling in the function skeleton
-  provided with appropriate logic. We suggest splitting the algorithm
-  into two again, so we're providing a full specification of
-  `KWPADUnpad` (which is roughly the inverse of `KWPAEPad`) and
-  `KWPAD`. You'll notice we've used types and pattern matching to
-  separate out the 4 components of S, rather than ask you to muck
-  about defining `Plen`, `padlen`, `LSB...`, etc. In truth, it's not
-  possible to follow the spec verbatim here because `Plen` is derived
-  from a value variable (`S`) but later used to derive a type variable
-  (`padlen` on line 6 which is then used as the size of `0` on line
-  8), and promotion of value variables to type variables is explicitly
-  forbidden in Cryptol.
-
-```cryptol
-KWPADUnpad :
-    {k, l}               // k is [len(P)/8], Algorithm 5
-    ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
-    , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S
-    ) =>
-    [l] -> (Bit, [k * 8])
-KWPADUnpad S = (FAIL, P)
-  where
-    k     : [32]
-    PAD   : [k*8 %^ 64]
-    ICV2' # k # P # PAD = S
-    FAIL = ICV2' != ICV2 \/
-           k     != `k   \/
-           PAD   != 0
-```
+  provided with appropriate logic. You'll notice we've used types and
+  pattern matching to separate out the 4 components of S, rather than
+  ask you to muck about defining `Plen`, `padlen`, `LSB...`, etc. In
+  truth, it's not possible to follow the spec verbatim here because
+  `Plen` is derived from a value variable (`S`) but later used to
+  derive a type variable (`padlen` on line 6 which is then used as the
+  size of `0` on line 8), and promotion of value variables to a type
+  variables is explicitly forbidden in Cryptol.
 
 ```cryptol
 KWPAD :
-    {k, l, n}            // k is [len(P)/8], Algorithm 5
-    ( 1 <= k, k < 2^^32  // Bounds on the number of octets of P, from Table 1
-    , l == 32 + 32 + k*8 + k*8 %^ 64  // The type of S and C
-    , 64*n == max 192 l               // Here we relate n and l
-    ) =>
-    ([128] -> [128]) -> [l] -> (Bit, [k * 8])
+    {k, n}              // k is [len(P)/8], Algorithm 5
+    ( 1 <= k, k < 2^^32 // Bounds on the number of octets of P, from Table 1
+    , 2 <= n, n == 1 + k /^ 8) => // Here we relate n and k
+    ([128] -> [128]) -> [n * 64] -> (Bit, [k * 8])
 KWPAD CIPHk' C = (FAIL, P)
   where
-    (FAIL, P) = undefined
-    S = undefined
+    S = if `n == 2 then
+          undefined
+        else
+          undefined
+    Plen  : [32]
+    PAD   : [k*8 %^ 64]
+    ICV2' # Plen # P # PAD = S
+    FAIL = ICV2' != ICV2                             \/
+           Plen  != (fromInteger (len P / 8) : [32]) \/
+           PAD   != 0
 ```
 
 Feel free to use the provided `KWPADTests` property to check your
@@ -1039,7 +912,7 @@ Asking Cryptol for the type of `KWPAE` after plugging in `2^^32-1` for
 `k` gives an `l` of `34359738432`:
 
 ```Xcryptol session
-labs::KeyWrapping::KeyWrapping> :t KWPAE`{k = 2^^32 - 1}
+labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1}
 KWPAE`{k = 2 ^^ 32 -
            1} : ([128] -> [128]) -> [34359738360] -> [34359738432]
 ```
@@ -1048,14 +921,14 @@ Well, what's `34359738432`? Is it `2^^29` 64-bit words? Let's first
 check how many 64-bit words it is. Here's one way:
 
 ```Xcryptol session
-labs::KeyWrapping::KeyWrapping> :t \(a : [34359738432]) -> groupBy`{64} a
+labs::KeyWrapping::KeyWrappingAnswers> :t \(a : [34359738432]) -> groupBy`{64} a
 (\(a : [34359738432]) -> groupBy`{64} a) : [34359738432] -> [536870913][64]
 ```
 
 Great...now what's `536870913`? Is it `2^^29`?
 
 ```Xcryptol session
-labs::KeyWrapping::KeyWrapping> 2^^29 : Integer
+labs::KeyWrapping::KeyWrappingAnswers> 2^^29 : Integer
 536870912
 ```
 
@@ -1063,24 +936,24 @@ Woh! Its not. `536870913` is `2^^29 + 1`. Let's double check this ---
 here is a command that tests the `2^^29` upper bound from Table 1:
 
 ```Xcryptol session
-labs::KeyWrapping::KeyWrapping> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29)}
+labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, n = (2^^29)}
 
 [error] at <interactive>:1:1--1:6:
   Unsolvable constraints:
-    • 34359738368 == 34359738432
+    • 536870912 == 536870913
         arising from
         use of expression KWPAE
         at <interactive>:1:1--1:6
-    • Reason: It is not the case that 34359738368 == 34359738432
+    • Reason: It is not the case that 536870912 == 536870913
 ```
 
 And here is a command that tests the bound we just found, `2^^29 + 1`.
 
 ```Xcryptol session
-labs::KeyWrapping::KeyWrapping> :t KWPAE`{k = 2^^32 - 1, l = 64 * (2^^29 + 1)}
+labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, n = (2^^29 + 1)}
 KWPAE`{k = 2 ^^ 32 - 1,
-       l = 64 *
-           (2 ^^ 29 + 1)} : ([128] -> [128]) -> [34359738360] -> [34359738432]
+       n = (2 ^^ 29 +
+            1)} : ([128] -> [128]) -> [34359738360] -> [34359738432]
 ```
 
 Well folks, it appears we (...well, Cryptol) just found a bug (albeit
@@ -1185,16 +1058,15 @@ property TKWADTests =
 
 ```cryptol
 TestKWPAE :
-   {a, k, l, n}
+   {a, k, n}
    ( a >= 2, 4 >= a
    , 1 <= k, k < 2^^32
-   , l == 32 + 32 + k*8 + k*8 %^ 64
-   , 64*n == max 192 l
+   , 2 <= n, n == 1 + k /^ 8
    ) =>
-   [a*64] -> [k][8] -> [l]
+   [a*64] -> [k][8] -> [n * 64]
 TestKWPAE k pt = ct
   where
-    ct = KWPAE`{k, l, n} (\p -> AES::encrypt k p) (join pt)
+    ct = KWPAE`{k, n} (\p -> AES::encrypt k p) (join pt)
 
 property KWPAETests =
     (TestKWPAE 0x6decf10a1caf8e3b80c7a4be8c9c84e8
@@ -1202,16 +1074,15 @@ property KWPAETests =
             == 0x01a7d657fc4a5b216f261cca4d052c2b)
 
 TestKWPAD :
-   {a, k, l, n}
+   {a, k, n}
    ( a >= 2, 4 >= a
    , 1 <= k, k < 2^^32
-   , l == 32 + 32 + k*8 + k*8 %^ 64
-   , 64*n == max 192 l
+   , 2 <= n, n == 1 + k /^ 8
    ) =>
-   [a*64] -> [l] -> (Bit, [k][8])
+   [a*64] -> [n * 64] -> (Bit, [k][8])
 TestKWPAD k ct = (FAIL, split pt)
   where
-    (FAIL, pt) = KWPAD`{k, l, n} (\c -> AES::decrypt k c) ct
+    (FAIL, pt) = KWPAD`{k, n} (\c -> AES::decrypt k c) ct
 
 property KWPADTests =
     (TestKWPAD 0x49319c331231cd6bf74c2f70b07fcc5c

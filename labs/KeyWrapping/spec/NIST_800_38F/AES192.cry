@@ -1,0 +1,26 @@
+/*
+ * Description: This is a Cryptol specification for the KWAE and KWAD
+ * functions in [NIST-800-38F], specialized to AES-192.
+ */
+
+module NIST_800_38F::AES192 where
+
+import NIST_800_38F::KW as KW
+import NIST_800_38F::KWP as KWP
+import AES::AES192 as AES192
+
+KWAE KEK = KW::KWAE (AES192::Encrypt KEK)
+KWAD KEK = KW::KWAD (AES192::Decrypt KEK)
+
+KWPAE KEK = KWP::KWPAE (AES192::Encrypt KEK)
+KWPAD KEK = KWP::KWPAD (AES192::Decrypt KEK)
+
+/*
+===== References =====
+
+[NIST-800-38F] (U) Recommendation for Block Cipher Modes of Operation:
+Methods for Key Wrapping. Morris Dworkin. NIST Special Publication
+800-38F. December 2012. This document is classified UNCLASSIFIED.
+
+======================
+*/

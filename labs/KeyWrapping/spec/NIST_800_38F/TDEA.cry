@@ -1,0 +1,32 @@
+/*
+ * Description: This is a Cryptol specification for the TKWAE and
+ * TKWAD functions in [NIST-800-38F], specialized to TDEA.
+ */
+
+module NIST_800_38F::TDEA where
+
+import NIST_800_38F::TKW as TKW
+import DES::TripleDES as TDEA
+
+TKWAE KEK = TKW::TKWAE (encCiph KEK)
+TKWAD KEK = TKW::TKWAD (decCiph KEK)
+
+private
+
+  encCiph KEK P = TDEA::blockEncrypt (k0, k1, k2, P)
+    where
+      [k0, k1, k2] = groupBy`{64} KEK
+
+  decCiph KEK C = TDEA::blockDecrypt (k0, k1, k2, C)
+    where
+      [k0, k1, k2] = groupBy`{64} KEK
+
+/*
+===== References =====
+
+[NIST-800-38F] (U) Recommendation for Block Cipher Modes of Operation:
+Methods for Key Wrapping. Morris Dworkin. NIST Special Publication
+800-38F. December 2012. This document is classified UNCLASSIFIED.
+
+======================
+*/

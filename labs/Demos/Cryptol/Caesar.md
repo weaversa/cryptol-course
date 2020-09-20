@@ -135,7 +135,7 @@ property charIsAtIndex = indexCorrect alphabet
 ```Xcryptol session
 labs::Demos::Cryptol::Caesar> :prove charIsAtIndex
 Q.E.D.
-(Total Elapsed Time: 0.072s, using ABC)
+(Total Elapsed Time: 0.072s, using "ABC")
 ```
 
 The property even holds for other sequences, repeating or not:
@@ -143,10 +143,10 @@ The property even holds for other sequences, repeating or not:
 ```Xcryptol session
 labs::Demos::Cryptol::Caesar> :prove \(A : [64]Char) -> indexCorrect A
 Q.E.D.
-(Total Elapsed Time: 1.172s, using ABC)
+(Total Elapsed Time: 1.172s, using "ABC")
 labs::Demos::Cryptol::Caesar> :prove \(L : [33][32]) -> indexCorrect L
 Q.E.D.
-(Total Elapsed Time: 0.347s, using ABC)
+(Total Elapsed Time: 0.347s, using "ABC")
 ```
 
 But to work for a Caesar cipher, each character in the alphabet needs
@@ -191,7 +191,7 @@ labs::Demos::Cryptol::Caesar> :s ascii=on
 labs::Demos::Cryptol::Caesar> "RACECAR " <<< 4
 "CAR RACE"
 labs::Demos::Cryptol::Caesar> :t (<<<)
-(<<<) : {n, ix, a} (fin n, fin ix) => [n]a -> [ix] -> [n]a
+(<<<) : {n, ix, a} (fin n, Integral ix) => [n]a -> ix -> [n]a
 ```
 
 
@@ -275,10 +275,10 @@ property recovery_14 = recovery`{14}
 ```Xcryptol session
 labs::Demos::Cryptol::Caesar> :prove recovery_4
 Q.E.D.
-(Total Elapsed Time: 0.245s, using ABC)
+(Total Elapsed Time: 0.245s, using "ABC")
 labs::Demos::Cryptol::Caesar> :prove recovery_14
 Q.E.D.
-(Total Elapsed Time: 0.956s, using ABC)
+(Total Elapsed Time: 0.956s, using "ABC")
 ```
 
 
@@ -325,7 +325,7 @@ labs::Demos::Cryptol::Caesar> :sat \k -> encrypt k "ILLUMINATI CONFIRMED" == "NQ
 Satisfiable
 (\k -> encrypt k "ILLUMINATI CONFIRMED" == "NQQZRNSFYN HTSKNWRJI")
   21 = True
-(Total Elapsed Time: 0.089s, using ABC)
+(Total Elapsed Time: 0.089s, using "ABC")
 ```
 
 # Conclusion

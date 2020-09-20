@@ -193,13 +193,21 @@ The instructions for [1] also work here:
 >
 > To do that,
 >
+<<<<<<< HEAD
+> ```Text
+=======
 > ```example
+>>>>>>> origin/master
 > > :set prover=z3
 > ```
 >
 > or
 >
+<<<<<<< HEAD
+> ```Text
+=======
 > ```example
+>>>>>>> origin/master
 > > :set prover=yices
 > ```
 
