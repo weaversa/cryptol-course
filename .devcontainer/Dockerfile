@@ -19,7 +19,7 @@ RUN curl -L https://yices.csl.sri.com/releases/2.6.2/yices-2.6.2-src.tar.gz | ta
 
 FROM debian:buster
 RUN apt-get update \
-    && apt-get install -y wget unzip vim emacs-nox git curl \
+    && apt-get install -y wget unzip vim emacs-nox git curl dos2unix \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 COPY --from=galoisinc/saw:0.6 /usr/local/bin /usr/local/bin
 COPY --from=galoisinc/cryptol:2.9.1 /usr/local/bin /usr/local/bin

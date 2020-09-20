@@ -60,16 +60,17 @@ jobs:
       services:
         - docker
       before_install:
-        - docker pull cryptolcourse/dev
-        - shopt -s expand_aliases
-        - alias cryptol='docker run --entrypoint cryptol -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/dev'
+        - docker pull cryptolcourse/dev  # Need to add package `dos2unix` or (better) use consistent newlines in Git interactions on Windows
       compiler: clang
       dist: focal
       os: linux
       script:
         - chmod +x scripts/extract_snippets && chmod +x scripts/poor_test_runner.sh
         - scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
-        - scripts/extract_snippets --output=output -v labs/Transposition/*Answers.md && scripts/poor_test_runner.sh -v output/labs/Transposition/*.md.icry
+        - scripts/extract_snippets --output=output -v labs/Interpreter/*.md && scripts/poor_test_runner.sh -v output/labs/Interpreter/*.md.icry
+        - scripts/extract_snippets --output=output -v labs/Language/*.md && scripts/poor_test_runner.sh -v output/labs/Language/*.md.icry
+        - scripts/extract_snippets --output=output -v labs/Overview/*.md && scripts/poor_test_runner.sh -v output/labs/Overview/*.md.icry
+        - shopt -s globstar && scripts/extract_snippets --output=output -v **/*Answers.md && scripts/poor_test_runner.sh -v output/**/*Answers.md.icry
 script:
   - export CRYPTOLPATH=$(pwd)
 # README tests
