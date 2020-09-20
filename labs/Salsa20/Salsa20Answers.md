@@ -39,8 +39,11 @@ Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
-```shell
+```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::Salsa20::Salsa20Answers
+Loading module Cryptol
+Loading module labs::Salsa20::Salsa20Answers
 ```
 
 We start by defining a new module for this lab:
@@ -48,6 +51,11 @@ We start by defining a new module for this lab:
 ```cryptol
 module labs::Salsa20::Salsa20Answers where
 ```
+
+You do not need to enter the above into the interpreter; the previous 
+`:m ...` command loaded this literate Cryptol file automatically.
+In general, you should run `Xcryptol session` commands in the 
+interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # Salsa20
 
@@ -115,7 +123,7 @@ property hexadecimalProp =
 
 Let's prove `hexadecimalProp`:
 
-```shell
+```Xcryptol session
 labs::Salsa20::Salsa20> :prove hexadecimalProp
 Q.E.D.
 (Total Elapsed Time: 0.006s, using "Z3")
@@ -209,7 +217,7 @@ This is an excellent opportunity to check that the quarterround
 function we've specified in Cryptol does indeed work correctly on
 these examples.
 
-```shell
+```Xcryptol session
 labs::Salsa20::Salsa20> :prove quarterroundExamplesProp
 Q.E.D.
 (Total Elapsed Time: 0.005s, using "Z3")
@@ -266,7 +274,7 @@ property quarterroundIsInjectiveProp x x' =
 
 And then prove that the property is true.
 
-```shell
+```Xcryptol session
 labs::Salsa20::Salsa20> :prove quarterroundIsInjectiveProp
 Q.E.D.
 (Total Elapsed Time: 0.430s, using "Z3")
@@ -277,7 +285,7 @@ doing some very heavy lifting behind the scenes. Without an automated
 theorem prover, the best one could do is run some tests. Cryptol does
 support automated testing with its `:check` command.
 
-```shell
+```Xcryptol session
 labs::Salsa20::Salsa20> :check quarterroundIsInjectiveProp
 Using random testing.
 Passed 100 tests.
@@ -291,7 +299,7 @@ than the number of seconds left before the [Sun swallows the
 Earth](https://en.wikipedia.org/wiki/Future_of_Earth). However, if
 you'd prefer to try, Cryptol's `:exhaust` is the command to use.
 
-```shell
+```Xcryptol session ci-none
 labs::Salsa20::Salsa20> 2^^256 : Integer
 115792089237316195423570985008687907853269984665640564039457584007913129639936
 labs::Salsa20::Salsa20> :exhaust quarterroundIsInjectiveProp

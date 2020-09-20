@@ -1,13 +1,22 @@
 ---
-services:
-  - docker
+language: c
+addons:
+  apt:
+    packages:
+      - dos2unix
+      - libgmp-dev
+      - libncurses-dev
 jobs:
   include:
-    -
+    - name: "Cryptol, SAW, and Z3 Releases on OSX"
       before_install:
-        - wget https://saw.galois.com/builds/nightly/saw-0.4.0.99-2020-05-21-OSX-64.tar.gz
-        - tar -xzf saw-0.4.0.99-2020-05-21-OSX-64.tar.gz
-        - export PATH=$PATH:$(pwd)/saw-0.4.0.99-2020-05-21-OSX-64/bin
+        - wget https://github.com/GaloisInc/cryptol/releases/download/2.9.1/cryptol-2.9.1-macOS-x86_64.tar.gz
+        - tar -xzf cryptol-2.9.1-macOS-x86_64.tar.gz
+        - export PATH=$PATH:$(pwd)/cryptol-2.9.1-macOS-x86_64/bin
+        - wget https://github.com/GaloisInc/saw-script/releases/download/v0.6/saw-0.6-macOS-x86_64.tar.gz
+        - tar -xzf saw-0.6-macOS-x86_64.tar.gz
+        - export PATH=$PATH:$(pwd)/saw-0.6-macOS-x86_64/bin
+        - cryptol --version
         - saw --version
         - curl -fsSL https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-osx-10.14.6.zip -o z3-4.8.8-x64-osx-10.14.6.zip
         - unzip -j z3-4.8.8-x64-osx-10.14.6.zip -d z3_downloaded
@@ -15,21 +24,30 @@ jobs:
         - z3 --version
       compiler: clang
       os: osx
-    -
+    - name: "Cryptol Homebrew on OSX"
       before_install:
         - brew install cryptol
       compiler: clang
       os: osx
-    -
+    - name: "Cryptol Docker on Linux Host"
+      services:
+        - docker
       before_install:
-        - docker pull cryptolcourse/cryptol:latest
+        - docker pull cryptolcourse/dev
         - shopt -s expand_aliases
-        - alias cryptol='docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/cryptol'
-    -
+        - alias cryptol='docker run --entrypoint cryptol -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptolcourse/dev'
+      compiler: clang
+      dist: focal
+      os: linux
+    - name: "Cryptol, SAW, and Z3 Releases on Linux"
       before_install:
-        - wget https://saw.galois.com/builds/nightly/saw-0.4.0.99-2020-05-21-Ubuntu14.04-64.tar.gz
-        - tar -xzf saw-0.4.0.99-2020-05-21-Ubuntu14.04-64.tar.gz
-        - export PATH=$PATH:$(pwd)/saw-0.4.0.99-2020-05-21-Ubuntu14.04-64/bin
+        - wget https://github.com/GaloisInc/cryptol/releases/download/2.9.1/cryptol-2.9.1-Linux-x86_64.tar.gz
+        - tar -xzf cryptol-2.9.1-Linux-x86_64.tar.gz
+        - export PATH=$PATH:$(pwd)/cryptol-2.9.1-Linux-x86_64/bin
+        - wget https://github.com/GaloisInc/saw-script/releases/download/v0.6/saw-0.6-Linux-x86_64.tar.gz
+        - tar -xzf saw-0.6-Linux-x86_64.tar.gz
+        - export PATH=$PATH:$(pwd)/saw-0.6-Linux-x86_64/bin
+        - cryptol --version
         - saw --version
         - curl -fsSL https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-ubuntu-16.04.zip -o z3-4.8.8-x64-ubuntu-16.04.zip
         - unzip -j z3-4.8.8-x64-ubuntu-16.04.zip -d z3_downloaded
@@ -38,7 +56,21 @@ jobs:
       compiler: clang
       dist: bionic
       os: linux
-language: c
+    - name: "Cryptol Docker on Linux Host - Test Snippet Extraction"
+      services:
+        - docker
+      before_install:
+        - docker pull cryptolcourse/dev  # Need to add package `dos2unix` or (better) use consistent newlines in Git interactions on Windows
+      compiler: clang
+      dist: focal
+      os: linux
+      script:
+        - chmod +x scripts/extract_snippets && chmod +x scripts/poor_test_runner.sh
+        - scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
+        - scripts/extract_snippets --output=output -v labs/Interpreter/*.md && scripts/poor_test_runner.sh -v output/labs/Interpreter/*.md.icry
+        - scripts/extract_snippets --output=output -v labs/Language/*.md && scripts/poor_test_runner.sh -v output/labs/Language/*.md.icry
+        - scripts/extract_snippets --output=output -v labs/Overview/*.md && scripts/poor_test_runner.sh -v output/labs/Overview/*.md.icry
+        - shopt -s globstar && scripts/extract_snippets --output=output -v **/*Answers.md && scripts/poor_test_runner.sh -v output/**/*Answers.md.icry
 script:
   - export CRYPTOLPATH=$(pwd)
 # README tests
@@ -52,7 +84,7 @@ script:
   - cryptol -e -c ":m labs::Demos::SAW::Bittwiddling::Bittwiddling"
   - clang -emit-llvm -c labs/Demos/SAW/Bittwiddling/bittwiddling.c -o labs/Demos/SAW/Bittwiddling/bittwiddling.bc
   - cryptol -e -c ":m labs::Demos::SAW::Bittwiddling::BittwiddlingAnswers"
-  - "! command -v saw >/dev/null 2>&1 || saw labs/Demos/SAW/Bittwiddling/BittwiddlingAnswers.saw"
+  - "! command -v saw >/dev/null 2>&1 || (cd labs/Demos/SAW/Bittwiddling && saw BittwiddlingAnswers.saw)"
 # Salsa20 lab tests
   - cryptol -e -c ":m labs::Salsa20::Salsa20"
   - cryptol -e -c ":m labs::Salsa20::Salsa20Answers"
@@ -88,4 +120,40 @@ script:
 # Key Wrapping lab tests
   - cryptol -e -c ":m labs::KeyWrapping::KeyWrapping"
   - cryptol -e -c ":m labs::KeyWrapping::KeyWrappingAnswers"
-  - cryptol -e -c ":m labs::KeyWrapping::spec::NISTKeyWrapping"
+# Simon and Speck lab tests
+  - cryptol -e -c ":m labs::SimonSpeck::SimonSpeck"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_64_96"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_128_256"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_32_64"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_48_96"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_128_192"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_96_96"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_48_72"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::Simon"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_128_128"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_64_128"
+  - cryptol -e -c ":m labs::SimonSpeck::Simon::simon_96_144"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_128_192"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_128_256"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_96_96"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_48_72"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_128_128"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_32_64"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_48_96"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::Speck"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_64_96"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_96_144"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::speck_64_128"
+  - cryptol -e -c ":m labs::SimonSpeck::SpeckAnswers::SpeckTestVectors"
+# Transpostion Lab Tests
+  - cryptol -e -c ":m labs::Transposition::CommonProperties"
+  - cryptol -e -c ":m labs::Transposition::CommonPropertiesAnswers"
+  - cryptol -e -c ":m labs::Transposition::Transposition"
+  - cryptol -e -c ":m labs::Transposition::TranspositionAnswers"
+  - cryptol -e -c ":m labs::Transposition::Esrever"
+  - cryptol -e -c ":m labs::Transposition::EsreverAnswers"
+  - cryptol -e -c ":m labs::Transposition::Scytale"
+  - cryptol -e -c ":m labs::Transposition::ScytaleAnswers"
+  - cryptol -e -c ":m labs::Transposition::RailFence"
+  - cryptol -e -c ":m labs::Transposition::RailFenceAnswers"
+  - cryptol -e -c ":m labs::Transposition::Route"

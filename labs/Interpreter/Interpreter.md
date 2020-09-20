@@ -36,15 +36,38 @@ Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
-```shell
+```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::Interpreter::Interpreter
+Loading module Cryptol
+Loading module labs::Interpreter::Interpreter
+labs::Interpreter::Interpreter>
 ```
 
-We start by defining a new module for this lab:
+A Cryptol `module` is a named codeblock within a file.  The module
+name is used when `import`-ing code into a larger Cryptol project, or
+for interactively incorporating the code in the interpreter via the
+`:module` command (described in the [Loading
+Modules](#loading-modules) section below).  A file can only contain
+one module, and the name of the module must match the filename.
+Additionally, the module can have namespace characteristics, separated
+by `::` delimiters.  The namespace values directly correlate with
+directory structure surrounding the file.
+
+In this file, we start by defining a new module for this lab:
 
 ```cryptol
 module labs::Interpreter::Interpreter where
 ```
+
+That indicates that this file `Interpreter.md` will be found in the
+directory `labs/Interpreter`.
+
+*(Note: you do not need to enter the `module` instruction into the
+interpreter; the previous `:m ...` command loaded this literate
+Cryptol file automatically.  In general, you should run `Xcryptol
+session` commands in the interpreter and leave `cryptol` code alone to
+be parsed by `:m ...`.)*
 
 # Using the Cryptol interpreter
 
@@ -53,12 +76,16 @@ module labs::Interpreter::Interpreter where
 The interpreter has a number of different configuration settings. To
 view them type `:set`.
 
-```shell
+```Xcryptol session
 labs::Interpreter::Interpreter> :set
 ascii = off
 base = 16
 core-lint = off
 debug = off
+fp-base = 16
+fp-format = free
+hash-consing = on
+ignore-safety = off
 infLength = 5
 mono-binds = on
 prover = z3
@@ -70,30 +97,33 @@ smtfile = -
 tc-debug = 0
 tc-solver = z3 -smt2 -in
 tests = 100
-warnDefaulting = on
+warnDefaulting = off
 warnShadowing = on
 ```
 
 The most common setting to change is `base`. The default is `base =
-16` which means the interpreter will display bitvectors by printing
+16`, which means the interpreter will display bitvectors by printing
 their hexadecimal representations. For example,
 
-```shell
+```Xcryptol session
 labs::Interpreter::Interpreter> 0xa
 0xa
 labs::Interpreter::Interpreter> 10 : [4]
 0xa
 ```
 
-To make the interpreter display bitvectors in decimal (base 10) type
-`:set base=10`.
+To make the interpreter display bitvectors in decimal (base 10), type
+`:set base=10`. To change back to hexadecimal, type `:set base=16`.
 
-```shell
+```Xcryptol session
 labs::Interpreter::Interpreter> :set base=10
 labs::Interpreter::Interpreter> 0xa
 10
 labs::Interpreter::Interpreter> 10 : [4]
 10
+labs::Interpreter::Interpreter> :set base=16
+labs::Interpreter::Interpreter> 10 : [4]
+0xa
 ```
 
 Feel free to change this setting to what is most comfortable for you.
@@ -110,10 +140,10 @@ Cryptol's interpreter has a built-in help command. To invoke it, type
 example, if we'd like to know more about the `:set base` command, we
 can type:
 
-```shell
+```Xcryptol session
 labs::Interpreter::Interpreter> :h :set base
 
-    base = 10
+    base = 16
 
 Default value: 16
 
@@ -123,7 +153,7 @@ The base to display words at (2, 8, 10, or 16).
 Cryptol has a built-in command to reverse a list, called
 `reverse`. Let's look at the help for this command.
 
-```shell
+```Xcryptol session
 labs::Interpreter::Interpreter> :h reverse
 
     reverse : {n, a} (fin n) => [n]a -> [n]a
@@ -138,11 +168,11 @@ You'll notice that some commands start with a colon (`:`) and others
 do not. The colon commands are commands that are outside of the
 Cryptol language, and only exist in the interpreter. You can see a full listing of these commands by typing `:h`.
 
-```shell
+```Xcryptol session
 labs::Interpreter::Interpreter> :h
   :t, :type            Check the type of an expression.
   :b, :browse          Display environment for all loaded modules, or for a specific module.
-  :?, :help            Display a brief description of a function, type, or command.
+  :?, :help            Display a brief description of a function, type, or command. (e.g. :help :help)
   :s, :set             Set an environmental option (:set on its own displays current values).
   :check               Use random testing to check that the argument always returns true.
                        (If no argument, check all properties.)
@@ -152,6 +182,8 @@ labs::Interpreter::Interpreter> :h
                        true. (If no argument, check all properties.)
   :sat                 Use a solver to find a satisfying assignment for which the argument
                        returns true. (If no argument, find an assignment for all properties.)
+  :safe                Use an external solver to prove that an expression is safe
+                       (does not encounter run-time errors) for all inputs.
   :debug_specialize    Do type specialization on a closed expression.
   :eval                Evaluate an expression with the reference evaluator.
   :ast                 Print out the pre-typechecked AST of a given term.
@@ -192,7 +224,7 @@ prelude is discouraged.
 About `:browse` --- If you enter `:b` into the interpreter you will
 first see:
 
-```shell
+```Xcryptol session
 labs::Interpreter::Interpreter> :b
 Type Synonyms
 =============
@@ -200,60 +232,65 @@ Type Synonyms
   Public
   ------
 
+    type uint32_t = [32]
+
+  From Cryptol
+  ------------
+
     type Bool = Bit
     type Char = [8]
     type lg2 n = width (max 1 n - 1)
-    type String n = [n][8]
+    type String n = [n]Char
     type Word n = [n]
     ...
 ```
 
 Type synonyms are helper functions used to express the type of some
-data. For example, The number `10` can be expressed as a 32-bit word
+data. For example, the number `10` can be expressed as a 32-bit word
 via,
 
-```shell
+```Xcryptol session
 labs::Interpreter::Interpreter> 10 : Word 32
 0x0000000a
 ```
 
-The next things you'll see with `:b` are some constraint
+The next things you'll see with `:browse` are some constraint
 synonyms. These are helper functions used to express type
 constraints. The ones preloaded into the interpreter unify different
 types of comparison operators to `>=`. This just saves users from
 having to express type constraints using only `>=`.
 
-The next things you'll see with `:b` are some primitive types. These
+The next things you'll see with `:browse` are some primitive types. These
 include comparison and arithmetic operators, type classes, basic
 types, and some type constraints that help with expressing some
 cryptographic type constraints elegantly. These are used when defining
 the type of a function or variable. For example, the size of a
 bitvector can be represented in terms of the width of a number:
 
-```shell
+```Xcryptol session
 labs::Interpreter::Interpreter> :t 10 : [width 32]
 (10 : [width 32]) : [6]
 ```
 
-In the last section you'll see with `:b` are Cryptol's symbols. This
+Cryptol's symbols are given in the last section provided by `:browse`. This
 is where you'll find all of the value operators (as opposed to type
 operators). These are used when defining the value of a function or
 variable. For example, `reverse` can be used to reverse the order of a
 sequence of bitvectors:
 
-```shell
+```Xcryptol session
 labs::Interpreter::Interpreter> reverse [1, 2, 3] : [3][2]
 [0x3, 0x2, 0x1]
 ```
 
-Each of the items in the environment can be queried using `:h`.
+Each of the items in the environment can be queried using `:help` (`:h` for short).
 
 
 ## Tab Completion and Scrolling
 
 The interpreter supports [TAB
-completion](https://en.wikipedia.org/wiki/Command-line_completion),
-that is, pressing TAB will display all of available symbols. And, if
+completion](https://en.wikipedia.org/wiki/Command-line_completion);
+that is, pressing TAB will display all available symbols. And, if
 you start typing a symbol and then press TAB, the interpreter will
 attempt to complete the symbol you've started typing.
 
@@ -273,7 +310,7 @@ interpreter evaluated. For example, if we can `reverse` a list, the
 result `[3, 2, 1]` is automatically bound to the `it` symbol. We can
 then `reverse it` and see that we get `[1, 2, 3]` back.
 
-```shell
+```Xcryptol session
 labs::Interpreter::Interpreter> :s base=10
 labs::Interpreter::Interpreter> reverse [1, 2, 3] : [3][2]
 [3, 2, 1]
@@ -281,13 +318,13 @@ labs::Interpreter::Interpreter> reverse it
 [1, 2, 3]
 ```
 
-Though, now the value of `it` has also become `[1, 2, 3]`. To bind a
+Though, in the same way, now the value of `it` has become `[1, 2, 3]`. To bind a
 value to a name (save it for later) we can use the `let` command. For
 example, here we bind the result of `reverse [1, 2, 3] : [3][2]` to
 `r`, then `reverse r` and show that the result is as expected and that
 `r` still retains `[3, 2, 1]`.
 
-```shell
+```Xcryptol session
 labs::Interpreter::Interpreter> let r = reverse [1, 2, 3] : [3][2]
 labs::Interpreter::Interpreter> r
 [3, 2, 1]
@@ -297,7 +334,7 @@ labs::Interpreter::Interpreter> r
 [3, 2, 1]
 ```
 
-`let` is very helpful for debugging and program understanding,
+`let` is very helpful for debugging and program understanding;
 however, it can cause confusion (as demonstrated in the simple example
 below). Thus, industrial use of `let` is discouraged.
 
@@ -306,7 +343,7 @@ the interpreter, definitions can be overwritten, it's better to place
 these kinds of definitions in a file and use the `:reload` (or `:r`)
 command when editing to maintain a consistent state.
 
-```shell
+```Xcryptol session
 labs::Interpreter::Interpreter> let x = 0
 labs::Interpreter::Interpreter> let y = x + 1
 labs::Interpreter::Interpreter> let x = 1
@@ -316,33 +353,27 @@ labs::Interpreter::Interpreter> let x = 1
 ## Loading and Reloading Files
 
 Speaking of loading files, this lab can be loaded directly into the
-interpreter. If you run Cryptol from the root of this repository, you
-can load this file using `:l` like so:
+interpreter using `:module` (as shown at the beginning of this lab) as
+well as using `:load`. Where `:module` takes the module name, `:load`
+instead takes the filename.
 
-```shell
-[cryptol-course]$ cryptol
-┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
-┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
-┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
-version 2.8.0
-
-Loading module Cryptol
-Cryptol> :l labs/Interpreter/Interpreter.md
+```Xcryptol session
+labs::Interpreter::Interpreter> :l labs/Interpreter/Interpreter.md
 Loading module Cryptol
 Loading module labs::Interpreter::Interpreter
 labs::Interpreter::Interpreter>
 ```
 
 Here we see that this file contains a module named
-`labs::Interpreter::Interpreter`, which really just describes it's filename
-and directory path from the root of the repository.
+`labs::Interpreter::Interpreter`, which really just describes its filename
+and directory path (labs/Interpreter/Interpreter.md).
 
 We can browse the currently loaded module to see what new symbols it
 provides. Remember that the interpreter supports TAB completion so you
 only need to type `:b l` then press the TAB key and the interpreter
 will fill in the rest.
 
-```shell
+```Xcryptol session
 labs::Interpreter::Interpreter> :b labs::Interpreter::Interpreter
 Type Synonyms
 =============
@@ -364,33 +395,43 @@ Symbols
 ```
 
 Here we see that this module provides one type synonym and three
-symbols.
+symbols.  (If your result does not match, try reloading the module.)
 
 
 ## Loading Modules
 
-To load a module by its name (rather than by filename), we use
-`:m`. For this command to work, either
+To load a module by its name (rather than by filename), we use the
+`:module` (or `:m`) command. Namespace elements of a module name
+directly correlate with directory structure; e.g., this module
+`labs::Interpreter::Interpreter` maps directly to the file at
+`labs/Interpreter/Interpreter.md`. Thus in order for the module to be
+found (essentially, finding the base directory for that path), either
 
-  1) the Cryptol interpreter must have been started in the root
-     directory of the module, or
+  1) the Cryptol interpreter must have been started at the same base
+     directory as the module, or
 
-  2) the root directory of the module must be in the CRYPTOLPATH
-     environment variable.
+  2) the (fully-qualified) base directory of the module must be in
+     the CRYPTOLPATH environment variable.
 
-The latter is preferred. To set the CRYPTOLPATH variable such that we
-can access the labs and specs here, do this:
+The CRYPTOLPATH approach is more robust, as it will work no matter
+what directory Cryptol is started in. To set the CRYPTOLPATH variable
+(in Linux) such that we can access the labs and specs for this class,
+do this:
 
-```shell
+```Xcryptol shell
 $ export CRYPTOLPATH=<path-to-cryptol-course>
-cryptol-course]$ cryptol
+cryptol-course$ cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
-version 2.8.0
-
+version 2.9.1
+https://cryptol.net  :? for help
 Loading module Cryptol
+```
+
+```Xcryptol session
 Cryptol> :m labs::Interpreter::Interpreter
+Loading module Cryptol
 Loading module labs::Interpreter::Interpreter
 labs::Interpreter::Interpreter>
 ```
@@ -400,14 +441,15 @@ labs::Interpreter::Interpreter>
 The Cryptol interpreter supports editing the currently loaded file or
 module via `:e`. However, if no file or module is loaded `:e` will
 allow you to edit the Cryptol prelude, which is very dangerous. When
-you type `:e`, Cryptol will load the current file or module in a text
-editor, and reload the file when the editor is closed. The default
+you type `:e`, Cryptol will open the current file or module in a text
+editor, and will then reload the file into the interpreter when the editor
+is closed. The default
 editor is [vim](https://www.vim.org/), but can be changed via setting
 an environment variable called `EDITOR`. For example, if in a Linux
 like environment, the following command will change the default to
 [Emacs](https://www.gnu.org/software/emacs/).
 
-```shell
+```Xcryptol shell
 $ export EDITOR="emacs -nw"
 ```
 
@@ -417,7 +459,8 @@ Interpreter commands can be issued directly from the command line, or
 from a batch file. For example, here we issue some commands from the
 command line using the interpreter's `-c` flag:
 
-```shell
+```Xcryptol shell
+Loading module Cryptol
 $ cryptol -c ":m labs::Interpreter::Interpreter" -c ":s base=10" -c "x + 2"
 Loading module Cryptol
 Loading module labs::Interpreter::Interpreter
@@ -427,7 +470,7 @@ Loading module labs::Interpreter::Interpreter
 And here we issue the same commands by running the `test.sry` batch
 file using the interpreter's `-b` flag:
 
-```shell
+```Xcryptol shell
 $ cat labs/Interpreter/test.sry
 :m labs::Interpreter::Interpreter
 :s base=10
@@ -442,7 +485,7 @@ Loading module labs::Interpreter::Interpreter
 
 The last few items covered here (and more) can be found querying Cryptol's usage options via:
 
-```shell
+```Xcryptol shell
 $ cryptol --help
 Usage: cryptol [OPTIONS]
   -b FILE     --batch=FILE             run the script provided and exit
@@ -451,6 +494,7 @@ Usage: cryptol [OPTIONS]
               --color=MODE             control the color output for the terminal, which may be 'auto', 'none' or 'always' (default: 'auto')
   -v          --version                display version number
   -h          --help                   display this message
+              --no-unicode-logo        Don't use unicode characters in the REPL logo
               --ignore-cryptolrc       disable reading of .cryptolrc files
               --cryptolrc-script=FILE  read additional .cryptolrc files
               --cryptolpath-only       only look for .cry files in CRYPTOLPATH; don't use built-in locations

@@ -62,18 +62,20 @@ property CBCInverts iv (pt : [100][128]) =
     CBCDecrypt (\x -> x - 1) iv (CBCEncrypt (\x -> x + 1) iv pt) == pt
 ```
 
-```shell
- ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
- ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
- ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
- version 2.8.0
+```Xcryptol session
+┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
+┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
+┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
+version 2.9.1
+https://cryptol.net  :? for help
 
- Loading module Cryptol
- Cryptol> :module README
- Loading module README
- README> :prove CBCInverts
- Q.E.D.
- (Total Elapsed Time: 0.081s, using Z3)
+Loading module Cryptol
+Cryptol> :module README
+Loading module Cryptol
+Loading module README
+README> :prove CBCInverts
+Q.E.D.
+(Total Elapsed Time: 0.081s, using "Z3")
 ```
 
 Don't worry if Cryptol is not yet installed on your computer -- the
@@ -104,6 +106,9 @@ Cryptol](INSTALL.md).
    cryptographic properties and how to prove them with Cryptol.
     * [Salsa20 Properties](labs/Salsa20/Salsa20Props.md): Prove some
       cryptographic properties about Salsa20.
+    * [Transposition Ciphers](labs/Transposition/Contents.md):
+      Learn how to use higher-order functions to create and prove
+      properties about a number of common transposition ciphers.
     * [Project Euler](labs/ProjectEuler/ProjectEuler.md): If you
       enjoyed the last lab, go ahead and try your hand at using
       Cryptol's connection to automated provers (SMT solvers) to solve
@@ -111,11 +116,14 @@ Cryptol](INSTALL.md).
 8. [Methods for Key Wrapping](labs/KeyWrapping/KeyWrapping.md):
    Create a Cryptol specification of NIST's [SP800-38F key wrap
    standard](https://csrc.nist.gov/publications/detail/sp/800-38f/final).
+    * [Parameterized Modules: Simon and
+      Speck](labs/SimonSpeck/SimonSpeck.md): Learn about Cryptol's
+      parameterized modules by creating a Cryptol specification of
+      NSA's Speck block cipher.
 9. [Capstone: Putting it all together](labs/LoremIpsum/LoremIpsum.md):
    Use components and techniques from other labs to decrypt a series
    of secret messages by feeding wrapped keys into the anomalous KLI20
    cryptographic engine.
-
 
 ## Graphical View of the Course
 

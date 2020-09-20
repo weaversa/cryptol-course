@@ -37,8 +37,14 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```shell
+```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::ProjectEuler::ProjectEuler
+Loading module Cryptol
+Loading module labs::ProjectEuler::cipher1
+Loading module labs::ProjectEuler::keylog
+Loading module labs::ProjectEuler::cipher2
+Loading module labs::ProjectEuler::ProjectEuler
 ```
 
 We start by defining a new module for this lab and importing some accessory
@@ -51,6 +57,11 @@ import labs::ProjectEuler::cipher1
 import labs::ProjectEuler::keylog
 import labs::ProjectEuler::cipher2
 ```
+
+You do not need to enter the above into the interpreter; the previous 
+`:m ...` command loaded this literate Cryptol file automatically.
+In general, you should run `Xcryptol session` commands in the 
+interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # Properties in Cryptol, or How I Learned to Stop Worrying and Love SAT Solvers
 
@@ -69,24 +80,13 @@ property inc1001 x = inc x == 1001
 ```
 
 Now that we have our function and a property about our function, we
-can load this lab directly into Cryptol and find an answer!  You
-should get a response like this:
+can test it using the Cryptol interpreter.
 
-```shell
-[cryptol-course]$ cryptol labs/ProjectEuler/ProjectEuler.md
-┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
-┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
-┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
-version 2.8.0
-
-Loading module Cryptol
-Loading module labs::ProjectEuler::cipher1
-Loading module labs::ProjectEuler::keylog
-Loading module labs::ProjectEuler::cipher2
-Loading module labs::ProjectEuler::ProjectEuler
+```Xcryptol session
 labs::ProjectEuler::ProjectEuler> :sat inc1001
+Satisfiable
 inc1001 1000 = True
-(Total Elapsed Time: 0.028s, using "Z3")
+(Total Elapsed Time: 0.023s, using "Z3")
 ```
 Let's do a more complicated example: use Cryptol to factor 3,000,013.
 
@@ -95,16 +95,18 @@ factor3000013 : Integer -> Integer -> Bit
 factor3000013 x y =
     x * y == 3000013 /\
     x > 1            /\
-    y > 1
+    y > 1            /\
+    x <= y
 ```
 
 Note that if we don't include the `x > 1 /\ y > 1` clauses we get a
 trivial factorization.  Now we can use Cryptol to factor our number:
 
-```shell
+```Xcryptol session
 labs::ProjectEuler::ProjectEuler> :sat factor3000013
+Satisfiable
 factor3000013 773 3881 = True
-(Total Elapsed Time: 0.215s, using Z3)
+(Total Elapsed Time: 0.498s, using "Z3")
 ```
 
 Clearly we don't need SAT solvers to figure out how to subtract one.

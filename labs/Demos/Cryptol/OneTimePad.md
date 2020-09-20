@@ -27,16 +27,24 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```shell
+```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::Demos::Cryptol::OneTimePad
+Loading module Cryptol
+Loading module Cryptol
+Loading module labs::Demos::Cryptol::OneTimePad
 ```
 
-We start by defining a new module for this lab and importing some accessory
-modules that we will use:
+We start by defining a new module for this lab:
 
 ```cryptol
 module labs::Demos::Cryptol::OneTimePad where
 ```
+
+You do not need to enter the above into the interpreter; the previous 
+`:m ...` command loaded this literate Cryptol file automatically.  
+In general, you should run `Xcryptol session` commands in the 
+interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # One-Time Pad
 
@@ -98,13 +106,13 @@ encrypt :
     (String k) -> (String m) -> (String m)
 encrypt psk pt = ct
   where
-    ct = (take`{m} psk) ^ pt
+    ct = (take psk) ^ pt
 
-/* Decrypt plaintext; same as `encrypt` */
+/** Decrypt plaintext; same as `encrypt` */
 decrypt = encrypt
 
 /**
- * Verify test vector
+ * Check test vector
  *   "ZUGESAGT" "HELLO" -> [0x12, 0x10, 0x0B, 0x09, 0x1C]
  */
 property test =
@@ -119,51 +127,47 @@ property decrypt_of_encrypt_yields_original_plaintext_8_5 (psk, pt) =
     (decrypt psk (encrypt`{8, 5} psk pt)) == pt
 ```
 
-(You are reading Markdown-Literate Cryptol. Future labs will
-embellish upon this by interspersing Cryptol with Markdown and shell
-logs, but that's too complicated; here it's all in one place.)
-
 ## Setting and Reading Variables
 
 Great. Now let's try applying the module to the previous example:
 
-```shell
-labs::Demos::Cryptol::OneTimePad> let psk = "ZUGESAGT"
-labs::Demos::Cryptol::OneTimePad> let pt = "HELLO"
-labs::Demos::Cryptol::OneTimePad> let ct = (encrypt psk pt)
+```cryptol
+psk1 = "ZUGESAGT"
+pt1 = "HELLO"
+ct1 = (encrypt psk1 pt1)
 ```
 
-OK, we've assigned variables representing the pre-shared key (`psk`),
-plaintext (`pt`), and ciphertext (`ct`) from the example. Let's see
+OK, we've assigned variables representing the pre-shared key (`psk1`),
+plaintext (`pt1`), and ciphertext (`ct1`) from the example. Let's see
 the plaintext:
 
-```shell
-labs::Demos::Cryptol::OneTimePad> pt
+```Xcryptol session
+labs::Demos::Cryptol::OneTimePad> pt1
 [0x48, 0x45, 0x4c, 0x4c, 0x4f]
 ```
 
-That wasn't what we assigned to `pt`!!!  Actually it is, just shown
+That wasn't what we assigned to `pt1`!!!  Actually it is, just shown
 differently, in this case as a sequence of 5 hexadecimal bytes
 rather than a string of 5 characters.  We can ask the interpreter
 to show us a string instead:
 
-```shell
+```Xcryptol session
 labs::Demos::Cryptol::OneTimePad> :s ascii=on
-labs::Demos::Cryptol::OneTimePad> pt
+labs::Demos::Cryptol::OneTimePad> pt1
 "HELLO"
 ```
 
 That was pleasant.  Now let's see the ciphertext:
 
-```shell
-labs::Demos::Cryptol::OneTimePad> ct
+```Xcryptol session
+labs::Demos::Cryptol::OneTimePad> ct1
 "\DC2\DLE\v\t\FS"
 ```
 
 That looks ciphertexty, all right.  Entering `:s` shows all the
 configuration settings:
 
-```shell
+```Xcryptol session
 labs::Demos::Cryptol::OneTimePad> :s
 ascii = on
 base = 16
@@ -187,7 +191,7 @@ warnShadowing = on
 If a symbol's name isn't descriptive enough, we can use `:h` to display
 help text for it:
 
-```shell
+```Xcryptol session
 labs::Demos::Cryptol::OneTimePad> :h encrypt
 
     encrypt : {k, m} (fin k, k >= m) =>
@@ -200,8 +204,8 @@ labs::Demos::Cryptol::OneTimePad> :h encrypt
 
 Cool. Let's do a quick sanity check:
 
-```shell
-labs::Demos::Cryptol::OneTimePad> (decrypt psk ct)
+```Xcryptol session
+labs::Demos::Cryptol::OneTimePad> decrypt psk1 ct1
 "HELLO"
 ```
 
@@ -210,8 +214,8 @@ labs::Demos::Cryptol::OneTimePad> (decrypt psk ct)
 It matches! Our sanity is intact. Well, maybe not -- let's make
 sure:
 
-```shell
-labs::Demos::Cryptol::OneTimePad> it == pt
+```Xcryptol session
+labs::Demos::Cryptol::OneTimePad> it == pt1
 True
 ```
 
@@ -220,7 +224,7 @@ True
 Nice! So that one example checks out, as expressed by the `test`
 property in our module. Let's prove it:
 
-```shell
+```Xcryptol session
 labs::Demos::Cryptol::OneTimePad> :prove test
 Q.E.D.
 (Total Elapsed Time: 0.028s, using Z3)
@@ -240,12 +244,22 @@ type), as reflected in the
 rather sesquipedalian name; let's use tab-completion to prove the
 property:
 
-```shell
+```Text
 labs::Demos::Cryptol::OneTimePad> :prove dec<Tab>
 labs::Demos::Cryptol::OneTimePad> :prove decrypt_<Tab>
 labs::Demos::Cryptol::OneTimePad> :prove decrypt_of_encrypt_yields_original_plaintext_8_5<Enter>
 Q.E.D.
 (Total Elapsed Time: 0.028s, using Z3)
+```
+
+```Xcryptol session
+labs::Demos::Cryptol::OneTimePad> :prove decrypt_of_encrypt_yields_original_plaintext_8_5
+Q.E.D.
+```
+
+```Xcryptol session
+labs::Demos::Cryptol::OneTimePad> :prove decrypt_of_encrypt_yields_original_plaintext_8_5
+Q.E.D.
 ```
 
 ## Satisfiability
@@ -257,9 +271,9 @@ one time is not a good idea. Suppose Bob replies to Alice with a
 second plaintext/ciphertext exchange also using the pre-shared key
 `ZUGESAGT`:
 
-```shell
-labs::Demos::Cryptol::OneTimePad> let pt2 = "GOODBYE"
-labs::Demos::Cryptol::OneTimePad> let ct2 = (encrypt psk pt2)
+```cryptol
+pt2 = "GOODBYE"
+ct2 = (encrypt psk1 pt2)
 ```
 
 Now suppose an attacker Eve doesn't know the pre-shared key, but has
@@ -268,34 +282,36 @@ deduces that with no further communication the message might
 reasonably have been "GOODBYE". Then Eve can exploit Cryptol to
 deduce the pre-shared key Bob just used:
 
-```shell
-labs::Demos::Cryptol::OneTimePad> :sat \psk -> (encrypt psk pt2) == ct2
-(\psk -> (encrypt (psk : String 7) pt2) == ct2) "ZUGESAG" = True
-(Total Elapsed Time: 0.042s, using Z3)
+```Xcryptol session
+labs::Demos::Cryptol::OneTimePad> :sat \psk2 -> (encrypt`{7} psk2 pt2) == ct2
+Satisfiable
+(\psk2 -> (encrypt`{7} psk2 pt2) == ct2) "ZUGESAG" = True
+(Total Elapsed Time: 0.044s, using "Z3")
 ```
 
 (That "`->`" syntax defines a [lambda function](
 https://en.wikipedia.org/wiki/Anonymous_function) that maps one
-argument (`psk`) to an expression that will return `True` or `False`,
+argument (`psk2`) to an expression that will return `True` or `False`,
 basically asking for a pre-shared key that encrypts the given
 plaintext to the given ciphertext. Of course, Eve could have just
 applied `XOR` directly; this example is silly.)
 
 Now that Eve has the pre-shared key for this exchange, she could
-stash it and try it on the message Bob received earlier:
+stash `it` and try `it` (`it` is the counterexample produced by the 
+last `:sat` command) on the message Bob received earlier:
 
-```shell
+```Xcryptol session
 labs::Demos::Cryptol::OneTimePad> it
 {result = True, arg1 = "ZUGESAG"}
-labs::Demos::Cryptol::OneTimePad> let psk' = it.arg1
-labs::Demos::Cryptol::OneTimePad> :sat \pt -> (encrypt psk' pt) == ct
-(\pt -> (encrypt psk' pt) == ct) "HELLO" = True
+labs::Demos::Cryptol::OneTimePad> :sat \pt3 -> (encrypt (it.arg1) pt3) == ct1
+Satisfiable
+(\pt3 -> (encrypt "ZUGESAG" pt3) == ct) "HELLO" = True
 (Total Elapsed Time: 0.028s, using Z3)
 ```
 
 Hello!!! So much for communications security...
 
-## Review
+# Conclusion
 
 Well that was fun. We have clearly expressed the one-time pad using
 Cryptol, demonstrated it on some test cases, verified some simple

@@ -1,0 +1,50 @@
+module NIST_800_38F::tests::Test_KW_AE_AES256 where
+
+import NIST_800_38F::AES256 as AES256
+
+// Test Harness
+CheckAES256WrapVector : {K:[256], P:[128], C:[192]} -> Bit
+CheckAES256WrapVector TV = AES256::KWAE TV.K TV.P == TV.C
+
+//
+// KW-AE-AES256 Key Wrap Test Vectors
+// 
+AES256WrapTestVectors  = [
+    {
+        //COUNT = 0
+        K = 0xf59782f1dceb0544a8da06b34969b9212b55ce6dcbdd0975a33f4b3f88b538da,
+        P = 0x73d33060b5f9f2eb5785c0703ddfa704,
+        C = 0x2e63946ea3c090902fa1558375fdb2907742ac74e39403fc
+    },
+    {
+        //COUNT = 1
+        K = 0x5a51bef705d2e56efc2622a29f7b7c57cd2cb160820b1519fc5d16933cab7930,
+        P = 0xf6c00a3078ca85a4e3b95eac262f5ef1,
+        C = 0x1e86665cb9605dd4b34b8eaf900a4af4add0eb07e6e63e3e
+    },
+    {
+        //COUNT = 2
+        K = 0xfff5177783487b54aa8cf850d2bfed06020487066252b001b25b62e3ed5a4d00,
+        P = 0xd56eca85b26ec4a3e6a3f5920976c282,
+        C = 0xfbd8ff96da9eab337d9504fac45ea98a0defaee7778dfb9c
+    },
+    {
+        //COUNT = 3
+        K = 0xb4aaa75e0c65a0ab9333c957fabf54de7228d07b6bf454412021e93b02ba4b86,
+        P = 0xa547c5adb4fcba4a0d370c4eba035541,
+        C = 0x0f743a0a500ea61f193ec9b6ce85799fd5436351cec6d321
+    },
+    {
+        //COUNT = 4
+        K = 0x333d4fc377bbb1d5bc7bbbc9978b522b9f25f9af9e4a3e91a574587ec622743f,
+        P = 0x2399b2c0e572d8d7f04dcd8f1afc0895,
+        C = 0x3c789c77132351622d7a7fe5c87a5378a7dcf59ecef17646    
+    }
+]
+
+                    
+property AES256WrapTest_00 = CheckAES256WrapVector (AES256WrapTestVectors@0)
+property AES256WrapTest_01 = CheckAES256WrapVector (AES256WrapTestVectors@1)
+property AES256WrapTest_02 = CheckAES256WrapVector (AES256WrapTestVectors@2)
+property AES256WrapTest_03 = CheckAES256WrapVector (AES256WrapTestVectors@3)
+property AES256WrapTest_04 = CheckAES256WrapVector (AES256WrapTestVectors@4)

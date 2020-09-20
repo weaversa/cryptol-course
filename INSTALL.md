@@ -29,9 +29,9 @@ such, you will need to be able to run the Cryptol
 interpreter. Supported platforms include **up-to-date** CentOS,
 Ubuntu, MacOS, and Windows 10.
 
-Some challenge labs make use of SAW, a companion verification tool
-associated with Cryptol. However, SAW is not a requirement for success
-here.
+Some challenge labs make use of SAW (Software Analysis Workbench), a
+companion verification tool associated with Cryptol. However, SAW is not
+a requirement for success here.
 
 ## Recommended Installation Instructions (Visual Studio Code + Docker)
 
@@ -40,29 +40,56 @@ here.
    and unzip it somewhere on your computer.
 2. Install Docker:
    [https://docs.docker.com/get-docker](https://docs.docker.com/get-docker)
+   * Linux users: enable user-mode access to docker by executing `sudo
+     groupadd docker && sudo usermod -aG docker $USER`, then logout
+     and log back in.
 3. Install Visual Studio Code:
    [https://code.visualstudio.com](https://code.visualstudio.com)
-4. Install the Remote Containers Visual Studio Code Extension
-   (`ms-vscode-remote.remote-containers`). This can be done within
-   Visual Studio Code from the Extensions panel which you can open by
-   clicking "View" -> "Extensions".
-5. Open Visual Studio Code and
-   * click "File" -> "Open Folder..." (or just "Open..." on OSX).
-   * Select the directory where you unzipped this repository. **Visual
-     Studio will detect the remote container and prompt you -- choose
-     "Reopen in Container"**.
-     If you miss the prompt, click the `><` box (hovertext: 
-     "open a remote window") in the lower left hand corner of the window 
-     and choose "Remote-Containers: Reopen in Container".
-   * It will take a while for Docker to build the container. Once it's
-     done you can run Cryptol by clicking "Terminal" -> "Run Task..."
-     -> "Cryptol".
+   * **If installing on Windows, be sure to download the "User Installer"**.
+   _VS Code is used here for viewing and editing Cryptol modules and
+   interacting with the Cryptol interpreter._
+4. Open Visual Studio Code (command name: `code`) and 
+    1. Install the "vscode-pdf" extension: click **View ->
+       Extensions**, search for "tomoki1207", select and install.
+       _This extension is for viewing pdf files in VS Code._
+    2. Install the "Markdown Preview Enhanced" extension: click **View
+       -> Extensions**, search for
+       "shd101wyy.markdown-preview-enhanced", select and install.
+       _This extension offers an enhanced "preview" view of any Markdown
+       file being viewed.  It will create a second "Open Preview to the
+       Side" icon above the Markdown document._<br/>
+       Then, in the Extensions list, select the gear icon (hovertext 
+       "Manage") for this extension, then Extension Settings.  Uncheck the
+       Break On Single New Line option, then close the tab.
+       _This will remove some unnecessary line breaks from the enhanced
+       Preview view._
+    3. Install the "Remote - Containers" extension: click **View ->
+       Extensions**, search for "ms-vscode-remote.remote-containers",
+       select and install.
+    4. Open the cryptol-course directory: click **File -> Open
+       Folder...** (or just **Open...** on MacOS) and select the top
+       directory of the unzipped course repository, then click **OK**.
+       * Be sure to select the top-level cryptol-course directory, not a
+         subdirectory.
+    5. Visual Studio Code will detect the remote container and prompt
+       you in the lower right corner of the window -- choose **Reopen in
+       Container**.
+       * If you miss the prompt, click the `><` box (hovertext: "open a
+         remote window") in the lower left hand corner of the window and
+         choose "Remote-Containers: Reopen in Container".
+       * It will take a while for Docker to build the container the
+         first time. Once it's done, you can run Cryptol by clicking
+         **Terminal -> Run Task... -> Cryptol**. (Or else type CTRL-backtick
+         for a terminal window, then enter the command `cryptol`.)
 
 If a terminal window appears with the Cryptol logo, you're done. Feel
 free to load the next lab into the interpreter by typing:
 
-```shell
+```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::Overview::Overview
+Loading module Cryptol
+Loading module labs::Overview::Overview
 ```
 
 You may now start using Visual Studio Code to work through the
@@ -97,7 +124,7 @@ for user-mode solutions.)*
 The Cryptol and *optional* SAW docker images can be downloaded by
 issuing the following Docker commands in your computer's terminal.
 
-```shell
+```
 $ docker pull cryptolcourse/cryptol
 ...
 $ docker pull cryptolcourse/saw
@@ -117,7 +144,7 @@ pasting a simple command into a shell prompt.
 Once Homebrew is installed, Cryptol (along with its `z3` dependency)
 can be installed via:
 
-```shell
+```
 brew update && brew install cryptol
 ```
 
@@ -143,7 +170,7 @@ you downloaded should be placed in your system path.
 For CentOS, Ubuntu, or MacOS, the whole process would look something
 like (depending on the which OS variant you have):
 
-```shell
+```
 $ curl -fsSL https://github.com/GaloisInc/saw-script/releases/download/v0.5/saw-0.5-Ubuntu14.04-64.tar.gz | tar -xz
 $ export PATH=$(pwd)/saw-0.5-Ubuntu14.04-64/bin:${PATH}
 ```
@@ -174,7 +201,7 @@ your system path.
 For CentOS, Ubuntu, or MacOS, the whole process would look something
 like (depending on which OS build and version you download):
 
-```shell
+```
 $ curl -fsSL https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-osx-10.14.6.zip -o z3-4.8.8-x64-osx-10.14.6.zip
 $ unzip -j z3-4.8.8-x64-osx-10.14.6.zip -d z3-4.8.8
 $ export PATH=$(pwd)/z3-4.8.8:${PATH}
@@ -205,7 +232,7 @@ To load a literate document into Cryptol, change to your
 `cryptol-course` directory in a terminal (Linux) or command prompt
 (Windows 10), then run Cryptol via a locally installed binary or
 Docker container. We'll use
-[labs/Demos/OneTimePad.md](labs/Demos/OneTimePad.md) as an
+[labs/Demos/Cryptol/OneTimePad.md](labs/Demos/Cryptol/OneTimePad.md) as an
 example. That markdown file is a literate Cryptol module (as are all
 the labs) and as such can be loaded into the Cryptol interpreter.
 
@@ -225,26 +252,34 @@ docker container and set the `CRYPTOLPATH` environment variable for
 access to the directory's Cryptol modules. This environment variable
 is used by both Cryptol and SAW.
 
-### Using Docker on Linux and OSX
+### Using Docker on Linux and MacOS
 
-```shell
+```
 .../cryptol-course> docker run --rm -it --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course cryptolcourse/cryptol
     ...
 Loading module Cryptol
-Cryptol> :module labs::Demos::OneTimePad
-Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad>
+```
+
+```Xcryptol session
+Cryptol> :module labs::Demos::Cryptol::OneTimePad
+Loading module Cryptol
+Loading module labs::Demos::Cryptol::OneTimePad
+labs::Demos::Cryptol::OneTimePad>
 ```
 
 ### Using Docker on Windows 10
 
-```shell
+```
 ...\cryptol-course> docker run --rm -it --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course cryptolcourse/cryptol
     ...
 Loading module Cryptol
-Cryptol> :module labs::Demos::OneTimePad
-Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad>
+```
+
+```Xcryptol session
+Cryptol> :module labs::Demos::Cryptol::OneTimePad
+Loading module Cryptol
+Loading module labs::Demos::Cryptol::OneTimePad
+labs::Demos::Cryptol::OneTimePad>
 ```
 
 ## Running from a Direct Install
@@ -254,13 +289,17 @@ First ensure that the cryptol intepreter is started in the
 CRYPTOLPATH to point to that directory. Then, use the `:module`
 command from within Cryptol to load the lab.
 
-```shell
+```
 .../cryptol-course$ cryptol
     ...
 Loading module Cryptol
-Cryptol> :module labs::Demos::OneTimePad
-Loading module labs::Demos::OneTimePad
-labs::Demos::OneTimePad>
+```
+
+```Xcryptol session
+Cryptol> :module labs::Demos::Cryptol::OneTimePad
+Loading module Cryptol
+Loading module labs::Demos::Cryptol::OneTimePad
+labs::Demos::Cryptol::OneTimePad>
 ```
 -----
 
@@ -278,8 +317,8 @@ provides syntax highlighting and an interface to a local Cryptol
 installation (e.g. evaluate the current expression or get its type).
 
 The local `.vscode` configuration in the `cryptol-course` repo
-supports running a `cryptolcourse/cryptol` Docker image via `Terminal
-> Run Task... > cryptol-docker` in the VS Code menu bar.
+supports running a `cryptolcourse/cryptol` Docker image via **Terminal
+-> Run Task... > Cryptol** in the VS Code menu bar.
 
 ## Emacs
 

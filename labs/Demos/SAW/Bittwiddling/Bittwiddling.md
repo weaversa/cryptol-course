@@ -66,8 +66,11 @@ Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
-```shell
+```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::Demos::SAW::Bittwiddling::Bittwiddling
+Loading module Cryptol
+Loading module labs::Demos::SAW::Bittwiddling::Bittwiddling
 ```
 
 We start by defining a new module for this lab:
@@ -75,6 +78,11 @@ We start by defining a new module for this lab:
 ```cryptol
 module labs::Demos::SAW::Bittwiddling::Bittwiddling where
 ```
+
+You do not need to enter the above into the interpreter; the previous 
+`:m ...` command loaded this literate Cryptol file automatically.
+In general, you should run `Xcryptol session` commands in the 
+interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 ## Parity Exercise
 

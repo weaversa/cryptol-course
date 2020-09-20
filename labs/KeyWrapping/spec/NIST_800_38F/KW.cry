@@ -1,0 +1,60 @@
+/*
+ * Description: This is a Cryptol specification for the KW-AE and KW-AD
+ * functions in [NIST-800-38F].
+ */
+
+module NIST_800_38F::KW where
+
+import NIST_800_38F::W64
+
+// [NIST-800-38F] Section 4.3 Variables
+
+ICV1 = 0xA6A6A6A6A6A6A6A6 : [64]
+
+
+// [NIST-800-38F] Section 6.2 KW
+
+/**
+ * KW-AE (Algorithm 3) specifies the authenticated-encryption function
+ * for KW for a given block cipher and KEK. The wrapping function, W,
+ * is invoked in Step 3 with the same block cipher and KEK as
+ * prerequisites.
+ */
+
+KWAE :
+    {n}
+    (fin n, 2 <= n, n < 2^^54 - 1) =>
+    ([128] -> [128]) -> [n * 64] -> [(n + 1) * 64]
+KWAE CIPHk P = C
+  where
+    S = ICV1 # P
+    C = W`{n+1} CIPHk S
+
+/**
+ * KW-AD (Algorithm 4) specifies the authenticated-decryption function
+ * for KW for a given block cipher and KEK. The unwrapping function,
+ * W', is invoked in Step 4 with the same block cipher and KEK as
+ * prerequisites. This function returns a tuple where the first
+ * element is `True` in the case of failure and the second element is
+ * the unwrapped plaintext.
+ */
+
+KWAD :
+    {n}
+    (fin n, 2 <= n, n < 2^^54 - 1) =>
+    ([128] -> [128]) -> [(n + 1) * 64] -> (Bit, [n * 64])
+KWAD CIPHk' C = (FAIL, P)
+  where
+    S    = W'`{n+1} CIPHk' C
+    FAIL = MSB S != ICV1
+    P    = LSB S
+
+/*
+===== References =====
+
+[NIST-800-38F] (U) Recommendation for Block Cipher Modes of Operation:
+Methods for Key Wrapping. Morris Dworkin. NIST Special Publication
+800-38F. December 2012. This document is classified UNCLASSIFIED.
+
+======================
+*/

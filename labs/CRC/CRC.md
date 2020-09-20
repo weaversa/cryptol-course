@@ -38,8 +38,11 @@ Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
-```shell
+```Xcryptol session
+Loading module Cryptol
 Cryptol> :m labs::CRC::CRC
+Loading module Cryptol
+Loading module labs::CRC::CRC
 ```
 
 We start by defining a new module for this lab:
@@ -47,6 +50,11 @@ We start by defining a new module for this lab:
 ```cryptol
 module labs::CRC::CRC where
 ```
+
+You do not need to enter the above into the interpreter; the previous 
+`:m ...` command loaded this literate Cryptol file automatically.
+In general, you should run `Xcryptol session` commands in the 
+interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # Cyclic Redundancy Checks
 
@@ -185,9 +193,9 @@ parameters.
       should be reversed.
 
 **EXERCISE**: Here we provide a skeleton for a fully parameterized CRC
-for you to fill in. Please augment the `CRCSimple` function with the
-four extra parameters given above. Use the `CRC32Test` property to
-help you get it right.
+for you to fill in. It is essentially the `CRCSimple` function
+augmented with the four extra parameters given above. Use the
+`CRC32Test` property to help you get it right.
 
 Note, since there is now a parameter that possibly reflects the input
 bytes, to make things a little easier here, we've reshaped the input
@@ -243,7 +251,6 @@ CRC32_C = CRC G undefined undefined undefined undefined
 
 property CRC32_CTest =
     CRC32_C testM == 0x22620404
-
 ```
 
 
