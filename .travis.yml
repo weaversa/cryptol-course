@@ -56,7 +56,7 @@ jobs:
       compiler: clang
       dist: bionic
       os: linux
-    - name: "Cryptol Docker on Linux Host - Test snipped extraction"
+    - name: "Cryptol Docker on Linux Host - Test Snippet Extraction"
       services:
         - docker
       before_install:
