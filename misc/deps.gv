@@ -26,6 +26,7 @@ digraph CryptolCourseFlow {
   Salsa20Properties [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Salsa20/Salsa20Props.md"];
   KeyWrapping [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/KeyWrapping/KeyWrapping.md"];
   CryptographicProperties [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/CryptoProofs/CryptoProofs.md"];
+  TranspositionCiphers [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Transposition/Contents.md"];
   ProjectEuler [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/ProjectEuler/ProjectEuler.md"];
   Capstone [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/LoremIpsum/LoremIpsum.md"];
   SimonSpeck [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/SimonSpeck/SimonSpeck.md"];
@@ -34,6 +35,7 @@ digraph CryptolCourseFlow {
   LanguageBasics          [label="Language\nBasics"];
   Salsa20Properties       [label="Salsa20\nProperties"];
   CryptographicProperties [label="Cryptographic\nProperties"];
+  TranspositionCiphers    [label="Transposition\nCiphers"];
   KeyWrapping             [label="Key Wrapping"];
   ProjectEuler            [label="Project Euler"];
   CryptolDemos            [label="Cryptol Demos"];
@@ -55,6 +57,7 @@ digraph CryptolCourseFlow {
   edge [color=black];
   CryptographicProperties -> Salsa20Properties;
   CryptographicProperties -> ProjectEuler;
+  CryptographicProperties -> TranspositionCiphers;
   //CRC -> Capstone;
   //LanguageBasics -> Salsa20;
   //LanguageBasics -> KeyWrapping;

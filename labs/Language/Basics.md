@@ -1868,8 +1868,8 @@ Star Trek's (T.O.S.) warp factor light speed multipliers!
 
 ||||||||
 |-|-|-|-|-|-|-|
-| `[` | `n^^3` | `|` | `n` | `<-` | `[0..10]` | `]`
-| Generate the sequence | with elements of the form `n^^3` | where | `n` | draws from | the sequence `0` through `10`.
+| `[` | `n^^3` | `\|` | `n` | `<-` | `[0..10]` | `]`
+| Generate the sequence | with elements of the form `n^^3` | where | `n` | draws from | the sequence `0` through `10`
 ||||||||
 
 We refer to the right-hand side (`n <- [0..10]`)
@@ -1981,8 +1981,8 @@ Here's an English-language breakdown of the first self-referential sequence comp
 
 ||||||||||||
 |-|-|-|-|-|-|-|-|-|-|-|
-| `roundKeys` | `=` | `[key]` | `#` | `[` | `roundKey <<< 1` | `|` | `roundKey` | `<-` | `roundKeys` | `]`
-| The sequence `roundKeys` | is defined as | an initial `key` | followed by | the sequence | with elements of the form `roundKey <<< 1` | where | `roundKey` | draws from | the generated sequence `roundKeys` itself.
+| `roundKeys` | `=` | `[key]` | `#` | `[` | `roundKey <<< 1` | `\|` | `roundKey` | `<-` | `roundKeys` | `]`
+| The sequence `roundKeys` | is defined as | an initial `key` | followed by | the sequence | with elements of the form `roundKey <<< 1` | where | `roundKey` | draws from | the generated sequence `roundKeys` itself
 ||||||||||||
 
 Many block ciphers are just variations of the above theme. 
