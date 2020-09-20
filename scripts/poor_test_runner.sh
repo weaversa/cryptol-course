@@ -22,7 +22,7 @@ function log () {
 
 run_tests() {
     if [[ $TRAVIS_JOB_NAME = "Cryptol Docker on Linux Host - Test Snippet Extraction" ]]; then
-        CRYPTOL_ALIAS="docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course galoisinc/cryptol:2.9.0" \
+        CRYPTOL_ALIAS="docker run -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course galoisinc/cryptol:2.9.1" \
         CRYPTOL_MNT="/mnt/cryptol-course/"
     else
         CRYPTOL_ALIAS="cryptol"
