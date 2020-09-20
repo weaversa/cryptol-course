@@ -513,3 +513,15 @@ secretMessageIssue2 = 0x4ba6d9eb8489faed2223bd5e3bbf5bf313708c38b369b0fea673c768
 
 > We leave this exercise to the student. Don't forget to set `:set
   ascii=on`.
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Course README](/README.md)
+Previous: [Capstone](/labs/LoremIpsum/LoremIpsum.md)
+Next: [Course README](/README.md)

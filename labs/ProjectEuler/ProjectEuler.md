@@ -270,3 +270,15 @@ can be found in cipher2.cry.
 >
 > EXTRA CHALLENGE:
 > What about five-digit numbers? Other numbers of digits?
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Course README](/README.md)
+Previous: [Cryptographic Properties](/labs/CryptoProofs/CryptoProofs.md)
+Next: [Capstone](/labs/LoremIpsum/LoremIpsum.md)

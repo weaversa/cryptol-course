@@ -1121,12 +1121,6 @@ property KWPADTests =
             == True)
 ```
 
-# The end
-
-How was your experience with this lab? Suggestions are welcome in the
-form of a ticket on the course GitHub page:
-[https://github.com/weaversa/cryptol-course/issues](https://github.com/weaversa/cryptol-course/issues)
-
 # References
 
 * [NIST Special Publication
@@ -1141,3 +1135,15 @@ form of a ticket on the course GitHub page:
   information on the same set of algorithms and includes test vectors
   which we use in this lab to verify that our algorithms were
   implemented correctly.
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Course README](/README.md)
+Previous: [Cryptographic Properties](/labs/CryptoProofs/CryptoProofs.md)
+Next: [Capstone](/labs/LoremIpsum/LoremIpsum.md)

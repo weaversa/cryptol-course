@@ -508,7 +508,7 @@ Influential environment variables:
         corresponding solver invoked for `:sat` and `:prove`
 ```
 
-## End
+## Conclusion
 
 That's all for the interpreter for now. This course is only designed
 to be an introduction, so not everything is covered in detail. We
@@ -530,3 +530,15 @@ y = x + 10
 
 f a = a + y
 ```
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Course README](/README.md)
+Previous: [Overview](/labs/Overview/Overview.md)
+Next: [Language Basics](/labs/Language/Basics.md)

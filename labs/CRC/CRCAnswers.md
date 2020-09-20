@@ -328,7 +328,7 @@ in [1], Section "Polynomial representations of cyclic redundancy
 checks".
 
 
-# Bibliography
+# References
 
 [1] Cyclic redundancy check. In Wikipedia. Retrieved June 7th, 2020,
 from https://en.wikipedia.org/wiki/Cyclic_redundancy_check.
@@ -336,3 +336,15 @@ from https://en.wikipedia.org/wiki/Cyclic_redundancy_check.
 [2] Mathematics of cyclic redundancy checks. In Wikipedia. Retrieved June 7th, 2020, from https://en.wikipedia.org/wiki/Mathematics_of_cyclic_redundancy_checks
 
 [3] CRC Calculator. Bastian Molkenthin. Retrieved June 7th, 2020, from http://www.sunshine2k.de/coding/javascript/crc/crc_js.html
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Course README](/README.md)
+Previous: [Language Basics](/labs/Langauge/Basics.md)
+Next: [Salsa20](/labs/Salsa20/Salsa20.md)

@@ -332,3 +332,15 @@ Satisfiable
 
 You came, you saw, and you conquered the Caesar cipher in Cryptol.
 Ave, Caesar!
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Cryptol Demos](/Demos/Cryptol/Demos.md)
+Previous: [Language Basics](/labs/Langauge/Basics.md)
+Next: [Salsa20](/labs/Salsa20/Salsa20.md)
