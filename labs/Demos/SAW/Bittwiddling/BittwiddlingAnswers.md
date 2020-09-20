@@ -157,3 +157,15 @@ property anyZeroByteProp =
     anyZeroByte 0x10011001 == False /\
     anyZeroByte 0x00112233 == True
 ```
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Course README](/README.md)
+Previous: [Language Basics](/labs/Langauge/Basics.md)
+Next: [Salsa20](/labs/Salsa20/Salsa20.md)

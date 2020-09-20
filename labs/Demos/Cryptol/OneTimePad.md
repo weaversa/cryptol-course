@@ -316,3 +316,15 @@ Hello!!! So much for communications security...
 Well that was fun. We have clearly expressed the one-time pad using
 Cryptol, demonstrated it on some test cases, verified some simple
 properties, and manipulated it for nefarious misdeeds.
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Cryptol Demos](/Demos/Cryptol/Demos.md)
+Previous: [Language Basics](/labs/Langauge/Basics.md)
+Next: [Salsa20](/labs/Salsa20/Salsa20.md)

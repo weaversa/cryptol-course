@@ -578,3 +578,15 @@ Okay then. Let's defer to the original for some closing remarks...
 > the computer "what" to do, instead of "how."
 
 > [`Download` section with broken link removed]
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Cryptol Demos](/Demos/Cryptol/Demos.md)
+Previous: [Language Basics](/labs/Langauge/Basics.md)
+Next: [Salsa20](/labs/Salsa20/Salsa20.md)

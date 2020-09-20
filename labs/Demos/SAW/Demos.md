@@ -18,3 +18,15 @@ here.
    which perform relatively simple calculations. This is a simple
    introduction to how one can use Cryptol and SAW to prove that an
    implementation matches its specification.
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Course README](/README.md)
+Previous: [Language Basics](/labs/Langauge/Basics.md)
+Next: [Salsa20](/labs/Salsa20/Salsa20.md)

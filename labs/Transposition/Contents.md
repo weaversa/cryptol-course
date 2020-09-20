@@ -6,3 +6,15 @@ meant to be visited in the following order:
 * [Scytale](Scytale.md): an adaptation of the Scytale cipher described in Programming Cryptol.
 * [RailFence](RailFence.md): a specification of the Rail Fence cipher, which is easy on paper but hard in Cryptol.
 * [Route](Route.md): an unguided suggestion for sufficiently motivated course participants to define the Route cipher using concepts learned in prior labs.
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+Up: [Course README](/README.md)
+Previous: [Cryptographic Properties](/labs/CryptoProofs/CryptoProofs.md)
+Next: [Capstone](/labs/LoremIpsum/LoremIpsum.md)
