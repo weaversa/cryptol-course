@@ -16,10 +16,8 @@ Before working through this lab, you'll need
 You'll also need experience with
   * loading modules and evaluating functions in the interpreter,
   * sequence and `Integer` types,
-  * the `:prove` and `:sat` commands,
   * manipulating sequences using `#`, `take`, `split`, and `join`,
   * writing functions and properties,
-  * lambda functions,
   * sequence comprehensions,
   * logical, comparison, and arithmetic operators,
   * lambda functions, and
@@ -206,7 +204,7 @@ collides f x x' =
 
 Cryptol went ahead and reserved infix operator `===` to denote that 
 functions map the same value to the same value, so `:prove f === f'` 
-is shorthand for `:prove \x -> f x == f' x`.  Functional equivalance 
+is shorthand for `:prove \x -> f x == f' x`.  Functional equivalence 
 must be pretty important!
 
 # DES Exercises, Redux
@@ -291,7 +289,7 @@ Q.E.D.
 ```
 
 **EXERCISE**: Use ABC to prove that (DES.encrypt key) is equivalent 
-to (DES.encrypt (DESFixParity)).  Do not mention `pt` in your 
+to (DES.encrypt (DESFixParity key)).  Do not mention `pt` in your 
 proof command.
 
 ```Xcryptol session
