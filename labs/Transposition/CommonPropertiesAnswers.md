@@ -288,8 +288,8 @@ Q.E.D.
 (Total Elapsed Time: 0.497s, using "ABC")
 ```
 
-**EXERCISE**: Use ABC to prove that (DES.encrypt key) is equivalent 
-to (DES.encrypt (DESFixParity key)).  Do not mention `pt` in your 
+**EXERCISE**: Use ABC to prove that `DES.encrypt key` is equivalent 
+to `DES.encrypt (DESFixParity key)`.  Do not mention `pt` in your 
 proof command.
 
 ```Xcryptol session
