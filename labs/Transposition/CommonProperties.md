@@ -268,8 +268,8 @@ labs::Transposition::CommonProperties> :s prover=abc
 labs::Transposition::CommonProperties> 
 ```
 
-**EXERCISE**: Use ABC to prove that (DES.encrypt key) is equivalent 
-to (DES.encrypt (DESFixParity key)).  Do not mention `pt` in your 
+**EXERCISE**: Use ABC to prove that `DES.encrypt key` is equivalent 
+to `DES.encrypt (DESFixParity key)`.  Do not mention `pt` in your 
 proof command.
 
 ```Xcryptol session
