@@ -4,9 +4,8 @@ This module defines a classic transposition "cipher" that encrypts a
 message by wrapping it around a (virtual) [scytale](https://en.wikipedia.org/wiki/Scytale).  
 The cipher is defined in terms of the 
 `labs::Transposition::Transposition` library, which defines `encrypt` 
-and `decrypt` functions given a permutation mapping, which in this 
-case just returns ``reverse (take`{n} [0...])`` given a message of 
-length `n`.
+and `decrypt` functions given a permutation mapping reflecting 
+positions on a scytale.
 
 ## Prerequisites
 

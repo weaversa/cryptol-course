@@ -77,3 +77,4 @@ https://github.com/weaversa/cryptol-course/issues
 
 Up: [Course README](../../README.md)
 Previous: [Rail Fence: A basic transposition cipher for humans that's not-so-basic for Cryptol](RailFence.md)
+Next: [Capstone](../LoremIpsum/LoremIpsum.md)
