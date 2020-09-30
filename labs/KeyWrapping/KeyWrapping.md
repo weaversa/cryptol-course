@@ -637,8 +637,7 @@ taking a quick look through the `TripleDES.cry` to learn a little bit
 about a particularly famous NIST test vector.
 
 You can test your work with the `TKWAETests` and `TKWADTests`
-properties. Though, if you want to use them, you'll have to uncomment
-them after finishing your work here. Good luck!
+properties. Good luck!
 
 ```cryptol
 TWStep2:
