@@ -9,7 +9,6 @@ addons:
   homebrew:
     packages:
       - cryptol
-    update: true
 jobs:
   include:
     - name: "Cryptol, SAW, and Z3 Releases on OSX"
