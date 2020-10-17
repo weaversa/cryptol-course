@@ -94,22 +94,30 @@ occurring in the first cycle.  Check your definition using
 `cycle_test`.  Here's a starter:
 
 ``cycle`{r=1} == [0]``
+<pre>
 0 ...
+</pre>
 
 ``cycle`{r=2} == [0,1]``
+<pre>
 0 0 ...
  1 1
+</pre>
 
 ``cycle`{r=3} == [0,1,3,2]``
+<pre>
 0   0   0   ...
  1 3 1 3 1 3
   2   2   2
+</pre>
 
 ``cycle`{r=4} == [0,1,5,2,4,3]``
+<pre>
 0     0     0     ...
  1   5 1   5 1   5
   2 4   2 4   2 4
    3     3     3
+</pre>
 
 (Hint: Your definition will most likely include logic distinguishing 
 the top, bottom, and middle rails.  You might wish to implement a 
@@ -227,4 +235,4 @@ https://github.com/weaversa/cryptol-course/issues
 
 Up: [Course README](../../README.md)
 Previous: [Scytale: A classic easy-to-specify transposition cipher](ScytaleAnswers.md)
-Next: [Route: We've worked hard enough -- your turn!](RouteAnswers.md)
+Next: [Route: We've worked hard enough -- your turn!](Route.md)
