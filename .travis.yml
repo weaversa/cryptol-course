@@ -35,7 +35,7 @@ jobs:
       before_install:
         - docker pull galoisinc/cryptol:2.10.0
         - shopt -s expand_aliases
-        - alias cryptol='docker run --entrypoint cryptol -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it cryptol:2.10.0'
+        - alias cryptol='docker run --entrypoint cryptol -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it galoisinc/cryptol:2.10.0'
       compiler: clang
       dist: focal
       os: linux
