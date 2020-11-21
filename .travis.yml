@@ -7,9 +7,7 @@ addons:
       - libgmp-dev
       - libncurses-dev
   homebrew:
-    packages:
-      - cryptol
-    update: true
+    update: false
 jobs:
   include:
     - name: "Cryptol, SAW, and Z3 Releases on OSX"
@@ -28,9 +26,9 @@ jobs:
         - z3 --version
       compiler: clang
       os: osx
-    - name: "Cryptol Homebrew on OSX"
-      compiler: clang
-      os: osx
+#    - name: "Cryptol Homebrew on OSX"
+#      compiler: clang
+#      os: osx
     - name: "Cryptol Docker on Linux Host"
       services:
         - docker
