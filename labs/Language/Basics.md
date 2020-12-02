@@ -194,12 +194,12 @@ labs::Language::Basics> :browse
 
     OVLab::decrypt : {a} (fin a) => [8] -> [a][8] -> [a][8]
     OVLab::encrypt : {a} (fin a) => [8] -> [a][8] -> [a][8]
-    OVLab::RotWord : [4][8] -> [4][8]
     OVLab::sayHello : {a} (fin a) => [a][8] -> [7 + a][8]
-    OVLab::ss : {a} (Ring a, Literal 100 a) => [101]a
+...
 
-labs::Language::Basics> OVLab::RotWord [1, 2, 3, 4]
-[0x02, 0x03, 0x04, 0x01]
+labs::Language::Basics> :set ascii=on
+labs::Language::Basics> OVLab::sayHello "Victoria"
+"Hello, Victoria"
 ```
 
 Imports can be further refined with _import lists_, which specify 
