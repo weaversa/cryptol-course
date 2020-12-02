@@ -264,15 +264,15 @@ your command.  Guess whether such a collision will be found before
 you observe a collision of black holes in nearby outer space.
 
 ```Xcryptol session
-labs::Transposition::CommonPropertiesAnswers> :s prover=abc
+labs::Transposition::CommonPropertiesAnswers> :s prover=yices
 labs::Transposition::CommonPropertiesAnswers> :sat \pt -> collides (encrypt_ pt) where encrypt_ pt key = DES.encrypt key pt
 Satisfiable
 (\pt -> collides (encrypt_ pt)
  where
    encrypt_ pt key = DES.encrypt key pt
  )
-  0x0000000000000000 0x0000010101000100 0x0000000100010001 = True
-(Total Elapsed Time: 5.675s, using "ABC")
+  0x0000000000000000 0x0000000000000000 0x0100000000000000 = True
+(Total Elapsed Time: 0.772s, using "Yices")
 ```
 
 **EXERCISE**: Use ABC to prove that the two keys you just found are 

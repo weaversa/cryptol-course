@@ -318,9 +318,11 @@ labs::Demos::Cryptol::Caesar> map (\k -> (k, decrypt k "SXQW SJLXK FJB J SRWPUNQ
 ```
 
 ...and we can recover a key from chosen plaintext through SAT
-solving...
+solving...here we switch solvers back to `z3` because `abc` sometimes
+has troubles with this one.
 
 ```Xcryptol session
+labs::Demos::Cryptol::Caesar> :s prover=z3
 labs::Demos::Cryptol::Caesar> :sat \k -> encrypt k "ILLUMINATI CONFIRMED" == "NQQZRNSFYN HTSKNWRJI"
 Satisfiable
 (\k -> encrypt k "ILLUMINATI CONFIRMED" == "NQQZRNSFYN HTSKNWRJI")
