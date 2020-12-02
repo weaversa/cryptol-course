@@ -246,7 +246,7 @@ labs::Transposition::CommonProperties> :s prover=boolector
 labs::Transposition::CommonProperties> 
 ```
 
-**EXERCISE**: Use ABC to find two different keys and a single 
+**EXERCISE**: Use Yices to find two different keys and a single 
 plaintext such that both keys encrypt that plaintext to the same 
 ciphertext.  Mention `key`s to alias `DES.encrypt` in a `where` 
 clause, but do not mention `key` in the lambda function you pass to 
@@ -254,7 +254,7 @@ your command.  Guess whether such a collision will be found before
 you observe a collision of black holes in nearby outer space.
 
 ```Xcryptol session
-labs::Transposition::CommonProperties> :s prover=abc
+labs::Transposition::CommonProperties> :s prover=yices
 labs::Transposition::CommonProperties> 
 ```
 
