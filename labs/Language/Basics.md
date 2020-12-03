@@ -39,7 +39,7 @@ Specifically, you'll also gain experience with
   * `if then else` -- conditional expressions,
   * manipulating sequences using `#`, `take`, `drop`, `split`, `join`,
     `head`, `last`, `tail`, `reverse`, `groupBy`, `map`, `iterate`,
-    and `foldl`,
+    `scanl`, and `foldl`,
   * the `sum` and `carry` operators,
   * enumerations and sequence comprehensions, and
   * lambda functions.
@@ -1700,7 +1700,7 @@ Showing a specific instance of polymorphic result:
 [[1, 3], [2, 4]]
 ```
 
-### Functional programming operators: `sum`, `map`, `iterate`, `foldl`
+### Functional programming operators: `sum`, `map`, `iterate`, `scanl`, `foldl`
 
 Cryptol supports a few common idioms in functional programming. This
 section briefly touches upon five of these.
@@ -1778,9 +1778,9 @@ labs::Language::Basics> foldl step 0 [True, True, False, False, True]
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for 1st type argument of '<interactive>::step'
 1
+labs::Language::Basics> :s base=2
 labs::Language::Basics> scanl (<<) 1 [1, 2, 3, 4] : [5][12]
 [0b000000000001, 0b000000000010, 0b000000001000, 0b000001000000, 0b010000000000]
-labs::Language::Basics> :s base=2
 labs::Language::Basics> foldl (<<) 1 [1, 2, 3, 4] : [12]
 0b010000000000
 ```
