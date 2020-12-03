@@ -1336,8 +1336,8 @@ equivalent for all inputs:
 
 ```cryptol
 /**
- * Checks if any of the 4 bytes of a 32 bit word is zero. Returns true
- * if any byte is zero, returns false otherwise.
+ * Checks if any of the 4 bytes of a 32 bit word are zero. Returns True
+ * if any byte is zero, returns False otherwise.
  */
 anyZeroByteOpt : [32] -> Bit
 anyZeroByteOpt v =
@@ -1495,6 +1495,21 @@ while `[6, 3 * 3] == [6, 9]`, so equality fails.
 _**It can be crucially important to be precise about the widths of
 things!**_
 
+```Xcryptol session
+labs::Language::Basics> (1:[3]) <$ 2
+True
+labs::Language::Basics> (1:[3]) <$ -2
+False
+labs::Language::Basics> (1:[3]) < -2
+True
+labs::Language::Basics> 1 < -2
+False
+labs::Language::Basics> 1 <$ -2
+
+Cannot evaluate polymorphic value.
+Type: (Error SignedCmp Integer) => Bit
+```
+
 Comparisons are lexicographic on sequences of numbers.
 
 ```Xcryptol session
@@ -1508,6 +1523,7 @@ False
 #### Signed version: `>>$`
 
 ```Xcryptol session
+labs::Language::Basics> :set base=16
 labs::Language::Basics> 0xa5a << 4
 0x5a0
 labs::Language::Basics> 0xa5a << 12
@@ -1519,6 +1535,7 @@ labs::Language::Basics> 0xa5a <<< 16
 ### Indexing and slicing: `@`, `!`, `@@` and `!!`
 
 ```Xcryptol session
+labs::Language::Basics> :set ascii=on
 labs::Language::Basics> "cat" @ 0
 'c'
 labs::Language::Basics> "dog" @@ [2, 1, 1, 0, 0, 1, 2]
