@@ -388,7 +388,7 @@ rowroundOpt ys =
 ```
 
 **EXERCISE**: Here we want to prove that for all inputs, `rowroundOpt` is
-equal to `rowround`. Please replace the `False` symbol below with such
+equal to `rowround`. Please replace the `undefined` symbol below with such
 a statement and then prove the property in the interpreter. It's not
 necessary to go through this exercise to create a complete Salsa20
 specification, but it's a good opportunity here to learn more about
