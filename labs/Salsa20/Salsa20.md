@@ -785,10 +785,10 @@ property Salsa20ExpansionExamplesProp =
 
 ### Comments
 
-The Definition section gives integer values for sigma and tau. Yes,
-it's possible to write them out that way, but it looks much nicer to
-define them according to the ASCII values given in this Comment
-section.
+The *Definition* section of the Salsa20 specification gives integer
+values for sigma and tau. While it's possible to write them out that
+way, it looks much nicer to define them as below, corresponding to the
+ASCII strings given in the *Comments* section of the specification.
 
 ```cryptol
 [s0, s1, s2, s3] = split "expand 32-byte k"
