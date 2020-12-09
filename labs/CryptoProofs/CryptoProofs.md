@@ -354,7 +354,7 @@ need to edit this file directly.)
 
 ```cryptol
 DESFixParity : [64] -> [64]
-DESFixParity = zero // Replace "zero" with your code
+DESFixParity key = undefined // Replace "undefined" with your code
 ```
 
 **EXERCISE**: 2.5.3 Proving DES Key Equivalence
