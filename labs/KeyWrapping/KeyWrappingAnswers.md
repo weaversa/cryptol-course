@@ -458,7 +458,7 @@ algorithm.
 
 **EXERCISE**: Study `Algorithm 3` and complete the specification for
   `KW-AE` by filling in the snippet below with the correct definition
-  for `S`. Remember that `ICV1` was defined earlier in this
+  for `S` and `C`. Remember that `ICV1` was defined earlier in this
   module. Also, notice that the bounds from Table 1 (Section 5.3.1,
   page 10) are included as type constraints.
 
