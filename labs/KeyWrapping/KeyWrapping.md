@@ -565,8 +565,6 @@ Notice that `FAIL` indicates a *failure* to authenticate so should be
 `False` for authenticated decryptions and `True` for failures to
 authenticate.
 
-*Hint:* Review the Cryptol primitives `head` and `tail`.
-
 ```cryptol
 KWAD :
     {n}
@@ -582,9 +580,9 @@ KWAD CIPHk' C = (FAIL, P)
 When you have successfully defined this function, you can test your
 work by `:prove`ing that `KWAE` and `KWAD` are inverses (well, at
 least for a dummy CIPHk and P of length 3 semiblocks) using the
-`KWAEInvProp`. You can also check your work against six test vectors
-by using the property `KWADTests` (this is defined later on
-in this document).
+`KWAEInvProp`. You can also `:check` your work against six test
+vectors by using the property `KWADTests` (this is defined later on in
+this document).
 
 ```cryptol
 property KWAEInvProp S =
@@ -821,11 +819,11 @@ With that consideration firmly under our belt, we can now tackle
   `CIPHk` on the `then` and `else` branches of line 5.
 
 *Hint:* You'll notice that we needed to pull in the type variable `n`
-and type constraints from `W` and relate `n` and `k` (the type of both
-`S` and `C`). You'll need to pass `n` into `W`, ensuring that if we
-avoid the `n == 2` case. This can be done by calling `W` like so
-``W`{max 3 n}``. Also, remember that `ICV2` was defined above, so we do
-not need to redefine it inside `KWPAE`.
+and the type constraints from `W`, as well as to relate `n` and `k`
+(the types of `S` and `C`). You'll need to pass `n` into `W`, ensuring
+that we avoid the `n == 2` case. This can be done by calling `W` like
+so ``W`{max 3 n}``. Also, remember that `ICV2` was defined above, so
+we do not need to redefine it inside `KWPAE`.
 
 ```cryptol
 KWPAE :
