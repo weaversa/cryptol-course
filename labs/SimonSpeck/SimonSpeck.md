@@ -361,7 +361,7 @@ directory. Consider using the `Simon` implementation as a reference --
 many of the patterns you will encounter writing up `Speck` will mirror
 `Simon`.
 
-If you name your files as suggested in the `Speck/FILENAMES.md` file,
+If you name your files as suggested in the `Speck/README.md` file,
 then you should be able to load the `SpeckTestVectors` module also
 located in the `Speck` folder as follows and verify that you have
 correctly implemented the functions:
