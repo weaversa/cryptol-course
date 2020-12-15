@@ -210,7 +210,7 @@ we introduce the parameter `j` to indicate the which of these
 sequences we will use.
 
 We are also able to specify general type constraints for these
-parameters. The line that begins `type constraints` places some
+parameters. The line that begins `type constraint` places some
 general bounds on the ranges of values that are possible for each
 parameter.
 
