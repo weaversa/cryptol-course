@@ -326,3 +326,7 @@ as a function in its own right.
 
 All Cryptol specifications should load into the Cryptol interpreter
 without warnings.
+
+# From here, you can go somewhere!
+
+Up: [Course README](/README.md)

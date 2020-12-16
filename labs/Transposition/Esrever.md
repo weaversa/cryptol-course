@@ -113,6 +113,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](../../README.md)
+Up: [Transposition Ciphers](/labs/Transposition/Contents.md)
 Previous: [Transportation Ciphers, in the Abstract](Transposition.md)
+Answers: [Esrever: A trivial message-reversing transposition "cipher"](EsreverAnswers.md)
 Next: [Scytale: A classic easy-to-specify transposition cipher](Scytale.md)

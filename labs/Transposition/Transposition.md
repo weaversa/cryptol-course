@@ -539,6 +539,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](../../README.md)
+Up: [Transposition Ciphers](/labs/Transposition/Contents.md)
 Previous: [Common Properties for Ciphers](CommonProperties.md)
+Answers: [Transposition Ciphers, in the Abstract](TranspositionAnswers.md)
 Next: [Esrever: A trivial message-reversing transposition "cipher"](Esrever.md)

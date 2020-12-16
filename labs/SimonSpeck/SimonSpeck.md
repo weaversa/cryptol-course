@@ -361,10 +361,11 @@ directory. Consider using the `Simon` implementation as a reference --
 many of the patterns you will encounter writing up `Speck` will mirror
 `Simon`.
 
-If you name your files as suggested in the `Speck/README.md` file,
-then you should be able to load the `SpeckTestVectors` module also
-located in the `Speck` folder as follows and verify that you have
-correctly implemented the functions:
+If you name your files as suggested in the [Speck
+README.md](/labs/SimonSpeck/Speck/README.md) file, then you should be
+able to load the `SpeckTestVectors` module also located in the `Speck`
+folder as follows and verify that you have correctly implemented the
+functions:
 
 ```Xcryptol session ci-none
 Loading module Cryptol
@@ -397,5 +398,9 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 
 Up: [Course README](/README.md)
-Previous: [Capstone](/labs/LoremIpsum/LoremIpsum.md)
+Previous: [Key Wrapping](/labs/KeyWrapping/KeyWrapping.md)
+          [Salsa20 Properties](/labs/Salsa20/Salsa20Props.md)
+          [Common Properties for Ciphers](/labs/Transposition/CommonProperties.md)
+          [Project Euler](/labs/ProjectEuler/ProjectEuler.md)
+More: [Capstone](/labs/LoremIpsum/LoremIpsum.md)
 Next: [Course README](/README.md)

@@ -2060,3 +2060,5 @@ https://github.com/weaversa/cryptol-course/issues
 Up: [Course README](/README.md)
 Previous: [Interpreter](/labs/Interpreter/Interpreter.md)
 Next: [CRC](/labs/CRC/CRC.md)
+      [Cryptol Demos](/labs/Demos/Cryptol/Demos.md)
+      [SAW Demos](/labs/Demos/SAW/Demos.md)

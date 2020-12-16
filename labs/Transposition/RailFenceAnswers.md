@@ -233,6 +233,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](../../README.md)
-Previous: [Scytale: A classic easy-to-specify transposition cipher](ScytaleAnswers.md)
+Up: [Transposition Ciphers](/labs/Transposition/Contents.md)
+Previous: [Rail Fence: A basic transposition cipher for humans that's not-so-basic for Cryptol](RailFence.md)
 Next: [Route: We've worked hard enough -- your turn!](Route.md)
