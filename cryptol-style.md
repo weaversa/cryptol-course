@@ -53,7 +53,7 @@ argument types on one line iff they fit on one line. It is always
 acceptable to place type variables, type constraints, and argument
 types on separate lines.
 
-```cryptol
+```Xcryptol
 sayHello :
      {a}
      (fin a) =>
@@ -65,10 +65,10 @@ side. This aligns type definitions with value definitions (where the
 `=` is also surrounded by a single space on either side). For example,
 
 ```cryptol
-x : [32]
-x = 10
-y : [4][32]
-y = [1, 2, 3, 4]
+a : [32]
+a = 10
+b : [4][32]
+b = [1, 2, 3, 4]
 ```
 
 ### Type Constraints
@@ -76,11 +76,12 @@ y = [1, 2, 3, 4]
 Type constraints should always be tupleized. The following is
 incorrect:
 
-```cryptol
+```Xcryptol
 func :
    {a, b}
    fin a => fin b =>
    [a][b] -> [a+b]
+func _ = undefined
 ```
 
 `func` should be:
@@ -88,8 +89,9 @@ func :
 ```cryptol
 func :
    {a, b}
-   (fin a, fin b)
+   (fin a, fin b) =>
    [a][b] -> [a+b]
+func _ = undefined
 ```
 
 ### Data Declarations
@@ -109,6 +111,7 @@ When multiple definitions are in the same where clause, align the
 ```cryptol
 horse    : [4][32]
 horse    = [1, 2, 3, 4]
+
 elephant : [2]
 elephant = [False, True]
 ```
@@ -116,16 +119,22 @@ elephant = [False, True]
 Format records as follows:
 
 ```cryptol
-Person =
+Person :
     { firstName : String 10
     , lastName  : String 10
     , age       : Integer
     }
+
+Person =
+    { firstName = "Grizabella"
+    , lastName  = "GlamourCat"
+    , age       = 16
+    }
 ```
 
-Align the elements in a list. For example,
+Align the elements in a list in the same way. For example,
 
-```cryptol
+```Xcryptol
 exceptions =
     [ InvalidStatusCode
     , MissingContentHeader
@@ -136,7 +145,7 @@ exceptions =
 Optionally, you can skip the first newline. Use your judgment or try
 to match the specification you're working from.
 
-```cryptol
+```Xcryptol
 directions = [ North
              , East
              , South
@@ -156,7 +165,7 @@ property myProperty x =
 
 is superior to
 
-```cryptol
+```Xcryptol
 property myProperty x =
     if x != 0
     then (100/x) <= 100
@@ -167,7 +176,7 @@ property myProperty x =
 
 Align if-then-else clauses like you would normal expressions:
 
-```cryptol
+```Xcryptol
 foo = if ...
       then ...
       else ...
@@ -176,12 +185,12 @@ foo = if ...
 The same rule applies in nested where clauses:
 
 ```cryptol
-foo a b = c
+foo x y = z
   where
-    c = if a == 0x0000
-        then d
+    z = if x == 0x0000
+        then w
           where
-            d = if b == 0x0000
+            w = if y == 0x0000
                 then 0x1000
                 else 0x0010
         else 0x0100
@@ -191,7 +200,7 @@ foo a b = c
 
 Align the `=` symbols in a where clause when it helps readability.
 
-```cryptol
+```Xcryptol
 foo = ...
   where
     cat   = ...
@@ -215,7 +224,31 @@ Comment every top level function (particularly exported functions)
 using [docstring comments](https://en.wikipedia.org/wiki/Docstring),
 and provide a type signature. The documentation should give enough
 information to apply the function without looking at the function's
-definition.
+definition. A docstring comment must immediately preceed the function
+it applies to and starts on a new line with `/**`, followed by any
+number of lines (preferably starting with ` *`) and ending with the
+line ` */`.
+
+```cryptol
+/**
+ * Here is a docstring comment for the function named foo.
+ * This comment will appear in the Cryptol interpreter
+ * when you type `:help foo`.
+ */
+
+doccom : [32] -> [32]
+doccom n = n + 1
+```
+
+```Xcryptol session
+Main> :h doccom
+
+    doccom : [32] -> [32]
+
+Here is a docstring comment for the function named foo.
+This comment will appear in the Cryptol interpreter
+when you type `:help foo`.
+```
 
 When writing a cryptographic algorithm specification in Cryptol, often
 the arguments to a function have verbiage in the specification that
@@ -227,17 +260,11 @@ good practice provided it does not become too verbose.
 Separate end-of-line comments from the code using two spaces.
 
 ```cryptol
-/**
- * Here is a docstring comment for the function named foo.
- * This comment will appear in the Cryptol interpreter
- * when you type `:help foo`.
- */
-foo : [32] -> [32]
-foo n = n % p
+modp : [32] -> [32]
+modp n = n % p
   where
     p = 4294967291  // Largest 32 bit prime.
 ```
-
 
 Naming
 ------
@@ -258,7 +285,7 @@ Haskell's style:
 As well, an apostrophe (`'`) can be appended to a function name to
 denote a relationship.
 
-```cryptol
+```Xcryptol
 encrypt key plainText = f  key plainText
 
 decrypt key plainText = f' key plainText
@@ -281,13 +308,13 @@ Argument Order
 Order arguments so that partial application is most advantageous. For
 example,
 
-```cryptol
+```Xcryptol
 encrypt key plainText = ...
 ```
 
 is superior to
 
-```cryptol
+```Xcryptol
 encrypt plainText key = ...
 ```
 
