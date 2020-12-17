@@ -522,6 +522,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](/README.md)
-Previous: [Capstone](/labs/LoremIpsum/LoremIpsum.md)
-Next: [Course README](/README.md)
+[^ Course README](/README.md) \
+[< Key Wrapping - Answers](/labs/KeyWrapping/KeyWrappingAnswers.md) |Capstone - Answers|
+
+[? Capstone](/labs/LoremIpsum/LoremIpsum.md)

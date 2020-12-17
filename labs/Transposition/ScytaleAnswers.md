@@ -221,6 +221,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Transposition Ciphers](/labs/Transposition/Contents.md)
-Previous: [Scytale: A classic easy-to-specify transposition cipher](Scytale.md)
-Next: [Rail Fence: A basic transposition cipher for humans that's not-so-basic for Cryptol](RailFence.md)
+[^ Transposition Ciphers](/labs/Transposition/Contents.md)
+[< Esrever - Answers](/labs/Transposition/EsreverAnswers.md) |Scytale - Answers| [Rail Fence - Answers >](/labs/Transposition/RailFenceAnswers.md)
+
+[? Scytale](/labs/Transposition/Scytale.md)

@@ -93,6 +93,8 @@ Cryptol](INSTALL.md).
 4. [Language Basics](labs/Language/Basics.md): A resource
    for (most) of the language features you'll need to be successful
    here.
+    * [Style Guide](cryptol-style.md): Cryptol style guide we 
+      developed for the course.
     * [Cryptol Demos](labs/Demos/Cryptol/Demos.md): Lightweight
       walkthroughs that demonstrate common Cryptol concepts.
     * [SAW Demos](labs/Demos/SAW/Demos.md): Demonstrations of using
@@ -153,3 +155,8 @@ reference:
 * [Cryptol
   Primitives](https://github.com/GaloisInc/cryptol/blob/master/docs/CryptolPrims.pdf)
   -- A simple list of all of the Cryptol language primitives.
+
+# From here, you can go somewhere!
+
+|Course README| \
+[v Installation](INSTALL.md)

@@ -328,7 +328,7 @@ in [1], Section "Polynomial representations of cyclic redundancy
 checks".
 
 
-# Bibliography
+# References
 
 [1] Cyclic redundancy check. In Wikipedia. Retrieved June 7th, 2020,
 from https://en.wikipedia.org/wiki/Cyclic_redundancy_check.
@@ -345,9 +345,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](/README.md)
-Previous: [Language Basics](/labs/Language/Basics.md)
-Answers: [CRC](/labs/CRC/CRCAnswers.md)
-More: [Cryptol Demos](/labs/Demos/Cryptol/Demos.md)
-      [SAW Demos](/labs/Demos/SAW/Demos.md)
-Next: [Salsa20](/labs/Salsa20/Salsa20.md)
+[^ Course README](/README.md) \
+[< Language Basics](/labs/Language/Basics.md) |CRC| [Salsa20 >](/labs/Salsa20/Salsa20.md)
+
+[! CRC - Answers](/labs/CRC/CRCAnswers.md)

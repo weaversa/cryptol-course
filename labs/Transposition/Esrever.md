@@ -113,7 +113,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Transposition Ciphers](/labs/Transposition/Contents.md)
-Previous: [Transportation Ciphers, in the Abstract](Transposition.md)
-Answers: [Esrever: A trivial message-reversing transposition "cipher"](EsreverAnswers.md)
-Next: [Scytale: A classic easy-to-specify transposition cipher](Scytale.md)
+[^ Transposition Ciphers](/labs/Transposition/Contents.md) \
+[< Transposition](/labs/Transposition/Transposition.md) |Esrever| [Scytale >](/labs/Transposition/Scytale.md)
+
+[! Esrever - Answers](/labs/Transposition/EsreverAnswers.md)

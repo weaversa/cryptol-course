@@ -939,6 +939,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](/README.md)
-Previous: [Salsa20](/labs/Salsa20/Salsa20.md)
-Next: [Cryptographic Properties](/labs/CryptoProofs/CryptoProofs.md)
+[^ Course README](/README.md) \
+[< CRC - Answers](/labs/CRC/CRCAnswers.md) |Salsa20 - Answers| [Cryptographic Properties - Answers >](/labs/CryptoProofs/CryptoProofsAnswers.md)
+
+[? Salsa20](/labs/Salsa20/Salsa20.md)

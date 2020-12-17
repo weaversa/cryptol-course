@@ -329,4 +329,5 @@ without warnings.
 
 # From here, you can go somewhere!
 
-Up: [Course README](/README.md)
+[- Language Basics](/labs/Language/Basics.md) \
+|Style Guide|

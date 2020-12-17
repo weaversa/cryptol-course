@@ -233,6 +233,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Transposition Ciphers](/labs/Transposition/Contents.md)
-Previous: [Rail Fence: A basic transposition cipher for humans that's not-so-basic for Cryptol](RailFence.md)
-Next: [Route: We've worked hard enough -- your turn!](Route.md)
+[^ Transposition Ciphers](/labs/Transposition/Contents.md) \
+[< Scytale - Answers](/labs/Transposition/ScytaleAnswers.md) |Rail Fence - Answers| [Route - Answers >](/labs/Transposition/RouteAnswers.md)
+
+[? Rail Fence](/labs/Transposition/RailFence.md)

@@ -1141,9 +1141,9 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](/README.md)
-Previous: [Key Wrapping](/labs/KeyWrapping/KeyWrapping.md)
-More: [Salsa20 Properties](/labs/Salsa20/Salsa20Props.md)
-      [Transposition Ciphers](/labs/Transposition/Contents.md)
-      [Project Euler](/labs/ProjectEuler/ProjectEuler.md)
-Next: [Capstone](/labs/LoremIpsum/LoremIpsum.md)
+[^ Course README](/README.md) \
+[< Cryptographic Properties - Answers](/labs/CryptoProofs/CryptoProofsAnswers.md) |Key Wrapping - Answers| [Capstone - Answers >](/labs/LoremIpsum/LoremIpsumAnswers.md)
+
+[? Key Wrapping](/labs/KeyWrapping/KeyWrapping.md)
+
+[+ Parameterized Modules](/labs/SimonSpeck/SimonSpeck.md)

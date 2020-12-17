@@ -300,10 +300,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](/README.md)
-Previous: [Salsa20 Properties](/labs/Salsa20/Salsa20Props.md)
-More: [Key Wrapping](/labs/KeyWrapping/KeyWrapping.md)
-      [Transposition Ciphers](/labs/Transposition/Contents.md)
-      [Project Euler](/labs/ProjectEuler/ProjectEuler.md)
-Next: [Capstone](/labs/LoremIpsum/LoremIpsum.md)
-      [Parameterized Modules](/labs/SimonSpeck/SimonSpeck.md)
+[- Cryptographic Properties - Answers](/labs/CryptoProofs/CryptoProofsAnswers.md) \
+|Salsa20 Properties - Answers|
+
+[? Salsa20 Properties](/labs/Salsa20/Salsa20Props.md)

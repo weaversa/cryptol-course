@@ -328,9 +328,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](../../README.md)
-Previous: [Common Properties for Ciphers](/labs/Transposition/CommonProperties.md)
-More: [Key Wrapping](/labs/KeyWrapping/KeyWrapping.md)
-      [Salsa20 Properties](/labs/Salsa20/Salsa20Props.md)
-      [Project Euler](/labs/ProjectEuler/ProjectEuler.md)
-Next: [Transposition Ciphers, in the Abstract](Transposition.md)
+[^ Transposition Ciphers](/labs/Transposition/Contents.md) \
+|Common Properties for Ciphers| [Transposition - Answers >](/labs/Transposition/TranspositionAnswers.md)
+
+[? Common Properties for Ciphers](/labs/Transposition/CommonProperties.md)

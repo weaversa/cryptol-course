@@ -328,6 +328,5 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](/README.md)
-Previous: [Installation](/INSTALL.md)
-Next: [Interpreter](/labs/Interpreter/Interpreter.md)
+[^ Course README](/README.md) \
+[< Installation](/INSTALL.md) |Overview| [Interpreter >](/labs/Interpreter/Interpreter.md)

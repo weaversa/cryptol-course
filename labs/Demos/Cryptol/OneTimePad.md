@@ -325,4 +325,5 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Cryptol Demos](/Demos/Cryptol/Demos.md)
+[^ Cryptol Demos](/labs/Demos/Cryptol/Demos.md) \
+[< Caesar](/labs/Demos/Cryptol/Caesar.md) |One-Time Pad| [n-Queens >](/labs/Demos/Cryptol/NQueens.md)

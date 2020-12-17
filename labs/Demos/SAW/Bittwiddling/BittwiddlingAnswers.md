@@ -166,6 +166,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [SAW Demos](/labs/Demos/SAW/Demos.md)
-Previous: [Bit-twiddling](SAW/Bittwiddling/Bittwiddling.md)
+[^ SAW Demos](/labs/Demos/SAW/Demos.md) \
+[< Arithmetic Verifications](/labs/Demos/SAW/ArithmeticVerifications/ArithmeticVerifications.md) |Bit Twiddling - Answers|
 
+[? Bit Twiddling](/labs/Demos/SAW/Bittwiddling/Bittwiddling.md)

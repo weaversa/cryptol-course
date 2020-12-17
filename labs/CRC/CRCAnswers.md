@@ -345,9 +345,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](/README.md)
-Previous: [CRC](/labs/CRC/CRC.md)
-More: [Cryptol Demos](/labs/Demos/Cryptol/Demos.md)
-      [SAW Demos](/labs/Demos/SAW/Demos.md)
-Next: [Salsa20](/labs/Salsa20/Salsa20.md)
+[^ Course README](/README.md) \
+[< Language Basics](/labs/Language/Basics.md) |CRC| [Salsa20 - Answers >](/labs/Salsa20/Salsa20Answers.md)
 
+[? CRC](/labs/CRC/CRC.md)

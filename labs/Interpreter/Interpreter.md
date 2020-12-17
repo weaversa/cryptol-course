@@ -539,6 +539,5 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](/README.md)
-Previous: [Overview](/labs/Overview/Overview.md)
-Next: [Language Basics](/labs/Language/Basics.md)
+[^ Course README](/README.md) \
+[< Overview](/labs/Overview/Overview.md) |Interpreter| [Language Basics >](/labs/Language/Basics.md)
