@@ -9,6 +9,8 @@
 * [Sudoku](Sudoku.md)
   Diabolical made trivial.
 
+<img class="center" src="https://raw.githubusercontent.com/weaversa/cryptol-course/tree/L4y3rC4k3/misc/CryptolDemos.gv.svg" alt="Cryptol Demos - Suggested Flow">
+
 # Solicitation
 
 How was your experience with this lab? Suggestions are welcome in the

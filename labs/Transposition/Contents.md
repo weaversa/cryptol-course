@@ -7,6 +7,8 @@ meant to be visited in the following order:
 * [RailFence](RailFence.md): a specification of the Rail Fence cipher, which is easy on paper but hard in Cryptol.
 * [Route](Route.md): an unguided suggestion for sufficiently motivated course participants to define the Route cipher using concepts learned in prior labs.
 
+<img class="center" src="https://raw.githubusercontent.com/weaversa/cryptol-course/tree/L4y3rC4k3/misc/TranspositionCiphers.gv.svg" alt="Transposition Ciphers - Suggested Flow">
+
 # Solicitation
 
 How was your experience with this lab? Suggestions are welcome in the

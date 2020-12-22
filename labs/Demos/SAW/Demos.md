@@ -19,6 +19,8 @@ here.
    introduction to how one can use Cryptol and SAW to prove that an
    implementation matches its specification.
 
+<img class="center" src="https://raw.githubusercontent.com/weaversa/cryptol-course/tree/L4y3rC4k3/misc/SAWDemos.gv.svg" alt="SAW Demos - Suggested Flow">
+
 # Solicitation
 
 How was your experience with this lab? Suggestions are welcome in the

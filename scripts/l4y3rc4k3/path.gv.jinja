@@ -1,0 +1,51 @@
+digraph {{ branch_id }} {
+  //splines = ortho;
+  //concentrate = true;
+
+  rankdir="LR";
+
+  node [shape="box", style="rounded,filled", fillcolor="red", penwidth = 2];
+  edge [penwidth = 1];
+
+  // URLs by node
+  // recommended
+  {% for (id, url) in primary_urls %}
+  {{ id }} [URL="{{ base_url }}/{{ url }}"];
+  {%- endfor %}
+
+  // branch nodes
+  node [fillcolor="white"];
+  {% for (id, url) in branch_urls %}
+  {{ id }} [URL="{{ base_url }}/{{ url }}"];
+  {%- endfor %}
+
+  // newline/space labels
+  {% for (id, label) in id_labels %}
+  {{ id }} [label = "{{ label }}"]
+  {%- endfor %}
+
+  // recommended flow
+  edge [color=red];
+  {% for (from_node, to_node) in primary_edges %}
+  {{ from_node }} -> {{ to_node }};
+  {%- endfor %}
+
+  // branches
+  edge [color=black];
+  {% for (recommended_id, branch_id) in branch_edges %}
+  {{ recommended_id }} -> {{ branch_id }};
+  {%- endfor %}
+
+  // ranks
+  {%- for (rank_id, rank) in ranks.items() %}
+
+  {
+    // {{ rank_id }}
+    rank = same;
+    {%- for node_id in rank %}
+    {{ node_id }};
+    {%- endfor %}
+  }
+  {%- endfor %}
+
+}

@@ -1,0 +1,39 @@
+digraph  {
+  //splines = ortho;
+  //concentrate = true;
+
+  rankdir="LR";
+
+  node [shape="box", style="rounded,filled", fillcolor="red", penwidth = 2];
+  edge [penwidth = 1];
+
+  // URLs by node
+  // recommended
+  
+  Caesar                     [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Demos/Cryptol/Caesar.md"];
+  OneTimePad                 [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Demos/Cryptol/OneTimePad.md"];
+  nQueens                    [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Demos/Cryptol/NQueens.md"];
+  Sudoku                     [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Demos/Cryptol/Sudoku.md"];
+
+  // branch nodes
+  node [fillcolor="white"];
+  
+
+  // newline/space labels
+  
+  OneTimePad                 [label = "One-Time Pad"]
+
+  // recommended flow
+  edge [color=red];
+  
+  Caesar -> OneTimePad;
+  OneTimePad -> nQueens;
+  nQueens -> Sudoku;
+
+  // branches
+  edge [color=black];
+  
+
+  // ranks
+
+}
