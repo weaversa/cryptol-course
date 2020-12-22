@@ -55,7 +55,7 @@ CBCDecrypt Dk iv ct =
 ```
 
 Exercises will often have corresponding properties that you can use to
-verify you work. For example:
+verify your work. For example:
 
 ```cryptol
 property CBCInverts iv (pt : [100][128]) =
