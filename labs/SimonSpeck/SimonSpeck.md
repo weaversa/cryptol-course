@@ -178,18 +178,26 @@ Here is the header for the `Simon.cry` base module:
 ```example
 module labs::SimonSpeck::Simon::Simon where
 
+module labs::SimonSpeck::Simon::Simon where
+
 parameter
-  
-  type n : #    // word size
-  type m : #    // words in key
-  type T : #    // rounds in the key schedule
-  type j : #    // index of z-sequence used (i.e. use sequence z_j)
-  type constraint ( fin n, fin m, fin T, fin j
-                  , 16 <= n, n <= 64
-				  ,  2 <= m, m <= 4
-				  ,  0 <= j, j <= 4
-				  , 32 <= T, T <= 72
-				  )
+
+  /** word size */
+  type n : #
+  type constraint (16 <= n, n <= 64)
+
+  /** number of words in key */
+  type m : #
+  type constraint (2 <= m, m <= 4)
+
+  /** number of rounds in key schedule */
+  type T : #
+  type constraint (32 <= T, T <= 72)
+
+  /** index of z-sequence used (i.e. use sequence z_j) */
+  type j : #
+  type constraint (0 <= j, j <= 4)
+
 type blockSize = 2 * n
 type keySize   = m * n
 
