@@ -113,8 +113,10 @@ branches:
 # components with `**EXERCISE**`s but no `Answers`
 unanswered:
   - Cryptol Course
+  - Cryptol Demos
   - Parameterized Modules
   - Route
+  - SAW Demos
 
 # labels to break into newlines
 newline_labels:
