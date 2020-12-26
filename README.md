@@ -27,7 +27,7 @@ module README where
 
 Labs have exercises that look like this:
 
-**EXERCISE:** Literate Cryptol documents are meant to be edited while
+**EXERCISE**: Literate Cryptol documents are meant to be edited while
 you work through a lab. For instance, you might be asked to fill in a
 portion of a Cryptol snippet:
 

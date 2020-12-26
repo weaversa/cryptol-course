@@ -107,7 +107,7 @@ Passed 100 tests.
 Expected test coverage: 0.00% (100 of 2^^32768 values)
 ```
 
-**EXERCISE** Define a predicate that `encrypt pi` is equivalent to 
+**EXERCISE**: Define a predicate that `encrypt pi` is equivalent to 
 `decrypt pi`, and prove it.
 
 ```cryptol

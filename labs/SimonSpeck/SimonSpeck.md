@@ -362,7 +362,7 @@ Now it's your turn to try writing a parameterized module. You will
 also get more practice reading and writing a cryptographic
 specification.
 
-**Exercise** Write a parameterized module for `Speck`. Refer to
+**EXERCISE**: Write a parameterized module for `Speck`. Refer to
 Section 4 from reference [1]. The corresponding `Speck` Cryptol files
 should be written in the `Speck` folder provided in this lab
 directory. Consider using the `Simon` implementation as a reference --
@@ -383,7 +383,7 @@ Q.E.D.
 (Total Elapsed Time: 0.021s, using "Z3")
 ```
 
-**Additional Exercise** The test vectors below only test the
+**ADDITIONAL EXERCISE**: The test vectors below only test the
 encryption direction for `Speck`. Define the decryption direction for
 the round function and algorithm and try writing properties and/or
 test vectors to verify that these functions are inverses. You may need
