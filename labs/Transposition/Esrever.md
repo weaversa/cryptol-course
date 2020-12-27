@@ -90,7 +90,7 @@ pi_correct: {n, a} (fin n, Cmp a) => [n]a -> Bit
 pi_correct msg = (encrypt pi) msg == reverse msg
 ```
 
-**EXERCISE** Define a predicate that `encrypt pi` is equivalent to 
+**EXERCISE**: Define a predicate that `encrypt pi` is equivalent to 
 `decrypt pi`, and prove it.
 
 ```cryptol

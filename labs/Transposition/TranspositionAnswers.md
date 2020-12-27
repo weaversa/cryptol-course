@@ -247,7 +247,7 @@ inverse:
 inverse pi = updates pi pi (take [0...])
 ```
 
-**EXERCISE** State a predicate `inverse_inverts` that `inverse` 
+**EXERCISE**: State a predicate `inverse_inverts` that `inverse` 
 satisfies its specification above.  Prove this predicate for various 
 sequence lengths and types.
 
@@ -315,7 +315,7 @@ encrypt = permute
 decrypt pi = permute (inverse pi)
 ```
 
-**EXERCISE** Define predicates `cipher_recovery` and 
+**EXERCISE**: Define predicates `cipher_recovery` and 
 `cipher_injective` stating that `decrypt pi` inverts `encrypt pi` and 
 that `encrypt pi` is injective, given a permutation mapping `pi`.  
 (These are direct assignments to earlier predicate definitions; do 
@@ -349,7 +349,7 @@ examples of the abstract problem of sequence filtering:  Given a
 predicate `f: a -> Bit`, return from a sequence `seq: [n]a` the 
 elements `seq': [m]a` such that `all f seq' == True`.
 
-**EXERCISE**...just kidding. Normally, we might introduce an exercise 
+**EXERCISE**: ...just kidding. Normally, we might introduce an exercise 
 to define such a function at this point.  However, in Cryptol's type 
 system, this turns out to be a somewhat difficult problem.  Indeed, 
 this module's author, for whom all prior concepts covered in the lab 

@@ -178,18 +178,26 @@ Here is the header for the `Simon.cry` base module:
 ```example
 module labs::SimonSpeck::Simon::Simon where
 
+module labs::SimonSpeck::Simon::Simon where
+
 parameter
-  
-  type n : #    // word size
-  type m : #    // words in key
-  type T : #    // rounds in the key schedule
-  type j : #    // index of z-sequence used (i.e. use sequence z_j)
-  type constraint ( fin n, fin m, fin T, fin j
-                  , 16 <= n, n <= 64
-				  ,  2 <= m, m <= 4
-				  ,  0 <= j, j <= 4
-				  , 32 <= T, T <= 72
-				  )
+
+  /** word size */
+  type n : #
+  type constraint (16 <= n, n <= 64)
+
+  /** number of words in key */
+  type m : #
+  type constraint (2 <= m, m <= 4)
+
+  /** number of rounds in key schedule */
+  type T : #
+  type constraint (32 <= T, T <= 72)
+
+  /** index of z-sequence used (i.e. use sequence z_j) */
+  type j : #
+  type constraint (0 <= j, j <= 4)
+
 type blockSize = 2 * n
 type keySize   = m * n
 
@@ -354,7 +362,7 @@ Now it's your turn to try writing a parameterized module. You will
 also get more practice reading and writing a cryptographic
 specification.
 
-**Exercise** Write a parameterized module for `Speck`. Refer to
+**EXERCISE**: Write a parameterized module for `Speck`. Refer to
 Section 4 from reference [1]. The corresponding `Speck` Cryptol files
 should be written in the `Speck` folder provided in this lab
 directory. Consider using the `Simon` implementation as a reference --
@@ -375,7 +383,7 @@ Q.E.D.
 (Total Elapsed Time: 0.021s, using "Z3")
 ```
 
-**Additional Exercise** The test vectors below only test the
+**ADDITIONAL EXERCISE**: The test vectors below only test the
 encryption direction for `Speck`. Define the decryption direction for
 the round function and algorithm and try writing properties and/or
 test vectors to verify that these functions are inverses. You may need
