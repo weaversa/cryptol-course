@@ -232,8 +232,8 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[^ Transposition Ciphers](/labs/Transposition/Contents.md) \
-[< Scytale - Answers](/labs/Transposition/ScytaleAnswers.md) |Rail Fence - Answers| [Route - Answers >](/labs/Transposition/RouteAnswers.md)
-
-[? Rail Fence](/labs/Transposition/RailFence.md)
+||||
+|-:|:-:|-|
+|| [^ Transposition Ciphers](/labs/Transposition/Contents.md) ||
+| [< Scytale](/labs/Transposition/Scytale.md) | **Rail Fence (Answers)** | [Route >](/labs/Transposition/Route.md) |
+|| [? Rail Fence](/labs/Transposition/RailFence.md) ||

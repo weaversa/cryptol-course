@@ -324,6 +324,7 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[^ Cryptol Demos](/labs/Demos/Cryptol/Demos.md) \
-[< Caesar](/labs/Demos/Cryptol/Caesar.md) |One-Time Pad| [n-Queens >](/labs/Demos/Cryptol/NQueens.md)
+||||
+|-:|:-:|-|
+|| [^ Cryptol Demos](/labs/Demos/Cryptol/Demos.md) ||
+| [< Caesar](/labs/Demos/Cryptol/Caesar.md) | **One-Time Pad** | [n-Queens >](/labs/Demos/Cryptol/NQueens.md) |

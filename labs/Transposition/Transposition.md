@@ -538,8 +538,8 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[^ Transposition Ciphers](/labs/Transposition/Contents.md) \
-[< Common Properties for Ciphers](/labs/Transposition/CommonProperties.md) |Transposition| [Esrever >](/labs/Transposition/Esrever.md)
-
-[! Transposition - Answers](/labs/Transposition/TranspositionAnswers.md)
+||||
+|-:|:-:|-|
+|| [^ Transposition Ciphers](/labs/Transposition/Contents.md) ||
+| [< Common Properties for Ciphers](/labs/Transposition/CommonProperties.md) | **Transposition** | [Esrever >](/labs/Transposition/Esrever.md) |
+|| [! Transposition (Answers)](/labs/Transposition/TranspositionAnswers.md) ||

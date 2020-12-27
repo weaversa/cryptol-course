@@ -1140,10 +1140,10 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[^ Course README](/README.md) \
-[< Cryptographic Properties - Answers](/labs/CryptoProofs/CryptoProofsAnswers.md) |Key Wrapping - Answers| [Capstone - Answers >](/labs/LoremIpsum/LoremIpsumAnswers.md)
-
-[? Key Wrapping](/labs/KeyWrapping/KeyWrapping.md)
-
-[+ Parameterized Modules](/labs/SimonSpeck/SimonSpeck.md)
+||||
+|-:|:-:|-|
+|| [^ Course README](/README.md) ||
+| [< Cryptographic Properties](/labs/CryptoProofs/CryptoProofs.md) | **Key Wrapping (Answers)** | [Capstone >](/labs/LoremIpsum/LoremIpsum.md) |
+|| [? Key Wrapping](/labs/KeyWrapping/KeyWrapping.md) ||
+||||
+|| [+ Parameterized Modules](/labs/SimonSpeck/SimonSpeck.md) ||

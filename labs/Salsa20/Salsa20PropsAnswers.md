@@ -299,8 +299,8 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[- Cryptographic Properties - Answers](/labs/CryptoProofs/CryptoProofsAnswers.md) \
-|Salsa20 Properties - Answers|
-
-[? Salsa20 Properties](/labs/Salsa20/Salsa20Props.md)
+||||
+|-:|:-:|-|
+|| [- Cryptographic Properties](/labs/CryptoProofs/CryptoProofs.md) ||
+|| **Salsa20 Properties (Answers)** ||
+|| [? Salsa20 Properties](/labs/Salsa20/Salsa20Props.md) ||

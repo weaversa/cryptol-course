@@ -36,6 +36,13 @@ digraph  {
   LanguageBasics             [label = "Language\nBasics"]
   CryptographicProperties    [label = "Cryptographic\nProperties"]
   KeyWrapping                [label = "Key Wrapping"]
+  CryptolDemos               [label = "Cryptol Demos"]
+  SAWDemos                   [label = "SAW Demos"]
+  TranspositionCiphers       [label = "Transposition\nCiphers"]
+  ParameterizedModules       [label = "Parameterized\nModules"]
+  Salsa20Properties          [label = "Salsa20\nProperties"]
+  StyleGuide                 [label = "Style Guide"]
+  ProjectEuler               [label = "Project Euler"]
 
   // recommended flow
   edge [color=red];

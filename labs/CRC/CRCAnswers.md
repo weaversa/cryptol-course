@@ -344,8 +344,8 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[^ Course README](/README.md) \
-[< Language Basics](/labs/Language/Basics.md) |CRC| [Salsa20 - Answers >](/labs/Salsa20/Salsa20Answers.md)
-
-[? CRC](/labs/CRC/CRC.md)
+||||
+|-:|:-:|-|
+|| [^ Course README](/README.md) ||
+| [< Language Basics](/labs/Language/Basics.md) | **CRC (Answers)** | [Salsa20 >](/labs/Salsa20/Salsa20.md) |
+|| [? CRC](/labs/CRC/CRC.md) ||

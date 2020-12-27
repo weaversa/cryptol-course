@@ -938,8 +938,8 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[^ Course README](/README.md) \
-[< CRC - Answers](/labs/CRC/CRCAnswers.md) |Salsa20 - Answers| [Cryptographic Properties - Answers >](/labs/CryptoProofs/CryptoProofsAnswers.md)
-
-[? Salsa20](/labs/Salsa20/Salsa20.md)
+||||
+|-:|:-:|-|
+|| [^ Course README](/README.md) ||
+| [< CRC](/labs/CRC/CRC.md) | **Salsa20 (Answers)** | [Cryptographic Properties >](/labs/CryptoProofs/CryptoProofs.md)
+|| [? Salsa20](/labs/Salsa20/Salsa20.md) ||

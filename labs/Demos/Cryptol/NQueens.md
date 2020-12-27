@@ -236,6 +236,7 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[^ Cryptol Demos](/labs/Demos/Cryptol/Demos.md) \
-[< One-Time Pad](/labs/Demos/Cryptol/OneTimePad.md) |n-Queens| [Sudoku >](/labs/Demos/Cryptol/Sudoku.md)
+||||
+|-:|:-:|-|
+|| [^ Cryptol Demos](/labs/Demos/Cryptol/Demos.md) ||
+| [< One-Time Pad](/labs/Demos/Cryptol/OneTimePad.md) | **n-Queens** | [Sudoku >](/labs/Demos/Cryptol/Sudoku.md) |

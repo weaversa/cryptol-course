@@ -2056,10 +2056,11 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[^ Course README](/README.md) \
-[< Interpreter](/labs/Interpreter/Interpreter.md) |Language Basics| [CRC >](/labs/CRC/CRC.md)
-
-[+ Style Guide](/cryptol-style.md) \
-[+ Cryptol Demos](/labs/Demos/Cryptol/Demos.md) \
-[+ SAW Demos](/labs/Demos/SAW/Demos.md)
+||||
+|-:|:-:|-|
+|| [^ Course README](/README.md) ||
+| [< Interpreter](/labs/Interpreter/Interpreter.md) | **Language Basics** | [CRC >](/labs/CRC/CRC.md) |
+||||
+|| [+ Style Guide](/cryptol-style.md) ||
+|| [+ Cryptol Demos](/labs/Demos/Cryptol/Demos.md) ||
+|| [+ SAW Demos](/labs/Demos/SAW/Demos.md) ||

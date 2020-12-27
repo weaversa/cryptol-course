@@ -174,8 +174,8 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[^ Transposition Ciphers](/labs/Transposition/Contents.md) \
-[< Esrever](/labs/Transposition/Esrever.md) |Scytale| [Rail Fence >](/labs/Transposition/RailFence.md)
-
-[! Scytale - Answers](/labs/Transposition/ScytaleAnswers.md)
+||||
+|-:|:-:|-|
+|| [^ Transposition Ciphers](/labs/Transposition/Contents.md) ||
+| [< Esrever](/labs/Transposition/Esrever.md) | **Scytale** | [Rail Fence >](/labs/Transposition/RailFence.md) |
+|| [! Scytale (Answers)](/labs/Transposition/ScytaleAnswers.md) ||

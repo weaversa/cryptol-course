@@ -28,7 +28,8 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[- Language Basics](/labs/Language/Basics.md) \
-|SAW Demos| \
-[v Arithmetic Verifications](/labs/Demos/SAW/ArithmeticVerifications/ArithmeticVerifications.md)
+||||
+|-:|:-:|-|
+|| [- Language Basics](/labs/Language/Basics.md) ||
+|| **SAW Demos** ||
+|| [v Arithmetic Verifications](/labs/Demos/SAW/ArithmeticVerifications/ArithmeticVerifications.md) ||

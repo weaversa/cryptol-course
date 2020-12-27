@@ -327,6 +327,7 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[^ Course README](/README.md) \
-[< Installation](/INSTALL.md) |Overview| [Interpreter >](/labs/Interpreter/Interpreter.md)
+||||
+|-:|:-:|-|
+|| [^ Course README](/README.md) ||
+| [< Installation](/INSTALL.md) | **Overview** | [Interpreter >](/labs/Interpreter/Interpreter.md) |

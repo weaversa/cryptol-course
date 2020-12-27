@@ -141,8 +141,8 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[^ Transposition Ciphers](/labs/Transposition/Contents.md) \
-[< Transposition - Answers](/labs/Transposition/TranspositionAnswers.md) |Esrever - Answers| [Scytale - Answers >](/labs/Transposition/ScytaleAnswers.md)
-
-[? Esrever](/labs/Transposition/Esrever.md)
+||||
+|-:|:-:|-|
+|| [^ Transposition Ciphers](/labs/Transposition/Contents.md) ||
+| [< Transposition](/labs/Transposition/Transposition.md) | **Esrever (Answers)** | [Scytale >](/labs/Transposition/Scytale.md) |
+|| [? Esrever](/labs/Transposition/Esrever.md) ||

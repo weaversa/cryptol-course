@@ -220,8 +220,8 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[^ Transposition Ciphers](/labs/Transposition/Contents.md)
-[< Esrever - Answers](/labs/Transposition/EsreverAnswers.md) |Scytale - Answers| [Rail Fence - Answers >](/labs/Transposition/RailFenceAnswers.md)
-
-[? Scytale](/labs/Transposition/Scytale.md)
+||||
+|-:|:-:|-|
+|| [^ Transposition Ciphers](/labs/Transposition/Contents.md) ||
+| [< Esrever](/labs/Transposition/Esrever.md) | **Scytale (Answers)** | [Rail Fence >](/labs/Transposition/RailFence.md) |
+|| [? Scytale](/labs/Transposition/Scytale.md) ||

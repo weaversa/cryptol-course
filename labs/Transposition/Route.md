@@ -74,6 +74,7 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[^ Transposition Ciphers](/labs/Transposition/Contents.md) \
-[< Rail Fence](/labs/Transposition/RailFence.md) |Route|
+||||
+|-:|:-:|-|
+|| [^ Transposition Ciphers](/labs/Transposition/Contents.md) ||
+| [< Rail Fence](/labs/Transposition/RailFence.md) | **Route** ||

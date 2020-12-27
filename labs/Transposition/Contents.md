@@ -16,7 +16,8 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[- Cryptographic Properties](/labs/CryptoProofs/CryptoProofs.md) \
-|Transposition Ciphers| \
-[v Common Properties for Ciphers](/labs/Transposition/CommonProperties.md)
+||||
+|-:|:-:|-|
+|| [- Cryptographic Properties](/labs/CryptoProofs/CryptoProofs.md) ||
+|| **Transposition Ciphers** ||
+|| [v Common Properties for Ciphers](/labs/Transposition/CommonProperties.md) ||

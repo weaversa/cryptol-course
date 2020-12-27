@@ -18,7 +18,8 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[- Language Basics](/labs/Language/Basics.md) \
-|Cryptol Demos| \
-[v Caesar](/labs/Demos/Cryptol/Caesar.md)
+||||
+|-:|:-:|-|
+|| [- Language Basics](/labs/Language/Basics.md) ||
+|| **Cryptol Demos** ||
+|| [v Caesar](/labs/Demos/Cryptol/Caesar.md) ||

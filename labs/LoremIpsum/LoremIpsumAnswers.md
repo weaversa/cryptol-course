@@ -521,8 +521,8 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[^ Course README](/README.md) \
-[< Key Wrapping - Answers](/labs/KeyWrapping/KeyWrappingAnswers.md) |Capstone - Answers|
-
-[? Capstone](/labs/LoremIpsum/LoremIpsum.md)
+||||
+|-:|:-:|-|
+|| [^ Course README](/README.md) ||
+| [< Key Wrapping](/labs/KeyWrapping/KeyWrapping.md) | **Capstone (Answers)** ||
+|| [? Capstone](/labs/LoremIpsum/LoremIpsum.md) ||

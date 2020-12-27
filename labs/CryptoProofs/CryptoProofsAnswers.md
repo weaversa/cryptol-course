@@ -473,12 +473,12 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
-
-[^ Course README](/README.md) \
-[< Salsa20 - Answers](/labs/Salsa20/Salsa20Answers.md) |Cryptographic Properties - Answers| [Key Wrapping - Answers >](/labs/KeyWrapping/KeyWrappingAnswers.md)
-
-[? Cryptographic Properties](/labs/CryptoProofs/CryptoProofs.md)
-
-[+ Salsa20 Properties - Answers](/labs/Salsa20/Salsa20PropsAnswers.md) \
-[+ Transposition Ciphers](/labs/Transposition/Contents.md) \
-[+ Project Euler - Answers](/labs/ProjectEuler/ProjectEulerAnswers.md)
+||||
+|-:|:-:|-|
+|| [^ Course README](/README.md) ||
+| [< Salsa20](/labs/Salsa20/Salsa20.md) | **Cryptographic Properties (Answers)** | [Key Wrapping >](/labs/KeyWrapping/KeyWrapping.md) |
+|| [? Cryptographic Properties](/labs/CryptoProofs/CryptoProofs.md) ||
+||||
+|| [+ Salsa20 Properties](/labs/Salsa20/Salsa20Props.md) ||
+|| [+ Transposition Ciphers](/labs/Transposition/Contents.md) ||
+|| [+ Project Euler](/labs/ProjectEuler/ProjectEuler.md) ||
