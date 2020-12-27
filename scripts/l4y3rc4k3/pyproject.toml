@@ -2,10 +2,10 @@
 name = "l4y3rc4k3"
 version = "0.1.0"
 description = ""
-authors = ["Matt Benke <matt.benke@gmail.com>"]
+authors = [WeeknightMVP]
 
 [tool.poetry.dependencies]
-python = "^3.7"
+python = "^3.9"
 PyYAML = "^5.3.1"
 more-itertools = "^8.6.0"
 Jinja2 = "^2.11.2"

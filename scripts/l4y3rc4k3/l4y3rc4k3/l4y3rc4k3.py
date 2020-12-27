@@ -32,12 +32,15 @@ if __name__ == '__main__':
 
     with DEPS_YML_PATH.open() as DEPS_YML:
         deps = safe_load(DEPS_YML)
-
-    urls = deps['urls']
+    
+    urls = {
+        id(label): url(rel_url)
+        for (label, rel_url) in deps['urls'].items()
+    }
 
     fw_id = max(
-        len( id(label) )
-        for label in urls
+        len( _id )
+        for _id in urls
     )
 
     env = Environment(
@@ -48,55 +51,64 @@ if __name__ == '__main__':
 
     for path_label in deps['paths']:
         path_id = id( path_label )
+        branches = deps['branches'].get(path_label, {})
 
-        primary_nodes = list( map(id, deps['paths'][path_label]) )
+        primary_nodes = [
+            id(node_label)
+            for node_label in deps['paths'][path_label]
+        ]
         primary_edges = list( pairwise( primary_nodes ) )
 
-        branch_nodes = list( map(id, chain(*deps['branches'].get(path_label, {}).values())) )
+        branch_nodes = [
+            id(branch_label)
+            for branch_label in chain(*branches.values())
+        ]
+        branch_edges = (
+            ( id(from_label), to_id )
+            for (from_label, to_labels) in branches.items()
+            for to_id in map(id, to_labels)
+        )
+
+        (primary_urls, branch_urls) = (
+            (
+                (
+                    f'{{0: <{ fw_id }}}'.format(_id),
+                    f"{ urls[_id] }"
+                )
+                for _id in x
+            )
+            for x in (primary_nodes, branch_nodes)
+        )
+
+        ranks = {
+            rank_id: [ id(label) for label in labels ]
+            for (rank_id, labels) in chain(
+                deps['ranks'].get(path_label, {}).items(),
+                (
+                    (fl, ( next(ptl for (pfl, ptl) in primary_edges if pfl == id(fl)), *tls ))
+                    for (fl, tls) in branches.items()
+                )
+            )
+        }
+
+        id_labels = (
+            (
+                f'{{0: <{ fw_id }}}'.format(_id),
+                label.replace(' ', r'\n') if label in deps['newline_labels'] else label
+            )
+            for label in deps['urls']
+            if ' ' in label and (_id := id(label)) in chain(primary_nodes, branch_nodes)
+        )
 
         context = {
             'path_id': path_id,
             'base_url': BASE_URL,
-            'primary_urls': (
-                (
-                    f'{{0: <{ fw_id }}}'.format(id(label)),
-                    f"{ url( lab ) }"
-                )
-                for (label, lab) in urls.items()
-                if id(label) in primary_nodes
-            ),
-            'branch_urls': (
-                (
-                    f'{{0: <{ fw_id }}}'.format(id(label)),
-                    f"{ url( lab ) }"
-                )
-                for (label, lab) in urls.items()
-                if id(label) in branch_nodes
-            ),
-            'id_labels': [
-                (
-                    f'{{0: <{ fw_id }}}'.format(id(label)),
-                    label.replace(' ', r'\n') if label in deps['newline_labels'] else label
-                )
-                for label in urls
-                if ' ' in label and id(label) in chain(primary_nodes, branch_nodes)
-            ],
+            'primary_urls': primary_urls,
+            'branch_urls': branch_urls,
+            'id_labels': id_labels,
             'primary_edges': primary_edges,
-            'branch_edges': list(
-                ( id(from_label), to_id )
-                for (from_label, to_labels) in deps['branches'].get(path_label, {}).items()
-                for to_id in map(id, to_labels)
-            ),
-            'ranks': {
-                rank_id: [ id(label) for label in labels ]
-                for (rank_id, labels) in chain(
-                    deps['ranks'].get(path_label, {}).items(),
-                    (
-                        (fl, ( next(ptl for (pfl, ptl) in primary_edges if pfl == id(fl)), *tls ))
-                        for (fl, tls) in deps['branches'].get(path_label, {}).items()
-                    )
-                )
-            },
+            'branch_edges': branch_edges,
+            'ranks': ranks,
         }
 
         branch_rendering = branch_template.render(**context)
@@ -106,5 +118,7 @@ if __name__ == '__main__':
         with GV_PATH.open('w') as GV:
             GV.write(branch_rendering)
 
-        render(engine='dot', filepath=GV_PATH, format='png')
-        render(engine='dot', filepath=GV_PATH, format='svg')
+        [
+            render(engine='dot', filepath=GV_PATH, format=format)
+            for format in 'svg png'.split()
+        ]

@@ -23,26 +23,19 @@ digraph  {
   // branch nodes
   node [fillcolor="white"];
   
+  StyleGuide                 [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/cryptol-style.md"];
   CryptolDemos               [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Demos/Cryptol/Demos.md"];
   SAWDemos                   [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Demos/SAW/Demos.md"];
-  TranspositionCiphers       [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Transposition/Contents.md"];
-  ParameterizedModules       [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/SimonSpeck/SimonSpeck.md"];
   Salsa20Properties          [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Salsa20/Salsa20Props.md"];
-  StyleGuide                 [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/cryptol-style.md"];
+  TranspositionCiphers       [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Transposition/Contents.md"];
   ProjectEuler               [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/ProjectEuler/ProjectEuler.md"];
+  ParameterizedModules       [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/SimonSpeck/SimonSpeck.md"];
 
   // newline/space labels
   
   LanguageBasics             [label = "Language\nBasics"]
   CryptographicProperties    [label = "Cryptographic\nProperties"]
   KeyWrapping                [label = "Key Wrapping"]
-  CryptolDemos               [label = "Cryptol Demos"]
-  SAWDemos                   [label = "SAW Demos"]
-  TranspositionCiphers       [label = "Transposition\nCiphers"]
-  ParameterizedModules       [label = "Parameterized\nModules"]
-  Salsa20Properties          [label = "Salsa20\nProperties"]
-  StyleGuide                 [label = "Style Guide"]
-  ProjectEuler               [label = "Project Euler"]
 
   // recommended flow
   edge [color=red];
