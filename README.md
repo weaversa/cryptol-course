@@ -157,6 +157,7 @@ reference:
   -- A simple list of all of the Cryptol language primitives.
 
 # From here, you can go somewhere!
-
-|Course README| \
-[v Installation](INSTALL.md)
+||||
+|-:|:-:|-|
+|| **Course README** ||
+|| [v Installation](INSTALL.md) ||
