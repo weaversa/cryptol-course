@@ -2,7 +2,7 @@
 name = "l4y3rc4k3"
 version = "0.1.0"
 description = ""
-authors = [WeeknightMVP]
+authors = ["WeeknightMVP"]
 
 [tool.poetry.dependencies]
 python = "^3.9"
