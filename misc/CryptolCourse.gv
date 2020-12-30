@@ -4,7 +4,7 @@ digraph  {
 
   rankdir="LR";
 
-  node [shape="box", style="rounded,filled", fillcolor="red", penwidth = 2];
+  node [shape="box", style="rounded,filled", fillcolor="white", penwidth = 2];
   edge [penwidth = 1];
 
   // URLs by node
