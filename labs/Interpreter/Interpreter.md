@@ -36,7 +36,7 @@ Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::Interpreter::Interpreter
 Loading module Cryptol
@@ -76,7 +76,7 @@ be parsed by `:m ...`.)*
 The interpreter has a number of different configuration settings. To
 view them type `:set`.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Interpreter::Interpreter> :set
 ascii = off
 base = 16
@@ -105,7 +105,7 @@ The most common setting to change is `base`. The default is `base =
 16`, which means the interpreter will display bitvectors by printing
 their hexadecimal representations. For example,
 
-```Xcryptol session
+```Xcryptol-session
 labs::Interpreter::Interpreter> 0xa
 0xa
 labs::Interpreter::Interpreter> 10 : [4]
@@ -115,7 +115,7 @@ labs::Interpreter::Interpreter> 10 : [4]
 To make the interpreter display bitvectors in decimal (base 10), type
 `:set base=10`. To change back to hexadecimal, type `:set base=16`.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Interpreter::Interpreter> :set base=10
 labs::Interpreter::Interpreter> 0xa
 10
@@ -140,7 +140,7 @@ Cryptol's interpreter has a built-in help command. To invoke it, type
 example, if we'd like to know more about the `:set base` command, we
 can type:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Interpreter::Interpreter> :h :set base
 
     base = 16
@@ -153,7 +153,7 @@ The base to display words at (2, 8, 10, or 16).
 Cryptol has a built-in command to reverse a list, called
 `reverse`. Let's look at the help for this command.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Interpreter::Interpreter> :h reverse
 
     reverse : {n, a} (fin n) => [n]a -> [n]a
@@ -168,7 +168,7 @@ You'll notice that some commands start with a colon (`:`) and others
 do not. The colon commands are commands that are outside of the
 Cryptol language, and only exist in the interpreter. You can see a full listing of these commands by typing `:h`.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Interpreter::Interpreter> :h
   :t, :type            Check the type of an expression.
   :b, :browse          Display environment for all loaded modules, or for a specific module.
@@ -224,7 +224,7 @@ prelude is discouraged.
 About `:browse` --- If you enter `:b` into the interpreter you will
 first see:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Interpreter::Interpreter> :b
 Type Synonyms
 =============
@@ -249,7 +249,7 @@ Type synonyms are helper functions used to express the type of some
 data. For example, the number `10` can be expressed as a 32-bit word
 via,
 
-```Xcryptol session
+```Xcryptol-session
 labs::Interpreter::Interpreter> 10 : Word 32
 0x0000000a
 ```
@@ -267,7 +267,7 @@ cryptographic type constraints elegantly. These are used when defining
 the type of a function or variable. For example, the size of a
 bitvector can be represented in terms of the width of a number:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Interpreter::Interpreter> :t 10 : [width 32]
 (10 : [width 32]) : [6]
 ```
@@ -278,7 +278,7 @@ operators). These are used when defining the value of a function or
 variable. For example, `reverse` can be used to reverse the order of a
 sequence of bitvectors:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Interpreter::Interpreter> reverse [1, 2, 3] : [3][2]
 [0x3, 0x2, 0x1]
 ```
@@ -310,7 +310,7 @@ interpreter evaluated. For example, if we can `reverse` a list, the
 result `[3, 2, 1]` is automatically bound to the `it` symbol. We can
 then `reverse it` and see that we get `[1, 2, 3]` back.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Interpreter::Interpreter> :s base=10
 labs::Interpreter::Interpreter> reverse [1, 2, 3] : [3][2]
 [3, 2, 1]
@@ -324,7 +324,7 @@ example, here we bind the result of `reverse [1, 2, 3] : [3][2]` to
 `r`, then `reverse r` and show that the result is as expected and that
 `r` still retains `[3, 2, 1]`.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Interpreter::Interpreter> let r = reverse [1, 2, 3] : [3][2]
 labs::Interpreter::Interpreter> r
 [3, 2, 1]
@@ -343,7 +343,7 @@ the interpreter, definitions can be overwritten, it's better to place
 these kinds of definitions in a file and use the `:reload` (or `:r`)
 command when editing to maintain a consistent state.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Interpreter::Interpreter> let x = 0
 labs::Interpreter::Interpreter> let y = x + 1
 labs::Interpreter::Interpreter> let x = 1
@@ -357,7 +357,7 @@ interpreter using `:module` (as shown at the beginning of this lab) as
 well as using `:load`. Where `:module` takes the module name, `:load`
 instead takes the filename.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Interpreter::Interpreter> :l labs/Interpreter/Interpreter.md
 Loading module Cryptol
 Loading module labs::Interpreter::Interpreter
@@ -373,7 +373,7 @@ provides. Remember that the interpreter supports TAB completion so you
 only need to type `:b l` then press the TAB key and the interpreter
 will fill in the rest.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Interpreter::Interpreter> :b labs::Interpreter::Interpreter
 Type Synonyms
 =============
@@ -429,7 +429,7 @@ https://cryptol.net  :? for help
 Loading module Cryptol
 ```
 
-```Xcryptol session
+```Xcryptol-session
 Cryptol> :m labs::Interpreter::Interpreter
 Loading module Cryptol
 Loading module labs::Interpreter::Interpreter
@@ -540,5 +540,5 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 ||||
 |-:|:-:|-|
-|| [^ Course README](/README.md) ||
-| [< Overview](/labs/Overview/Overview.md) | **Interpreter** | [Language Basics >](/labs/Language/Basics.md) |
+|| [^ Course README](../../README.md) ||
+| [< Overview](../Overview/Overview.md) | **Interpreter** | [Language Basics >](../Language/Basics.md) |

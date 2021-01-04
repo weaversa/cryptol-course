@@ -35,7 +35,7 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Cryptol> :m labs::Transposition::Scytale
 Loading module Cryptol
 Loading module Cryptol
@@ -86,7 +86,7 @@ dScytale msg = join (transpose msg')
 While informative, this definition only accepts messages whose length 
 is a multiple of the rod diameter:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::Scytale> :s ascii=on
 labs::Transposition::Scytale> scytale`{3} "ATTACKATDAWN"
 "ACDTKATAWATN"
@@ -109,7 +109,7 @@ block size.  Revisiting the earlier example, `"ATTACKDAWN"` is length
 10, requiring 4 blocks and 2 padding characters to divide into blocks 
 of size 3:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::Scytale> `numBlocks:Integer where type numBlocks = 10 /^ 3
 4
 labs::Transposition::Scytale> `padLength:Integer where type padLength = 10 %^ 3 
@@ -176,6 +176,6 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 ||||
 |-:|:-:|-|
-|| [^ Transposition Ciphers](/labs/Transposition/Contents.md) ||
-| [< Esrever](/labs/Transposition/Esrever.md) | **Scytale** | [Rail Fence >](/labs/Transposition/RailFence.md) |
-|| [! Scytale (Answers)](/labs/Transposition/ScytaleAnswers.md) ||
+|| [^ Transposition Ciphers](./Contents.md) ||
+| [< Esrever](./Esrever.md) | **Scytale** | [Rail Fence >](./RailFence.md) |
+|| [! Scytale (Answers)](./ScytaleAnswers.md) ||

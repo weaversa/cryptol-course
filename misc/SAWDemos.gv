@@ -2,6 +2,7 @@ digraph  {
   //splines = ortho;
   //concentrate = true;
 
+  bgcolor="transparent";
   rankdir="LR";
 
   node [shape="box", style="rounded,filled", fillcolor="white", penwidth = 2];
@@ -10,8 +11,8 @@ digraph  {
   // URLs by node
   // recommended
   
-  ArithmeticVerifications    [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Demos/SAW/SAW/ArithmeticVerifications/ArithmeticVerifications.md"];
-  BitTwiddling               [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Demos/SAW/SAW/Bittwiddling/Bittwiddling.md"];
+  ArithmeticVerifications    [URL="../labs/Demos/SAW/SAW/ArithmeticVerifications/ArithmeticVerifications.md"];
+  BitTwiddling               [URL="../labs/Demos/SAW/SAW/Bittwiddling/Bittwiddling.md"];
 
   // branch nodes
   node [fillcolor="white"];

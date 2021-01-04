@@ -38,7 +38,7 @@ Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::CRC::CRCAnswers
 Loading module Cryptol
@@ -53,7 +53,7 @@ module labs::CRC::CRCAnswers where
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # Cyclic Redundancy Checks
@@ -346,6 +346,6 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 ||||
 |-:|:-:|-|
-|| [^ Course README](/README.md) ||
-| [< Language Basics](/labs/Language/Basics.md) | **CRC (Answers)** | [Salsa20 >](/labs/Salsa20/Salsa20.md) |
-|| [? CRC](/labs/CRC/CRC.md) ||
+|| [^ Course README](../../README.md) ||
+| [< Language Basics](../Language/Basics.md) | **CRC (Answers)** | [Salsa20 >](../Salsa20/Salsa20.md) |
+|| [? CRC](./CRC.md) ||

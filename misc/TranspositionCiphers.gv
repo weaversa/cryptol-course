@@ -2,6 +2,7 @@ digraph  {
   //splines = ortho;
   //concentrate = true;
 
+  bgcolor="transparent";
   rankdir="LR";
 
   node [shape="box", style="rounded,filled", fillcolor="white", penwidth = 2];
@@ -10,12 +11,12 @@ digraph  {
   // URLs by node
   // recommended
   
-  CommonPropertiesforCiphers [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Transposition/CommonProperties.md"];
-  Transposition              [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Transposition/Transposition.md"];
-  Esrever                    [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Transposition/Esrever.md"];
-  Scytale                    [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Transposition/Scytale.md"];
-  RailFence                  [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Transposition/RailFence.md"];
-  Route                      [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Transposition/Route.md"];
+  CommonPropertiesforCiphers [URL="../labs/Transposition/CommonProperties.md"];
+  Transposition              [URL="../labs/Transposition/Transposition.md"];
+  Esrever                    [URL="../labs/Transposition/Esrever.md"];
+  Scytale                    [URL="../labs/Transposition/Scytale.md"];
+  RailFence                  [URL="../labs/Transposition/RailFence.md"];
+  Route                      [URL="../labs/Transposition/Route.md"];
 
   // branch nodes
   node [fillcolor="white"];

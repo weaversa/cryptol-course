@@ -38,7 +38,7 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Cryptol> :m labs::Transposition::CommonProperties
 Loading module Cryptol
 Loading module Cryptol
@@ -50,7 +50,7 @@ Loading module labs::Transposition::CommonProperties
 
 The proofs in this lab require an array of different theorem provers
 supported by Cryptol. In order to solve them, we recommend using the
-Cryptol Docker container described in [INSTALL.md](/INSTALL.md) for 
+Cryptol Docker container described in [INSTALL.md](../../INSTALL.md) for 
 this course.
 
 The first line of a Cryptol module needs to be a module definition:
@@ -61,7 +61,7 @@ module labs::Transposition::CommonProperties where
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and only change `cryptol` code as directed by the 
 exercises, reloading for `:m ...` to import your changes.
 
@@ -79,7 +79,7 @@ import specs::Primitive::Symmetric::Cipher::Block::DES (DES)
 
 Let's count to 10...
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::CommonProperties> let _1 = 1 : Integer
 labs::Transposition::CommonProperties> _1
 1
@@ -105,7 +105,7 @@ labs::Transposition::CommonProperties> 1 + it
 
 That was repetitive.  Let's just ask Cryptol to count to 10:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::CommonProperties> take`{10} (iterate (\x -> 1 + x) (1 : Integer))
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 ```
@@ -120,7 +120,7 @@ S x = 1 + x
 Peano would be proud.  Wouldn't it be nice if Cryptol could just 
 reuse `S` to repeatedly increment a counter?
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::CommonProperties> :t \(x : Integer) -> 1 + x
 (\(x : Integer) -> 1 + x) : Integer -> Integer
 labs::Transposition::CommonProperties> :t S
@@ -129,7 +129,7 @@ S : Integer -> Integer
 
 Wait a minute...it can!
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::CommonProperties> take`{10} (iterate S 1)
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 ```
@@ -211,7 +211,7 @@ must be pretty important!
 
 Because the DES exercises were so much fun last time, let's revisit 
 them with our newfound appreciation for higher-order functions!  (For 
-exercises in this module, add your answers to empty `Xcryptol session` 
+exercises in this module, add your answers to empty `Xcryptol-session` 
 prompts.)
 
 **EXERCISE**: Use `boolector` to reverse `DES.encrypt` for 
@@ -220,7 +220,7 @@ other words, instruct the interpreter to find a plaintext such that
 encrypting that plaintext using DES with the `known_key` produces the 
 `known_ct`.)  Avoid lambda.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::CommonProperties> :s prover=boolector
 labs::Transposition::CommonProperties> 
 ```
@@ -232,7 +232,7 @@ function of one argument to a function of one argument...)
 are mutual inverses for all possible `pt`, given the same `key`.
 Do not mention `pt` in your proof commands.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::CommonProperties> :s prover=abc
 labs::Transposition::CommonProperties> 
 ```
@@ -241,7 +241,7 @@ labs::Transposition::CommonProperties>
 for any given `key`.  Do not mention `pt`s in your proof command.  
 Meditate on the nature of lambda and the (f)utility of names.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::CommonProperties> :s prover=boolector
 labs::Transposition::CommonProperties> 
 ```
@@ -253,7 +253,7 @@ clause, but do not mention `key` in the lambda function you pass to
 your command.  Guess whether such a collision will be found before 
 you observe a collision of black holes in nearby outer space.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::CommonProperties> :s prover=yices
 labs::Transposition::CommonProperties> 
 ```
@@ -263,7 +263,7 @@ equivalent keys; i.e., prove that keyed `DES.encrypt` and
 `DES.decrypt`, respectively, are equivalent for *all* `pt`/`ct`.  
 Avoid lambda.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::CommonProperties> :s prover=abc
 labs::Transposition::CommonProperties> 
 ```
@@ -272,7 +272,7 @@ labs::Transposition::CommonProperties>
 to `DES.encrypt (DESFixParity key)`.  Do not mention `pt` in your 
 proof command.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::CommonProperties> :s prover=abc
 labs::Transposition::CommonProperties> 
 ```
@@ -305,6 +305,6 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 ||||
 |-:|:-:|-|
-|| [^ Transposition Ciphers](/labs/Transposition/Contents.md) ||
-|| **Common Properties for Ciphers** | [Transposition >](/labs/Transposition/Transposition.md) |
-|| [! Common Properties for Ciphers (Answers)](/labs/Transposition/CommonPropertiesAnswers.md) ||
+|| [^ Transposition Ciphers](./Contents.md) ||
+|| **Common Properties for Ciphers** | [Transposition >](./Transposition.md) |
+|| [! Common Properties for Ciphers (Answers)](./CommonPropertiesAnswers.md) ||

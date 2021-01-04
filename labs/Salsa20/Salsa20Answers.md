@@ -39,7 +39,7 @@ Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::Salsa20::Salsa20Answers
 Loading module Cryptol
@@ -54,7 +54,7 @@ module labs::Salsa20::Salsa20Answers where
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # Salsa20
@@ -62,14 +62,14 @@ interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 Salsa20 is a cryptographic algorithm created by Daniel
 J. Bernstein. The specification is available
 [here](https://cr.yp.to/snuffle/spec.pdf), but also provided in this
-repository [here](Salsa20Spec.pdf) for ease of access. The
+repository [here](./Salsa20Spec.pdf) for ease of access. The
 specification document describes Salsa20 as well as how to use it as a
 [stream cipher](https://en.wikipedia.org/wiki/Stream_cipher) in
 [counter
 mode](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Counter_(CTR)).
 
 This lab goes through the [Salsa20 specification
-document](Salsa20Spec.pdf) section by section, showing how to write a
+document](./Salsa20Spec.pdf) section by section, showing how to write a
 fairly pedantic Cryptol specification of Salsa20. We recommend you
 either print the specification document, or have this lab and the
 specification document open side-by-side.
@@ -123,7 +123,7 @@ property hexadecimalProp =
 
 Let's prove `hexadecimalProp`:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Salsa20::Salsa20> :prove hexadecimalProp
 Q.E.D.
 (Total Elapsed Time: 0.006s, using "Z3")
@@ -217,7 +217,7 @@ This is an excellent opportunity to check that the quarterround
 function we've specified in Cryptol does indeed work correctly on
 these examples.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Salsa20::Salsa20> :prove quarterroundExamplesProp
 Q.E.D.
 (Total Elapsed Time: 0.005s, using "Z3")
@@ -274,7 +274,7 @@ property quarterroundIsInjectiveProp x x' =
 
 And then prove that the property is true.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Salsa20::Salsa20> :prove quarterroundIsInjectiveProp
 Q.E.D.
 (Total Elapsed Time: 0.430s, using "Z3")
@@ -285,7 +285,7 @@ doing some very heavy lifting behind the scenes. Without an automated
 theorem prover, the best one could do is run some tests. Cryptol does
 support automated testing with its `:check` command.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Salsa20::Salsa20> :check quarterroundIsInjectiveProp
 Using random testing.
 Passed 100 tests.
@@ -299,7 +299,7 @@ than the number of seconds left before the [Sun swallows the
 Earth](https://en.wikipedia.org/wiki/Future_of_Earth). However, if
 you'd prefer to try, Cryptol's `:exhaust` is the command to use.
 
-```Xcryptol session ci-none
+```Xcryptol-session ci-none
 labs::Salsa20::Salsa20> 2^^256 : Integer
 115792089237316195423570985008687907853269984665640564039457584007913129639936
 labs::Salsa20::Salsa20> :exhaust quarterroundIsInjectiveProp
@@ -940,6 +940,6 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 ||||
 |-:|:-:|-|
-|| [^ Course README](/README.md) ||
-| [< CRC](/labs/CRC/CRC.md) | **Salsa20 (Answers)** | [Cryptographic Properties >](/labs/CryptoProofs/CryptoProofs.md)
-|| [? Salsa20](/labs/Salsa20/Salsa20.md) ||
+|| [^ Course README](../../README.md) ||
+| [< CRC](../CRC/CRC.md) | **Salsa20 (Answers)** | [Cryptographic Properties >](../CryptoProofs/CryptoProofs.md)
+|| [? Salsa20](./Salsa20.md) ||

@@ -30,7 +30,7 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::LoremIpsum::LoremIpsum
 Loading module Cryptol
@@ -55,7 +55,7 @@ import labs::LoremIpsum::KLI20
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # LoremIpsum Key
@@ -70,7 +70,7 @@ typesetting that you should happily skip over to get to the important
 bits.
 
 **EXERCISE**: An important message has been encrypted using the
-[KLI20](KLI20.cry) end cryptographic unit, a completely made up device
+[KLI20](./KLI20.cry) end cryptographic unit, a completely made up device
 that was created specifically for use in this lab. The KLI20 takes
 LoremIpsum keys (as specified below) as input and will then operate as
 a stream cipher capable of encrypting or decrypting streams of
@@ -86,7 +86,7 @@ Let's begin.
 # Lorem Ipsum Key Generation Specification
 
 This document specifies how to generate key material for
-interoperability with the [KLI20](KLI20.cry) end cryptographic
+interoperability with the [KLI20](./KLI20.cry) end cryptographic
 unit. The KLI20 uses a mix of [CRC](../CRC/CRC.md),
 [KW-AE](../KeyWrapping/KeyWrapping.md), and
 [Salsa20](../Salsa20/Salsa20.md) to encrypt and decrypt messages.
@@ -223,7 +223,7 @@ dolor non odio dapibus interdum. Donec egestas aliquam justo id
 volutpat. Fusce vel ante non ligula placerat tristique. Fusce laoreet
 libero a mauris rutrum tempor. Duis quis convallis sapien.
 
-<kbd>![Figure 1. Lorem Ipsum Key Generation Flow Diagram](LoremIpsumKey.png)</kbd>
+<kbd>![Figure 1. Lorem Ipsum Key Generation Flow Diagram](./LoremIpsumKey.png)</kbd>
 **Figure 1. Lorem Ipsum Key Generation Flow Diagram**
 
 Aenean rhoncus, orci eu varius iaculis, sapien magna pulvinar mauris,
@@ -447,7 +447,7 @@ TestKEK = 0x3d43108b5b243b90dda78f75736cc629
 secretKey = 0x569b79f606aba26f4263b7147ba3c5e0
 ```
 
-Then, feed the keys you create into the [KLI20](KLI20.cry) device
+Then, feed the keys you create into the [KLI20](./KLI20.cry) device
 (provided in this same repository) to decrypt the following secret
 messages:
 
@@ -468,6 +468,6 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 ||||
 |-:|:-:|-|
-|| [^ Course README](/README.md) ||
-| [< Key Wrapping](/labs/KeyWrapping/KeyWrapping.md) | **Capstone** ||
-|| [! Capstone (Answers)](/labs/LoremIpsum/LoremIpsumAnswers.md) ||
+|| [^ Course README](../../README.md) ||
+| [< Key Wrapping](../KeyWrapping/KeyWrapping.md) | **Capstone** ||
+|| [! Capstone (Answers)](./LoremIpsumAnswers.md) ||

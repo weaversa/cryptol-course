@@ -28,7 +28,7 @@ if __name__ == '__main__':
     SCRIPT_PATH = CRYPTOL_COURSE_PATH/'scripts/l4y3rc4k3'
     DEPS_YML_PATH = SCRIPT_PATH/'deps.yml'
 
-    BASE_URL = "https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3"
+    BASE_URL = ".."
 
     with DEPS_YML_PATH.open() as DEPS_YML:
         deps = safe_load(DEPS_YML)
@@ -115,7 +115,7 @@ if __name__ == '__main__':
 
         GV_PATH = MISC_PATH/f'{ path_id }.gv'
 
-        with GV_PATH.open('w') as GV:
+        with GV_PATH.open('w', newline='') as GV:
             GV.write(branch_rendering)
 
         [

@@ -35,7 +35,7 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Cryptol> :m labs::Transposition::RailFence
 Loading module Cryptol
 Loading module Cryptol
@@ -195,6 +195,6 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 ||||
 |-:|:-:|-|
-|| [^ Transposition Ciphers](/labs/Transposition/Contents.md) ||
-| [< Scytale](/labs/Transposition/Scytale.md) | **Rail Fence** | [Route >](/labs/Transposition/Route.md) |
-|| [! Rail Fence (Answers)](/labs/Transposition/RailFenceAnswers.md) ||
+|| [^ Transposition Ciphers](./Contents.md) ||
+| [< Scytale](./Scytale.md) | **Rail Fence** | [Route >](./Route.md) |
+|| [! Rail Fence (Answers)](./RailFenceAnswers.md) ||

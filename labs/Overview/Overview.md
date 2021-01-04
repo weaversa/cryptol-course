@@ -44,7 +44,7 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::Overview::Overview
 Loading module Cryptol
@@ -59,7 +59,7 @@ module labs::Overview::Overview where
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # Overview of Cryptol
@@ -98,7 +98,7 @@ sayHello name = greeting
 You can then run this function by typing the following into the
 Cryptol interpreter.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Overview::Overview> sayHello "Cryptol!"
 [0x48, 0x65, 0x6c, 0x6c, 0x6f, 0x2c, 0x20, 0x43, 0x72, 0x79, 0x70,
  0x74, 0x6f, 0x6c, 0x21]
@@ -139,7 +139,7 @@ Take a look through the [`saw-demos` repository](https://github.com/GaloisInc/sa
 
 This directory contains the following files:
 
-```Xcryptol session
+```Xcryptol-session
 .
 ├── Makefile
 ├── output
@@ -234,7 +234,7 @@ Finally the files [`xxhash32-ref.saw`](https://github.com/GaloisInc/saw-demos/bl
 
 Running `make` at the commandline will initiate the verification for both the 32- and 64-bit implementations, producing the following output:
 
-```Xcryptol session
+```Xcryptol-session
 $ make
 clang xxhash32-ref.c -o xxhash32-ref.bc -c -emit-llvm -O0 -std=c90
 clang xxhash64-ref.c -o xxhash64-ref.bc -c -emit-llvm -O0 -std=c90
@@ -272,7 +272,7 @@ This file defines an `encrypt` operation, a `decrypt` operation, and a property 
 
 We can see the effect of encrypting the particular input `attack at dawn` with the key `0xff`:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Overview::Overview> :s ascii=on
 labs::Overview::Overview> encrypt 0xff "attack at dawn"
 "\158\139\139\158\156\148\223\158\139\223\155\158\136\145"
@@ -284,7 +284,7 @@ Cryptol interprets the string `"attack at dawn"` as a sequence of bytes suitable
 
 We can prove the `roundtrip` property holds in the interpreter using the `:prove` command and the currently configured SMT solver (Z3 by default):
 
-```Xcryptol session
+```Xcryptol-session
 labs::Overview::Overview> :prove roundtrip : [8] -> [16][8] -> Bit
 Q.E.D.
 (Total Elapsed Time: 0.010s, using "Z3")
@@ -329,5 +329,5 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 ||||
 |-:|:-:|-|
-|| [^ Course README](/README.md) ||
-| [< Installation](/INSTALL.md) | **Overview** | [Interpreter >](/labs/Interpreter/Interpreter.md) |
+|| [^ Course README](../../README.md) ||
+| [< Installation](../../INSTALL.md) | **Overview** | [Interpreter >](../Interpreter/Interpreter.md) |

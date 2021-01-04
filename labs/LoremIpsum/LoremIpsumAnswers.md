@@ -30,7 +30,7 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::LoremIpsum::LoremIpsumAnswers
 Loading module Cryptol
@@ -68,7 +68,7 @@ import labs::LoremIpsum::KLI20
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # LoremIpsum Key
@@ -332,7 +332,7 @@ KW-AE 128 (KEK, k) = [0x1fa68b0a8112b447, 0xaef34bd8fb5a7b82, 0x9d3e862371d2cfe5
 
 > We've already defined `KWAE` in the KeyWrapping lab. Let's test it.
 
-```Xcryptol session
+```Xcryptol-session
 labs::LoremIpsum::LoremIpsumAnswers> split`{3} (TestKWAE (join [0x0001020304050607, 0x08090A0B0C0D0E0F]) (join [0x0011223344556677, 0x8899AABBCCDDEEFF]))
 [0x1fa68b0a8112b447, 0xaef34bd8fb5a7b82, 0x9d3e862371d2cfe5]
 ```
@@ -523,6 +523,6 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 ||||
 |-:|:-:|-|
-|| [^ Course README](/README.md) ||
-| [< Key Wrapping](/labs/KeyWrapping/KeyWrapping.md) | **Capstone (Answers)** ||
-|| [? Capstone](/labs/LoremIpsum/LoremIpsum.md) ||
+|| [^ Course README](../../README.md) ||
+| [< Key Wrapping](../KeyWrapping/KeyWrapping.md) | **Capstone (Answers)** ||
+|| [? Capstone](./LoremIpsum.md) ||

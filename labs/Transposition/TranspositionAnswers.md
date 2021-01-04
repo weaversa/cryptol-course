@@ -30,7 +30,7 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Cryptol> :m labs::Transposition::TranspositionAnswers
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
@@ -48,7 +48,7 @@ module labs::Transposition::TranspositionAnswers where
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and only change `cryptol` code as directed by the 
 exercises, reloading for `:m ...` to import your changes.
 
@@ -136,7 +136,7 @@ property isPermutation_test = and
     ]
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::TranspositionAnswers> :check isPermutation_test
 Using exhaustive testing.
 Passed 1 tests.
@@ -183,7 +183,7 @@ property isPermutationMapping_test = and
     ]
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::TranspositionAnswers> :check isPermutationMapping_test
 Using exhaustive testing.
 Passed 1 tests.
@@ -218,7 +218,7 @@ permute_permutes pi seq =
     isPermutation seq (permute pi seq)
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::TranspositionAnswers> :prove permute_permutes`{4, Char, Integer}
 Q.E.D.
 (Total Elapsed Time: 0.157s, using "Z3")
@@ -262,7 +262,7 @@ inverse_inverts pi seq =
     inverts (permute (inverse pi)) (permute pi) seq
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::TranspositionAnswers> :prove inverse_inverts`{4, Char, Integer}
 Q.E.D.
 (Total Elapsed Time: 0.022s, using "Z3")
@@ -289,7 +289,7 @@ permute_injective pi seq seq' =
     isPermutationMapping pi ==> injective (permute pi) seq seq'
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::TranspositionAnswers> :prove permute_injective`{4, Char, Integer}
 Q.E.D.
 (Total Elapsed Time: 0.019s, using "Z3")
@@ -426,7 +426,7 @@ swap_correct seq i j k =
         seq' = swap seq i j
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::TranspositionAnswers> :prove swap_equiv`{32, Char, Integer}
 Q.E.D.
 (Total Elapsed Time: 0.025s, using "Z3")
@@ -498,7 +498,7 @@ rearrange_trace w = out
 
 Here's how this function works for the string `"HE-LL-O-"`:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::TranspositionAnswers> :s ascii=on
 labs::Transposition::TranspositionAnswers> :s base=10
 labs::Transposition::TranspositionAnswers> rearrange_trace "HE-LL-O-" 
@@ -547,7 +547,7 @@ partition_rearranges =
         isNotPadding c = c != '-'
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::TranspositionAnswers> :prove partition_rearranges`{4}
 Q.E.D.
 (Total Elapsed Time: 0.242s, using "Z3")
@@ -611,7 +611,7 @@ rearrange_equiv:
 rearrange_equiv = rearrange`{n} === rearrange'`{n}
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::TranspositionAnswers> :prove rearrange_equiv`{8}
 Q.E.D.
 (Total Elapsed Time: 0.477s, using "Z3")
@@ -627,7 +627,7 @@ Expected test coverage: 0.00% (100 of 2^^1024 values)
 In addition to being recursive, this approach requires tricks with 
 `min` and `max` to establish type consistency for an empty sequence.  
 What kind of fool thought this up?  (See 
-[Intro to Type Hackery](labs/Language/IntroTypeHackery.md) 
+[Intro to Type Hackery](../Language/IntroTypeHackery.md) 
 for a better, more detailed example of such hackery...when this lab 
 gets merged into the repo.)
 
@@ -656,7 +656,7 @@ partition'_rearranges =
         isNotPadding c = c != '-'
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::TranspositionAnswers> :prove partition'_rearranges`{8}
 Q.E.D.
 (Total Elapsed Time: 0.040s, using "Z3")
@@ -679,7 +679,7 @@ partition_equiv: {n, a} (fin n, Eq a) => (a -> Bit) -> [n]a -> Bit
 partition_equiv f = partition`{n} f === partition'`{n} f
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::TranspositionAnswers> :prove partition_equiv`{8, Bit} (\b -> b)
 Q.E.D.
 (Total Elapsed Time: 1.669s, using "Z3")
@@ -726,7 +726,7 @@ unpad_unpads pi =
     isPermutationMapping`{n + p} pi ==> isPermutationMapping`{n} (unpad pi)
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::TranspositionAnswers> :prove unpad_unpads`{4, 2}
 Q.E.D.
 (Total Elapsed Time: 0.031s, using "Z3")
@@ -754,6 +754,6 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 ||||
 |-:|:-:|-|
-|| [^ Transposition Ciphers](/labs/Transposition/Contents.md) ||
-| [< Common Properties for Ciphers](/labs/Transposition/CommonProperties.md) | **Transposition (Answers)** | [Esrever >](/labs/Transposition/Esrever.md)
-|| [? Transposition](/labs/Transposition/Transposition.md) ||
+|| [^ Transposition Ciphers](./Contents.md) ||
+| [< Common Properties for Ciphers](./CommonProperties.md) | **Transposition (Answers)** | [Esrever >](./Esrever.md)
+|| [? Transposition](./Transposition.md) ||

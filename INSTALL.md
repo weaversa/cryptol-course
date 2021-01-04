@@ -85,7 +85,7 @@ a requirement for success here.
 If a terminal window appears with the Cryptol logo, you're done. Feel
 free to load the next lab into the interpreter by typing:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::Overview::Overview
 Loading module Cryptol
@@ -96,7 +96,7 @@ You may now start using Visual Studio Code to work through the
 course. We hope you enjoy learning Cryptol!
 
 Link to the next lab: [Cryptol and SAW
-Overview](labs/Overview/Overview.md).
+Overview](./labs/Overview/Overview.md).
 
 ## Installation Instructions for Expert Users
 
@@ -231,8 +231,8 @@ documentation provided in their respective repositories, found here:
 To load a literate document into Cryptol, change to your
 `cryptol-course` directory in a terminal (Linux) or command prompt
 (Windows 10), then run Cryptol via a locally installed binary or
-Docker container. We'll use
-[labs/Demos/Cryptol/OneTimePad.md](labs/Demos/Cryptol/OneTimePad.md) as an
+Docker container. We'll use the 
+[One-Time Pad](./labs/Demos/Cryptol/OneTimePad.md) as an
 example. That markdown file is a literate Cryptol module (as are all
 the labs) and as such can be loaded into the Cryptol interpreter.
 
@@ -260,7 +260,7 @@ is used by both Cryptol and SAW.
 Loading module Cryptol
 ```
 
-```Xcryptol session
+```Xcryptol-session
 Cryptol> :module labs::Demos::Cryptol::OneTimePad
 Loading module Cryptol
 Loading module labs::Demos::Cryptol::OneTimePad
@@ -275,7 +275,7 @@ labs::Demos::Cryptol::OneTimePad>
 Loading module Cryptol
 ```
 
-```Xcryptol session
+```Xcryptol-session
 Cryptol> :module labs::Demos::Cryptol::OneTimePad
 Loading module Cryptol
 Loading module labs::Demos::Cryptol::OneTimePad
@@ -295,7 +295,7 @@ command from within Cryptol to load the lab.
 Loading module Cryptol
 ```
 
-```Xcryptol session
+```Xcryptol-session
 Cryptol> :module labs::Demos::Cryptol::OneTimePad
 Loading module Cryptol
 Loading module labs::Demos::Cryptol::OneTimePad
@@ -339,5 +339,5 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 ||||
 |-:|:-:|-|
-|| [^ Course README](/README.md) ||
-|| **Installation** | [Overview >](/labs/Overview/Overview.md) |
+|| [^ Course README](./README.md) ||
+|| **Installation** | [Overview >](./labs/Overview/Overview.md) |

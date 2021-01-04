@@ -37,7 +37,7 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::ProjectEuler::ProjectEulerAnswers
 Loading module Cryptol
@@ -60,7 +60,7 @@ import labs::ProjectEuler::cipher2
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 ### [Problem 9](https://projecteuler.net/problem=9)
@@ -139,7 +139,7 @@ property factorionprop n l =
     sumfactorial l == n
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::ProjectEuler::ProjectEulerAnswers> :s satNum=all
 labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [1]Integer -> _
 Satisfiable
@@ -204,7 +204,7 @@ property doublepalindrome x l =
       nocarryprods = [ carrymult i p | i <- l | p <- powersoften ] == 0
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::ProjectEuler::ProjectEulerAnswers> :s base=10
 labs::ProjectEuler::ProjectEulerAnswers> :s satNum=all
 labs::ProjectEuler::ProjectEulerAnswers> :sat doublepalindrome`{3, 9}
@@ -272,7 +272,7 @@ pandigital n l =
       n890 = formnumber (l @@ ([7,8,9] : [3][16]))
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::ProjectEuler::ProjectEulerAnswers> :s satNum=all
 labs::ProjectEuler::ProjectEulerAnswers> :s base=10
 labs::ProjectEuler::ProjectEulerAnswers> :sat pandigital
@@ -321,7 +321,7 @@ property productdigits n ls =
                | i <- [2..6] ] == ~0
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::ProjectEuler::ProjectEulerAnswers> :sat productdigits`{6, [32]}
 Satisfiable
 productdigits`{6, [32]}
@@ -416,7 +416,7 @@ decrypt s key = s ^ (take ks)
     keys = [ key ] # [ k | k <- keys ]
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::ProjectEuler::ProjectEulerAnswers> :s ascii=on
 labs::ProjectEuler::ProjectEulerAnswers> :sat XORtowords cipher1
 Satisfiable
@@ -456,7 +456,7 @@ passcode l = [ loop l kl != 0 | kl <- keylog ] == ~0
                     k <- [0..a-1] ]
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::ProjectEuler::ProjectEulerAnswers> :s base=10
 labs::ProjectEuler::ProjectEulerAnswers> :sat passcode`{1}
 Unsatisfiable
@@ -493,7 +493,7 @@ passcode`{8} [7, 3, 1, 6, 2, 8, 9, 0] = True
 > EXTRA CHALLENGE:
 > What about five-digit numbers? Other numbers of digits?
 
-```Xcryptol session
+```Xcryptol-session
 labs::ProjectEuler::ProjectEulerAnswers> :sat \(x : [32]) -> x > 999 /\ x ^^ 2 % 10000 == x
 Satisfiable
 (\(x : [32]) -> x > 999 /\ x ^^ 2 % 10000 == x) 9376 = True
@@ -510,7 +510,7 @@ squaredrop n l =
     formnumber (drop`{back = ((a)/2)} l) == n
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::ProjectEuler::ProjectEulerAnswers> :sat squaredrop`{8}
 Satisfiable
 squaredrop`{8} 9376 [8, 7, 9, 0, 9, 3, 7, 6] = True
@@ -534,5 +534,5 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 ||||
 |-:|:-:|-|
-|| [- Cryptographic Properties](/labs/CryptoProofs/CryptoProofs.md) ||
-|| [? Project Euler](/labs/ProjectEuler/ProjectEuler.md) ||
+|| [- Cryptographic Properties](../CryptoProofs/CryptoProofs.md) ||
+|| [? Project Euler](./ProjectEuler.md) ||

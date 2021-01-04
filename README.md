@@ -62,7 +62,7 @@ property CBCInverts iv (pt : [100][128]) =
     CBCDecrypt (\x -> x - 1) iv (CBCEncrypt (\x -> x + 1) iv pt) == pt
 ```
 
-```Xcryptol session
+```Xcryptol-session
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
@@ -85,44 +85,44 @@ Cryptol](INSTALL.md).
 
 ## Suggested Lab Order
 
-1. [Installation](INSTALL.md): Get up and running.
-2. [Cryptol and SAW Overview](labs/Overview/Overview.md): Learn about
+1. [Installation](./INSTALL.md): Get up and running.
+2. [Cryptol and SAW Overview](./labs/Overview/Overview.md): Learn about
    how Cryptol and SAW are used.
-3. [Cryptol Interpreter](labs/Interpreter/Interpreter.md): Learn how
+3. [Cryptol Interpreter](./labs/Interpreter/Interpreter.md): Learn how
    to use the Cryptol Interpreter.
-4. [Language Basics](labs/Language/Basics.md): A resource
+4. [Language Basics](./labs/Language/Basics.md): A resource
    for (most) of the language features you'll need to be successful
    here.
-    * [Style Guide](cryptol-style.md): Cryptol style guide we 
+    * [Style Guide](./cryptol-style.md): Cryptol style guide we 
       developed for the course.
-    * [Cryptol Demos](labs/Demos/Cryptol/Demos.md): Lightweight
+    * [Cryptol Demos](./labs/Demos/Cryptol/Demos.md): Lightweight
       walkthroughs that demonstrate common Cryptol concepts.
-    * [SAW Demos](labs/Demos/SAW/Demos.md): Demonstrations of using
+    * [SAW Demos](./labs/Demos/SAW/Demos.md): Demonstrations of using
       Cryptol with the Software Analysis Workbench to verify software.
-5. [Cyclic Redundancy Checks](labs/CRC/CRC.md): Create your first
+5. [Cyclic Redundancy Checks](./labs/CRC/CRC.md): Create your first
    specification.
-6. [Salsa20](labs/Salsa20/Salsa20.md): Create your second
+6. [Salsa20](./labs/Salsa20/Salsa20.md): Create your second
    specification.
 7. [Prove Cryptographic
-   Properties](labs/CryptoProofs/CryptoProofs.md): Learn about common
+   Properties](./labs/CryptoProofs/CryptoProofs.md): Learn about common
    cryptographic properties and how to prove them with Cryptol.
-    * [Salsa20 Properties](labs/Salsa20/Salsa20Props.md): Prove some
+    * [Salsa20 Properties](./labs/Salsa20/Salsa20Props.md): Prove some
       cryptographic properties about Salsa20.
-    * [Transposition Ciphers](labs/Transposition/Contents.md):
+    * [Transposition Ciphers](./labs/Transposition/Contents.md):
       Learn how to use higher-order functions to create and prove
       properties about a number of common transposition ciphers.
-    * [Project Euler](labs/ProjectEuler/ProjectEuler.md): If you
+    * [Project Euler](./labs/ProjectEuler/ProjectEuler.md): If you
       enjoyed the last lab, go ahead and try your hand at using
       Cryptol's connection to automated provers (SMT solvers) to solve
       some classic computational puzzles.
-8. [Methods for Key Wrapping](labs/KeyWrapping/KeyWrapping.md):
+8. [Methods for Key Wrapping](./labs/KeyWrapping/KeyWrapping.md):
    Create a Cryptol specification of NIST's [SP800-38F key wrap
    standard](https://csrc.nist.gov/publications/detail/sp/800-38f/final).
     * [Parameterized Modules: Simon and
-      Speck](labs/SimonSpeck/SimonSpeck.md): Learn about Cryptol's
+      Speck](./labs/SimonSpeck/SimonSpeck.md): Learn about Cryptol's
       parameterized modules by creating a Cryptol specification of
       NSA's Speck block cipher.
-9. [Capstone: Putting it all together](labs/LoremIpsum/LoremIpsum.md):
+9. [Capstone: Putting it all together](./labs/LoremIpsum/LoremIpsum.md):
    Use components and techniques from other labs to decrypt a series
    of secret messages by feeding wrapped keys into the anomalous KLI20
    cryptographic engine.
@@ -134,7 +134,7 @@ lines indicate labs designed to give you more opportunities to
 practice Cryptol, but are not strictly necessary for course
 completion. (Click on the image below for a navigable representation.)
 
-<img class="center" src="https://raw.githubusercontent.com/weaversa/cryptol-course/L4y3rC4k3/misc/CryptolCourse.gv.svg" alt="Dependencies and Suggested Course Flow">
+<img class="center" src="./misc/CryptolCourse.gv.svg" alt="Dependencies and Suggested Course Flow">
 
 ## Supporting Materials
 
@@ -160,4 +160,4 @@ reference:
 ||||
 |-:|:-:|-|
 || **Course README** ||
-|| [v Installation](INSTALL.md) ||
+|| [v Installation](./INSTALL.md) ||

@@ -2,6 +2,7 @@ digraph  {
   //splines = ortho;
   //concentrate = true;
 
+  bgcolor="transparent";
   rankdir="LR";
 
   node [shape="box", style="rounded,filled", fillcolor="white", penwidth = 2];
@@ -10,10 +11,10 @@ digraph  {
   // URLs by node
   // recommended
   
-  Caesar                     [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Demos/Cryptol/Caesar.md"];
-  OneTimePad                 [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Demos/Cryptol/OneTimePad.md"];
-  nQueens                    [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Demos/Cryptol/NQueens.md"];
-  Sudoku                     [URL="https://github.com/weaversa/cryptol-course/tree/L4y3rC4k3/labs/Demos/Cryptol/Sudoku.md"];
+  Caesar                     [URL="../labs/Demos/Cryptol/Caesar.md"];
+  OneTimePad                 [URL="../labs/Demos/Cryptol/OneTimePad.md"];
+  nQueens                    [URL="../labs/Demos/Cryptol/NQueens.md"];
+  Sudoku                     [URL="../labs/Demos/Cryptol/Sudoku.md"];
 
   // branch nodes
   node [fillcolor="white"];

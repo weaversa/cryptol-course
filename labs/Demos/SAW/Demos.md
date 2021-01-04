@@ -7,13 +7,13 @@ with wider interests or different backgrounds, so they are included
 here.
 
 * [Arithmetic
-  Verifications](SAW/ArithmeticVerifications/ArithmeticVerifications.md):
+  Verifications](./ArithmeticVerifications/ArithmeticVerifications.md):
   This lab demonstrates using SAW to prove facts about various
   arithmetic implementations. Some simple reference examples are
   included as well as an illustration of a barrier one may encounter
   when using these techniques.
 
-* [Bit Twiddling](SAW/Bittwiddling/Bittwiddling.md): This lab
+* [Bit Twiddling](./Bittwiddling/Bittwiddling.md): This lab
    contains a collection of famous, yet hard to understand algorithms
    which perform relatively simple calculations. This is a simple
    introduction to how one can use Cryptol and SAW to prove that an
@@ -30,6 +30,6 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 ||||
 |-:|:-:|-|
-|| [- Language Basics](/labs/Language/Basics.md) ||
+|| [- Language Basics](../../Language/Basics.md) ||
 || **SAW Demos** ||
-|| [v Arithmetic Verifications](/labs/Demos/SAW/ArithmeticVerifications/ArithmeticVerifications.md) ||
+|| [v Arithmetic Verifications](./ArithmeticVerifications/ArithmeticVerifications.md) ||
