@@ -134,6 +134,12 @@ completion. (Click on the image below for a navigable representation.)
 
 ![Dependencies and Suggested Course Flow](./misc/deps.svg)
 
+<img class="center" src="https://raw.githubusercontent.com/weaversa/cryptol-course/master/misc/deps.svg" alt="Dependencies and Suggested Course Flow">
+
+<svg>
+  <image href="./misc/deps.svg"/>
+</svg>
+
 ## Supporting Materials
 
 You will find references and supporting materials linked throughout
