@@ -12,7 +12,7 @@
 <!-- Installation -->
 <g id="node1" class="node">
 <title>Installation</title>
-<g id="a_node1"><a xlink:href="https://github.com/weaversa/cryptol-course/blob/master/INSTALL.md" xlink:title="Installation">
+<g id="a_node1"><a xlink:href="https://weaversa.github.io/cryptol-course/INSTALL.html" xlink:title="Installation">
 <path fill="none" stroke="black" stroke-width="2" d="M65,-281C65,-281 12,-281 12,-281 6,-281 0,-275 0,-269 0,-269 0,-257 0,-257 0,-251 6,-245 12,-245 12,-245 65,-245 65,-245 71,-245 77,-251 77,-257 77,-257 77,-269 77,-269 77,-275 71,-281 65,-281"/>
 <text text-anchor="middle" x="38.5" y="-259.3" font-family="Times,serif" font-size="14.00">Installation</text>
 </a>
@@ -21,7 +21,7 @@
 <!-- Overview -->
 <g id="node2" class="node">
 <title>Overview</title>
-<g id="a_node2"><a xlink:href="https://github.com/weaversa/cryptol-course/blob/master/labs/Overview/Overview.md" xlink:title="Overview">
+<g id="a_node2"><a xlink:href="https://weaversa.github.io/cryptol-course/labs/Overview/Overview.html" xlink:title="Overview">
 <path fill="none" stroke="black" stroke-width="2" d="M61.5,-227C61.5,-227 15.5,-227 15.5,-227 9.5,-227 3.5,-221 3.5,-215 3.5,-215 3.5,-203 3.5,-203 3.5,-197 9.5,-191 15.5,-191 15.5,-191 61.5,-191 61.5,-191 67.5,-191 73.5,-197 73.5,-203 73.5,-203 73.5,-215 73.5,-215 73.5,-221 67.5,-227 61.5,-227"/>
 <text text-anchor="middle" x="38.5" y="-205.3" font-family="Times,serif" font-size="14.00">Overview</text>
 </a>
@@ -36,7 +36,7 @@
 <!-- Interpreter -->
 <g id="node3" class="node">
 <title>Interpreter</title>
-<g id="a_node3"><a xlink:href="https://github.com/weaversa/cryptol-course/blob/master/labs/Interpreter/Interpreter.md" xlink:title="Interpreter">
+<g id="a_node3"><a xlink:href="https://weaversa.github.io/cryptol-course/labs/Interpreter/Interpreter.html" xlink:title="Interpreter">
 <path fill="none" stroke="black" stroke-width="2" d="M63.5,-173C63.5,-173 13.5,-173 13.5,-173 7.5,-173 1.5,-167 1.5,-161 1.5,-161 1.5,-149 1.5,-149 1.5,-143 7.5,-137 13.5,-137 13.5,-137 63.5,-137 63.5,-137 69.5,-137 75.5,-143 75.5,-149 75.5,-149 75.5,-161 75.5,-161 75.5,-167 69.5,-173 63.5,-173"/>
 <text text-anchor="middle" x="38.5" y="-151.3" font-family="Times,serif" font-size="14.00">Interpreter</text>
 </a>
@@ -51,7 +51,7 @@
 <!-- LanguageBasics -->
 <g id="node4" class="node">
 <title>LanguageBasics</title>
-<g id="a_node4"><a xlink:href="https://github.com/weaversa/cryptol-course/blob/master/labs/Language/Basics.md" xlink:title="Language\nBasics">
+<g id="a_node4"><a xlink:href="https://weaversa.github.io/cryptol-course/labs/Language/Basics.html" xlink:title="Language\nBasics">
 <path fill="none" stroke="black" stroke-width="2" d="M61.5,-119C61.5,-119 15.5,-119 15.5,-119 9.5,-119 3.5,-113 3.5,-107 3.5,-107 3.5,-93 3.5,-93 3.5,-87 9.5,-81 15.5,-81 15.5,-81 61.5,-81 61.5,-81 67.5,-81 73.5,-87 73.5,-93 73.5,-93 73.5,-107 73.5,-107 73.5,-113 67.5,-119 61.5,-119"/>
 <text text-anchor="middle" x="38.5" y="-103.8" font-family="Times,serif" font-size="14.00">Language</text>
 <text text-anchor="middle" x="38.5" y="-88.8" font-family="Times,serif" font-size="14.00">Basics</text>
@@ -67,7 +67,7 @@
 <!-- CryptolDemos -->
 <g id="node5" class="node">
 <title>CryptolDemos</title>
-<g id="a_node5"><a xlink:href="https://github.com/weaversa/cryptol-course/blob/master/labs/Demos/Cryptol/Demos.md" xlink:title="Cryptol Demos">
+<g id="a_node5"><a xlink:href="https://weaversa.github.io/cryptol-course/labs/Demos/Cryptol/Demos.html" xlink:title="Cryptol Demos">
 <path fill="none" stroke="black" stroke-width="2" d="M202,-172C202,-172 125,-172 125,-172 119,-172 113,-166 113,-160 113,-160 113,-148 113,-148 113,-142 119,-136 125,-136 125,-136 202,-136 202,-136 208,-136 214,-142 214,-148 214,-148 214,-160 214,-160 214,-166 208,-172 202,-172"/>
 <text text-anchor="middle" x="163.5" y="-150.3" font-family="Times,serif" font-size="14.00">Cryptol Demos</text>
 </a>
@@ -82,7 +82,7 @@
 <!-- CRC -->
 <g id="node6" class="node">
 <title>CRC</title>
-<g id="a_node6"><a xlink:href="https://github.com/weaversa/cryptol-course/blob/master/labs/CRC/CRC.md" xlink:title="CRC">
+<g id="a_node6"><a xlink:href="https://weaversa.github.io/cryptol-course/labs/CRC/CRC.html" xlink:title="CRC">
 <path fill="none" stroke="black" stroke-width="2" d="M178.5,-118C178.5,-118 148.5,-118 148.5,-118 142.5,-118 136.5,-112 136.5,-106 136.5,-106 136.5,-94 136.5,-94 136.5,-88 142.5,-82 148.5,-82 148.5,-82 178.5,-82 178.5,-82 184.5,-82 190.5,-88 190.5,-94 190.5,-94 190.5,-106 190.5,-106 190.5,-112 184.5,-118 178.5,-118"/>
 <text text-anchor="middle" x="163.5" y="-96.3" font-family="Times,serif" font-size="14.00">CRC</text>
 </a>
@@ -97,7 +97,7 @@
 <!-- SAWDemos -->
 <g id="node7" class="node">
 <title>SAWDemos</title>
-<g id="a_node7"><a xlink:href="https://github.com/weaversa/cryptol-course/blob/master/labs/Demos/SAW/Demos.md" xlink:title="SAW Demos">
+<g id="a_node7"><a xlink:href="https://weaversa.github.io/cryptol-course/labs/Demos/SAW/Demos.html" xlink:title="SAW Demos">
 <path fill="none" stroke="black" stroke-width="2" d="M196,-64C196,-64 131,-64 131,-64 125,-64 119,-58 119,-52 119,-52 119,-40 119,-40 119,-34 125,-28 131,-28 131,-28 196,-28 196,-28 202,-28 208,-34 208,-40 208,-40 208,-52 208,-52 208,-58 202,-64 196,-64"/>
 <text text-anchor="middle" x="163.5" y="-42.3" font-family="Times,serif" font-size="14.00">SAW Demos</text>
 </a>
@@ -112,7 +112,7 @@
 <!-- Salsa20 -->
 <g id="node8" class="node">
 <title>Salsa20</title>
-<g id="a_node8"><a xlink:href="https://github.com/weaversa/cryptol-course/blob/master/labs/Salsa20/Salsa20.md" xlink:title="Salsa20">
+<g id="a_node8"><a xlink:href="https://weaversa.github.io/cryptol-course/labs/Salsa20/Salsa20.html" xlink:title="Salsa20">
 <path fill="none" stroke="black" stroke-width="2" d="M297,-118C297,-118 262,-118 262,-118 256,-118 250,-112 250,-106 250,-106 250,-94 250,-94 250,-88 256,-82 262,-82 262,-82 297,-82 297,-82 303,-82 309,-88 309,-94 309,-94 309,-106 309,-106 309,-112 303,-118 297,-118"/>
 <text text-anchor="middle" x="279.5" y="-96.3" font-family="Times,serif" font-size="14.00">Salsa20</text>
 </a>
@@ -127,7 +127,7 @@
 <!-- CryptographicProperties -->
 <g id="node11" class="node">
 <title>CryptographicProperties</title>
-<g id="a_node11"><a xlink:href="https://github.com/weaversa/cryptol-course/blob/master/labs/CryptoProofs/CryptoProofs.md" xlink:title="Cryptographic\nProperties">
+<g id="a_node11"><a xlink:href="https://weaversa.github.io/cryptol-course/labs/CryptoProofs/CryptoProofs.html" xlink:title="Cryptographic\nProperties">
 <path fill="none" stroke="black" stroke-width="2" d="M428,-119C428,-119 357,-119 357,-119 351,-119 345,-113 345,-107 345,-107 345,-93 345,-93 345,-87 351,-81 357,-81 357,-81 428,-81 428,-81 434,-81 440,-87 440,-93 440,-93 440,-107 440,-107 440,-113 434,-119 428,-119"/>
 <text text-anchor="middle" x="392.5" y="-103.8" font-family="Times,serif" font-size="14.00">Cryptographic</text>
 <text text-anchor="middle" x="392.5" y="-88.8" font-family="Times,serif" font-size="14.00">Properties</text>
@@ -143,7 +143,7 @@
 <!-- Salsa20Properties -->
 <g id="node9" class="node">
 <title>Salsa20Properties</title>
-<g id="a_node9"><a xlink:href="https://github.com/weaversa/cryptol-course/blob/master/labs/Salsa20/Salsa20Props.md" xlink:title="Salsa20\nProperties">
+<g id="a_node9"><a xlink:href="https://weaversa.github.io/cryptol-course/labs/Salsa20/Salsa20Props.html" xlink:title="Salsa20\nProperties">
 <path fill="none" stroke="black" stroke-width="2" d="M548,-202C548,-202 501,-202 501,-202 495,-202 489,-196 489,-190 489,-190 489,-176 489,-176 489,-170 495,-164 501,-164 501,-164 548,-164 548,-164 554,-164 560,-170 560,-176 560,-176 560,-190 560,-190 560,-196 554,-202 548,-202"/>
 <text text-anchor="middle" x="524.5" y="-186.8" font-family="Times,serif" font-size="14.00">Salsa20</text>
 <text text-anchor="middle" x="524.5" y="-171.8" font-family="Times,serif" font-size="14.00">Properties</text>
@@ -153,7 +153,7 @@
 <!-- KeyWrapping -->
 <g id="node10" class="node">
 <title>KeyWrapping</title>
-<g id="a_node10"><a xlink:href="https://github.com/weaversa/cryptol-course/blob/master/labs/KeyWrapping/KeyWrapping.md" xlink:title="Key Wrapping">
+<g id="a_node10"><a xlink:href="https://weaversa.github.io/cryptol-course/labs/KeyWrapping/KeyWrapping.html" xlink:title="Key Wrapping">
 <path fill="none" stroke="black" stroke-width="2" d="M561,-146C561,-146 488,-146 488,-146 482,-146 476,-140 476,-134 476,-134 476,-122 476,-122 476,-116 482,-110 488,-110 488,-110 561,-110 561,-110 567,-110 573,-116 573,-122 573,-122 573,-134 573,-134 573,-140 567,-146 561,-146"/>
 <text text-anchor="middle" x="524.5" y="-124.3" font-family="Times,serif" font-size="14.00">Key Wrapping</text>
 </a>
@@ -162,7 +162,7 @@
 <!-- Capstone -->
 <g id="node14" class="node">
 <title>Capstone</title>
-<g id="a_node14"><a xlink:href="https://github.com/weaversa/cryptol-course/blob/master/labs/LoremIpsum/LoremIpsum.md" xlink:title="Capstone">
+<g id="a_node14"><a xlink:href="https://weaversa.github.io/cryptol-course/labs/LoremIpsum/LoremIpsum.html" xlink:title="Capstone">
 <path fill="none" stroke="black" stroke-width="2" d="M678,-173C678,-173 635,-173 635,-173 629,-173 623,-167 623,-161 623,-161 623,-149 623,-149 623,-143 629,-137 635,-137 635,-137 678,-137 678,-137 684,-137 690,-143 690,-149 690,-149 690,-161 690,-161 690,-167 684,-173 678,-173"/>
 <text text-anchor="middle" x="656.5" y="-151.3" font-family="Times,serif" font-size="14.00">Capstone</text>
 </a>
@@ -177,7 +177,7 @@
 <!-- SimonSpeck -->
 <g id="node15" class="node">
 <title>SimonSpeck</title>
-<g id="a_node15"><a xlink:href="https://github.com/weaversa/cryptol-course/blob/master/labs/SimonSpeck/SimonSpeck.md" xlink:title="Parameterized\nModules">
+<g id="a_node15"><a xlink:href="https://weaversa.github.io/cryptol-course/labs/SimonSpeck/SimonSpeck.html" xlink:title="Parameterized\nModules">
 <path fill="none" stroke="black" stroke-width="2" d="M692,-119C692,-119 621,-119 621,-119 615,-119 609,-113 609,-107 609,-107 609,-93 609,-93 609,-87 615,-81 621,-81 621,-81 692,-81 692,-81 698,-81 704,-87 704,-93 704,-93 704,-107 704,-107 704,-113 698,-119 692,-119"/>
 <text text-anchor="middle" x="656.5" y="-103.8" font-family="Times,serif" font-size="14.00">Parameterized</text>
 <text text-anchor="middle" x="656.5" y="-88.8" font-family="Times,serif" font-size="14.00">Modules</text>
@@ -205,7 +205,7 @@
 <!-- TranspositionCiphers -->
 <g id="node12" class="node">
 <title>TranspositionCiphers</title>
-<g id="a_node12"><a xlink:href="https://github.com/weaversa/cryptol-course/blob/master/labs/Transposition/Contents.md" xlink:title="Transposition\nCiphers">
+<g id="a_node12"><a xlink:href="https://weaversa.github.io/cryptol-course/labs/Transposition/Contents.html" xlink:title="Transposition\nCiphers">
 <path fill="none" stroke="black" stroke-width="2" d="M558,-92C558,-92 491,-92 491,-92 485,-92 479,-86 479,-80 479,-80 479,-66 479,-66 479,-60 485,-54 491,-54 491,-54 558,-54 558,-54 564,-54 570,-60 570,-66 570,-66 570,-80 570,-80 570,-86 564,-92 558,-92"/>
 <text text-anchor="middle" x="524.5" y="-76.8" font-family="Times,serif" font-size="14.00">Transposition</text>
 <text text-anchor="middle" x="524.5" y="-61.8" font-family="Times,serif" font-size="14.00">Ciphers</text>
@@ -221,7 +221,7 @@
 <!-- ProjectEuler -->
 <g id="node13" class="node">
 <title>ProjectEuler</title>
-<g id="a_node13"><a xlink:href="https://github.com/weaversa/cryptol-course/blob/master/labs/ProjectEuler/ProjectEuler.md" xlink:title="Project Euler">
+<g id="a_node13"><a xlink:href="https://weaversa.github.io/cryptol-course/labs/ProjectEuler/ProjectEuler.html" xlink:title="Project Euler">
 <path fill="none" stroke="black" stroke-width="2" d="M556.5,-36C556.5,-36 492.5,-36 492.5,-36 486.5,-36 480.5,-30 480.5,-24 480.5,-24 480.5,-12 480.5,-12 480.5,-6 486.5,0 492.5,0 492.5,0 556.5,0 556.5,0 562.5,0 568.5,-6 568.5,-12 568.5,-12 568.5,-24 568.5,-24 568.5,-30 562.5,-36 556.5,-36"/>
 <text text-anchor="middle" x="524.5" y="-14.3" font-family="Times,serif" font-size="14.00">Project Euler</text>
 </a>
