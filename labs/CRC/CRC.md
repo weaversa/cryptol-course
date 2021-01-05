@@ -347,6 +347,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [^ Course README](../../README.md) ||
+|| [ ^ Course README](../../README.md) ||
 | [< Language Basics](../Language/Basics.md) | **CRC** | [Salsa20 >](../Salsa20/Salsa20.md) |
 || [! CRC (Answers)](./CRCAnswers.md) ||

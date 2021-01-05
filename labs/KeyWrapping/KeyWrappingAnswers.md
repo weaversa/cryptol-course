@@ -1143,7 +1143,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [^ Course README](../../README.md) ||
+|| [ ^ Course README](../../README.md) ||
 | [< Cryptographic Properties](../CryptoProofs/CryptoProofs.md) | **Key Wrapping (Answers)** | [Capstone >](../LoremIpsum/LoremIpsum.md) |
 || [? Key Wrapping](./KeyWrapping.md) ||
 ||||

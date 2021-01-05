@@ -524,6 +524,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [^ Course README](../../README.md) ||
+|| [ ^ Course README](../../README.md) ||
 | [< Key Wrapping](../KeyWrapping/KeyWrapping.md) | **Capstone (Answers)** ||
 || [? Capstone](./LoremIpsum.md) ||

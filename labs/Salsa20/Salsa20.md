@@ -928,6 +928,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [^ Course README](../../README.md) ||
+|| [ ^ Course README](../../README.md) ||
 | [< CRC](../CRC/CRC.md) | **Salsa20** | [Cryptographic Properties >](../CryptoProofs/CryptoProofs.md) |
 || [! Salsa20 (Answers)](./Salsa20Answers.md) ||

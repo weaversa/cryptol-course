@@ -2059,7 +2059,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [^ Course README](../../README.md) ||
+|| [ ^ Course README](../../README.md) ||
 | [< Interpreter](../Interpreter/Interpreter.md) | **Language Basics** | [CRC >](../CRC/CRC.md) |
 ||||
 || [+ Style Guide](../../cryptol-style.md) ||

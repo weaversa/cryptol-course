@@ -476,7 +476,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [^ Course README](../../README.md) ||
+|| [ ^ Course README](../../README.md) ||
 | [< Salsa20](../Salsa20/Salsa20.md) | **Cryptographic Properties (Answers)** | [Key Wrapping >](../KeyWrapping/KeyWrapping.md) |
 || [? Cryptographic Properties](./CryptoProofs.md) ||
 ||||
