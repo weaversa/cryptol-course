@@ -7,7 +7,6 @@ on:
 
 env:
   URL: https://weaversa.github.io/cryptol-course
-  FILENAME: report.yaml
   CONFIG: .github/workflows/hydra-config.json
 
 jobs:
@@ -22,8 +21,3 @@ jobs:
           fetch-depth: 1
       - name: Report broken links
         uses: victoriadrake/link-snitch@master
-      - name: Upload the report
-        uses: actions/upload-artifact@v2
-        with:
-          name: broken-links-report.yaml
-          path: report.yaml
