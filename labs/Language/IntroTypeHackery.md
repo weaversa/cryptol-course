@@ -1,5 +1,63 @@
-Introductory Type Hackery
-=========================
+# Introduction
+
+This lab provides some solutions to common stumbles with Cryptol's
+type system.
+
+## Prerequisites
+
+Before working through this lab, you'll need
+  * Cryptol to be installed,
+  * this module to load successfully, and
+  * an editor for completing the exercises in this file.
+
+You'll also need experience with
+  * loading modules and evaluating functions in the interpreter,
+  * Cryptol's type system,
+  * manipulating sequences using `#`, `take`, and `reverse`, and `zext`,
+  * writing functions and properties,
+  * recursion,
+  * sequence comprehensions, and
+  * logical, comparison, arithmetic, indexing, and conditional
+    operators.
+
+## Skills You'll Learn
+
+By the end of this lab you will have a pretty good understanding of
+Cryptol's language constructs. At least good enough that you can come
+back here for reference as you work through the labs.
+
+Specifically, you'll also gain experience with
+  * writing functions and properties,
+  * type parameters and type constraints, and
+  * decimating types through recursion.
+
+## Load This Module
+
+This lab is a
+[literate](https://en.wikipedia.org/wiki/Literate_programming) Cryptol
+document --- that is, it can be loaded directly into the Cryptol
+interpreter. Load this module from within the Cryptol interpreter
+running in the `cryptol-course` directory with:
+
+```Xcryptol session
+Loading module Cryptol
+Cryptol> :m labs::Language::IntroTypeHackery
+Loading module Cryptol
+Loading module labs::Language::IntroTypeHackery
+```
+
+We start by defining a new module for this lab:
+
+```cryptol
+module labs::Language::IntroTypeHackery where
+```
+
+You do not need to enter the above into the interpreter; the previous 
+`:m ...` command loaded this literate Cryptol file automatically.
+In general, you should run `Xcryptol session` commands in the 
+interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
+
+# Introductory Type Hackery
 
 Sometimes Cryptol's type system does not provide an intuitive way to
 accomplish what appears to be simple. In this document we'll show an
@@ -13,8 +71,7 @@ makes automated reasoning practical and rarely proves to be a
 show-stopper for cryptographic algorithms.
 
 
-The Exemplar
-------------
+## The Exemplar
 
 Following is a typical definition of
 [gcd](https://en.wikipedia.org/wiki/Greatest_common_divisor) in
@@ -45,17 +102,14 @@ function with the binary gcd algorithm in a manner that affords
 symbolic termination.
 
 
-
-The Binary gcd Algorithm
-------------------------
+## The Binary gcd Algorithm
 
 The
 [binary gcd algorithm](https://en.wikipedia.org/wiki/Binary_GCD_algorithm),
 another recursive algorithm for gcd, has the advantage that each
 recursion involves a halving of one or both arguments.
 
-Wikipedia's Description [1]
----------------------------
+## Wikipedia's Description [1]
 
 > 1. gcd(0, _v_) = _v_, because everything divides zero, and _v_ is
 >    the largest number that divides _v_. Similarly, gcd(_u_, 0) =
@@ -83,8 +137,7 @@ Wikipedia's Description [1]
 [https://en.wikipedia.org/w/index.php?title=Binary_GCD_algorithm&oldid=956130910]().
 
 
-A First Attempt at Binary gcd in Cryptol
-----------------------------------------
+## A First Attempt at Binary gcd in Cryptol
 
 ```cryptol
 bgcd : {n} (fin n) => [n] -> [n] -> [n]
@@ -116,8 +169,7 @@ reach a base case, to reducing the types until the base case is
 reached. After that it's all details, but there are several.
 
 
-Implementing Binary gcd in Cryptol
-----------------------------------
+## Implementing Binary gcd in Cryptol
 
 We'll need a few supporting functions:
 
