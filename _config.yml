@@ -2,3 +2,5 @@ theme: jekyll-theme-hacker
 baseurl: /cryptol-course
 plugins:
   - jekyll-relative-links
+include:
+  - labs/KeyWrapping/kwtestvectors
