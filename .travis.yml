@@ -108,6 +108,7 @@ script:
   - cryptol -e -c ":m labs::Overview::Overview"
 # Language Basics lab tests
   - cryptol -e -c ":m labs::Language::Basics"
+  - cryptol -e -c ":m labs::Language::IntroTypeHackery"
 # Project Euler lab tests
   - cryptol -e -c ":m labs::ProjectEuler::ProjectEuler"
   - cryptol -e -c ":m labs::ProjectEuler::ProjectEulerAnswers"
