@@ -238,5 +238,3 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 
 Up: [Cryptol Demos](/Demos/Cryptol/Demos.md)
-Previous: [Language Basics](/labs/Language/Basics.md)
-Next: [Salsa20](/labs/Salsa20/Salsa20.md)

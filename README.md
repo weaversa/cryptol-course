@@ -27,7 +27,7 @@ module README where
 
 Labs have exercises that look like this:
 
-**EXERCISE:** Literate Cryptol documents are meant to be edited while
+**EXERCISE**: Literate Cryptol documents are meant to be edited while
 you work through a lab. For instance, you might be asked to fill in a
 portion of a Cryptol snippet:
 
@@ -55,14 +55,14 @@ CBCDecrypt Dk iv ct =
 ```
 
 Exercises will often have corresponding properties that you can use to
-verify you work. For example:
+verify your work. For example:
 
 ```cryptol
 property CBCInverts iv (pt : [100][128]) =
     CBCDecrypt (\x -> x - 1) iv (CBCEncrypt (\x -> x + 1) iv pt) == pt
 ```
 
-```Xcryptol session
+```Xcryptol-session
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
@@ -132,7 +132,9 @@ lines indicate labs designed to give you more opportunities to
 practice Cryptol, but are not strictly necessary for course
 completion. (Click on the image below for a navigable representation.)
 
-<img class="center" src="https://raw.githubusercontent.com/weaversa/cryptol-course/master/misc/deps.svg" alt="Dependencies and Suggested Course Flow">
+<a href="https://raw.githubusercontent.com/weaversa/cryptol-course/master/misc/deps.svg">
+    <img class="center" src="https://raw.githubusercontent.com/weaversa/cryptol-course/master/misc/deps.svg" alt="Dependencies and Suggested Course Flow">
+</a>
 
 ## Supporting Materials
 

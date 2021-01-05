@@ -166,6 +166,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](/README.md)
-Previous: [Language Basics](/labs/Language/Basics.md)
-Next: [Salsa20](/labs/Salsa20/Salsa20.md)
+Up: [SAW Demos](/labs/Demos/SAW/Demos.md)
+Previous: [Bit-twiddling](SAW/Bittwiddling/Bittwiddling.md)
+

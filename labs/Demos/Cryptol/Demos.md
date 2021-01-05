@@ -19,4 +19,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 Up: [Course README](/README.md)
 Previous: [Language Basics](/labs/Language/Basics.md)
+More: [CRC](/labs/CRC/CRC.md)
+      [Cryptol Demos](/labs/Demos/Cryptol/Demos.md)
 Next: [Salsa20](/labs/Salsa20/Salsa20.md)

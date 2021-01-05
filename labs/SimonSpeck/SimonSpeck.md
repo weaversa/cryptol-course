@@ -178,18 +178,26 @@ Here is the header for the `Simon.cry` base module:
 ```example
 module labs::SimonSpeck::Simon::Simon where
 
+module labs::SimonSpeck::Simon::Simon where
+
 parameter
-  
-  type n : #    // word size
-  type m : #    // words in key
-  type T : #    // rounds in the key schedule
-  type j : #    // index of z-sequence used (i.e. use sequence z_j)
-  type constraint ( fin n, fin m, fin T, fin j
-                  , 16 <= n, n <= 64
-				  ,  2 <= m, m <= 4
-				  ,  0 <= j, j <= 4
-				  , 32 <= T, T <= 72
-				  )
+
+  /** word size */
+  type n : #
+  type constraint (16 <= n, n <= 64)
+
+  /** number of words in key */
+  type m : #
+  type constraint (2 <= m, m <= 4)
+
+  /** number of rounds in key schedule */
+  type T : #
+  type constraint (32 <= T, T <= 72)
+
+  /** index of z-sequence used (i.e. use sequence z_j) */
+  type j : #
+  type constraint (0 <= j, j <= 4)
+
 type blockSize = 2 * n
 type keySize   = m * n
 
@@ -210,7 +218,7 @@ we introduce the parameter `j` to indicate the which of these
 sequences we will use.
 
 We are also able to specify general type constraints for these
-parameters. The line that begins `type constraints` places some
+parameters. The line that begins `type constraint` places some
 general bounds on the ranges of values that are possible for each
 parameter.
 
@@ -354,17 +362,18 @@ Now it's your turn to try writing a parameterized module. You will
 also get more practice reading and writing a cryptographic
 specification.
 
-**Exercise** Write a parameterized module for `Speck`. Refer to
+**EXERCISE**: Write a parameterized module for `Speck`. Refer to
 Section 4 from reference [1]. The corresponding `Speck` Cryptol files
 should be written in the `Speck` folder provided in this lab
 directory. Consider using the `Simon` implementation as a reference --
 many of the patterns you will encounter writing up `Speck` will mirror
 `Simon`.
 
-If you name your files as suggested in the `Speck/FILENAMES.md` file,
-then you should be able to load the `SpeckTestVectors` module also
-located in the `Speck` folder as follows and verify that you have
-correctly implemented the functions:
+If you name your files as suggested in the [Speck
+README.md](/labs/SimonSpeck/Speck/README.md) file, then you should be
+able to load the `SpeckTestVectors` module also located in the `Speck`
+folder as follows and verify that you have correctly implemented the
+functions:
 
 ```Xcryptol session ci-none
 Loading module Cryptol
@@ -374,7 +383,7 @@ Q.E.D.
 (Total Elapsed Time: 0.021s, using "Z3")
 ```
 
-**Additional Exercise** The test vectors below only test the
+**ADDITIONAL EXERCISE**: The test vectors below only test the
 encryption direction for `Speck`. Define the decryption direction for
 the round function and algorithm and try writing properties and/or
 test vectors to verify that these functions are inverses. You may need
@@ -397,5 +406,9 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 
 Up: [Course README](/README.md)
-Previous: [Capstone](/labs/LoremIpsum/LoremIpsum.md)
+Previous: [Key Wrapping](/labs/KeyWrapping/KeyWrapping.md)
+          [Salsa20 Properties](/labs/Salsa20/Salsa20Props.md)
+          [Common Properties for Ciphers](/labs/Transposition/CommonProperties.md)
+          [Project Euler](/labs/ProjectEuler/ProjectEuler.md)
+More: [Capstone](/labs/LoremIpsum/LoremIpsum.md)
 Next: [Course README](/README.md)

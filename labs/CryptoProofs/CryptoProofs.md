@@ -354,7 +354,7 @@ need to edit this file directly.)
 
 ```cryptol
 DESFixParity : [64] -> [64]
-DESFixParity = zero // Replace "zero" with your code
+DESFixParity key = undefined // Replace "undefined" with your code
 ```
 
 **EXERCISE**: 2.5.3 Proving DES Key Equivalence
@@ -377,4 +377,8 @@ https://github.com/weaversa/cryptol-course/issues
 
 Up: [Course README](/README.md)
 Previous: [Salsa20](/labs/Salsa20/Salsa20.md)
+Answers: [Cryptographic Properties](/labs/CryptoProofs/CryptoProofsAnswers.md)
 Next: [Key Wrapping](/labs/KeyWrapping/KeyWrapping.md)
+      [Salsa20 Properties](/labs/Salsa20/Salsa20Props.md)
+      [Common Properties for Ciphers](/labs/Transposition/CommonProperties.md)
+      [Project Euler](/labs/ProjectEuler/ProjectEuler.md)
