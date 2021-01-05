@@ -38,9 +38,9 @@ urls:
   SAW Demos:
     labs/Demos/SAW/Demos.html
   Arithmetic Verifications:
-    labs/Demos/SAW/SAW/ArithmeticVerifications/ArithmeticVerifications.html
+    labs/Demos/SAW/ArithmeticVerifications/ArithmeticVerifications.html
   Bit Twiddling:
-    labs/Demos/SAW/SAW/Bittwiddling/Bittwiddling.html
+    labs/Demos/SAW/Bittwiddling/Bittwiddling.html
 
   # Transposition lab
   Transposition Ciphers:
