@@ -396,7 +396,7 @@ strings between and including "000" to "999". Specifically, this key
 specification follows a special schedule that is composed entirely of
 the three issue numbers corresponding to the Pythagorean triplet for
 which a + b + c = 1000 (more info available
-[here](../projecteuler/projecteuler.md)). These numbers are scheduled
+[here](../ProjectEuler/ProjectEuler.md)). These numbers are scheduled
 to be issued in increasing order.
 
 

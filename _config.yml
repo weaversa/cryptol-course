@@ -5,3 +5,4 @@ plugins:
   - jekyll-relative-links
 include:
   - labs/KeyWrapping/kwtestvectors
+  - labs/KeyWrapping/spec

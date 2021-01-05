@@ -466,12 +466,12 @@ rearrange_equiv:
 rearrange_equiv = rearrange`{n} === rearrange'`{n}
 ```
 
-In addition to being recursive, this approach requires tricks with 
-`min` and `max` to establish type consistency for an empty sequence.  
-What kind of fool thought this up?  (See 
-[Intro to Type Hackery](../Language/IntroTypeHackery.md) 
-for a better, more detailed example of such hackery...when this lab 
-gets merged into the repo.)
+In addition to being recursive, this approach requires tricks with
+`min` and `max` to establish type consistency for an empty
+sequence. What kind of fool thought this up?
+(See [Intro to Type Hackery](../Language/IntroTypeHackery.md) for a
+better, more detailed example of such hackery...when this lab gets
+merged into the repo.)
 
 **EXERCISE**: Using `rearrange'` as a blueprint, define a function 
 `partition'` that does the same as `partition`, and try to convince 
