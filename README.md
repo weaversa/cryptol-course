@@ -160,6 +160,7 @@ reference:
   -- A simple list of all of the Cryptol language primitives.
 
 # From here, you can go somewhere!
+
 ||||
 |-:|:-:|-|
 || **Course README** ||
