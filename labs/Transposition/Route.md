@@ -77,5 +77,5 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [^ Transposition Ciphers](./Contents.md) ||
+|| [ ^ Transposition Ciphers](./Contents.md) ||
 | [< Rail Fence](./RailFence.md) | **Route** ||

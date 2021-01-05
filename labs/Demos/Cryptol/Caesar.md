@@ -345,5 +345,5 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [^ Cryptol Demos](./Demos.md) ||
+|| [ ^ Cryptol Demos](./Demos.md) ||
 || **Caesar** | [One-Time Pad >](./OneTimePad.md) |

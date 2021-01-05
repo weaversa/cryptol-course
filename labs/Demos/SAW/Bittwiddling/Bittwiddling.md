@@ -186,6 +186,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [^ SAW Demos](../Demos.md) ||
+|| [ ^ SAW Demos](../Demos.md) ||
 | [< Arithmetic Verifications](../ArithmeticVerifications/ArithmeticVerifications.md) | **Bit Twiddling** ||
 || [! Bit Twiddling (Answers)](./BittwiddlingAnswers.md) ||

@@ -235,6 +235,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [^ Transposition Ciphers](./Contents.md) ||
+|| [ ^ Transposition Ciphers](./Contents.md) ||
 | [< Scytale](./Scytale.md) | **Rail Fence (Answers)** | [Route >](./Route.md) |
 || [? Rail Fence](./RailFence.md) ||

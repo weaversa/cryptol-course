@@ -541,6 +541,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [^ Transposition Ciphers](./Contents.md) ||
+|| [ ^ Transposition Ciphers](./Contents.md) ||
 | [< Common Properties for Ciphers](./CommonProperties.md) | **Transposition** | [Esrever >](./Esrever.md) |
 || [! Transposition (Answers)](./TranspositionAnswers.md) ||

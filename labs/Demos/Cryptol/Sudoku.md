@@ -589,5 +589,5 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [^ Cryptol Demos](./Demos.md) ||
+|| [ ^ Cryptol Demos](./Demos.md) ||
 | [< n-Queens](./NQueens.md) | **Sudoku** ||

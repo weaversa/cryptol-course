@@ -306,6 +306,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [^ Transposition Ciphers](./Contents.md) ||
+|| [ ^ Transposition Ciphers](./Contents.md) ||
 || **Common Properties for Ciphers** | [Transposition >](./Transposition.md) |
 || [! Common Properties for Ciphers (Answers)](./CommonPropertiesAnswers.md) ||

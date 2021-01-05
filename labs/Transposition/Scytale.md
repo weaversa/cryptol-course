@@ -177,6 +177,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [^ Transposition Ciphers](./Contents.md) ||
+|| [ ^ Transposition Ciphers](./Contents.md) ||
 | [< Esrever](./Esrever.md) | **Scytale** | [Rail Fence >](./RailFence.md) |
 || [! Scytale (Answers)](./ScytaleAnswers.md) ||

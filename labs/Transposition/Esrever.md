@@ -115,6 +115,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [^ Transposition Ciphers](./Contents.md) ||
+|| [ ^ Transposition Ciphers](./Contents.md) ||
 | [< Transposition](./Transposition.md) | **Esrever** | [Scytale >](./Scytale.md) |
 || [! Esrever (Answers)](./EsreverAnswers.md) ||
