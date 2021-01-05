@@ -3,3 +3,5 @@ theme: jekyll-theme-cayman
 baseurl: /cryptol-course
 plugins:
   - jekyll-relative-links
+include:
+  - labs/KeyWrapping/kwtestvectors

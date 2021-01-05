@@ -55,7 +55,7 @@ fundamentals before moving on to:
 
 * a chapter on classic ciphers such as:
   + [Caesar](https://en.wikipedia.org/wiki/Caesar_cipher),
-  + [Vigenère](https://en.wikipedia.org/wiki/Vigenère_cipher), and
+  + [Vigenère](https://en.wikipedia.org/wiki/Vigen%C3%A8re_cipher), and
   + [Atbash](https://en.wikipedia.org/wiki/Atbash),
 + a chapter on the [Enigma machine](
   https://en.wikipedia.org/wiki/Enigma_machine),
