@@ -1,4 +1,5 @@
-theme: jekyll-theme-cayman
+# theme: jekyll-theme-cayman
+remote_theme: pmarsceill/just-the-docs
 baseurl: /cryptol-course
 plugins:
   - jekyll-relative-links
