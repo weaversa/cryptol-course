@@ -7,8 +7,7 @@ on:
 
 env:
   URL: https://weaversa.github.io/cryptol-course
-  FILENAME: report.yaml
-  CONFIG: config.json
+  CONFIG: .github/workflows/hydra-config.json
 
 jobs:
   build:
