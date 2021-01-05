@@ -193,21 +193,13 @@ The instructions for [1] also work here:
 >
 > To do that,
 >
-<<<<<<< HEAD
-> ```Text
-=======
-> ```example
->>>>>>> origin/master
+> ```Xcryptol-session
 > > :set prover=z3
 > ```
 >
 > or
 >
-<<<<<<< HEAD
-> ```Text
-=======
-> ```example
->>>>>>> origin/master
+> ```Xcryptol-session
 > > :set prover=yices
 > ```
 
@@ -227,7 +219,7 @@ This corresponds to the following arrangement (diagram produced by
 8](https://en.wikipedia.org/wiki/Eight_queens_puzzle#Solutions) in
 the Wikipedia article):
 
-<img src="NQueensSolution.png" alt="Solution to 8-Queens Puzzle">
+<img src="./NQueensSolution.png" alt="Solution to 8-Queens Puzzle">
 
 # Solicitation
 

@@ -236,7 +236,7 @@ dolor non odio dapibus interdum. Donec egestas aliquam justo id
 volutpat. Fusce vel ante non ligula placerat tristique. Fusce laoreet
 libero a mauris rutrum tempor. Duis quis convallis sapien.
 
-<kbd>![Figure 1. Lorem Ipsum Key Generation Flow Diagram](LoremIpsumKey.png)</kbd>
+<kbd>![Figure 1. Lorem Ipsum Key Generation Flow Diagram](./LoremIpsumKey.png)</kbd>
 **Figure 1. Lorem Ipsum Key Generation Flow Diagram**
 
 Aenean rhoncus, orci eu varius iaculis, sapien magna pulvinar mauris,

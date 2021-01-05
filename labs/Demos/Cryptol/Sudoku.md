@@ -321,7 +321,7 @@ Unsatisfiable
 > satisfiability checking, we can just use that definition to fill in
 > the blanks for us! To illustrate, consider the board below.
 >
-> <img class="aligncenter" src="SudokuPuzzle.png" alt="Sudoku Puzzle">
+> <img class="aligncenter" src="./SudokuPuzzle.png" alt="Sudoku Puzzle">
 >
 > How do we encode a board with empty cells in Cryptol? One simple
 > idea is to represent the board as a function: It will take the
@@ -391,7 +391,7 @@ puzzle
 > numbers found by Cryptol.) Well; that's what we set out to do
 > originally; so mission accomplished!
 >
-> <img class="aligncenter" src="SudokuSolution.png" alt="Solution to Sudoku Puzzle">
+> <img class="aligncenter" src="./SudokuSolution.png" alt="Solution to Sudoku Puzzle">
 
 **INTERJECTION**
 
@@ -462,7 +462,7 @@ video](https://youtu.be/GrCgt42avdE?t=81). Let's see how Cryptol, a
 SAT solving interface that was not optimized for Sudoku puzzles in
 particular, fares...
 
-<img class="aligncenter" src="WHSudokuPuzzle.png" alt="World's Hardest Sudoku Puzzle (Arto Inkala)">
+<img class="aligncenter" src="./WHSudokuPuzzle.png" alt="World's Hardest Sudoku Puzzle (Arto Inkala)">
 
 ```cryptol
 /**
@@ -505,7 +505,7 @@ hard_puzzle
 (Total Elapsed Time: 2.031s, using "Z3")
 ```
 
-<img class="aligncenter" src="WHSudokuSolution.png" alt="Solution to World's Hardest Sudoku Puzzle (Arto Inkala)">
+<img class="aligncenter" src="./WHSudokuSolution.png" alt="Solution to World's Hardest Sudoku Puzzle (Arto Inkala)">
 
 Not bad.  Finally, we should prove that this is unique as well...
 

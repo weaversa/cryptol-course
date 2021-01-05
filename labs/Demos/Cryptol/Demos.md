@@ -9,7 +9,7 @@
 * [Sudoku](./Sudoku.md)
   Diabolical made trivial.
 
-<img class="center" src="https://raw.githubusercontent.com/weaversa/cryptol-course/L4y3rC4k3/misc/CryptolDemos.gv.svg" alt="Cryptol Demos - Suggested Flow">
+<img class="center" src="../../../misc/CryptolDemos.gv.svg" alt="Cryptol Demos - Suggested Flow">
 
 # Solicitation
 
