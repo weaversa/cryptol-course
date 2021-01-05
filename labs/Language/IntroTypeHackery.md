@@ -148,7 +148,7 @@ halve : {n} (fin n) => [n] -> [max n 1 - 1]
 halve = take
 ```
 
-+ Because the result of a recursive call with be 0 or 1 bit smaller
++ Because the result of a recursive call will be 0 or 1 bit smaller
   than the desired result type, `zext` is applied to all the recursive
   results. In step 2, we also need to double the recursive result
   which is easily achieved by `<< 1`. N.b., in the case where neither
