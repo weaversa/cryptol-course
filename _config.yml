@@ -1,5 +1,5 @@
 # theme: jekyll-theme-cayman
-remote_theme: pmarsceill/just-the-docs
+remote_theme: yous/whiteglass
 baseurl: /cryptol-course
 plugins:
   - jekyll-relative-links
