@@ -75,6 +75,11 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](../../README.md)
-Previous: [Rail Fence: A basic transposition cipher for humans that's not-so-basic for Cryptol](RailFence.md)
-Next: [Capstone](../LoremIpsum/LoremIpsum.md)
+Up: [Transposition Ciphers](/labs/Transposition/Contents.md)
+Previous: [Rail Fence: A basic transposition cipher for humans that's not-so-
+basic for Cryptol](RailFence.md)
+More: [Key Wrapping](/labs/KeyWrapping/KeyWrapping.md)
+      [Salsa20 Properties](/labs/Salsa20/Salsa20Props.md)
+      [Project Euler](/labs/ProjectEuler/ProjectEuler.md)
+Next: [Capstone](/labs/LoremIpsum/LoremIpsum.md)
+      [Parameterized Modules](/labs/SimonSpeck/SimonSpeck.md)

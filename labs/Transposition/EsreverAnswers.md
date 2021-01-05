@@ -107,7 +107,7 @@ Passed 100 tests.
 Expected test coverage: 0.00% (100 of 2^^32768 values)
 ```
 
-**EXERCISE** Define a predicate that `encrypt pi` is equivalent to 
+**EXERCISE**: Define a predicate that `encrypt pi` is equivalent to 
 `decrypt pi`, and prove it.
 
 ```cryptol
@@ -142,6 +142,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](../../README.md)
-Previous: [Transportation Ciphers, in the Abstract](TranspositionAnswers.md)
+Up: [Transposition Ciphers](/labs/Transposition/Contents.md)
+Previous: [Esrever: A trivial message-reversing transposition "cipher"](Esrever.md)
 Next: [Scytale: A classic easy-to-specify transposition cipher](ScytaleAnswers.md)

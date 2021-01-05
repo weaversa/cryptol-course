@@ -13,7 +13,7 @@ here.
   included as well as an illustration of a barrier one may encounter
   when using these techniques.
 
-* [Bit-twiddling](SAW/bittwiddling/bittwiddling.md): This lab
+* [Bit-twiddling](SAW/Bittwiddling/Bittwiddling.md): This lab
    contains a collection of famous, yet hard to understand algorithms
    which perform relatively simple calculations. This is a simple
    introduction to how one can use Cryptol and SAW to prove that an
@@ -29,4 +29,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 Up: [Course README](/README.md)
 Previous: [Language Basics](/labs/Language/Basics.md)
+More: [CRC](/labs/CRC/CRC.md)
+      [SAW Demos](/labs/Demos/SAW/Demos.md)
 Next: [Salsa20](/labs/Salsa20/Salsa20.md)

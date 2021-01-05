@@ -26,23 +26,23 @@ private
    * From eprint-2013-404.pdf, Section 4.1 p. 14
    * Rk(x, y) = ((S−αx+y)⊕k, Sβy⊕(S−αx+y)⊕k)
    */
-  Rk : [n] -> [2][n] -> [2][n]
-  Rk k [x, y] = [x', y']
+  Rk : [2][n] -> [n] -> [2][n]
+  Rk [x, y] k = [x', y']
     where
       x' = ((x >>> a) + y) ^ k
       y' = (y <<< b) ^ x'
   
   KeyScheduleRound : [m][n] -> [n] -> [m][n]
-  KeyScheduleRound (Ls # [ki]) i = S'
+  KeyScheduleRound (Ls # [li] # [ki]) i = S'
     where
-      [l', ki']  = Rk i [ last Ls, ki ]
-      S'         = [ l' ] # (take Ls) # [ ki' ]
+      [l', ki'] = Rk [li, ki] i
+      S'        = [l'] # Ls # [ki']
       
   KeySchedule : [keySize] -> [T][n]
   KeySchedule K = Ks
     where
       S0 = split K
-      Ss = scanl KeyScheduleRound S0 [0..T-2]
+      Ss = scanl KeyScheduleRound S0 [0 .. T-2]
       Ks = last (transpose Ss)
   
   encryptList: [keySize] -> [blockSize] -> [T+1][2][n]
@@ -50,4 +50,4 @@ private
     where
       Ps = split P
       Ks = KeySchedule K
-      Cs = [Ps] # [ Rk k xy | k <- Ks | xy <- Cs]
+      Cs = scanl Rk Ps Ks

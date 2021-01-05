@@ -475,5 +475,8 @@ https://github.com/weaversa/cryptol-course/issues
 # From here, you can go somewhere!
 
 Up: [Course README](/README.md)
-Previous: [Salsa20](/labs/Salsa20/Salsa20.md)
+Previous: [Cryptographic Properties](/labs/CryptoProofs/CryptoProofs.md)
 Next: [Key Wrapping](/labs/KeyWrapping/KeyWrapping.md)
+      [Salsa20 Properties](/labs/Salsa20/Salsa20Props.md)
+      [Common Properties for Ciphers](/labs/Transposition/CommonProperties.md)
+      [Project Euler](/labs/ProjectEuler/ProjectEuler.md)

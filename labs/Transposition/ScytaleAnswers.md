@@ -221,6 +221,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](../../README.md)
-Previous: [Esrever: A trivial message-reversing transposition "cipher"](ErseverAnswers.md)
-Next: [Rail Fence: A basic transposition cipher for humans that's not-so-basic for Cryptol](RailFenceAnswers.md)
+Up: [Transposition Ciphers](/labs/Transposition/Contents.md)
+Previous: [Scytale: A classic easy-to-specify transposition cipher](Scytale.md)
+Next: [Rail Fence: A basic transposition cipher for humans that's not-so-basic for Cryptol](RailFence.md)

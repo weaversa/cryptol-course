@@ -15,21 +15,21 @@ digraph CryptolCourseFlow {
     LanguageBasics;
   }
 
-  Installation [URL="https://github.com/weaversa/cryptol-course/blob/master/INSTALL.md"];
-  Overview [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Overview/Overview.md"];
-  Interpreter [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Interpreter/Interpreter.md"];
-  LanguageBasics [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Language/Basics.md"];
-  CryptolDemos [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Demos/Cryptol/Demos.md"];
-  CRC [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/CRC/CRC.md"];
-  SAWDemos [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Demos/SAW/Demos.md"];
-  Salsa20 [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Salsa20/Salsa20.md"];
-  Salsa20Properties [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Salsa20/Salsa20Props.md"];
-  KeyWrapping [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/KeyWrapping/KeyWrapping.md"];
-  CryptographicProperties [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/CryptoProofs/CryptoProofs.md"];
-  TranspositionCiphers [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/Transposition/Contents.md"];
-  ProjectEuler [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/ProjectEuler/ProjectEuler.md"];
-  Capstone [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/LoremIpsum/LoremIpsum.md"];
-  SimonSpeck [URL="https://github.com/weaversa/cryptol-course/blob/master/labs/SimonSpeck/SimonSpeck.md"];
+  Installation [URL="https://weaversa.github.io/cryptol-course/INSTALL.html"];
+  Overview [URL="https://weaversa.github.io/cryptol-course/labs/Overview/Overview.html"];
+  Interpreter [URL="https://weaversa.github.io/cryptol-course/labs/Interpreter/Interpreter.html"];
+  LanguageBasics [URL="https://weaversa.github.io/cryptol-course/labs/Language/Basics.html"];
+  CryptolDemos [URL="https://weaversa.github.io/cryptol-course/labs/Demos/Cryptol/Demos.html"];
+  CRC [URL="https://weaversa.github.io/cryptol-course/labs/CRC/CRC.html"];
+  SAWDemos [URL="https://weaversa.github.io/cryptol-course/labs/Demos/SAW/Demos.html"];
+  Salsa20 [URL="https://weaversa.github.io/cryptol-course/labs/Salsa20/Salsa20.html"];
+  Salsa20Properties [URL="https://weaversa.github.io/cryptol-course/labs/Salsa20/Salsa20Props.html"];
+  KeyWrapping [URL="https://weaversa.github.io/cryptol-course/labs/KeyWrapping/KeyWrapping.html"];
+  CryptographicProperties [URL="https://weaversa.github.io/cryptol-course/labs/CryptoProofs/CryptoProofs.html"];
+  TranspositionCiphers [URL="https://weaversa.github.io/cryptol-course/labs/Transposition/Contents.html"];
+  ProjectEuler [URL="https://weaversa.github.io/cryptol-course/labs/ProjectEuler/ProjectEuler.html"];
+  Capstone [URL="https://weaversa.github.io/cryptol-course/labs/LoremIpsum/LoremIpsum.html"];
+  SimonSpeck [URL="https://weaversa.github.io/cryptol-course/labs/SimonSpeck/SimonSpeck.html"];
 
   // Fixing up node labels for ones that need a space
   LanguageBasics          [label="Language\nBasics"];
