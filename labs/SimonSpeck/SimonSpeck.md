@@ -407,5 +407,5 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [- Key Wrapping](../KeyWrapping.md) ||
+|| [- Key Wrapping](../KeyWrapping/KeyWrapping.md) ||
 || **Parameterized Modules** ||
