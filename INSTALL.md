@@ -340,5 +340,5 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [^ Course README](./README.md) ||
+|| [ ^ Course README](./README.md) ||
 || **Installation** | [Overview >](./labs/Overview/Overview.md) |
