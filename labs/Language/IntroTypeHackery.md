@@ -5,12 +5,12 @@ Sometimes Cryptol's type system does not provide an intuitive way to
 accomplish what appears to be simple. In this document we'll show an
 example of this and how it can be overcome.
 
-In a nutshell the problem shown herein—and in general many typing
-surprises in Cryptol—stems from the fact that the type system can not
+In a nutshell the problem shown herein (and in general many typing
+surprises in Cryptol) stems from the fact that the type system cannot
 do any reasoning based on values, rather it must know or deduce the
 size of all data at parse time. In some ways this limits us, but it
 makes automated reasoning practical and rarely proves to be a
-hindrance for cryptographic algorithms.
+show-stopper for cryptographic algorithms.
 
 
 The Exemplar
@@ -201,7 +201,7 @@ gcd x y = if x == 0 \/ y == 0 then zext x ^ zext y        // line 1
     n' = `n
 ```
 
-Some notation I used in the above:
+Some notation used in the above:
 
 + `x'`, `y'` and `z'` represent numbers that have been halved and
   shrunk by a bit. They are used as arguments to the recursive call in
@@ -213,19 +213,17 @@ Some notation I used in the above:
 Let's discuss the lines above vs. the steps in Wikipedia's algorithm:
 
 + Line 1 corresponds to step 1. This is the base case in the
-  recursion. (Lines 2–6 all have recursive calls.) We compare the
+  recursion. (Lines 2-6 all have recursive calls.) We compare the
   values to zero rather than the widths as an efficiency improvement
   (and it's slightly easier to write). Of course should a type be
   `[0]` then that argument's value must necessarily be `0`.
 + Line 2 corresponds to step 2.
-+ Lines 3–4 correspond to step 3.
-+ Lines 5–6 correspond in spirit to step 4. In step 4, we insure that
-  the a value decreases. In lines 5–6, we do that, but we also
++ Lines 3-4 correspond to step 3.
++ Lines 5-6 correspond in spirit to step 4. In step 4, we insure that
+  the a value decreases. In lines 5-6, we do that, but we also
   insure that the bit width of the wider argument is reduced.
 
-
-
-
+Here are some extra definitions for the courageous.
 
 ```
 (|?) : {m, n} (fin m, fin n) => [m] -> [n] -> Bit
@@ -239,17 +237,12 @@ gcdDividesBoth : {m, n} (fin m, fin n) => [m] -> [n] -> Bit
 property gcdDividesBoth x y = z |? x /\ z |? y
   where
     z = gcd x y
-```
 
-
-```
 gcdEuclid's : {n} (fin n) => [n] -> [n] -> [n]
 gcdEuclid's x y = if x == 0 \/ y == 0 then max x y
                    | x >  y           then gcdEuclid's (x - y) y
                                       else gcdEuclid's  x     (y - x)
-```
 
-```
 gcdCommon : {n} (fin n) => [n] -> [n] -> [n]
 gcdCommon x y = if x == 0 \/ y == 0 then max x y
                  | x >  y           then gcdCommon (x % y) y
