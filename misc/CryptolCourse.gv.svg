@@ -10,7 +10,7 @@
 <title>%3</title>
 <!-- Installation -->
 <g id="node1" class="node"><title>Installation</title>
-<g id="a_node1"><a xlink:href="../INSTALL.md" xlink:title="Installation">
+<g id="a_node1"><a xlink:href="../INSTALL.html" xlink:title="Installation">
 <path fill="white" stroke="black" stroke-width="2" d="M65,-280C65,-280 12,-280 12,-280 6,-280 0,-274 0,-268 0,-268 0,-256 0,-256 0,-250 6,-244 12,-244 12,-244 65,-244 65,-244 71,-244 77,-250 77,-256 77,-256 77,-268 77,-268 77,-274 71,-280 65,-280"/>
 <text text-anchor="middle" x="38.5" y="-258.3" font-family="Times New Roman,serif" font-size="14.00">Installation</text>
 </a>
@@ -18,7 +18,7 @@
 </g>
 <!-- Overview -->
 <g id="node2" class="node"><title>Overview</title>
-<g id="a_node2"><a xlink:href="../labs/Overview/Overview.md" xlink:title="Overview">
+<g id="a_node2"><a xlink:href="../labs/Overview/Overview.html" xlink:title="Overview">
 <path fill="white" stroke="black" stroke-width="2" d="M61.5,-226C61.5,-226 15.5,-226 15.5,-226 9.5,-226 3.5,-220 3.5,-214 3.5,-214 3.5,-202 3.5,-202 3.5,-196 9.5,-190 15.5,-190 15.5,-190 61.5,-190 61.5,-190 67.5,-190 73.5,-196 73.5,-202 73.5,-202 73.5,-214 73.5,-214 73.5,-220 67.5,-226 61.5,-226"/>
 <text text-anchor="middle" x="38.5" y="-204.3" font-family="Times New Roman,serif" font-size="14.00">Overview</text>
 </a>
@@ -31,7 +31,7 @@
 </g>
 <!-- Interpreter -->
 <g id="node3" class="node"><title>Interpreter</title>
-<g id="a_node3"><a xlink:href="../labs/Interpreter/Interpreter.md" xlink:title="Interpreter">
+<g id="a_node3"><a xlink:href="../labs/Interpreter/Interpreter.html" xlink:title="Interpreter">
 <path fill="white" stroke="black" stroke-width="2" d="M63.5,-172C63.5,-172 13.5,-172 13.5,-172 7.5,-172 1.5,-166 1.5,-160 1.5,-160 1.5,-148 1.5,-148 1.5,-142 7.5,-136 13.5,-136 13.5,-136 63.5,-136 63.5,-136 69.5,-136 75.5,-142 75.5,-148 75.5,-148 75.5,-160 75.5,-160 75.5,-166 69.5,-172 63.5,-172"/>
 <text text-anchor="middle" x="38.5" y="-150.3" font-family="Times New Roman,serif" font-size="14.00">Interpreter</text>
 </a>
@@ -44,7 +44,7 @@
 </g>
 <!-- LanguageBasics -->
 <g id="node4" class="node"><title>LanguageBasics</title>
-<g id="a_node4"><a xlink:href="../labs/Language/Basics.md" xlink:title="Language\nBasics">
+<g id="a_node4"><a xlink:href="../labs/Language/Basics.html" xlink:title="Language\nBasics">
 <path fill="white" stroke="black" stroke-width="2" d="M61.5,-118C61.5,-118 15.5,-118 15.5,-118 9.5,-118 3.5,-112 3.5,-106 3.5,-106 3.5,-92 3.5,-92 3.5,-86 9.5,-80 15.5,-80 15.5,-80 61.5,-80 61.5,-80 67.5,-80 73.5,-86 73.5,-92 73.5,-92 73.5,-106 73.5,-106 73.5,-112 67.5,-118 61.5,-118"/>
 <text text-anchor="middle" x="38.5" y="-102.8" font-family="Times New Roman,serif" font-size="14.00">Language</text>
 <text text-anchor="middle" x="38.5" y="-87.8" font-family="Times New Roman,serif" font-size="14.00">Basics</text>
@@ -58,7 +58,7 @@
 </g>
 <!-- CRC -->
 <g id="node5" class="node"><title>CRC</title>
-<g id="a_node5"><a xlink:href="../labs/CRC/CRC.md" xlink:title="CRC">
+<g id="a_node5"><a xlink:href="../labs/CRC/CRC.html" xlink:title="CRC">
 <path fill="white" stroke="black" stroke-width="2" d="M179.5,-198C179.5,-198 149.5,-198 149.5,-198 143.5,-198 137.5,-192 137.5,-186 137.5,-186 137.5,-174 137.5,-174 137.5,-168 143.5,-162 149.5,-162 149.5,-162 179.5,-162 179.5,-162 185.5,-162 191.5,-168 191.5,-174 191.5,-174 191.5,-186 191.5,-186 191.5,-192 185.5,-198 179.5,-198"/>
 <text text-anchor="middle" x="164.5" y="-176.3" font-family="Times New Roman,serif" font-size="14.00">CRC</text>
 </a>
@@ -71,7 +71,7 @@
 </g>
 <!-- StyleGuide -->
 <g id="node10" class="node"><title>StyleGuide</title>
-<g id="a_node10"><a xlink:href="../cryptol-style.md" xlink:title="Style Guide">
+<g id="a_node10"><a xlink:href="../cryptol-style.html" xlink:title="Style Guide">
 <path fill="white" stroke="black" stroke-width="2" d="M193.5,-144C193.5,-144 135.5,-144 135.5,-144 129.5,-144 123.5,-138 123.5,-132 123.5,-132 123.5,-120 123.5,-120 123.5,-114 129.5,-108 135.5,-108 135.5,-108 193.5,-108 193.5,-108 199.5,-108 205.5,-114 205.5,-120 205.5,-120 205.5,-132 205.5,-132 205.5,-138 199.5,-144 193.5,-144"/>
 <text text-anchor="middle" x="164.5" y="-122.3" font-family="Times New Roman,serif" font-size="14.00">Style Guide</text>
 </a>
@@ -84,7 +84,7 @@
 </g>
 <!-- CryptolDemos -->
 <g id="node11" class="node"><title>CryptolDemos</title>
-<g id="a_node11"><a xlink:href="../labs/Demos/Cryptol/Demos.md" xlink:title="Cryptol Demos">
+<g id="a_node11"><a xlink:href="../labs/Demos/Cryptol/Demos.html" xlink:title="Cryptol Demos">
 <path fill="white" stroke="black" stroke-width="2" d="M204,-90C204,-90 125,-90 125,-90 119,-90 113,-84 113,-78 113,-78 113,-66 113,-66 113,-60 119,-54 125,-54 125,-54 204,-54 204,-54 210,-54 216,-60 216,-66 216,-66 216,-78 216,-78 216,-84 210,-90 204,-90"/>
 <text text-anchor="middle" x="164.5" y="-68.3" font-family="Times New Roman,serif" font-size="14.00">Cryptol Demos</text>
 </a>
@@ -97,7 +97,7 @@
 </g>
 <!-- SAWDemos -->
 <g id="node12" class="node"><title>SAWDemos</title>
-<g id="a_node12"><a xlink:href="../labs/Demos/SAW/Demos.md" xlink:title="SAW Demos">
+<g id="a_node12"><a xlink:href="../labs/Demos/SAW/Demos.html" xlink:title="SAW Demos">
 <path fill="white" stroke="black" stroke-width="2" d="M198.5,-36C198.5,-36 130.5,-36 130.5,-36 124.5,-36 118.5,-30 118.5,-24 118.5,-24 118.5,-12 118.5,-12 118.5,-6 124.5,-0 130.5,-0 130.5,-0 198.5,-0 198.5,-0 204.5,-0 210.5,-6 210.5,-12 210.5,-12 210.5,-24 210.5,-24 210.5,-30 204.5,-36 198.5,-36"/>
 <text text-anchor="middle" x="164.5" y="-14.3" font-family="Times New Roman,serif" font-size="14.00">SAW Demos</text>
 </a>
@@ -110,7 +110,7 @@
 </g>
 <!-- Salsa20 -->
 <g id="node6" class="node"><title>Salsa20</title>
-<g id="a_node6"><a xlink:href="../labs/Salsa20/Salsa20.md" xlink:title="Salsa20">
+<g id="a_node6"><a xlink:href="../labs/Salsa20/Salsa20.html" xlink:title="Salsa20">
 <path fill="white" stroke="black" stroke-width="2" d="M299,-198C299,-198 264,-198 264,-198 258,-198 252,-192 252,-186 252,-186 252,-174 252,-174 252,-168 258,-162 264,-162 264,-162 299,-162 299,-162 305,-162 311,-168 311,-174 311,-174 311,-186 311,-186 311,-192 305,-198 299,-198"/>
 <text text-anchor="middle" x="281.5" y="-176.3" font-family="Times New Roman,serif" font-size="14.00">Salsa20</text>
 </a>
@@ -123,7 +123,7 @@
 </g>
 <!-- CryptographicProperties -->
 <g id="node7" class="node"><title>CryptographicProperties</title>
-<g id="a_node7"><a xlink:href="../labs/CryptoProofs/CryptoProofs.md" xlink:title="Cryptographic\nProperties">
+<g id="a_node7"><a xlink:href="../labs/CryptoProofs/CryptoProofs.html" xlink:title="Cryptographic\nProperties">
 <path fill="white" stroke="black" stroke-width="2" d="M433,-199C433,-199 359,-199 359,-199 353,-199 347,-193 347,-187 347,-187 347,-173 347,-173 347,-167 353,-161 359,-161 359,-161 433,-161 433,-161 439,-161 445,-167 445,-173 445,-173 445,-187 445,-187 445,-193 439,-199 433,-199"/>
 <text text-anchor="middle" x="396" y="-183.8" font-family="Times New Roman,serif" font-size="14.00">Cryptographic</text>
 <text text-anchor="middle" x="396" y="-168.8" font-family="Times New Roman,serif" font-size="14.00">Properties</text>
@@ -137,7 +137,7 @@
 </g>
 <!-- KeyWrapping -->
 <g id="node8" class="node"><title>KeyWrapping</title>
-<g id="a_node8"><a xlink:href="../labs/KeyWrapping/KeyWrapping.md" xlink:title="Key Wrapping">
+<g id="a_node8"><a xlink:href="../labs/KeyWrapping/KeyWrapping.html" xlink:title="Key Wrapping">
 <path fill="white" stroke="black" stroke-width="2" d="M567,-281C567,-281 493,-281 493,-281 487,-281 481,-275 481,-269 481,-269 481,-257 481,-257 481,-251 487,-245 493,-245 493,-245 567,-245 567,-245 573,-245 579,-251 579,-257 579,-257 579,-269 579,-269 579,-275 573,-281 567,-281"/>
 <text text-anchor="middle" x="530" y="-259.3" font-family="Times New Roman,serif" font-size="14.00">Key Wrapping</text>
 </a>
@@ -150,7 +150,7 @@
 </g>
 <!-- Salsa20Properties -->
 <g id="node13" class="node"><title>Salsa20Properties</title>
-<g id="a_node13"><a xlink:href="../labs/Salsa20/Salsa20Props.md" xlink:title="Salsa20\nProperties">
+<g id="a_node13"><a xlink:href="../labs/Salsa20/Salsa20Props.html" xlink:title="Salsa20\nProperties">
 <path fill="white" stroke="black" stroke-width="2" d="M555,-227C555,-227 505,-227 505,-227 499,-227 493,-221 493,-215 493,-215 493,-201 493,-201 493,-195 499,-189 505,-189 505,-189 555,-189 555,-189 561,-189 567,-195 567,-201 567,-201 567,-215 567,-215 567,-221 561,-227 555,-227"/>
 <text text-anchor="middle" x="530" y="-211.8" font-family="Times New Roman,serif" font-size="14.00">Salsa20</text>
 <text text-anchor="middle" x="530" y="-196.8" font-family="Times New Roman,serif" font-size="14.00">Properties</text>
@@ -164,7 +164,7 @@
 </g>
 <!-- TranspositionCiphers -->
 <g id="node14" class="node"><title>TranspositionCiphers</title>
-<g id="a_node14"><a xlink:href="../labs/Transposition/Contents.md" xlink:title="Transposition\nCiphers">
+<g id="a_node14"><a xlink:href="../labs/Transposition/Contents.html" xlink:title="Transposition\nCiphers">
 <path fill="white" stroke="black" stroke-width="2" d="M565,-171C565,-171 495,-171 495,-171 489,-171 483,-165 483,-159 483,-159 483,-145 483,-145 483,-139 489,-133 495,-133 495,-133 565,-133 565,-133 571,-133 577,-139 577,-145 577,-145 577,-159 577,-159 577,-165 571,-171 565,-171"/>
 <text text-anchor="middle" x="530" y="-155.8" font-family="Times New Roman,serif" font-size="14.00">Transposition</text>
 <text text-anchor="middle" x="530" y="-140.8" font-family="Times New Roman,serif" font-size="14.00">Ciphers</text>
@@ -178,7 +178,7 @@
 </g>
 <!-- ProjectEuler -->
 <g id="node15" class="node"><title>ProjectEuler</title>
-<g id="a_node15"><a xlink:href="../labs/ProjectEuler/ProjectEuler.md" xlink:title="Project Euler">
+<g id="a_node15"><a xlink:href="../labs/ProjectEuler/ProjectEuler.html" xlink:title="Project Euler">
 <path fill="white" stroke="black" stroke-width="2" d="M562.5,-115C562.5,-115 497.5,-115 497.5,-115 491.5,-115 485.5,-109 485.5,-103 485.5,-103 485.5,-91 485.5,-91 485.5,-85 491.5,-79 497.5,-79 497.5,-79 562.5,-79 562.5,-79 568.5,-79 574.5,-85 574.5,-91 574.5,-91 574.5,-103 574.5,-103 574.5,-109 568.5,-115 562.5,-115"/>
 <text text-anchor="middle" x="530" y="-93.3" font-family="Times New Roman,serif" font-size="14.00">Project Euler</text>
 </a>
@@ -191,7 +191,7 @@
 </g>
 <!-- Capstone -->
 <g id="node9" class="node"><title>Capstone</title>
-<g id="a_node9"><a xlink:href="../labs/LoremIpsum/LoremIpsum.md" xlink:title="Capstone">
+<g id="a_node9"><a xlink:href="../labs/LoremIpsum/LoremIpsum.html" xlink:title="Capstone">
 <path fill="white" stroke="black" stroke-width="2" d="M685.5,-308C685.5,-308 639.5,-308 639.5,-308 633.5,-308 627.5,-302 627.5,-296 627.5,-296 627.5,-284 627.5,-284 627.5,-278 633.5,-272 639.5,-272 639.5,-272 685.5,-272 685.5,-272 691.5,-272 697.5,-278 697.5,-284 697.5,-284 697.5,-296 697.5,-296 697.5,-302 691.5,-308 685.5,-308"/>
 <text text-anchor="middle" x="662.5" y="-286.3" font-family="Times New Roman,serif" font-size="14.00">Capstone</text>
 </a>
@@ -204,7 +204,7 @@
 </g>
 <!-- ParameterizedModules -->
 <g id="node16" class="node"><title>ParameterizedModules</title>
-<g id="a_node16"><a xlink:href="../labs/SimonSpeck/SimonSpeck.md" xlink:title="Parameterized\nModules">
+<g id="a_node16"><a xlink:href="../labs/SimonSpeck/SimonSpeck.html" xlink:title="Parameterized\nModules">
 <path fill="white" stroke="black" stroke-width="2" d="M698,-254C698,-254 627,-254 627,-254 621,-254 615,-248 615,-242 615,-242 615,-228 615,-228 615,-222 621,-216 627,-216 627,-216 698,-216 698,-216 704,-216 710,-222 710,-228 710,-228 710,-242 710,-242 710,-248 704,-254 698,-254"/>
 <text text-anchor="middle" x="662.5" y="-238.8" font-family="Times New Roman,serif" font-size="14.00">Parameterized</text>
 <text text-anchor="middle" x="662.5" y="-223.8" font-family="Times New Roman,serif" font-size="14.00">Modules</text>

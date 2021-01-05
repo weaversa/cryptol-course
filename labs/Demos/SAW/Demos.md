@@ -19,7 +19,9 @@ here.
    introduction to how one can use Cryptol and SAW to prove that an
    implementation matches its specification.
 
-<img class="center" src="../../../misc/SAWDemos.gv.svg" alt="SAW Demos - Suggested Flow">
+<a href="../../../misc/SAWDemos.gv.svg">
+    <img class="center" src="../../../misc/SAWDemos.gv.svg" alt="SAW Demos - Suggested Flow">
+</a>
 
 # Solicitation
 

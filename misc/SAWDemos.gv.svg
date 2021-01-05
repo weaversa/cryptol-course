@@ -10,7 +10,7 @@
 <title>%3</title>
 <!-- ArithmeticVerifications -->
 <g id="node1" class="node"><title>ArithmeticVerifications</title>
-<g id="a_node1"><a xlink:href="../labs/Demos/SAW/SAW/ArithmeticVerifications/ArithmeticVerifications.md" xlink:title="Arithmetic\nVerifications">
+<g id="a_node1"><a xlink:href="../labs/Demos/SAW/SAW/ArithmeticVerifications/ArithmeticVerifications.html" xlink:title="Arithmetic\nVerifications">
 <path fill="white" stroke="black" stroke-width="2" d="M75,-38C75,-38 12,-38 12,-38 6,-38 0,-32 0,-26 0,-26 0,-12 0,-12 0,-6 6,-0 12,-0 12,-0 75,-0 75,-0 81,-0 87,-6 87,-12 87,-12 87,-26 87,-26 87,-32 81,-38 75,-38"/>
 <text text-anchor="middle" x="43.5" y="-22.8" font-family="Times New Roman,serif" font-size="14.00">Arithmetic</text>
 <text text-anchor="middle" x="43.5" y="-7.8" font-family="Times New Roman,serif" font-size="14.00">Verifications</text>
@@ -19,7 +19,7 @@
 </g>
 <!-- BitTwiddling -->
 <g id="node2" class="node"><title>BitTwiddling</title>
-<g id="a_node2"><a xlink:href="../labs/Demos/SAW/SAW/Bittwiddling/Bittwiddling.md" xlink:title="Bit Twiddling">
+<g id="a_node2"><a xlink:href="../labs/Demos/SAW/SAW/Bittwiddling/Bittwiddling.html" xlink:title="Bit Twiddling">
 <path fill="white" stroke="black" stroke-width="2" d="M203,-37C203,-37 135,-37 135,-37 129,-37 123,-31 123,-25 123,-25 123,-13 123,-13 123,-7 129,-1 135,-1 135,-1 203,-1 203,-1 209,-1 215,-7 215,-13 215,-13 215,-25 215,-25 215,-31 209,-37 203,-37"/>
 <text text-anchor="middle" x="169" y="-15.3" font-family="Times New Roman,serif" font-size="14.00">Bit Twiddling</text>
 </a>

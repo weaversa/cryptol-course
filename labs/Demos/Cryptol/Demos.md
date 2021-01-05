@@ -9,7 +9,9 @@
 * [Sudoku](./Sudoku.md)
   Diabolical made trivial.
 
-<img class="center" src="../../../misc/CryptolDemos.gv.svg" alt="Cryptol Demos - Suggested Flow">
+<a href="../../../misc/CryptolDemos.gv.svg">
+    <img class="center" src="../../../misc/CryptolDemos.gv.svg" alt="Cryptol Demos - Suggested Flow">
+</a>
 
 # Solicitation
 
