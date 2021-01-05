@@ -28,6 +28,7 @@ form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
+
 ||||
 |-:|:-:|-|
 || [- Language Basics](../../Language/Basics.md) ||

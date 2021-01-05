@@ -79,8 +79,7 @@ Q.E.D.
 ```
 
 Don't worry if Cryptol is not yet installed on your computer -- the
-first lab walks you through [installing and running
-Cryptol](INSTALL.md).
+first lab walks you through [installing and running Cryptol](INSTALL.md).
 
 
 ## Suggested Lab Order
@@ -103,9 +102,9 @@ Cryptol](INSTALL.md).
    specification.
 6. [Salsa20](./labs/Salsa20/Salsa20.md): Create your second
    specification.
-7. [Prove Cryptographic
-   Properties](./labs/CryptoProofs/CryptoProofs.md): Learn about common
-   cryptographic properties and how to prove them with Cryptol.
+7. [Prove Cryptographic Properties](./labs/CryptoProofs/CryptoProofs.md):
+   Learn about common cryptographic properties and how to prove them
+   with Cryptol.
     * [Salsa20 Properties](./labs/Salsa20/Salsa20Props.md): Prove some
       cryptographic properties about Salsa20.
     * [Transposition Ciphers](./labs/Transposition/Contents.md):
@@ -118,10 +117,9 @@ Cryptol](INSTALL.md).
 8. [Methods for Key Wrapping](./labs/KeyWrapping/KeyWrapping.md):
    Create a Cryptol specification of NIST's [SP800-38F key wrap
    standard](https://csrc.nist.gov/publications/detail/sp/800-38f/final).
-    * [Parameterized Modules: Simon and
-      Speck](./labs/SimonSpeck/SimonSpeck.md): Learn about Cryptol's
-      parameterized modules by creating a Cryptol specification of
-      NSA's Speck block cipher.
+    * [Parameterized Modules: Simon and Speck](./labs/SimonSpeck/SimonSpeck.md):
+      Learn about Cryptol's parameterized modules by creating a
+      Cryptol specification of NSA's Speck block cipher.
 9. [Capstone: Putting it all together](./labs/LoremIpsum/LoremIpsum.md):
    Use components and techniques from other labs to decrypt a series
    of secret messages by feeding wrapped keys into the anomalous KLI20

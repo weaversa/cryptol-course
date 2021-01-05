@@ -328,6 +328,7 @@ All Cryptol specifications should load into the Cryptol interpreter
 without warnings.
 
 # From here, you can go somewhere!
+
 ||||
 |-:|:-:|-|
 || [- Language Basics](./labs/Language/Basics.md) ||
