@@ -134,7 +134,10 @@ lines indicate labs designed to give you more opportunities to
 practice Cryptol, but are not strictly necessary for course
 completion. (Click on the image below for a navigable representation.)
 
-<img class="center" src="./misc/CryptolCourse.gv.svg" alt="Dependencies and Suggested Course Flow">
+<<<<<<< HEAD
+<a href="https://raw.githubusercontent.com/weaversa/cryptol-course/master/misc/CryptolCourse.gv.svg">
+    <img class="center" src="./misc/CryptolCourse.gv.svg" alt="Dependencies and Suggested Course Flow">
+</a>
 
 ## Supporting Materials
 
