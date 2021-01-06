@@ -1,7 +1,8 @@
-theme: jekyll-theme-cayman
+# theme: jekyll-theme-cayman
 # remote_theme: user/name
+remote_theme: poole/lanyon
 baseurl: /cryptol-course
 plugins:
   - jekyll-relative-links
 include:
-  - .htaccess
+
