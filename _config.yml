@@ -1,5 +1,6 @@
-theme: jekyll-theme-cayman
-# remote_theme: user/name
+theme: jekyll-theme-hacker
 baseurl: /cryptol-course
 plugins:
   - jekyll-relative-links
+include:
+  - labs/KeyWrapping/kwtestvectors

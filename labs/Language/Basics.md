@@ -1992,9 +1992,8 @@ encrypt key plainText = cipherText
     cipherText = last roundResults
 ```
 
-Here's an English-language breakdown of the first self-referential sequence comprehension above:
-
-
+Here's an English-language breakdown of the first self-referential
+sequence comprehension above:
 
 ||||||||||||
 |-|-|-|-|-|-|-|-|-|-|-|
@@ -2065,3 +2064,4 @@ https://github.com/weaversa/cryptol-course/issues
 || [+ Style Guide](../../cryptol-style.md) ||
 || [+ Cryptol Demos](../Demos/Cryptol/Demos.md) ||
 || [+ SAW Demos](../Demos/SAW/Demos.md) ||
+|| [+ Type Hackery](./IntroTypeHackery.md) ||

@@ -60,20 +60,20 @@ interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # Salsa20 Security Properties
 
-In this lab, we consider additional properties of the [Salsa20 stream
-cipher](./Salsa20Spec.md) [5], which has undergone much scrutiny since
-being proposed for [eSTREAM, the ECRYPT Stream Cipher
-Project](https://www.ecrypt.eu.org/stream).
+In this lab, we consider additional properties of the
+[Salsa20 stream cipher](Salsa20Spec.pdf) [5], which has undergone
+much scrutiny since being proposed for
+[eSTREAM, the ECRYPT Stream Cipher Project](https://www.ecrypt.eu.org/stream).
 
 ## Invertibility
 
-Throughout [the Salsa20 spec](./Salsa20Spec.pdf) [5], various functions
-are noted as being "invertible". In the [Salsa20
-lab](./Salsa20Answers.md), we proved that the `quarterround` and
-`littleendian` functions are invertible. We did this because the
-specification explicitly mentioned these properties. Similarly, though
-not called out in the specification, other functions defined in the
-spec are also invertible.
+Throughout [the Salsa20 spec](Salsa20Spec.pdf) [5], various functions
+are noted as being "invertible". In the [Salsa20 lab](Salsa20Answers.md),
+we proved that the `quarterround` and `littleendian` functions are
+invertible. We did this because the specification explicitly mentioned
+these properties. Similarly, though not called out in the
+specification, other functions defined in the spec are also
+invertible.
 
 **EXERCISE**: Below is a rundown of each function defined in the
 spec. Your goal is to prove that each are invertible by filling in a

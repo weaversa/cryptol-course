@@ -27,6 +27,7 @@ digraph  {
   StyleGuide                 [URL="../cryptol-style.html"];
   CryptolDemos               [URL="../labs/Demos/Cryptol/Demos.html"];
   SAWDemos                   [URL="../labs/Demos/SAW/Demos.html"];
+  TypeHackery                [URL="../labs/Language/IntroTypeHackery.html"];
   Salsa20Properties          [URL="../labs/Salsa20/Salsa20Props.html"];
   TranspositionCiphers       [URL="../labs/Transposition/Contents.html"];
   ProjectEuler               [URL="../labs/ProjectEuler/ProjectEuler.html"];
@@ -35,6 +36,7 @@ digraph  {
   // newline/space labels
   
   LanguageBasics             [label = "Language\nBasics"]
+  TypeHackery                [label = "Type Hackery"]
   CryptographicProperties    [label = "Cryptographic\nProperties"]
   KeyWrapping                [label = "Key Wrapping"]
   CryptolDemos               [label = "Cryptol Demos"]
@@ -63,6 +65,7 @@ digraph  {
   LanguageBasics -> StyleGuide;
   LanguageBasics -> CryptolDemos;
   LanguageBasics -> SAWDemos;
+  LanguageBasics -> TypeHackery;
   CryptographicProperties -> Salsa20Properties;
   CryptographicProperties -> TranspositionCiphers;
   CryptographicProperties -> ProjectEuler;
@@ -86,6 +89,7 @@ digraph  {
     StyleGuide;
     CryptolDemos;
     SAWDemos;
+    TypeHackery;
   }
 
   {

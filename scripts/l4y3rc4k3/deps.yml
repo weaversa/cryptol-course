@@ -11,6 +11,8 @@ urls:
     labs/Interpreter/Interpreter.html
   Language Basics:
     labs/Language/Basics.html
+  Type Hackery:
+    labs/Language/IntroTypeHackery.html
   CRC:
     labs/CRC/CRC.html
   Salsa20:
@@ -103,6 +105,7 @@ branches:
       - Style Guide
       - Cryptol Demos
       - SAW Demos
+      - Type Hackery
     Cryptographic Properties:
       - Salsa20 Properties
       - Transposition Ciphers
@@ -117,6 +120,7 @@ unanswered:
   - Parameterized Modules
   - Route
   - SAW Demos
+  - Language Basics
 
 # labels to break into newlines
 newline_labels:
