@@ -98,7 +98,7 @@ first lab walks you through [installing and running Cryptol](INSTALL.md).
       walkthroughs that demonstrate common Cryptol concepts.
     * [SAW Demos](./labs/Demos/SAW/Demos.md): Demonstrations of using
       Cryptol with the Software Analysis Workbench to verify software.
-    * [Type Hacker](./labs/Language/IntroTypeHackery.md): Demonstrates 
+    * [Type Hackery](./labs/Language/IntroTypeHackery.md): Demonstrates 
       various challenges and solutions involving Cryptol's type system
 5. [Cyclic Redundancy Checks](./labs/CRC/CRC.md): Create your first
    specification.
