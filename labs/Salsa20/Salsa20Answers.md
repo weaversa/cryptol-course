@@ -849,7 +849,7 @@ Some hints:
 Salsa20Encrypt k v m = c
   where
     c = m ^ take (join [ Salsa20Expansion k (v # littleendian' i)
-                       | i <- [0 ... ] ])
+                       | i <- [0 .. 2^^64-1 ] ])
 ```
 
 
