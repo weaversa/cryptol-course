@@ -27,7 +27,7 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::Demos::Cryptol::OneTimePad
 Loading module Cryptol
@@ -43,7 +43,7 @@ module labs::Demos::Cryptol::OneTimePad where
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.  
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # One-Time Pad
@@ -141,7 +141,7 @@ OK, we've assigned variables representing the pre-shared key (`psk1`),
 plaintext (`pt1`), and ciphertext (`ct1`) from the example. Let's see
 the plaintext:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::OneTimePad> pt1
 [0x48, 0x45, 0x4c, 0x4c, 0x4f]
 ```
@@ -151,7 +151,7 @@ differently, in this case as a sequence of 5 hexadecimal bytes
 rather than a string of 5 characters.  We can ask the interpreter
 to show us a string instead:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::OneTimePad> :s ascii=on
 labs::Demos::Cryptol::OneTimePad> pt1
 "HELLO"
@@ -159,7 +159,7 @@ labs::Demos::Cryptol::OneTimePad> pt1
 
 That was pleasant.  Now let's see the ciphertext:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::OneTimePad> ct1
 "\DC2\DLE\v\t\FS"
 ```
@@ -167,7 +167,7 @@ labs::Demos::Cryptol::OneTimePad> ct1
 That looks ciphertexty, all right.  Entering `:s` shows all the
 configuration settings:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::OneTimePad> :s
 ascii = on
 base = 16
@@ -191,7 +191,7 @@ warnShadowing = on
 If a symbol's name isn't descriptive enough, we can use `:h` to display
 help text for it:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::OneTimePad> :h encrypt
 
     encrypt : {k, m} (fin k, k >= m) =>
@@ -204,7 +204,7 @@ labs::Demos::Cryptol::OneTimePad> :h encrypt
 
 Cool. Let's do a quick sanity check:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::OneTimePad> decrypt psk1 ct1
 "HELLO"
 ```
@@ -214,7 +214,7 @@ labs::Demos::Cryptol::OneTimePad> decrypt psk1 ct1
 It matches! Our sanity is intact. Well, maybe not -- let's make
 sure:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::OneTimePad> it == pt1
 True
 ```
@@ -224,7 +224,7 @@ True
 Nice! So that one example checks out, as expressed by the `test`
 property in our module. Let's prove it:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::OneTimePad> :prove test
 Q.E.D.
 (Total Elapsed Time: 0.028s, using Z3)
@@ -252,12 +252,12 @@ Q.E.D.
 (Total Elapsed Time: 0.028s, using Z3)
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::OneTimePad> :prove decrypt_of_encrypt_yields_original_plaintext_8_5
 Q.E.D.
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::OneTimePad> :prove decrypt_of_encrypt_yields_original_plaintext_8_5
 Q.E.D.
 ```
@@ -282,7 +282,7 @@ deduces that with no further communication the message might
 reasonably have been "GOODBYE". Then Eve can exploit Cryptol to
 deduce the pre-shared key Bob just used:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::OneTimePad> :sat \psk2 -> (encrypt`{7} psk2 pt2) == ct2
 Satisfiable
 (\psk2 -> (encrypt`{7} psk2 pt2) == ct2) "ZUGESAG" = True
@@ -300,7 +300,7 @@ Now that Eve has the pre-shared key for this exchange, she could
 stash `it` and try `it` (`it` is the counterexample produced by the 
 last `:sat` command) on the message Bob received earlier:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::OneTimePad> it
 {result = True, arg1 = "ZUGESAG"}
 labs::Demos::Cryptol::OneTimePad> :sat \pt3 -> (encrypt (it.arg1) pt3) == ct1
@@ -325,4 +325,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Cryptol Demos](/Demos/Cryptol/Demos.md)
+||||
+|-:|:-:|-|
+|| [ ^ Cryptol Demos](./Demos.md) ||
+| [< Caesar](./Caesar.md) | **One-Time Pad** | [n-Queens >](./NQueens.md) |

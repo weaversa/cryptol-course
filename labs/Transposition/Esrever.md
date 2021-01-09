@@ -34,7 +34,7 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Cryptol> :m labs::Transposition::Esrever
 Loading module Cryptol
 Loading module Cryptol
@@ -113,7 +113,8 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Transposition Ciphers](/labs/Transposition/Contents.md)
-Previous: [Transportation Ciphers, in the Abstract](Transposition.md)
-Answers: [Esrever: A trivial message-reversing transposition "cipher"](EsreverAnswers.md)
-Next: [Scytale: A classic easy-to-specify transposition cipher](Scytale.md)
+||||
+|-:|:-:|-|
+|| [ ^ Transposition Ciphers](./Contents.md) ||
+| [< Transposition](./Transposition.md) | **Esrever** | [Scytale >](./Scytale.md) |
+|| [! Esrever (Answers)](./EsreverAnswers.md) ||

@@ -52,7 +52,7 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::Language::Basics
 Loading module Cryptol
@@ -68,7 +68,7 @@ module labs::Language::Basics where
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # Basic Use of the Cryptol Language
@@ -117,14 +117,14 @@ sizes of numbers have been turned off. This is **not** something you
 should do when you're new at Cryptol; it's only done here for
 teaching purposes.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :set warnDefaulting = off
 ```
 
 Also, some examples have octets as outputs that are easier to see as
 characters. To see octets as characters, turn on ASCII mode:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :set ascii = on
 ```
 
@@ -134,7 +134,7 @@ That makes any sequence of octets be displayed as the corresponding
 corresponding ASCII character in single quotes (`'`). (This is mostly
 useful as a pedagogical aid.)
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> [0x63, 0x61, 0x74]
 "cat"
 labs::Language::Basics> 0x78
@@ -186,7 +186,7 @@ private thisIsPrivate = 10
 Now all of the Overview lab definitions are accessed by prefixing
 `OVLab::`. For example,
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :browse
 ...
   From labs::Overview::Overview
@@ -251,7 +251,7 @@ mask = 7 : [32]
 Now, when issuing `:help mask`, the above comments are displayed along
 with other information about `mask`.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :help mask
 
     mask : [32]
@@ -332,7 +332,7 @@ Things to note:
     the example below how Cryptol *fills in* the `3` where we left an
     underscore.
 
-```Xcryptol session
+```Xcryptol-session
     labs::Language::Basics> [1, 2, 3] : [_][32]
     [0x00000001, 0x00000002, 0x00000003]
     labs::Language::Basics> :type [1, 2, 3] : [_][32]
@@ -346,7 +346,7 @@ Other data types include:
     `(True, [1, 0], 7625597484987) : (Bit, [2][1], Integer)`
     * Elements of tuples are accessed by `.0`, `.1`, ...
 
-```Xcryptol session
+```Xcryptol-session
     labs::Language::Basics> (False, 0b11).0
     False
 ```
@@ -356,7 +356,7 @@ Other data types include:
     * Elements of records are accessed by `.` followed by the field
       name.
 
-```Xcryptol session
+```Xcryptol-session
     labs::Language::Basics> {flag = True, x = 2}.flag
     True
 ```
@@ -407,7 +407,7 @@ varType0 = False : [10]
 When you reload this file in the interpreter, you will see the
 following error:
 
-```Xcryptol session
+```Xcryptol-session
   Type mismatch:
     Expected type: [10]
     Inferred type: Bit
@@ -425,7 +425,7 @@ even a 12039780-bit bitvector (with 12039777 leading `0` bits). So,
 when you ask for the type of `5` in
 the interpreter, you'll see:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :t 5
 5 : {a} (Literal 5 a) => a
 ```
@@ -524,7 +524,7 @@ output is given.
 And we can ask for the type of functions using `:type`, just like we
 asked for the types of variables.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :type add
 add : [32] -> [32] -> [32]
 ```
@@ -548,7 +548,7 @@ addUncurried (x, y) = x + y
 
 These two functions would be applied as shown:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> add 20 28
 48
 labs::Language::Basics> addUncurried (20, 28)
@@ -557,7 +557,7 @@ labs::Language::Basics> addUncurried (20, 28)
 
 There's also native support in Cryptol for currying and uncurrying.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> curry addUncurried 20 28
 48
 labs::Language::Basics> uncurry add (20, 28)
@@ -582,7 +582,7 @@ functions from other languages or documents.
 increment = add 1
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :t increment
 increment : [32] -> [32]
 labs::Language::Basics> increment 10
@@ -638,7 +638,7 @@ funType0 a = a + 7 : [5]
 
 Upon reloading this file, we would see:
 
-```Xcryptol session
+```Xcryptol-session
   Type mismatch:
     Expected type: [5] -> [5]
     Inferred type: [5]
@@ -659,7 +659,7 @@ funType0 a = a + 7 : [5]
 
 Upon reloading this file, we would see:
 
-```Xcryptol session
+```Xcryptol-session
   Type mismatch:
     Expected type: 5
     Inferred type: 4
@@ -758,7 +758,7 @@ patterns based on the type (*shape*) of the value on the right-hand
 side. Again, `_` acts as a kind of hole (when it's by itself,
 not when it's part of an identifier, of course). For example:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> let (fst, snd) = (4, 5)
 labs::Language::Basics> fst
 4
@@ -788,7 +788,7 @@ firstThreeBits : {n} [3 + n]-> [3]
 firstThreeBits ([a, b, c] # xs) = [a, b, c]
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :s base=2
 labs::Language::Basics> firstThreeBits 0b1100111
 0b110
@@ -871,7 +871,7 @@ typing `:browse` into the interpreter and looking for the "Primitive
 Types" section. You can also ask for `:help` on any of these, for
 example:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :h fin
 
     primitive type fin : # -> Prop
@@ -882,7 +882,7 @@ Assert that a numeric type is a proper natural number (not 'inf').
 Let's use the interpreter to send a few values through `sayHello` and
 see what happens.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :s ascii=on
 labs::Language::Basics> sayHello "Munkustrap"
 "Hello, Munkustrap"
@@ -902,7 +902,7 @@ wholeheartedly rejects a 13-octet sequence. This is the type system
 in action! Let's also briefly take a look at the type for the
 concatenation operator `#`.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :t (#)
 (#) : {front, back, a} (fin front) =>
         [front]a -> [back]a -> [front + back]a
@@ -944,7 +944,7 @@ bitTwelve x = x@12
 Let's use the interpreter to send a few values through `bitTwelve` and
 see what happens.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> bitTwelve 0b101100101001
 
 [error] at <interactive>:1:1--1:25:
@@ -1095,7 +1095,7 @@ zeroPrepend input = undefined
 Check your function by running these tests in the interpreter and
 seeing that you get the same results:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :s base=2
 labs::Language::Basics> zeroPrepend`{n=7} 0b111
 0b0000000111
@@ -1153,7 +1153,7 @@ this extra type constraint. Luckily, if you forget to add such things,
 Cryptol will generally complain and let you know what you forgot. For
 example, if we remove that constraint and reload this file we see:
 
-```Xcryptol session
+```Xcryptol-session
   Failed to validate user-specified signature.
     in the definition of 'appendSize', at Basics.md:923:1--923:11,
     we need to show that
@@ -1187,7 +1187,7 @@ You can define type synonyms using the `type` keyword. For example
 type myType x = [x][x]
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :s base=2
 labs::Language::Basics> zero : myType 2
 [0b00, 0b00]
@@ -1357,7 +1357,7 @@ Cryptol's `:prove` interpreter command will cue on the `property`
 keyword, trying to prove every `property` in scope. The `:prove`
 command also works if you give it a property directly, like so:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :prove anyZeroByteCorrect
 Q.E.D.
 (Total Elapsed Time: 0.009s, using "Z3")
@@ -1370,7 +1370,7 @@ inputs through a property, rather than trying to prove it for all
 inputs. Cryptol also allows you to *find* solutions to a property via
 its `:sat` command. For example,
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :sat \x -> increment x < x
 Satisfiable
 (\x -> increment x < x) 0xffffffff = True
@@ -1390,7 +1390,7 @@ Cryptol's `:help` command will provide a brief description of an
 operator by issuing `:help` (`:h` for short)
 followed by the name of the operator in parentheses. For example:
 
-```Xcryptol session
+```Xcryptol-session
 Cryptol> :help (@)
 
     (@) : {n, a, ix} (fin ix) => [n]a -> [ix] -> a
@@ -1412,7 +1412,7 @@ and subtraction.
 Where appropriate, operators act element-wise (or "blast through")
 typing constructs like sequences, tuples and records.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> [[0, 1], [1, 2]] + [[3, 5], [8, 13]]
 [[3, 6], [9, 15]]
 labs::Language::Basics> (3, (1, 4)) + (1, (5, 9))
@@ -1432,7 +1432,7 @@ these examples in the interpreter yourself.
 ### Arithmetic: `+`, `-`, `*`, `/`, `%` and `^^`
 #### Signed versions: `/$` and `%$`
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> 1 + 1
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for type argument 'a' of '(Cryptol::+)'
@@ -1459,7 +1459,7 @@ respectively, in
 
 ### Bitwise logical: negation `~`, conjunction `&&`, disjunction `||` and exclusive-or `^`
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :s base=2
 labs::Language::Basics> ~0b000011001101
 0b111100110010
@@ -1474,7 +1474,7 @@ labs::Language::Basics> 0b100000000000 || 0b000011011001
 ### Comparison:`==`, `!=`, `<` , `<=`, `>` and `>=`
 #### Signed versions: `<$`, `<=$`, `>$` and `>=$`
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> [~1, 1] == [6 : [3], 3 * 3]
 True
 labs::Language::Basics> [~1, 1] == [6 : [4], 3 * 3]
@@ -1495,7 +1495,7 @@ while `[6, 3 * 3] == [6, 9]`, so equality fails.
 _**It can be crucially important to be precise about the widths of
 things!**_
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> (1:[3]) <$ 2
 True
 labs::Language::Basics> (1:[3]) <$ -2
@@ -1512,7 +1512,7 @@ Type: (Error SignedCmp Integer) => Bit
 
 Comparisons are lexicographic on sequences of numbers.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> [1, 2] < [1, 3]
 True
 labs::Language::Basics> [1, 2] < [1, 2]
@@ -1522,7 +1522,7 @@ False
 ### Shifts and Rotates: `<<`, `>>`, `<<<` and `>>>`
 #### Signed version: `>>$`
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :set base=16
 labs::Language::Basics> 0xa5a << 4
 0x5a0
@@ -1534,7 +1534,7 @@ labs::Language::Basics> 0xa5a <<< 16
 
 ### Indexing and slicing: `@`, `!`, `@@` and `!!`
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :set ascii=on
 labs::Language::Basics> "cat" @ 0
 'c'
@@ -1549,7 +1549,7 @@ from the beginning of the sequence and `!` and `!!` from the end.
 
 ### Concatenation: `#`
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> "dog" # "cow" // Moof!
 "dogcow"
 ```
@@ -1559,7 +1559,7 @@ labs::Language::Basics> "dog" # "cow" // Moof!
 These are most often used in property statements. `/\` is "and", `\/`
 is "or" and `==>` is "implies". They have very low precedence.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> 1 == 5 \/ 5 == 5
 True
 labs::Language::Basics> False ==> 1 == 5 /\ 1 != 5
@@ -1572,7 +1572,7 @@ Cryptol's `if ... then ... else` is much like C's ternary operator
 `?`...`:`. It is not like the `if ... then ... else` control
 structure.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> 2 + (if 10 < 7 then 12 else 4) + 2 : Integer
 8
 ```
@@ -1622,7 +1622,7 @@ correct by printing `Q.E.D.`. This means Cryptol has proven that your
 `R` is correct for all possible inputs (which is either `2^^96` for
 the 32-bit proof or `2^^192` for the 64-bit proof).
 
-```Xcryptol session ci-none
+```Xcryptol-session ci-none
 labs::Language::Basics> :prove RInverseProperty`{32}
 Q.E.D.
 (Total Elapsed Time: 0.008s, using "Z3")
@@ -1642,7 +1642,7 @@ by the name of the primitive.
   * `0` is a sequence of `False` bits whose type is determined by the
     context.
 
-```Xcryptol session
+```Xcryptol-session
   labs::Language::Basics> 0 : [12]
   0x000
 ```
@@ -1650,7 +1650,7 @@ by the name of the primitive.
   * `zero` is an arbitrary collection of `False` bits whose type is
     determined by the context.
 
-```Xcryptol session
+```Xcryptol-session
   labs::Language::Basics> zero : ([8], [4])
   (0x00, 0x0)
 ```
@@ -1661,7 +1661,7 @@ Here we have produced an ordered pair of a 0 octet and a 0 nibble.
 
 ### List manipulation: `take`, `drop`, `head`, `tail`, `last` and `reverse`
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> take "dogcow" : [3][8]
 "dog"
 labs::Language::Basics> drop [2, 3, 5, 7, 11] : [3]Integer
@@ -1687,7 +1687,7 @@ above) will then be unnecessary.
 
 ### List shape manipulation: `split`, `groupBy`, `join`, `transpose`
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> split`{8} 0xdeadbeef
 [0xd, 0xe, 0xa, 0xd, 0xb, 0xe, 0xe, 0xf]
 labs::Language::Basics> groupBy`{4} 0xdeadbeef
@@ -1709,7 +1709,7 @@ The `sum` operator takes a sequence of elements and accumulates them.
 Similar to other operators, `sum` acts element-wise, and as such
 accepts sequences of any type that arithmetic can be applied to.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> sum [1, 2, 3, 4, 5]
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for type of sequence member
@@ -1726,7 +1726,7 @@ Showing a specific instance of polymorphic result:
 
 The `map` operator applies an operation to each element in a sequence.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :s base=10
 labs::Language::Basics> map increment [1, 2, 3, 4, 5]
 [2, 3, 4, 5, 6]
@@ -1743,7 +1743,7 @@ labs::Language::Basics> map reverse [0b10110, 0b00101, 0b00111]
 The `iterate` operator maps a function iteratively over an initial
 value, producing an infinite list of successive function applications.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> :s base=10
 labs::Language::Basics> iterate increment 0
 [0, 1, 2, 3, 4, ...]
@@ -1760,7 +1760,7 @@ returns the sequence of initial and transitioned states. `foldl`, which
 you may find more useful, works just like `scanl`, but returns only the final 
 state after all transitions. In fact, `foldl == last scanl`.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> scanl (+) 0 [1, 2, 3, 4, 5]
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for type of sequence member
@@ -1809,7 +1809,7 @@ advantageous:
 Many of Cryptol's operators naturally extend element-wise over
     nested sequences to any depth.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> [[[2, 3], [5, 7]], [[11, 13], [17, 19]]] + [[[0, 1], [1, 2]], [[3, 5], [8, 13]]]
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for type of sequence member
@@ -1825,7 +1825,7 @@ All of the arithmetic, bitwise logical, and comparison operators work
 
 Enumerations serve to provide the indices to loops.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> [1..10]
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for type argument 'a' of 'Cryptol::fromTo'
@@ -1840,7 +1840,7 @@ Showing a specific instance of polymorphic result:
 
 You can have "infinite" enumerations with `...`.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> [1...]
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for type argument 'a' of 'Cryptol::infFrom'
@@ -1855,7 +1855,7 @@ needed we're fine.
 Loops to accumulate a value are often simple calculations over
 indices.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> sum [1..100]
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for type argument 'a' of 'Cryptol::fromTo'
@@ -1874,7 +1874,7 @@ Section 1.6.2:
 > ones. The syntax is reminiscent of the set comprehension notation
 > from ordinary mathematics, generalized to cover parallel branches
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> [ n^^3 | n <- [0..10] ]
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for type argument 'a' of 'Cryptol::fromTo'
@@ -1894,7 +1894,7 @@ as a branch. With multiple branches, there are two choices for how the
 values are drawn from the branches, *cartesian* (`,` between
 branches), or in *parallel* (`|` between branches). For example:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> [ (a, b) | a <- [0..3] , b <- [0..7] ]
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for type argument 'a' of 'Cryptol::fromTo'
@@ -1913,7 +1913,7 @@ Showing a specific instance of polymorphic result:
 These two types can mix, though this is not often found when
 specifying cryptography.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> [ (a, b, c) | a <- [0..2] , b <- [3..4] | c <- [5..10] ]
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for type argument 'a' of 'Cryptol::fromTo'
@@ -1926,7 +1926,7 @@ The previously described functional programming idioms can all be
 implemented using sequence comprehension. For example:
 
   * `map`
-    ```Xcryptol session
+    ```Xcryptol-session
     labs::Language::Basics> let sumt (a, b) = a + b
     labs::Language::Basics> map sumt [ (1, 2), (3, 4), (4, 5) ]
     Showing a specific instance of polymorphic result:
@@ -1938,7 +1938,7 @@ implemented using sequence comprehension. For example:
     [3, 7, 9]
     ```
   * `iterate`
-    ```Xcryptol session
+    ```Xcryptol-session
     labs::Language::Basics> let skipBy a x = x + a : Integer
     labs::Language::Basics> iterate (skipBy 3) 0
     [0, 3, 6, 9, 12, ...]
@@ -1947,7 +1947,7 @@ implemented using sequence comprehension. For example:
     [0, 3, 6, 9, 12, ...]
     ```
   * `scanl` and `foldl`
-    ```Xcryptol session
+    ```Xcryptol-session
     labs::Language::Basics> scanl (+) 0 [1, 2, 3, 4, 5]
     Showing a specific instance of polymorphic result:
       * Using 'Integer' for type of sequence member
@@ -2004,7 +2004,7 @@ sequence comprehension above:
 Many block ciphers are just variations of the above theme. 
 Here's a sample of it in action:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> encrypt 0x1337c0de 0xdabbad00
 0x6157c571
 labs::Language::Basics> encrypt 0 0xdabbad00
@@ -2036,7 +2036,7 @@ lazyAbsMin x y = if x == 0 then 0 else min (abs x) (abs y)
 Does not produce an error when `x` is zero, regardless of the value of
 `y`. For instance:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Language::Basics> lazyAbsMin 1 (0/0)
 
 division by 0
@@ -2056,8 +2056,12 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](/README.md)
-Previous: [Interpreter](/labs/Interpreter/Interpreter.md)
-Next: [CRC](/labs/CRC/CRC.md)
-      [Cryptol Demos](/labs/Demos/Cryptol/Demos.md)
-      [SAW Demos](/labs/Demos/SAW/Demos.md)
+||||
+|-:|:-:|-|
+|| [ ^ Course README](../../README.md) ||
+| [< Interpreter](../Interpreter/Interpreter.md) | **Language Basics** | [CRC >](../CRC/CRC.md) |
+||||
+|| [+ Style Guide](../../cryptol-style.md) ||
+|| [+ Cryptol Demos](../Demos/Cryptol/Demos.md) ||
+|| [+ SAW Demos](../Demos/SAW/Demos.md) ||
+|| [+ Type Hackery](./IntroTypeHackery.md) ||

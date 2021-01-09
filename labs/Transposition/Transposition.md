@@ -30,7 +30,7 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Cryptol> :m labs::Transposition::Transposition
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
@@ -48,7 +48,7 @@ module labs::Transposition::Transposition where
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and only change `cryptol` code as directed by the 
 exercises, reloading for `:m ...` to import your changes.
 
@@ -377,7 +377,7 @@ rearrange_trace w = out
 
 Here's how this function works for the string `"HE-LL-O-"`:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::TranspositionAnswers> :s ascii=on
 labs::Transposition::TranspositionAnswers> :s base=10
 labs::Transposition::Transposition> rearrange_trace "HE-LL-O-" 
@@ -469,7 +469,7 @@ rearrange_equiv = rearrange`{n} === rearrange'`{n}
 In addition to being recursive, this approach requires tricks with 
 `min` and `max` to establish type consistency for an empty sequence.  
 What kind of fool thought this up?  (See 
-[Intro to Type Hackery](labs/Language/IntroTypeHackery.md) 
+[Type Hackery](../Language/IntroTypeHackery.md) 
 for a better, more detailed example of such hackery.)
 
 **EXERCISE**: Using `rearrange'` as a blueprint, define a function 
@@ -538,7 +538,8 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Transposition Ciphers](/labs/Transposition/Contents.md)
-Previous: [Common Properties for Ciphers](CommonProperties.md)
-Answers: [Transposition Ciphers, in the Abstract](TranspositionAnswers.md)
-Next: [Esrever: A trivial message-reversing transposition "cipher"](Esrever.md)
+||||
+|-:|:-:|-|
+|| [ ^ Transposition Ciphers](./Contents.md) ||
+| [< Common Properties for Ciphers](./CommonProperties.md) | **Transposition** | [Esrever >](./Esrever.md) |
+|| [! Transposition (Answers)](./TranspositionAnswers.md) ||

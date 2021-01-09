@@ -29,7 +29,7 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::Demos::Cryptol::Sudoku
 Loading module Cryptol
@@ -46,7 +46,7 @@ module labs::Demos::Cryptol::Sudoku where
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.  
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 ## Sudoku in Cryptol
@@ -280,7 +280,7 @@ f x = x*x - 7*x + 12 == 0
 > The function `f` returns `True` if its given 8-bit argument is a
 > solution to the quadratic equation `x^^2 - 7x + 12 = 0`. We have:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::Sudoku> :s base=10
 labs::Demos::Cryptol::Sudoku> :sat f
 Satisfiable
@@ -292,7 +292,7 @@ f 4 = True
 > solution? It is easy to formulate a similar query using the lambda
 > notation:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::Sudoku> :sat (\x -> f x && (x != 4))
 Satisfiable
 (\x -> f x && (x != 4)) 3 = True
@@ -302,7 +302,7 @@ Satisfiable
 > Cryptol tells us 3 is a solution as well! There happen to only be two
 > solutions to this equation; let's verify:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::Sudoku> :sat (\x -> f x && (x != 4) && (x != 3))
 Unsatisfiable
 (Total Elapsed Time: 0.034s, using "Z3")
@@ -321,7 +321,7 @@ Unsatisfiable
 > satisfiability checking, we can just use that definition to fill in
 > the blanks for us! To illustrate, consider the board below.
 >
-> <img class="aligncenter" src="SudokuPuzzle.png" alt="Sudoku Puzzle">
+> <img class="aligncenter" src="./SudokuPuzzle.png" alt="Sudoku Puzzle">
 >
 > How do we encode a board with empty cells in Cryptol? One simple
 > idea is to represent the board as a function: It will take the
@@ -376,7 +376,7 @@ Ahem...sorry.
 > the function return `True`, i.e., we need to find a satisfying
 > assignment. Here's the response from Cryptol:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::Sudoku> :sat puzzle
 Satisfiable
 puzzle
@@ -391,7 +391,7 @@ puzzle
 > numbers found by Cryptol.) Well; that's what we set out to do
 > originally; so mission accomplished!
 >
-> <img class="aligncenter" src="SudokuSolution.png" alt="Solution to Sudoku Puzzle">
+> <img class="aligncenter" src="./SudokuSolution.png" alt="Solution to Sudoku Puzzle">
 
 **INTERJECTION**
 
@@ -446,7 +446,7 @@ property puzzle_unique
            [i1,  5,  4, i4, i5,  8, i7,  7, i9]]
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::Sudoku> :prove puzzle_unique
 Q.E.D.
 (Total Elapsed Time: 0.813s, using "Z3")
@@ -462,7 +462,7 @@ video](https://youtu.be/GrCgt42avdE?t=81). Let's see how Cryptol, a
 SAT solving interface that was not optimized for Sudoku puzzles in
 particular, fares...
 
-<img class="aligncenter" src="WHSudokuPuzzle.png" alt="World's Hardest Sudoku Puzzle (Arto Inkala)">
+<img class="aligncenter" src="./WHSudokuPuzzle.png" alt="World's Hardest Sudoku Puzzle (Arto Inkala)">
 
 ```cryptol
 /**
@@ -494,7 +494,7 @@ hard_puzzle
        [i1,  9, i3, i4, i5, i6,  4, i8, i9]]
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::Sudoku> :s base=10
 labs::Demos::Cryptol::Sudoku> :sat hard_puzzle
 Satisfiable
@@ -505,7 +505,7 @@ hard_puzzle
 (Total Elapsed Time: 2.031s, using "Z3")
 ```
 
-<img class="aligncenter" src="WHSudokuSolution.png" alt="Solution to World's Hardest Sudoku Puzzle (Arto Inkala)">
+<img class="aligncenter" src="./WHSudokuSolution.png" alt="Solution to World's Hardest Sudoku Puzzle (Arto Inkala)">
 
 Not bad.  Finally, we should prove that this is unique as well...
 
@@ -557,7 +557,7 @@ property hard_unique
            [i1,  9, i3, i4, i5, i6,  4, i8, i9]]
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::Sudoku> :prove hard_unique
 Q.E.D.
 (Total Elapsed Time: 5.431s, using "Z3")
@@ -587,6 +587,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Cryptol Demos](/Demos/Cryptol/Demos.md)
-
-
+||||
+|-:|:-:|-|
+|| [ ^ Cryptol Demos](./Demos.md) ||
+| [< n-Queens](./NQueens.md) | **Sudoku** ||

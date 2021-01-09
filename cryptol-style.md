@@ -240,7 +240,7 @@ doccom : [32] -> [32]
 doccom n = n + 1
 ```
 
-```Xcryptol session
+```Xcryptol-session
 Main> :h doccom
 
     doccom : [32] -> [32]
@@ -329,4 +329,7 @@ without warnings.
 
 # From here, you can go somewhere!
 
-Up: [Course README](/README.md)
+||||
+|-:|:-:|-|
+|| [- Language Basics](./labs/Language/Basics.md) ||
+|| **Style Guide** ||

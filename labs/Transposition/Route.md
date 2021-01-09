@@ -33,7 +33,7 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Cryptol> :m labs::Transposition::Route
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
@@ -75,11 +75,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Transposition Ciphers](/labs/Transposition/Contents.md)
-Previous: [Rail Fence: A basic transposition cipher for humans that's not-so-
-basic for Cryptol](RailFence.md)
-More: [Key Wrapping](/labs/KeyWrapping/KeyWrapping.md)
-      [Salsa20 Properties](/labs/Salsa20/Salsa20Props.md)
-      [Project Euler](/labs/ProjectEuler/ProjectEuler.md)
-Next: [Capstone](/labs/LoremIpsum/LoremIpsum.md)
-      [Parameterized Modules](/labs/SimonSpeck/SimonSpeck.md)
+||||
+|-:|:-:|-|
+|| [ ^ Transposition Ciphers](./Contents.md) ||
+| [< Rail Fence](./RailFence.md) | **Route** ||

@@ -37,7 +37,7 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::ProjectEuler::ProjectEuler
 Loading module Cryptol
@@ -60,7 +60,7 @@ import labs::ProjectEuler::cipher2
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # Properties in Cryptol, or How I Learned to Stop Worrying and Love SAT Solvers
@@ -82,7 +82,7 @@ property inc1001 x = inc x == 1001
 Now that we have our function and a property about our function, we
 can test it using the Cryptol interpreter.
 
-```Xcryptol session
+```Xcryptol-session
 labs::ProjectEuler::ProjectEuler> :sat inc1001
 Satisfiable
 inc1001 1000 = True
@@ -102,7 +102,7 @@ factor3000013 x y =
 Note that if we don't include the `x > 1 /\ y > 1` clauses we get a
 trivial factorization.  Now we can use Cryptol to factor our number:
 
-```Xcryptol session
+```Xcryptol-session
 labs::ProjectEuler::ProjectEuler> :sat factor3000013
 Satisfiable
 factor3000013 773 3881 = True
@@ -279,11 +279,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](/README.md)
-Previous: [Cryptographic Properties](/labs/CryptoProofs/CryptoProofs.md)
-Answers: [Project Euler](/labs/ProjectEuler/ProjectEulerAnswers.md)
-Next: [Key Wrapping](/labs/KeyWrapping/KeyWrapping.md)
-      [Salsa20 Properties](/labs/Salsa20/Salsa20Props.md)
-      [Transposition Ciphers](/labs/Transposition/Contents.md)
-Next: [Capstone](/labs/LoremIpsum/LoremIpsum.md)
-      [Parameterized Modules](/labs/SimonSpeck/SimonSpeck.md)
+||||
+|-:|:-:|-|
+|| [- Cryptographic Properties](../CryptoProofs/CryptoProofs.md) ||
+|| [! Project Euler (Answers)](./ProjectEulerAnswers.md) ||

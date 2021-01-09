@@ -300,3 +300,16 @@ gcdCommon x y = if x == 0 \/ y == 0 then max x y
                  | x >  y           then gcdCommon (x % y) y
                                     else gcdCommon  x     (y % x)
 ```
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+||||
+|-:|:-:|-|
+|| [- Language Basics](./Basics.md) ||
+|| **Type Hackery** ||

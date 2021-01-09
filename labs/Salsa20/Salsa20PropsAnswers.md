@@ -36,7 +36,7 @@ Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::Salsa20::Salsa20PropsAnswers
 Loading module Cryptol
@@ -55,21 +55,21 @@ import labs::Salsa20::Salsa20Answers
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # Salsa20 Security Properties
 
-In this lab, we consider additional properties of the [Salsa20 stream
-cipher](Salsa20Spec.md) [5], which has undergone much scrutiny since
-being proposed for [eSTREAM, the ECRYPT Stream Cipher
-Project](https://www.ecrypt.eu.org/stream).
+In this lab, we consider additional properties of the
+[Salsa20 stream cipher](./Salsa20Spec.pdf) [5], which has undergone
+much scrutiny since being proposed for
+[eSTREAM, the ECRYPT Stream Cipher Project](https://www.ecrypt.eu.org/stream).
 
 ## Invertibility
 
-Throughout [the Salsa20 spec](Salsa20Spec.pdf) [5], various functions
+Throughout [the Salsa20 spec](./Salsa20Spec.pdf) [5], various functions
 are noted as being "invertible". In the [Salsa20
-lab](Salsa20Answers.md), we proved that the `quarterround` and
+lab](./Salsa20Answers.md), we proved that the `quarterround` and
 `littleendian` functions are invertible. We did this because the
 specification explicitly mentioned these properties. Similarly, though
 not called out in the specification, other functions defined in the
@@ -300,10 +300,8 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](/README.md)
-Previous: [Salsa20 Properties](/labs/Salsa20/Salsa20Props.md)
-More: [Key Wrapping](/labs/KeyWrapping/KeyWrapping.md)
-      [Transposition Ciphers](/labs/Transposition/Contents.md)
-      [Project Euler](/labs/ProjectEuler/ProjectEuler.md)
-Next: [Capstone](/labs/LoremIpsum/LoremIpsum.md)
-      [Parameterized Modules](/labs/SimonSpeck/SimonSpeck.md)
+||||
+|-:|:-:|-|
+|| [- Cryptographic Properties](../CryptoProofs/CryptoProofs.md) ||
+|| **Salsa20 Properties (Answers)** ||
+|| [? Salsa20 Properties](./Salsa20Props.md) ||

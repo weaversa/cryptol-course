@@ -34,7 +34,7 @@ Cryptol document --- that is, it can be loaded directly into the
 Cryptol interpreter. Load this module from within the Cryptol 
 interpreter running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Cryptol> :m labs::Transposition::EsreverAnswers
 Loading module Cryptol
 Loading module Cryptol
@@ -90,7 +90,7 @@ pi_correct: {n, a} (fin n, Cmp a) => [n]a -> Bit
 pi_correct msg = (encrypt pi) msg == reverse msg
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::EsreverAnswers> :check pi_test
 Using exhaustive testing.
 Passed 1 tests.
@@ -115,7 +115,7 @@ encrypt_decrypt_equiv: {n, a} (fin n, Cmp a) => [n]a -> Bit
 encrypt_decrypt_equiv = encrypt pi === decrypt pi
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Transposition::EsreverAnswers> :prove encrypt_decrypt_equiv`{32, Char}
 Q.E.D.
 (Total Elapsed Time: 0.008s, using Z3)
@@ -142,6 +142,8 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Transposition Ciphers](/labs/Transposition/Contents.md)
-Previous: [Esrever: A trivial message-reversing transposition "cipher"](Esrever.md)
-Next: [Scytale: A classic easy-to-specify transposition cipher](ScytaleAnswers.md)
+||||
+|-:|:-:|-|
+|| [ ^ Transposition Ciphers](./Contents.md) ||
+| [< Transposition](./Transposition.md) | **Esrever (Answers)** | [Scytale >](./Scytale.md) |
+|| [? Esrever](./Esrever.md) ||

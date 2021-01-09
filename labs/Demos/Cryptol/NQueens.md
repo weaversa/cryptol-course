@@ -28,7 +28,7 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::Demos::Cryptol::NQueens
 Loading module Cryptol
@@ -43,7 +43,7 @@ module labs::Demos::Cryptol::NQueens where
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.  
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # N-Queens
@@ -183,7 +183,7 @@ The instructions for [1] also work here:
 
 > To see this in action, try:
 >
-> ```Xcryptol session
+> ```Xcryptol-session
 > > :sat nQueens : (Solution n)
 > ```
 > where n is the board size.
@@ -193,27 +193,19 @@ The instructions for [1] also work here:
 >
 > To do that,
 >
-<<<<<<< HEAD
-> ```Text
-=======
-> ```example
->>>>>>> origin/master
+> ```Xcryptol-session
 > > :set prover=z3
 > ```
 >
 > or
 >
-<<<<<<< HEAD
-> ```Text
-=======
-> ```example
->>>>>>> origin/master
+> ```Xcryptol-session
 > > :set prover=yices
 > ```
 
 Here is one possible outcome for `n = 8`:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::NQueens> :s base=10
 labs::Demos::Cryptol::NQueens> :sat nQueens : (Solution 8)
 Satisfiable
@@ -227,7 +219,7 @@ This corresponds to the following arrangement (diagram produced by
 8](https://en.wikipedia.org/wiki/Eight_queens_puzzle#Solutions) in
 the Wikipedia article):
 
-<img src="NQueensSolution.png" alt="Solution to 8-Queens Puzzle">
+<img src="./NQueensSolution.png" alt="Solution to 8-Queens Puzzle">
 
 # Solicitation
 
@@ -237,4 +229,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Cryptol Demos](/Demos/Cryptol/Demos.md)
+||||
+|-:|:-:|-|
+|| [ ^ Cryptol Demos](./Demos.md) ||
+| [< One-Time Pad](./OneTimePad.md) | **n-Queens** | [Sudoku >](./Sudoku.md) |

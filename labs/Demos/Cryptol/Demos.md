@@ -1,13 +1,17 @@
 # Cryptol Demos
 
-* [Caesar](Caesar.md)
+* [Caesar](./Caesar.md)
   Come, see, and conquer the classic.
-* [One-Time Pad](OneTimePad.md)
+* [One-Time Pad](./OneTimePad.md)
   Perfect secrecy, for once.
-* [n-Queens](NQueens.md)
+* [n-Queens](./NQueens.md)
   Cryptol is not just crypto.
-* [Sudoku](Sudoku.md)
+* [Sudoku](./Sudoku.md)
   Diabolical made trivial.
+
+<a href="../../../misc/CryptolDemos.gv.svg">
+    <img class="center" src="../../../misc/CryptolDemos.gv.svg" alt="Cryptol Demos - Suggested Flow">
+</a>
 
 # Solicitation
 
@@ -17,8 +21,8 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](/README.md)
-Previous: [Language Basics](/labs/Language/Basics.md)
-More: [CRC](/labs/CRC/CRC.md)
-      [Cryptol Demos](/labs/Demos/Cryptol/Demos.md)
-Next: [Salsa20](/labs/Salsa20/Salsa20.md)
+||||
+|-:|:-:|-|
+|| [- Language Basics](../../Language/Basics.md) ||
+|| **Cryptol Demos** ||
+|| [v Caesar](./Caesar.md) ||

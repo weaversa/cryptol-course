@@ -26,7 +26,7 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::Demos::Cryptol::Caesar
 Loading module Cryptol
@@ -41,7 +41,7 @@ module labs::Demos::Cryptol::Caesar where
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.  
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # Caesar Cipher
@@ -65,7 +65,7 @@ caesar msg = map rot3 msg
         c
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::Caesar> :s prover=abc
 labs::Demos::Cryptol::Caesar> :s ascii=on
 labs::Demos::Cryptol::Caesar> caesar "ATTACK AT DAWN"
@@ -132,7 +132,7 @@ charIsAtIndex : Char -> Bit
 property charIsAtIndex = indexCorrect alphabet
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::Caesar> :prove charIsAtIndex
 Q.E.D.
 (Total Elapsed Time: 0.072s, using "ABC")
@@ -140,7 +140,7 @@ Q.E.D.
 
 The property even holds for other sequences, repeating or not:
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::Caesar> :prove \(A : [64]Char) -> indexCorrect A
 Q.E.D.
 (Total Elapsed Time: 1.172s, using "ABC")
@@ -174,7 +174,7 @@ encrypt key msg = map rot msg
 Note the `alphabet >>> key` part: Cryptol allows rotation not only
 over bit sequences, ...
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::Caesar> :s ascii=off
 labs::Demos::Cryptol::Caesar> :s base=2
 labs::Demos::Cryptol::Caesar> 0b11001010 <<< 4
@@ -183,7 +183,7 @@ labs::Demos::Cryptol::Caesar> 0b11001010 <<< 4
 
 ...but over sequences of arbitrary shape...
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::Caesar> :s base=10
 labs::Demos::Cryptol::Caesar> [1, 2, 3, 4, 5 : Integer] <<< 3
 [4, 5, 1, 2, 3]
@@ -234,7 +234,7 @@ Though we could `:prove` these, for static test cases with no
 variables, it makes more sense to `:check` these (this saves
 the solver some work and often speeds up such tests).
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::Caesar> :check v1
 Using exhaustive testing.
 Passed 1 tests.
@@ -272,7 +272,7 @@ property recovery_4 = recovery`{4}
 property recovery_14 = recovery`{14}
 ```
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::Caesar> :prove recovery_4
 Q.E.D.
 (Total Elapsed Time: 0.245s, using "ABC")
@@ -287,7 +287,7 @@ Q.E.D.
 So is this a good cipher?  Well, no.  Let's...here.  We can manually
 deduce a key from known ciphertext...
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::Caesar> map (\k -> (k, decrypt k "SXQW SJLXK FJB J SRWPUNQNRVNA BLQVRMC")) [0..25]
 [(0, "SXQW SJLXK FJB J SRWPUNQNRVNA BLQVRMC"),
  (1, "TYRX TKMYL GKC K TSXQVOROSWOB CMRWSND"),
@@ -321,7 +321,7 @@ labs::Demos::Cryptol::Caesar> map (\k -> (k, decrypt k "SXQW SJLXK FJB J SRWPUNQ
 solving...here we switch solvers back to `z3` because `abc` sometimes
 has troubles with this one.
 
-```Xcryptol session
+```Xcryptol-session
 labs::Demos::Cryptol::Caesar> :s prover=z3
 labs::Demos::Cryptol::Caesar> :sat \k -> encrypt k "ILLUMINATI CONFIRMED" == "NQQZRNSFYN HTSKNWRJI"
 Satisfiable
@@ -343,5 +343,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Cryptol Demos](/Demos/Cryptol/Demos.md)
-
+||||
+|-:|:-:|-|
+|| [ ^ Cryptol Demos](./Demos.md) ||
+|| **Caesar** | [One-Time Pad >](./OneTimePad.md) |

@@ -66,7 +66,7 @@ Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::Demos::SAW::Bittwiddling::Bittwiddling
 Loading module Cryptol
@@ -81,7 +81,7 @@ module labs::Demos::SAW::Bittwiddling::Bittwiddling where
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 ## Parity Exercise
@@ -184,5 +184,8 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [SAW Demos](/labs/Demos/SAW/Demos.md)
-Answers: [Bit-twiddling](SAW/Bittwiddling/BittwiddlingAnswers.md)
+||||
+|-:|:-:|-|
+|| [ ^ SAW Demos](../Demos.md) ||
+| [< Arithmetic Verifications](../ArithmeticVerifications/ArithmeticVerifications.md) | **Bit Twiddling** ||
+|| [! Bit Twiddling (Answers)](./BittwiddlingAnswers.md) ||

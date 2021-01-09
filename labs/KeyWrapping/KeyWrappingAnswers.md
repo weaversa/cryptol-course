@@ -43,7 +43,7 @@ Cryptol document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter running
 in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::KeyWrapping::KeyWrappingAnswers
 Loading module Cryptol
@@ -71,7 +71,7 @@ module labs::KeyWrapping::KeyWrappingAnswers where
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.  
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # Writing Key Wrapping Routines in Cryptol
@@ -401,7 +401,7 @@ some iterative process.
 
 The signature for `foldl` is as follows:
 
-```Xcryptol session
+```Xcryptol-session
 labs::KeyWrapping::KeyWrappingAnswers> :t foldl
 foldl : {n, a, b} (fin n) => (a -> b -> a) -> a -> [n]b -> a
 ```
@@ -417,7 +417,7 @@ One application for `foldl` is to access the final element of some
 iterative process. For instance, we **could** find a list of partial
 sums from the sequence `[1..10]` as follows:
 
-```Xcryptol session
+```Xcryptol-session
 labs::KeyWrapping::KeyWrappingAnswers> sums where sums = [0] # [ x + partial | x <- [1..10] | partial <- sums]
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for type argument 'a' of 'Cryptol::fromTo'
@@ -427,7 +427,7 @@ Showing a specific instance of polymorphic result:
 However, if we are only interested in the final element of this
 sequence, then we can use `foldl` as follows:
 
-```Xcryptol session
+```Xcryptol-session
 labs::KeyWrapping::KeyWrappingAnswers> foldl (+) 0 [1..10]
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for type argument 'a' of 'Cryptol::fromTo'
@@ -477,7 +477,7 @@ At this point you can check your work against six test vectors given
 in a property defined later on in this document. Here is the the
 command and sample output for `KWAETests`.
 
-```Xcryptol session
+```Xcryptol-session
 labs::KeyWrapping::KeyWrappingAnswers> :check KWAETests
 Using exhaustive testing.
 Passed 1 tests.
@@ -528,7 +528,7 @@ Once you have these completed you should be able to check your work by
 having Cryptol `:prove` the properties `WStep2'Prop` and
 `W'Prop`. Your output should look something like the following:
 
-```Xcryptol session
+```Xcryptol-session
 labs::KeyWrapping::KeyWrappingAnswers> :prove WStep2'Prop
 Q.E.D.
 (Total Elapsed Time: 0.064s, using "Z3")
@@ -604,7 +604,7 @@ Section 7 are very similar to `KW-AE` and `KW-AD`. We'll come back to
   recommend following the same steps from above and defining the helper
   functions `TWStep2`, `TWStep2'`, `TW`, and `TW'` before you attempt
   `TKW-AE` and `TKW-AD`. Test vectors are available in the
-  [kwtestvectors directory](kwtestvectors).
+  [kwtestvectors directory](./kwtestvectors/).
 
 There are some minor modifications to be made, but things should go
 easily using `KW-AE` and `KW-AD` as a reference. This is a good
@@ -622,7 +622,7 @@ key wrap module, and with `semiblock = 32` into a TDES key wrap
 module. This concept of parameterized, hierarchical modules can really
 help you make clear, duplication free, reusable Cryptol
 specifications. For those with poor imaginations, we've provided such
-a thing [here](spec/).
+a thing [here](./spec/).
 
 **Back to TDES**: One important difference in the TKW family is you
 will use the Triple-DES algorithm that's implemented in the `TDEA`
@@ -717,7 +717,7 @@ that is likely only learned through trial and error.
 To dig into this a bit, let's consider the type of a generic
 `if-then-else` statement
 
-```Xcryptol session
+```Xcryptol-session
 labs::KeyWrapping::KeyWrapping> :t \(c, t, e) -> if c then t else e
 (\(c, t, e) -> if c then t else e) : {a} (Bit, a, a) -> a
 ```
@@ -757,7 +757,7 @@ values. If `a > 0x30`, `f` returns `h x` where `h` takes and returns
 only 64-bit values. If we try to load this function into Cryptol we
 see:
 
-```Xcryptol session
+```Xcryptol-session
 [error] at labs/KeyWrapping/KeyWrapping.md:863:1--866:14:
   Failed to validate user-specified signature.
     in the definition of 'f', at labs/KeyWrapping/KeyWrapping.md:863:1--863:2,
@@ -821,7 +821,7 @@ f x = if `a <= 0x30 then
 And here we test that `f` correctly calls `g` and `h` (which increment
 and decrement by 1, respectively).
 
-```Xcryptol session
+```Xcryptol-session
 labs::KeyWrapping::KeyWrapping> f (10 : [37])
 0x00000000000b
 labs::KeyWrapping::KeyWrapping> f (10 : [53])
@@ -930,7 +930,7 @@ number of semiblocks of `C` should be `2^^29`.
 Asking Cryptol for the type of `KWPAE` after plugging in `2^^32-1` for
 `k` gives an `l` of `34359738432`:
 
-```Xcryptol session
+```Xcryptol-session
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1}
 KWPAE`{k = 2 ^^ 32 -
            1} : ([128] -> [128]) -> [34359738360] -> [34359738432]
@@ -939,14 +939,14 @@ KWPAE`{k = 2 ^^ 32 -
 Well, what's `34359738432`? Is it `2^^29` 64-bit words? Let's first
 check how many 64-bit words it is. Here's one way:
 
-```Xcryptol session
+```Xcryptol-session
 labs::KeyWrapping::KeyWrappingAnswers> :t \(a : [34359738432]) -> groupBy`{64} a
 (\(a : [34359738432]) -> groupBy`{64} a) : [34359738432] -> [536870913][64]
 ```
 
 Great...now what's `536870913`? Is it `2^^29`?
 
-```Xcryptol session
+```Xcryptol-session
 labs::KeyWrapping::KeyWrappingAnswers> 2^^29 : Integer
 536870912
 ```
@@ -954,7 +954,7 @@ labs::KeyWrapping::KeyWrappingAnswers> 2^^29 : Integer
 Woh! Its not. `536870913` is `2^^29 + 1`. Let's double check this ---
 here is a command that tests the `2^^29` upper bound from Table 1:
 
-```Xcryptol session
+```Xcryptol-session
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, n = (2^^29)}
 
 [error] at <interactive>:1:1--1:6:
@@ -968,7 +968,7 @@ labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, n = (2^^29)}
 
 And here is a command that tests the bound we just found, `2^^29 + 1`.
 
-```Xcryptol session
+```Xcryptol-session
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, n = (2^^29 + 1)}
 KWPAE`{k = 2 ^^ 32 - 1,
        n = (2 ^^ 29 +
@@ -1141,9 +1141,10 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](/README.md)
-Previous: [Key Wrapping](/labs/KeyWrapping/KeyWrapping.md)
-More: [Salsa20 Properties](/labs/Salsa20/Salsa20Props.md)
-      [Transposition Ciphers](/labs/Transposition/Contents.md)
-      [Project Euler](/labs/ProjectEuler/ProjectEuler.md)
-Next: [Capstone](/labs/LoremIpsum/LoremIpsum.md)
+||||
+|-:|:-:|-|
+|| [ ^ Course README](../../README.md) ||
+| [< Cryptographic Properties](../CryptoProofs/CryptoProofs.md) | **Key Wrapping (Answers)** | [Capstone >](../LoremIpsum/LoremIpsum.md) |
+|| [? Key Wrapping](./KeyWrapping.md) ||
+||||
+|| [+ Parameterized Modules](../SimonSpeck/SimonSpeck.md) ||

@@ -31,7 +31,7 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::SimonSpeck::SimonSpeck
 Loading module Cryptol
@@ -48,7 +48,7 @@ module labs::SimonSpeck::SimonSpeck where
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.  
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # Learning to use Parameterized Modules with Simon and Speck
@@ -370,12 +370,12 @@ many of the patterns you will encounter writing up `Speck` will mirror
 `Simon`.
 
 If you name your files as suggested in the [Speck
-README.md](/labs/SimonSpeck/Speck/README.md) file, then you should be
+README.md](./Speck/README.md) file, then you should be
 able to load the `SpeckTestVectors` module also located in the `Speck`
 folder as follows and verify that you have correctly implemented the
 functions:
 
-```Xcryptol session ci-none
+```Xcryptol-session ci-none
 Loading module Cryptol
 Cryptol> :m labs::SimonSpeck::Speck::SpeckTestVectors
 labs::SimonSpeck::Simon::SpeckTestVectors> :prove all_speck_vectors_pass 
@@ -405,10 +405,7 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](/README.md)
-Previous: [Key Wrapping](/labs/KeyWrapping/KeyWrapping.md)
-          [Salsa20 Properties](/labs/Salsa20/Salsa20Props.md)
-          [Common Properties for Ciphers](/labs/Transposition/CommonProperties.md)
-          [Project Euler](/labs/ProjectEuler/ProjectEuler.md)
-More: [Capstone](/labs/LoremIpsum/LoremIpsum.md)
-Next: [Course README](/README.md)
+||||
+|-:|:-:|-|
+|| [- Key Wrapping](../KeyWrapping/KeyWrapping.md) ||
+|| **Parameterized Modules** ||

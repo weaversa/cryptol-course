@@ -39,7 +39,7 @@ document --- that is, it can be loaded directly into the Cryptol
 interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::CryptoProofs::CryptoProofs
 Loading module Cryptol
@@ -61,7 +61,7 @@ module labs::CryptoProofs::CryptoProofs where
 
 You do not need to enter the above into the interpreter; the previous 
 `:m ...` command loaded this literate Cryptol file automatically.
-In general, you should run `Xcryptol session` commands in the 
+In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
 # Exploring Cryptography with Cryptol's Proof Tools
@@ -81,7 +81,7 @@ import specs::Primitive::Symmetric::Cipher::Block::DES
 When you loaded the `labs::CryptoProofs::CryptoProofs` module, these
 lines should have been printed:
 
-```Xcryptol session
+```Xcryptol-session
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
@@ -95,7 +95,7 @@ Cryptol tells you that too.
 
 Next, we'll take a look at the type of the DES encryption function.
 
-```Xcryptol session
+```Xcryptol-session
 labs::CryptoProofs::CryptoProofs> :t DES.encrypt
 DES.encrypt : [64] -> [64] -> [64]
 ```
@@ -103,14 +103,14 @@ DES.encrypt : [64] -> [64] -> [64]
 DES takes two 64-bit values and returns a 64-bit value. (The key comes
 first and then the plaintext.) Let's encrypt something with DES.
 
-```Xcryptol session
+```Xcryptol-session
 labs::CryptoProofs::CryptoProofs> DES.encrypt 0x752979387592cb70 0x1122334455667788
 0xb5219ee81aa7499d
 ```
 
 Now decrypt:
 
-```Xcryptol session
+```Xcryptol-session
 labs::CryptoProofs::CryptoProofs> DES.decrypt 0x752979387592cb70 0xb5219ee81aa7499d
 0x1122334455667788
 ```
@@ -161,7 +161,7 @@ square x = x * x
 Now we can reverse it from the REPL. Let's use the solver to find a
 square root using only a squaring function!
 
-```Xcryptol session
+```Xcryptol-session
 labs::CryptoProofs::CryptoProofs> :sat \x -> square x == 1764
 Satisfiable
 (\x -> square x == 1764) 42 = True
@@ -196,14 +196,14 @@ known_ct = 0xf2930290ea4db580
 Note: For whatever reason, the default Z3 solver has trouble with this
 one. Try one of the other solvers, such as YICES:
 
-```Xcryptol session
+```Xcryptol-session
 labs::CryptoProofs::CryptoProofs> :s prover=yices
 ```
 
 Or use all the installed solvers in a first-to-the-post race.
 *Caution! May exhaust system resources.*
 
-```Xcryptol session
+```Xcryptol-session
 labs::CryptoProofs::CryptoProofs> :s prover=any
 ```
 
@@ -244,7 +244,7 @@ We want to prove that function `g` inverts function `f`; that is,
 applying `g` to the result of `f x` gets `x` back. Here's the
 invocation:
 
-```Xcryptol session
+```Xcryptol-session
 labs::CryptoProofs::CryptoProofs> :prove \x -> g (f x) == x
 Q.E.D.
 (Total Elapsed Time: 0.023s, using "Z3")
@@ -375,10 +375,12 @@ https://github.com/weaversa/cryptol-course/issues
 
 # From here, you can go somewhere!
 
-Up: [Course README](/README.md)
-Previous: [Salsa20](/labs/Salsa20/Salsa20.md)
-Answers: [Cryptographic Properties](/labs/CryptoProofs/CryptoProofsAnswers.md)
-Next: [Key Wrapping](/labs/KeyWrapping/KeyWrapping.md)
-      [Salsa20 Properties](/labs/Salsa20/Salsa20Props.md)
-      [Common Properties for Ciphers](/labs/Transposition/CommonProperties.md)
-      [Project Euler](/labs/ProjectEuler/ProjectEuler.md)
+||||
+|-:|:-:|-|
+|| [ ^ Course README](../../README.md) ||
+| [< Salsa20](../Salsa20/Salsa20.md) | **Cryptographic Properties** | [Key Wrapping >](../KeyWrapping/KeyWrapping.md) |
+|| [! Cryptographic Properties (Answers)](./CryptoProofsAnswers.md) ||
+||||
+|| [+ Salsa20 Properties](../Salsa20/Salsa20Props.md) ||
+|| [+ Transposition Ciphers](../Transposition/Contents.md) ||
+|| [+ Project Euler](../ProjectEuler/ProjectEuler.md) ||
