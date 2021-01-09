@@ -1,4 +1,4 @@
-theme: jekyll-theme-cayman
+theme: jekyll-theme-hacker
 baseurl: /cryptol-course
 plugins:
   - jekyll-relative-links
