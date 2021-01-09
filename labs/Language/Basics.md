@@ -112,10 +112,10 @@ material. Also consider keeping the [official Cryptol
 manual](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf)
 close at hand.
 
-For examples in this lab, as they are displayed here, the warning messages about specifying bit
-sizes of numbers have been turned off. This is **not** something you
-should do when you're new at Cryptol; it's only done here for
-teaching purposes.
+For examples in this lab, as they are displayed here, the warning
+messages about specifying bit sizes of numbers have been turned
+off. This is **not** something you should do when you're new at
+Cryptol; it's only done here for teaching purposes.
 
 ```Xcryptol-session
 labs::Language::Basics> :set warnDefaulting = off
@@ -1252,6 +1252,7 @@ functionName input0 input1 =
 Here's a breakdown of how to read it:
 
 Function type specification:
+
 |||
 |-|-|
 | `functionName` | `:`
@@ -1273,6 +1274,7 @@ Function type specification:
 | that takes `inputType0` | and | `inputType1` | and returns | `outputType`.
 
 Function definition:
+
 |||||
 |-|-|-|-|
 | `functionName` | `input0` | `input1` | `=`
