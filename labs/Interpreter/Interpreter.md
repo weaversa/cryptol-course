@@ -543,3 +543,16 @@ https://github.com/weaversa/cryptol-course/issues
 |-:|:-:|-|
 || [ ^ Course README](../../README.md) ||
 | [< Overview](../Overview/Overview.md) | **Interpreter** | [Language Basics >](../Language/Basics.md) |
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+||||
+|-:|:-:|-|
+|| [ ^ Cryptol Course ](../../README.md) ||
+| [ < Overview ](../Overview/Overview.md) | **Interpreter** | [ Language Basics > ](../Language/Basics.md) |

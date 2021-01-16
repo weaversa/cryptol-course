@@ -118,3 +118,17 @@ https://github.com/weaversa/cryptol-course/issues
 || [ ^ Transposition Ciphers](./Contents.md) ||
 | [< Transposition](./Transposition.md) | **Esrever** | [Scytale >](./Scytale.md) |
 || [! Esrever (Answers)](./EsreverAnswers.md) ||
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+||||
+|-:|:-:|-|
+|| [ ^ Transposition Ciphers ](Contents.md) ||
+| [ < Transposition ](./Transposition.md) | **Esrever** | [ Scytale > ](./Scytale.md) |
+|| [ ! Esrever (Answers) ](./EsreverAnswers.md) ||

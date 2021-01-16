@@ -350,3 +350,17 @@ https://github.com/weaversa/cryptol-course/issues
 || [ ^ Course README](../../README.md) ||
 | [< Language Basics](../Language/Basics.md) | **CRC (Answers)** | [Salsa20 >](../Salsa20/Salsa20.md) |
 || [? CRC](./CRC.md) ||
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+||||
+|-:|:-:|-|
+|| [ ^ Cryptol Course ](../../README.md) ||
+| [ < Language Basics ](../Language/Basics.md) | **CRC** | [ Salsa20 > ](../Salsa20/Salsa20.md) |
+|| [ ? CRC ](./CRC.md) ||

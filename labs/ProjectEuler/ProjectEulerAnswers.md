@@ -529,3 +529,17 @@ https://github.com/weaversa/cryptol-course/issues
 |-:|:-:|-|
 || [- Cryptographic Properties](../CryptoProofs/CryptoProofs.md) ||
 || [? Project Euler](./ProjectEuler.md) ||
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+||||
+|-:|:-:|-|
+|| [ - Cryptographic Properties ](../CryptoProofs/CryptoProofs.md) ||
+|| **Project Euler** ||
+|| [ ? Project Euler ](./ProjectEuler.md) ||

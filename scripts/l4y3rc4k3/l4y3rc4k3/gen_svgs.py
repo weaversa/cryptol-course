@@ -22,8 +22,7 @@ def url( lab ):
     )
 
 if __name__ == '__main__':
-    PROJECT_PATH = Path(__file__).resolve().parents[4]
-    CRYPTOL_COURSE_PATH = PROJECT_PATH/'cryptol-course'
+    CRYPTOL_COURSE_PATH = Path(__file__).resolve().parents[3]
     MISC_PATH = CRYPTOL_COURSE_PATH/'misc'
     SCRIPT_PATH = CRYPTOL_COURSE_PATH/'scripts/l4y3rc4k3'
     DEPS_YML_PATH = SCRIPT_PATH/'deps.yml'

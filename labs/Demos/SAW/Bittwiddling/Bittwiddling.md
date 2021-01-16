@@ -189,3 +189,17 @@ https://github.com/weaversa/cryptol-course/issues
 || [ ^ SAW Demos](../Demos.md) ||
 | [< Arithmetic Verifications](../ArithmeticVerifications/ArithmeticVerifications.md) | **Bit Twiddling** ||
 || [! Bit Twiddling (Answers)](./BittwiddlingAnswers.md) ||
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+||||
+|-:|:-:|-|
+|| [ ^ SAW Demos ](../Demos.md) ||
+| [ < Arithmetic Verifications ](../ArithmeticVerifications/ArithmeticVerifications.md) | **Bit Twiddling** ||
+|| [ ! Bit Twiddling (Answers) ](./BittwiddlingAnswers.md) ||

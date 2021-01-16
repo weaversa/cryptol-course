@@ -483,3 +483,21 @@ https://github.com/weaversa/cryptol-course/issues
 || [+ Salsa20 Properties](../Salsa20/Salsa20Props.md) ||
 || [+ Transposition Ciphers](../Transposition/Contents.md) ||
 || [+ Project Euler](../ProjectEuler/ProjectEuler.md) ||
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+||||
+|-:|:-:|-|
+|| [ ^ Cryptol Course ](../../README.md) ||
+| [ < Salsa20 ](../Salsa20/Salsa20.md) | **Cryptographic Properties** | [ Key Wrapping > ](../KeyWrapping/KeyWrapping.md) |
+|| [ ? Cryptographic Properties ](./CryptoProofs.md) ||
+||||
+|| [+ Salsa20 Properties]( ../Salsa20/Salsa20Props.md ) ||
+|| [+ Transposition Ciphers]( ../Transposition/Contents.md ) ||
+|| [+ Project Euler]( ../ProjectEuler/ProjectEuler.md ) ||

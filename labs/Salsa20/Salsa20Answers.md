@@ -944,3 +944,17 @@ https://github.com/weaversa/cryptol-course/issues
 || [ ^ Course README](../../README.md) ||
 | [< CRC](../CRC/CRC.md) | **Salsa20 (Answers)** | [Cryptographic Properties >](../CryptoProofs/CryptoProofs.md)
 || [? Salsa20](./Salsa20.md) ||
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+||||
+|-:|:-:|-|
+|| [ ^ Cryptol Course ](../../README.md) ||
+| [ < CRC ](../CRC/CRC.md) | **Salsa20** | [ Cryptographic Properties > ](../CryptoProofs/CryptoProofs.md) |
+|| [ ? Salsa20 ](./Salsa20.md) ||
