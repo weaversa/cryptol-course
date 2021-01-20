@@ -1,0 +1,7 @@
+module AES::AES256 where
+
+import SuiteB
+
+Encrypt KEK = aesEncryptBlock (aes256EncryptSchedule KEK)
+Decrypt KEK = aesDecryptBlock (aes256DecryptSchedule KEK)
+

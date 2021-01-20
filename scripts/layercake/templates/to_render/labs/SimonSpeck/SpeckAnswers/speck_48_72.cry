@@ -1,0 +1,8 @@
+module labs::SimonSpeck::SpeckAnswers::speck_48_72 = labs::SimonSpeck::SpeckAnswers::Speck where
+
+  type n = 24
+  type m = 3
+  a = 8
+  b = 3
+  type T = 22
+

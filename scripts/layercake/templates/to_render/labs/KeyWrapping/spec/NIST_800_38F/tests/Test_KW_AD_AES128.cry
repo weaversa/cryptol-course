@@ -1,0 +1,56 @@
+module NIST_800_38F::tests::Test_KW_AD_AES128 where
+
+import NIST_800_38F::AES128 as AES128
+
+// Test Harness
+CheckAES128UnwrapVector : {K:[128], C:[192], P:[128], FAIL:Bit} -> Bit
+CheckAES128UnwrapVector TV = if TV.FAIL then FAIL else P == TV.P
+  where
+    (FAIL, P) = AES128::KWAD TV.K TV.C
+
+//
+// KW-AD-AES128 Key Unwrap Test Vectors
+// 
+AES128UnwrapTestVectors  = [
+        {
+            //COUNT = 0
+            K = 0x1cbd2f79078b9500fae23696311953eb,
+            C = 0xecbd7a17c5da3cfdfe2225d2bf9ac7abce78c2b2aefa6eac,
+            P = 0x9c4e675277a3bdc3a071048b327a011e,
+            FAIL = False
+        },
+        {
+            //COUNT = 1
+            K = 0x5d4899ee66beff1bda1fc717a1ad4c50,
+            C = 0xbb7fd0bce778bd775e4e88d904d26a7134364c53a6c493a0,
+            P = undefined,
+            FAIL = True
+        },
+        {
+            //COUNT = 2
+            K = 0xc22fafd69ccf945b1573a14fa15cd8e1,
+            C = 0xe48d53e4a3ffbac76f4199e9dec1b62a6f2ee1809493f556,
+            P = 0x5b8a9f55c65417cd1ff2db3d171e1df0,
+            FAIL = False
+        },
+        {
+            //COUNT = 3
+            K = 0xe63c2cb1a2c1282d473b66753494a591,
+            C = 0x084532f86949dfb7be2cdf09d2b7505418e7bca5185661e1,
+            P = 0xa26e8ee007ab90f599a1bc31cdabd5fe,
+            FAIL = False
+        },
+        {
+            //COUNT = 4
+            K = 0x2f79fed352629b1d9f995f431ebb1433,
+            C = 0x4e2a5cc81f8922516159a0063a206af4784441e2b9725f10,
+            P = 0x9011fc80e21113ad582208d075b7ecbb,
+            FAIL = False
+        }
+    ]
+                    
+property AES128UnwrapTest_00 = CheckAES128UnwrapVector (AES128UnwrapTestVectors@0)
+property AES128UnwrapTest_01 = CheckAES128UnwrapVector (AES128UnwrapTestVectors@1)
+property AES128UnwrapTest_02 = CheckAES128UnwrapVector (AES128UnwrapTestVectors@2)
+property AES128UnwrapTest_03 = CheckAES128UnwrapVector (AES128UnwrapTestVectors@3)
+property AES128UnwrapTest_04 = CheckAES128UnwrapVector (AES128UnwrapTestVectors@4)

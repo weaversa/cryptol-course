@@ -1,0 +1,111 @@
+digraph  {
+  //splines = ortho;
+  //concentrate = true;
+
+  bgcolor="transparent";
+  rankdir="LR";
+
+  node [shape="box", style="rounded,filled", fillcolor="white", penwidth = 2];
+  edge [penwidth = 1];
+
+  // URLs by node
+  // recommended
+  
+  Installation               [URL="../INSTALL.html"];
+  Overview                   [URL="../labs/Overview/Overview.html"];
+  Interpreter                [URL="../labs/Interpreter/Interpreter.html"];
+  LanguageBasics             [URL="../labs/Language/Basics.html"];
+  CRC                        [URL="../labs/CRC/CRC.html"];
+  Salsa20                    [URL="../labs/Salsa20/Salsa20.html"];
+  CryptographicProperties    [URL="../labs/CryptoProofs/CryptoProofs.html"];
+  KeyWrapping                [URL="../labs/KeyWrapping/KeyWrapping.html"];
+  Capstone                   [URL="../labs/LoremIpsum/LoremIpsum.html"];
+
+  // branch nodes
+  node [fillcolor="white"];
+  
+  StyleGuide                 [URL="../cryptol-style.html"];
+  CryptolDemos               [URL="../labs/Demos/Cryptol/Demos.html"];
+  SAWDemos                   [URL="../labs/Demos/SAW/Demos.html"];
+  TypeHackery                [URL="../labs/Language/IntroTypeHackery.html"];
+  Salsa20Properties          [URL="../labs/Salsa20/Salsa20Props.html"];
+  TranspositionCiphers       [URL="../labs/Transposition/Contents.html"];
+  ProjectEuler               [URL="../labs/ProjectEuler/ProjectEuler.html"];
+  ParameterizedModules       [URL="../labs/SimonSpeck/SimonSpeck.html"];
+
+  // newline/space labels
+  
+  LanguageBasics             [label = "Language\nBasics"]
+  TypeHackery                [label = "Type Hackery"]
+  CryptographicProperties    [label = "Cryptographic\nProperties"]
+  KeyWrapping                [label = "Key Wrapping"]
+  CryptolDemos               [label = "Cryptol Demos"]
+  SAWDemos                   [label = "SAW Demos"]
+  TranspositionCiphers       [label = "Transposition\nCiphers"]
+  ParameterizedModules       [label = "Parameterized\nModules"]
+  Salsa20Properties          [label = "Salsa20\nProperties"]
+  StyleGuide                 [label = "Style Guide"]
+  ProjectEuler               [label = "Project Euler"]
+
+  // recommended flow
+  edge [color=red];
+  
+  Installation -> Overview;
+  Overview -> Interpreter;
+  Interpreter -> LanguageBasics;
+  LanguageBasics -> CRC;
+  CRC -> Salsa20;
+  Salsa20 -> CryptographicProperties;
+  CryptographicProperties -> KeyWrapping;
+  KeyWrapping -> Capstone;
+
+  // branches
+  edge [color=black];
+  
+  LanguageBasics -> StyleGuide;
+  LanguageBasics -> CryptolDemos;
+  LanguageBasics -> SAWDemos;
+  LanguageBasics -> TypeHackery;
+  CryptographicProperties -> Salsa20Properties;
+  CryptographicProperties -> TranspositionCiphers;
+  CryptographicProperties -> ProjectEuler;
+  KeyWrapping -> ParameterizedModules;
+
+  // ranks
+
+  {
+    // Intro
+    rank = same;
+    Installation;
+    Overview;
+    Interpreter;
+    LanguageBasics;
+  }
+
+  {
+    // Language Basics
+    rank = same;
+    CRC;
+    StyleGuide;
+    CryptolDemos;
+    SAWDemos;
+    TypeHackery;
+  }
+
+  {
+    // Cryptographic Properties
+    rank = same;
+    KeyWrapping;
+    Salsa20Properties;
+    TranspositionCiphers;
+    ProjectEuler;
+  }
+
+  {
+    // Key Wrapping
+    rank = same;
+    Capstone;
+    ParameterizedModules;
+  }
+
+}

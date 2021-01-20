@@ -1,0 +1,23 @@
+set_base 16;
+
+print "Extracting reference term: multiply_standard";
+l <- llvm_load_module "arithmetic_llvm.bc";
+multiply_standard <- crucible_llvm_extract l "multiply_standard";
+
+print "Extracting implementation term: multiply_textbook";
+multiply_textbook <- crucible_llvm_extract l "multiply_textbook";
+
+print "Extracting implementation term: multiply_karatsuba";
+multiply_karatsuba <- crucible_llvm_extract l "multiply_karatsuba";
+
+print "Proving equivalence: multiply_standard == multiply_textbook";
+let thm1 = {{ \x -> \y -> multiply_standard x y == multiply_textbook x y}};
+result <- prove z3 thm1;
+print result;
+
+print "Proving equivalence: multiply_standard == multiply_karatsuba";
+let thm2 = {{ \x -> \y -> multiply_standard x y == multiply_textbook x y}};
+result <- prove z3 thm2;
+print result;
+
+print "Done.";
