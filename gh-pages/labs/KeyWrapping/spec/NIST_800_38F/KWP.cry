@@ -1,0 +1,82 @@
+/*
+ * Description: This is a Cryptol specification for the KWP-AE and KWP-AD
+ * functions in [NIST-800-38F].
+ */
+
+module NIST_800_38F::KWP where
+
+import NIST_800_38F::W64
+
+// [NIST-800-38F] Section 4.3 Variables
+
+ICV2 = 0xA65959A6 : [32]
+
+
+// [NIST-800-38F] Section 6.3 KWP
+
+/**
+ * KWP-AE (Algorithm 5) specifies the authenticated-encryption function
+ * for KWP for a given block cipher and KEK. The wrapping function, W,
+ * is invoked in Step 5 with the same block cipher and KEK as
+ * prerequisites.
+ */
+
+KWPAE :
+    {k, n}
+    ( 1 <= k, k < 2^^32
+    , 2 <= n, n == 1 + k /^ 8) =>
+    ([128] -> [128]) -> [k * 8] -> [n * 64]
+KWPAE CIPHk P = C
+  where
+    type padlen = 8 * (k*8 /^ 64) - k
+    PAD = 0 : [8 * padlen]
+    S = ICV2 # (fromInteger (len P / 8) : [32]) # P # PAD : [n * 64]
+    C = if len P <= 64 then
+          widen (CIPHk (shrink S))
+        else
+          shrink (W`{max 3 n} CIPHk (widen S))
+
+/**
+ * KWP-AD (Algorithm 6) specifies the authenticated-decryption function
+ * for KWP for a given block cipher and KEK. The unwrapping function,
+ * W', is invoked in Step 4 with the same block cipher and KEK as
+ * prerequisites. This function returns a tuple where the first
+ * element is `True` in the case of failure and the second element is
+ * the unwrapped plaintext.
+ */
+
+KWPAD :
+    {k, n}
+    ( 1 <= k, k < 2^^32
+    , 2 <= n, n == 1 + k /^ 8) =>
+    ([128] -> [128]) -> [n * 64] -> (Bit, [k * 8])
+KWPAD CIPHk' C = (FAIL, P)
+  where
+    S = if `n == 2 then
+          widen (CIPHk' (shrink C))
+        else
+          shrink (W'`{max 3 n} CIPHk' (widen C))
+    Plen  : [32]
+    PAD   : [k*8 %^ 64]
+    ICV2' # Plen # P # PAD = S
+    FAIL = ICV2' != ICV2                             \/
+           Plen  != (fromInteger (len P / 8) : [32]) \/
+           PAD   != 0
+
+private
+
+  widen : {a, b} (fin a, fin b) => [b] -> [a + b]
+  widen a = 0 # a
+
+  shrink : {a, b} (fin a, fin b) => [a + b] -> [b]
+  shrink a = drop a
+
+/*
+===== References =====
+
+[NIST-800-38F] (U) Recommendation for Block Cipher Modes of Operation:
+Methods for Key Wrapping. Morris Dworkin. NIST Special Publication
+800-38F. December 2012. This document is classified UNCLASSIFIED.
+
+======================
+*/
