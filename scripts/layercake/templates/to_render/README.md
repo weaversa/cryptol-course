@@ -22,7 +22,7 @@ into the Cryptol interpreter. This `README.md` is no exception! We
 start by defining a new module for this file:
 
 ```cryptol
-module README where
+module docs::README where
 ```
 
 Labs have exercises that look like this:
