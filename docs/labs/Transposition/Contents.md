@@ -17,7 +17,6 @@ representation.)
 
 [![Suggested Flow for Transposition Ciphers](../../misc/TranspositionCiphers.gv.svg)](../../misc/TranspositionCiphers.gv.svg)
 
-
 # Solicitation
 
 How was your experience with this lab? Suggestions are welcome in the
@@ -30,5 +29,4 @@ https://github.com/weaversa/cryptol-course/issues
 |-:|:-:|-|
 || [ - Cryptographic Properties ](../CryptoProofs/CryptoProofs.md) ||
 || **Transposition Ciphers** ||
-|| [ v Common Properties for Ciphers ]( ./CommonProperties.md ) ||
-
+|| [ v Common Properties for Ciphers ](CommonProperties.md) ||

@@ -31,17 +31,17 @@ running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m labs::Demos::Cryptol::Sudoku
+Cryptol> :m docs::labs::Demos::Cryptol::Sudoku
 Loading module Cryptol
 Loading module Cryptol
-Loading module labs::Demos::Cryptol::Sudoku
+Loading module docs::labs::Demos::Cryptol::Sudoku
 ```
 
 We start by defining a new module for this lab and importing some accessory
 modules that we will use:
 
 ```cryptol
-module labs::Demos::Cryptol::Sudoku where
+module docs::labs::Demos::Cryptol::Sudoku where
 ```
 
 You do not need to enter the above into the interpreter; the previous 
@@ -281,8 +281,8 @@ f x = x*x - 7*x + 12 == 0
 > solution to the quadratic equation `x^^2 - 7x + 12 = 0`. We have:
 
 ```Xcryptol-session
-labs::Demos::Cryptol::Sudoku> :s base=10
-labs::Demos::Cryptol::Sudoku> :sat f
+docs::labs::Demos::Cryptol::Sudoku> :s base=10
+docs::labs::Demos::Cryptol::Sudoku> :sat f
 Satisfiable
 f 4 = True
 (Total Elapsed Time: 0.151s, using "Z3")
@@ -293,7 +293,7 @@ f 4 = True
 > notation:
 
 ```Xcryptol-session
-labs::Demos::Cryptol::Sudoku> :sat (\x -> f x && (x != 4))
+docs::labs::Demos::Cryptol::Sudoku> :sat (\x -> f x && (x != 4))
 Satisfiable
 (\x -> f x && (x != 4)) 3 = True
 (Total Elapsed Time: 0.034s, using "Z3")
@@ -303,7 +303,7 @@ Satisfiable
 > solutions to this equation; let's verify:
 
 ```Xcryptol-session
-labs::Demos::Cryptol::Sudoku> :sat (\x -> f x && (x != 4) && (x != 3))
+docs::labs::Demos::Cryptol::Sudoku> :sat (\x -> f x && (x != 4) && (x != 3))
 Unsatisfiable
 (Total Elapsed Time: 0.034s, using "Z3")
 ```
@@ -377,7 +377,7 @@ Ahem...sorry.
 > assignment. Here's the response from Cryptol:
 
 ```Xcryptol-session
-labs::Demos::Cryptol::Sudoku> :sat puzzle
+docs::labs::Demos::Cryptol::Sudoku> :sat puzzle
 Satisfiable
 puzzle
   [2, 5, 4, 3, 1, 4, 8, 6, 9, 7, 7, 1, 9, 2, 5, 4, 3, 3, 8, 4, 9, 2,
@@ -447,7 +447,7 @@ property puzzle_unique
 ```
 
 ```Xcryptol-session
-labs::Demos::Cryptol::Sudoku> :prove puzzle_unique
+docs::labs::Demos::Cryptol::Sudoku> :prove puzzle_unique
 Q.E.D.
 (Total Elapsed Time: 0.813s, using "Z3")
 ```
@@ -495,8 +495,8 @@ hard_puzzle
 ```
 
 ```Xcryptol-session
-labs::Demos::Cryptol::Sudoku> :s base=10
-labs::Demos::Cryptol::Sudoku> :sat hard_puzzle
+docs::labs::Demos::Cryptol::Sudoku> :s base=10
+docs::labs::Demos::Cryptol::Sudoku> :sat hard_puzzle
 Satisfiable
 hard_puzzle
   [1, 2, 7, 5, 3, 6, 4, 9, 9, 4, 8, 2, 1, 7, 5, 6, 5, 4, 1, 8, 3, 1,
@@ -558,7 +558,7 @@ property hard_unique
 ```
 
 ```Xcryptol-session
-labs::Demos::Cryptol::Sudoku> :prove hard_unique
+docs::labs::Demos::Cryptol::Sudoku> :prove hard_unique
 Q.E.D.
 (Total Elapsed Time: 5.431s, using "Z3")
 ```
@@ -590,5 +590,4 @@ https://github.com/weaversa/cryptol-course/issues
 ||||
 |-:|:-:|-|
 || [ ^ Cryptol Demos ](Demos.md) ||
-| [ < n-Queens ](./NQueens.md) | **Sudoku** ||
-
+| [ < n-Queens ](NQueens.md) | **Sudoku** ||

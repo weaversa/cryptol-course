@@ -1,8 +1,8 @@
-module labs::LoremIpsum::KLI20 where
+module docs::labs::LoremIpsum::KLI20 where
 
-import labs::CRC::CRCAnswers
-import labs::KeyWrapping::KeyWrappingAnswers
-import labs::Salsa20::Salsa20Answers
+import docs::labs::CRC::CRCAnswers
+import docs::labs::KeyWrapping::KeyWrappingAnswers
+import docs::labs::Salsa20::Salsa20Answers
 
 /**
  * A Key Lorem-Ipsum '20 ECU emulator.

@@ -1,4 +1,4 @@
-module labs::Salsa20::spec::Salsa20 where
+module docs::labs::Salsa20::spec::Salsa20 where
 
 Salsa20Encrypt :
     {a, l}

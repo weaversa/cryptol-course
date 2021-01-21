@@ -31,19 +31,19 @@ Cryptol interpreter. Load this module from within the Cryptol
 interpreter running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
-Cryptol> :m labs::Transposition::TranspositionAnswers
+Cryptol> :m docs::labs::Transposition::TranspositionAnswers
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
-Loading module labs::CryptoProofs::CryptoProofsAnswers
-Loading module labs::Transposition::CommonPropertiesAnswers
-Loading module labs::Transposition::TranspositionAnswers
+Loading module docs::labs::CryptoProofs::CryptoProofsAnswers
+Loading module docs::labs::Transposition::CommonPropertiesAnswers
+Loading module docs::labs::Transposition::TranspositionAnswers
 ```
 
 We start by defining the module for this lab:
 
 ```cryptol
-module labs::Transposition::TranspositionAnswers where
+module docs::labs::Transposition::TranspositionAnswers where
 ```
 
 You do not need to enter the above into the interpreter; the previous 
@@ -56,7 +56,7 @@ Additionally, we will import some common properties to apply to this
 spec:
 
 ```cryptol
-import labs::Transposition::CommonPropertiesAnswers (injective, inverts)
+import docs::labs::Transposition::CommonPropertiesAnswers (injective, inverts)
 ```
 
 # Transposition Ciphers
@@ -137,7 +137,7 @@ property isPermutation_test = and
 ```
 
 ```Xcryptol-session
-labs::Transposition::TranspositionAnswers> :check isPermutation_test
+docs::labs::Transposition::TranspositionAnswers> :check isPermutation_test
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
@@ -184,7 +184,7 @@ property isPermutationMapping_test = and
 ```
 
 ```Xcryptol-session
-labs::Transposition::TranspositionAnswers> :check isPermutationMapping_test
+docs::labs::Transposition::TranspositionAnswers> :check isPermutationMapping_test
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
@@ -219,20 +219,20 @@ permute_permutes pi seq =
 ```
 
 ```Xcryptol-session
-labs::Transposition::TranspositionAnswers> :prove permute_permutes`{4, Char, Integer}
+docs::labs::Transposition::TranspositionAnswers> :prove permute_permutes`{4, Char, Integer}
 Q.E.D.
 (Total Elapsed Time: 0.157s, using "Z3")
-labs::Transposition::TranspositionAnswers> :prove permute_permutes`{6, Char, Integer}
+docs::labs::Transposition::TranspositionAnswers> :prove permute_permutes`{6, Char, Integer}
 Q.E.D.
 (Total Elapsed Time: 22.503s, using "Z3")
-labs::Transposition::TranspositionAnswers> :check permute_permutes`{8, [2]Char, Integer}
+docs::labs::Transposition::TranspositionAnswers> :check permute_permutes`{8, [2]Char, Integer}
 Using random testing.
 Passed 100 tests.
 ```
 
 **EXERCISE**: Given a permutation mapping `pi: [n]w`, return its 
 inverse `pi'` such that `permute pi'` `inverts` `permute pi`.  
-(`inverts` is imported from `labs::Transposition::CommonProperties`.)
+(`inverts` is imported from `docs::labs::Transposition::CommonProperties`.)
 
 (Hint: The idiomatic solution to this exercise, where `inverse` is 
 defined with ``take`{n} [0...]`` as one of the arguments to 
@@ -263,13 +263,13 @@ inverse_inverts pi seq =
 ```
 
 ```Xcryptol-session
-labs::Transposition::TranspositionAnswers> :prove inverse_inverts`{4, Char, Integer}
+docs::labs::Transposition::TranspositionAnswers> :prove inverse_inverts`{4, Char, Integer}
 Q.E.D.
 (Total Elapsed Time: 0.022s, using "Z3")
-labs::Transposition::TranspositionAnswers> :prove inverse_inverts`{8, Char, Integer}
+docs::labs::Transposition::TranspositionAnswers> :prove inverse_inverts`{8, Char, Integer}
 Q.E.D.
 (Total Elapsed Time: 3.038s, using "Z3")
-labs::Transposition::TranspositionAnswers> :check inverse_inverts`{128, [2]Char, Integer}
+docs::labs::Transposition::TranspositionAnswers> :check inverse_inverts`{128, [2]Char, Integer}
 Using random testing.
 Passed 100 tests.
 ```
@@ -277,7 +277,7 @@ Passed 100 tests.
 **EXERCISE**: Define a predicate that `permute pi` is `injective` if 
 `pi` is a permutation mapping, and `:prove` it for various sequence 
 lengths and types.  (`injective` is imported from 
-`labs::Transposition::CommonProperties`.)
+`docs::labs::Transposition::CommonProperties`.)
 
 ```cryptol
 /** `permute pi` is `injective` if `pi` is a permutation mapping */
@@ -290,13 +290,13 @@ permute_injective pi seq seq' =
 ```
 
 ```Xcryptol-session
-labs::Transposition::TranspositionAnswers> :prove permute_injective`{4, Char, Integer}
+docs::labs::Transposition::TranspositionAnswers> :prove permute_injective`{4, Char, Integer}
 Q.E.D.
 (Total Elapsed Time: 0.019s, using "Z3")
-labs::Transposition::TranspositionAnswers> :check permute_injective`{16, Char, Integer}
+docs::labs::Transposition::TranspositionAnswers> :check permute_injective`{16, Char, Integer}
 Using random testing.
 Passed 100 tests.
-labs::Transposition::TranspositionAnswers> :check permute_injective`{128, [3]Char, Integer}
+docs::labs::Transposition::TranspositionAnswers> :check permute_injective`{128, [3]Char, Integer}
 Using random testing.
 Passed 100 tests.
 ```
@@ -427,22 +427,22 @@ swap_correct seq i j k =
 ```
 
 ```Xcryptol-session
-labs::Transposition::TranspositionAnswers> :prove swap_equiv`{32, Char, Integer}
+docs::labs::Transposition::TranspositionAnswers> :prove swap_equiv`{32, Char, Integer}
 Q.E.D.
 (Total Elapsed Time: 0.025s, using "Z3")
-labs::Transposition::TranspositionAnswers> :prove swap_equiv`{512, Char, Integer}
+docs::labs::Transposition::TranspositionAnswers> :prove swap_equiv`{512, Char, Integer}
 Q.E.D.
 (Total Elapsed Time: 0.304s, using "Z3")
-labs::Transposition::TranspositionAnswers> :prove swap_equiv`{4096, Char, Integer}
+docs::labs::Transposition::TranspositionAnswers> :prove swap_equiv`{4096, Char, Integer}
 Q.E.D.
 (Total Elapsed Time: 6.001s, using "Z3")
-labs::Transposition::TranspositionAnswers> :prove swap_correct`{32, Char, Integer}
+docs::labs::Transposition::TranspositionAnswers> :prove swap_correct`{32, Char, Integer}
 Q.E.D.
 (Total Elapsed Time: 0.049s, using "Z3")
-labs::Transposition::TranspositionAnswers> :prove swap_correct`{256, Char, Integer}
+docs::labs::Transposition::TranspositionAnswers> :prove swap_correct`{256, Char, Integer}
 Q.E.D.
 (Total Elapsed Time: 3.686s, using "Z3")
-labs::Transposition::TranspositionAnswers> :check swap_correct`{4096, Char, Integer}
+docs::labs::Transposition::TranspositionAnswers> :check swap_correct`{4096, Char, Integer}
 Using random testing.
 Passed 100 tests.
 Expected test coverage: 0.00% (100 of 2^^32807 values)
@@ -499,9 +499,9 @@ rearrange_trace w = out
 Here's how this function works for the string `"HE-LL-O-"`:
 
 ```Xcryptol-session
-labs::Transposition::TranspositionAnswers> :s ascii=on
-labs::Transposition::TranspositionAnswers> :s base=10
-labs::Transposition::TranspositionAnswers> rearrange_trace "HE-LL-O-" 
+docs::labs::Transposition::TranspositionAnswers> :s ascii=on
+docs::labs::Transposition::TranspositionAnswers> :s base=10
+docs::labs::Transposition::TranspositionAnswers> rearrange_trace "HE-LL-O-" 
 [("HE-LL-O--", 0, 0), ("HE-LL-O--", 1, 0), ("HE-LL-O--", 2, 0),
  ("HE-LL-O--", 2, 3), ("HEL-L-O--", 3, 4), ("HELL--O--", 4, 5),
  ("HELL--O--", 4, 6), ("HELLO----", 5, 7), ("HELLO----", 5, 8)]
@@ -548,13 +548,13 @@ partition_rearranges =
 ```
 
 ```Xcryptol-session
-labs::Transposition::TranspositionAnswers> :prove partition_rearranges`{4}
+docs::labs::Transposition::TranspositionAnswers> :prove partition_rearranges`{4}
 Q.E.D.
 (Total Elapsed Time: 0.242s, using "Z3")
-labs::Transposition::TranspositionAnswers> :prove partition_rearranges`{16}
+docs::labs::Transposition::TranspositionAnswers> :prove partition_rearranges`{16}
 Q.E.D.
 (Total Elapsed Time: 4.377s, using "Z3")
-labs::Transposition::TranspositionAnswers> :check partition_rearranges`{512}
+docs::labs::Transposition::TranspositionAnswers> :check partition_rearranges`{512}
 Using random testing.
 Passed 100 tests.
 Expected test coverage: 0.00% (100 of 2^^4096 values)
@@ -612,13 +612,13 @@ rearrange_equiv = rearrange`{n} === rearrange'`{n}
 ```
 
 ```Xcryptol-session
-labs::Transposition::TranspositionAnswers> :prove rearrange_equiv`{8}
+docs::labs::Transposition::TranspositionAnswers> :prove rearrange_equiv`{8}
 Q.E.D.
 (Total Elapsed Time: 0.477s, using "Z3")
-labs::Transposition::TranspositionAnswers> :prove rearrange_equiv`{12}
+docs::labs::Transposition::TranspositionAnswers> :prove rearrange_equiv`{12}
 Q.E.D.
 (Total Elapsed Time: 10.214s, using "Z3")
-labs::Transposition::TranspositionAnswers> :check rearrange_equiv`{128}
+docs::labs::Transposition::TranspositionAnswers> :check rearrange_equiv`{128}
 Using random testing.
 Passed 100 tests.
 Expected test coverage: 0.00% (100 of 2^^1024 values)
@@ -657,13 +657,13 @@ partition'_rearranges =
 ```
 
 ```Xcryptol-session
-labs::Transposition::TranspositionAnswers> :prove partition'_rearranges`{8}
+docs::labs::Transposition::TranspositionAnswers> :prove partition'_rearranges`{8}
 Q.E.D.
 (Total Elapsed Time: 0.040s, using "Z3")
-labs::Transposition::TranspositionAnswers> :prove partition'_rearranges`{16}
+docs::labs::Transposition::TranspositionAnswers> :prove partition'_rearranges`{16}
 Q.E.D.
 (Total Elapsed Time: 12.524s, using "Z3")
-labs::Transposition::TranspositionAnswers> :check partition'_rearranges`{256}
+docs::labs::Transposition::TranspositionAnswers> :check partition'_rearranges`{256}
 Using random testing.
 Passed 100 tests.
 Expected test coverage: 0.00% (100 of 2^^2048 values)
@@ -680,10 +680,10 @@ partition_equiv f = partition`{n} f === partition'`{n} f
 ```
 
 ```Xcryptol-session
-labs::Transposition::TranspositionAnswers> :prove partition_equiv`{8, Bit} (\b -> b)
+docs::labs::Transposition::TranspositionAnswers> :prove partition_equiv`{8, Bit} (\b -> b)
 Q.E.D.
 (Total Elapsed Time: 1.669s, using "Z3")
-labs::Transposition::TranspositionAnswers> :prove partition_equiv`{8, [32]} (\b -> b ! 0)
+docs::labs::Transposition::TranspositionAnswers> :prove partition_equiv`{8, [32]} (\b -> b ! 0)
 Counterexample
 partition_equiv`{8, [32]} (\b -> b ! 0)
   [0x00000000, 0x01000000, 0x00000020, 0x40000020, 0x00000040,
@@ -727,13 +727,13 @@ unpad_unpads pi =
 ```
 
 ```Xcryptol-session
-labs::Transposition::TranspositionAnswers> :prove unpad_unpads`{4, 2}
+docs::labs::Transposition::TranspositionAnswers> :prove unpad_unpads`{4, 2}
 Q.E.D.
 (Total Elapsed Time: 0.031s, using "Z3")
-labs::Transposition::TranspositionAnswers> :prove unpad_unpads`{8, 4}
+docs::labs::Transposition::TranspositionAnswers> :prove unpad_unpads`{8, 4}
 Q.E.D.
 (Total Elapsed Time: 7.033s, using "Z3")
-labs::Transposition::TranspositionAnswers> :check unpad_unpads`{25, 7}
+docs::labs::Transposition::TranspositionAnswers> :check unpad_unpads`{25, 7}
 Using random testing.
 Passed 100 tests.
 Expected test coverage: 0.00% (100 of 2^^192 values)
@@ -756,6 +756,5 @@ https://github.com/weaversa/cryptol-course/issues
 ||||
 |-:|:-:|-|
 || [ ^ Transposition Ciphers ](Contents.md) ||
-| [ < Common Properties for Ciphers ](./CommonProperties.md) | **Transposition** | [ Esrever > ](./Esrever.md) |
-|| [ ? Transposition ](./Transposition.md) ||
-
+| [ < Common Properties for Ciphers ](CommonProperties.md) | **Transposition** | [ Esrever > ](Esrever.md) |
+|| [ ? Transposition ](labs/Transposition/Transposition.md) ||

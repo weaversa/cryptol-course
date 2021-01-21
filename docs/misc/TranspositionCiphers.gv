@@ -11,12 +11,12 @@ digraph  {
   // URLs by node
   // recommended
   
-  CommonPropertiesforCiphers [URL="../labs/Transposition/CommonProperties.html"];
-  Transposition              [URL="../labs/Transposition/Transposition.html"];
-  Esrever                    [URL="../labs/Transposition/Esrever.html"];
-  Scytale                    [URL="../labs/Transposition/Scytale.html"];
-  RailFence                  [URL="../labs/Transposition/RailFence.html"];
-  Route                      [URL="../labs/Transposition/Route.html"];
+  CommonPropertiesforCiphers [URL="../labs/Transposition/CommonProperties.md"];
+  Transposition              [URL="../labs/Transposition/Transposition.md"];
+  Esrever                    [URL="../labs/Transposition/Esrever.md"];
+  Scytale                    [URL="../labs/Transposition/Scytale.md"];
+  RailFence                  [URL="../labs/Transposition/RailFence.md"];
+  Route                      [URL="../labs/Transposition/Route.md"];
 
   // branch nodes
   node [fillcolor="white"];

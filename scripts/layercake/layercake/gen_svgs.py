@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
     with DEPS_YML_PATH.open() as DEPS_YML:
         deps = safe_load(DEPS_YML)
-    
+
     urls = {
         id(label): url(rel_url)
         for (label, rel_url) in deps['urls'].items()

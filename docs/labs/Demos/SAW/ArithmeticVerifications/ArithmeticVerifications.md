@@ -117,4 +117,3 @@ https://github.com/weaversa/cryptol-course/issues
 |-:|:-:|-|
 || [ ^ SAW Demos ](../Demos.md) ||
 || **Arithmetic Verifications** | [ Bit Twiddling > ](../Bittwiddling/Bittwiddling.md) |
-

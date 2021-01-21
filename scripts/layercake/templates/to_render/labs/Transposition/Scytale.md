@@ -3,7 +3,7 @@
 This module defines a classic transposition "cipher" that encrypts a 
 message by wrapping it around a (virtual) [scytale](https://en.wikipedia.org/wiki/Scytale).  
 The cipher is defined in terms of the 
-`labs::Transposition::Transposition` library, which defines `encrypt` 
+`docs::labs::Transposition::Transposition` library, which defines `encrypt` 
 and `decrypt` functions given a permutation mapping reflecting 
 positions on a scytale.
 
@@ -36,28 +36,28 @@ Cryptol interpreter. Load this module from within the Cryptol
 interpreter running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
-Cryptol> :m labs::Transposition::Scytale
+Cryptol> :m docs::labs::Transposition::Scytale
 Loading module Cryptol
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
-Loading module labs::CryptoProofs::CryptoProofs
-Loading module labs::Transposition::CommonProperties
-Loading module labs::Transposition::Transposition
-Loading module labs::Transposition::Scytale
+Loading module docs::labs::CryptoProofs::CryptoProofs
+Loading module docs::labs::Transposition::CommonProperties
+Loading module docs::labs::Transposition::Transposition
+Loading module docs::labs::Transposition::Scytale
 ```
 
 We start by defining the module for this lab:
 
 ```cryptol
-module labs::Transposition::Scytale where
+module docs::labs::Transposition::Scytale where
 ```
 
 Additionally, we will import the common transposition cipher 
 definitions:
 
 ```cryptol
-import labs::Transposition::Transposition
+import docs::labs::Transposition::Transposition
 ```
 
 # Scytale Encryption and Decryption
@@ -87,10 +87,10 @@ While informative, this definition only accepts messages whose length
 is a multiple of the rod diameter:
 
 ```Xcryptol-session
-labs::Transposition::Scytale> :s ascii=on
-labs::Transposition::Scytale> scytale`{3} "ATTACKATDAWN"
+docs::labs::Transposition::Scytale> :s ascii=on
+docs::labs::Transposition::Scytale> scytale`{3} "ATTACKATDAWN"
 "ACDTKATAWATN"
-labs::Transposition::Scytale> scytale`{3} "ATTACKDAWN"
+docs::labs::Transposition::Scytale> scytale`{3} "ATTACKDAWN"
 
 [error] at <interactive>:1:13--1:25:
   10 != 3 * anything
@@ -110,9 +110,9 @@ block size.  Revisiting the earlier example, `"ATTACKDAWN"` is length
 of size 3:
 
 ```Xcryptol-session
-labs::Transposition::Scytale> `numBlocks:Integer where type numBlocks = 10 /^ 3
+docs::labs::Transposition::Scytale> `numBlocks:Integer where type numBlocks = 10 /^ 3
 4
-labs::Transposition::Scytale> `padLength:Integer where type padLength = 10 %^ 3 
+docs::labs::Transposition::Scytale> `padLength:Integer where type padLength = 10 %^ 3 
 2
 ```
 
@@ -167,5 +167,6 @@ Galois, Inc.'s previous work to define a more generic version that
 accommodates arbitrary message sizes and is specified in terms of 
 reusable transposition cipher components.
 
-{ solicitation }
-{ navigation }
+{{ solicitation }}
+
+{{ navigation }}

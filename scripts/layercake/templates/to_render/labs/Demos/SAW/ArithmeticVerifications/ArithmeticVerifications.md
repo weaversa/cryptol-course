@@ -105,5 +105,6 @@ This cleans up the workspace and unnecessary generated files.
 
 [[1](https://ieeexplore.ieee.org/document/73590)] Bryant, Randall E. "On the Complexity of VLSI Implementations and Graph Representations of Boolean Functions with Application to Integer Multiplication". Carnegie Mellon University, July 1998.
 
-{ solicitation }
-{ navigation }
+{{ solicitation }}
+
+{{ navigation }}

@@ -45,7 +45,7 @@ in the `cryptol-course` directory with:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m labs::KeyWrapping::KeyWrapping
+Cryptol> :m docs::labs::KeyWrapping::KeyWrapping
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::AES::GF28
 Loading module specs::Primitive::Symmetric::Cipher::Block::AES::State
@@ -60,13 +60,13 @@ Loading module specs::Primitive::Symmetric::Cipher::Block::AES_parameterized
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
 Loading module specs::Primitive::Symmetric::Cipher::Block::TripleDES
-Loading module labs::KeyWrapping::KeyWrapping
+Loading module docs::labs::KeyWrapping::KeyWrapping
 ```
 
 We start by defining a new module for this lab:
 
 ```cryptol
-module labs::KeyWrapping::KeyWrapping where
+module docs::labs::KeyWrapping::KeyWrapping where
 ```
 
 You do not need to enter the above into the interpreter; the previous 
@@ -402,7 +402,7 @@ some iterative process.
 The signature for `foldl` is as follows:
 
 ```Xcryptol-session
-labs::KeyWrapping::KeyWrapping> :t foldl
+docs::labs::KeyWrapping::KeyWrapping> :t foldl
 foldl : {n, a, b} (fin n) => (a -> b -> a) -> a -> [n]b -> a
 ```
 
@@ -418,7 +418,7 @@ iterative process. For instance, we **could** find a list of partial
 sums from the sequence `[1..10]` as follows:
 
 ```Xcryptol-session
-labs::KeyWrapping::KeyWrapping> sums where sums = [0] # [ x + partial | x <- [1..10] | partial <- sums]
+docs::labs::KeyWrapping::KeyWrapping> sums where sums = [0] # [ x + partial | x <- [1..10] | partial <- sums]
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for type argument 'a' of 'Cryptol::fromTo'
 [0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55]
@@ -428,7 +428,7 @@ However, if we are only interested in the final element of this
 sequence, then we can use `foldl` as follows:
 
 ```Xcryptol-session
-labs::KeyWrapping::KeyWrapping> foldl (+) 0 [1..10]
+docs::labs::KeyWrapping::KeyWrapping> foldl (+) 0 [1..10]
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for type argument 'a' of 'Cryptol::fromTo'
 55
@@ -478,7 +478,7 @@ in a property defined later on in this document. Here is the the
 command and sample output for `KWAETests`.
 
 ```Xcryptol-session
-labs::KeyWrapping::KeyWrapping> :check KWAETests
+docs::labs::KeyWrapping::KeyWrapping> :check KWAETests
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
@@ -529,10 +529,10 @@ having Cryptol `:prove` the properties `WStep2'Prop` and
 `W'Prop`. Your output should look something like the following:
 
 ```Xcryptol-session
-labs::KeyWrapping::KeyWrapping> :prove WStep2'Prop
+docs::labs::KeyWrapping::KeyWrapping> :prove WStep2'Prop
 Q.E.D.
 (Total Elapsed Time: 0.063s, using "Z3")
-labs::KeyWrapping::KeyWrapping> :prove W'Prop
+docs::labs::KeyWrapping::KeyWrapping> :prove W'Prop
 Q.E.D.
 (Total Elapsed Time: 0.630s, using "Z3")
 ```
@@ -696,7 +696,7 @@ To dig into this a bit, let's consider the type of a generic
 `if-then-else` statement
 
 ```Xcryptol-session
-labs::KeyWrapping::KeyWrapping> :t \(c, t, e) -> if c then t else e
+docs::labs::KeyWrapping::KeyWrapping> :t \(c, t, e) -> if c then t else e
 (\(c, t, e) -> if c then t else e) : {a} (Bit, a, a) -> a
 ```
 
@@ -736,9 +736,9 @@ only 64-bit values. If we try to load this function into Cryptol we
 see:
 
 ```Xcryptol-session
-[error] at labs/KeyWrapping/KeyWrapping.md:863:1--866:14:
+[error] at docs/labs/KeyWrapping/KeyWrapping.md:863:1--866:14:
   Failed to validate user-specified signature.
-    in the definition of 'f', at labs/KeyWrapping/KeyWrapping.md:863:1--863:2,
+    in the definition of 'f', at docs/labs/KeyWrapping/KeyWrapping.md:863:1--863:2,
     we need to show that
       for any type a
       assuming
@@ -749,16 +749,16 @@ see:
         • a == 64
             arising from
             matching types
-            at labs/KeyWrapping/KeyWrapping.md:866:13--866:14
+            at docs/labs/KeyWrapping/KeyWrapping.md:866:13--866:14
         • a == 32
             arising from
             matching types
-            at labs/KeyWrapping/KeyWrapping.md:864:13--864:14
-[error] at labs/KeyWrapping/KeyWrapping.md:864:11--864:12:
+            at docs/labs/KeyWrapping/KeyWrapping.md:864:13--864:14
+[error] at docs/labs/KeyWrapping/KeyWrapping.md:864:11--864:12:
   Type mismatch:
     Expected type: 48
     Inferred type: 32
-[error] at labs/KeyWrapping/KeyWrapping.md:866:11--866:12:
+[error] at docs/labs/KeyWrapping/KeyWrapping.md:866:11--866:12:
   Type mismatch:
     Expected type: 48
     Inferred type: 64
@@ -800,9 +800,9 @@ And here we test that `f` correctly calls `g` and `h` (which increment
 and decrement by 1, respectively).
 
 ```Xcryptol-session
-labs::KeyWrapping::KeyWrapping> f (10 : [37])
+docs::labs::KeyWrapping::KeyWrapping> f (10 : [37])
 0x00000000000b
-labs::KeyWrapping::KeyWrapping> f (10 : [53])
+docs::labs::KeyWrapping::KeyWrapping> f (10 : [53])
 0x000000000009
 ```
 
@@ -909,7 +909,7 @@ Asking Cryptol for the type of `KWPAE` after plugging in `2^^32-1` for
 `k` gives an `l` of `34359738432`:
 
 ```Xcryptol-session
-labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1}
+docs::labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1}
 KWPAE`{k = 2 ^^ 32 -
            1} : ([128] -> [128]) -> [34359738360] -> [34359738432]
 ```
@@ -918,14 +918,14 @@ Well, what's `34359738432`? Is it `2^^29` 64-bit words? Let's first
 check how many 64-bit words it is. Here's one way:
 
 ```Xcryptol-session
-labs::KeyWrapping::KeyWrappingAnswers> :t \(a : [34359738432]) -> groupBy`{64} a
+docs::labs::KeyWrapping::KeyWrappingAnswers> :t \(a : [34359738432]) -> groupBy`{64} a
 (\(a : [34359738432]) -> groupBy`{64} a) : [34359738432] -> [536870913][64]
 ```
 
 Great...now what's `536870913`? Is it `2^^29`?
 
 ```Xcryptol-session
-labs::KeyWrapping::KeyWrappingAnswers> 2^^29 : Integer
+docs::labs::KeyWrapping::KeyWrappingAnswers> 2^^29 : Integer
 536870912
 ```
 
@@ -933,7 +933,7 @@ Woh! Its not. `536870913` is `2^^29 + 1`. Let's double check this ---
 here is a command that tests the `2^^29` upper bound from Table 1:
 
 ```Xcryptol-session
-labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, n = (2^^29)}
+docs::labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, n = (2^^29)}
 
 [error] at <interactive>:1:1--1:6:
   Unsolvable constraints:
@@ -947,7 +947,7 @@ labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, n = (2^^29)}
 And here is a command that tests the bound we just found, `2^^29 + 1`.
 
 ```Xcryptol-session
-labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, n = (2^^29 + 1)}
+docs::labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, n = (2^^29 + 1)}
 KWPAE`{k = 2 ^^ 32 - 1,
        n = (2 ^^ 29 +
             1)} : ([128] -> [128]) -> [34359738360] -> [34359738432]
@@ -1111,5 +1111,6 @@ property KWPADTests =
   which we use in this lab to verify that our algorithms were
   implemented correctly.
 
-{ solicitation }
-{ navigation }
+{{ solicitation }}
+
+{{ navigation }}

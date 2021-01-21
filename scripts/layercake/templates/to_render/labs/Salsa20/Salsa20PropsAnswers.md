@@ -38,19 +38,19 @@ in the `cryptol-course` directory with:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m labs::Salsa20::Salsa20PropsAnswers
+Cryptol> :m docs::labs::Salsa20::Salsa20PropsAnswers
 Loading module Cryptol
-Loading module labs::Salsa20::Salsa20Answers
-Loading module labs::Salsa20::Salsa20PropsAnswers
+Loading module docs::labs::Salsa20::Salsa20Answers
+Loading module docs::labs::Salsa20::Salsa20PropsAnswers
 ```
 
 We start by defining a new module for this lab and importing the
 Salsa20 specification from a prior lab:
 
 ```cryptol
-module labs::Salsa20::Salsa20PropsAnswers where
+module docs::labs::Salsa20::Salsa20PropsAnswers where
 
-import labs::Salsa20::Salsa20Answers
+import docs::labs::Salsa20::Salsa20Answers
 ```
 
 You do not need to enter the above into the interpreter; the previous 
@@ -292,5 +292,6 @@ property Salsa20EncryptInvolutionProp_2_128 = Salsa20EncryptInvolutionProp`{2,12
 [5] [Salsa20 specification](https://cr.yp.to/snuffle/spec.pdf)
     D. Bernstein
 
-{ solicitation }
-{ navigation }
+{{ solicitation }}
+
+{{ navigation }}

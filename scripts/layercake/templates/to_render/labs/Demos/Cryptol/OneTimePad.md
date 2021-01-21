@@ -29,16 +29,16 @@ running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m labs::Demos::Cryptol::OneTimePad
+Cryptol> :m docs::labs::Demos::Cryptol::OneTimePad
 Loading module Cryptol
 Loading module Cryptol
-Loading module labs::Demos::Cryptol::OneTimePad
+Loading module docs::labs::Demos::Cryptol::OneTimePad
 ```
 
 We start by defining a new module for this lab:
 
 ```cryptol
-module labs::Demos::Cryptol::OneTimePad where
+module docs::labs::Demos::Cryptol::OneTimePad where
 ```
 
 You do not need to enter the above into the interpreter; the previous 
@@ -142,7 +142,7 @@ plaintext (`pt1`), and ciphertext (`ct1`) from the example. Let's see
 the plaintext:
 
 ```Xcryptol-session
-labs::Demos::Cryptol::OneTimePad> pt1
+docs::labs::Demos::Cryptol::OneTimePad> pt1
 [0x48, 0x45, 0x4c, 0x4c, 0x4f]
 ```
 
@@ -152,15 +152,15 @@ rather than a string of 5 characters.  We can ask the interpreter
 to show us a string instead:
 
 ```Xcryptol-session
-labs::Demos::Cryptol::OneTimePad> :s ascii=on
-labs::Demos::Cryptol::OneTimePad> pt1
+docs::labs::Demos::Cryptol::OneTimePad> :s ascii=on
+docs::labs::Demos::Cryptol::OneTimePad> pt1
 "HELLO"
 ```
 
 That was pleasant.  Now let's see the ciphertext:
 
 ```Xcryptol-session
-labs::Demos::Cryptol::OneTimePad> ct1
+docs::labs::Demos::Cryptol::OneTimePad> ct1
 "\DC2\DLE\v\t\FS"
 ```
 
@@ -168,7 +168,7 @@ That looks ciphertexty, all right.  Entering `:s` shows all the
 configuration settings:
 
 ```Xcryptol-session
-labs::Demos::Cryptol::OneTimePad> :s
+docs::labs::Demos::Cryptol::OneTimePad> :s
 ascii = on
 base = 16
 core-lint = off
@@ -192,7 +192,7 @@ If a symbol's name isn't descriptive enough, we can use `:h` to display
 help text for it:
 
 ```Xcryptol-session
-labs::Demos::Cryptol::OneTimePad> :h encrypt
+docs::labs::Demos::Cryptol::OneTimePad> :h encrypt
 
     encrypt : {k, m} (fin k, k >= m) =>
                 String k -> String m -> String m
@@ -205,7 +205,7 @@ labs::Demos::Cryptol::OneTimePad> :h encrypt
 Cool. Let's do a quick sanity check:
 
 ```Xcryptol-session
-labs::Demos::Cryptol::OneTimePad> decrypt psk1 ct1
+docs::labs::Demos::Cryptol::OneTimePad> decrypt psk1 ct1
 "HELLO"
 ```
 
@@ -215,7 +215,7 @@ It matches! Our sanity is intact. Well, maybe not -- let's make
 sure:
 
 ```Xcryptol-session
-labs::Demos::Cryptol::OneTimePad> it == pt1
+docs::labs::Demos::Cryptol::OneTimePad> it == pt1
 True
 ```
 
@@ -225,7 +225,7 @@ Nice! So that one example checks out, as expressed by the `test`
 property in our module. Let's prove it:
 
 ```Xcryptol-session
-labs::Demos::Cryptol::OneTimePad> :prove test
+docs::labs::Demos::Cryptol::OneTimePad> :prove test
 Q.E.D.
 (Total Elapsed Time: 0.028s, using Z3)
 ```
@@ -245,20 +245,20 @@ rather sesquipedalian name; let's use tab-completion to prove the
 property:
 
 ```Text
-labs::Demos::Cryptol::OneTimePad> :prove dec<Tab>
-labs::Demos::Cryptol::OneTimePad> :prove decrypt_<Tab>
-labs::Demos::Cryptol::OneTimePad> :prove decrypt_of_encrypt_yields_original_plaintext_8_5<Enter>
+docs::labs::Demos::Cryptol::OneTimePad> :prove dec<Tab>
+docs::labs::Demos::Cryptol::OneTimePad> :prove decrypt_<Tab>
+docs::labs::Demos::Cryptol::OneTimePad> :prove decrypt_of_encrypt_yields_original_plaintext_8_5<Enter>
 Q.E.D.
 (Total Elapsed Time: 0.028s, using Z3)
 ```
 
 ```Xcryptol-session
-labs::Demos::Cryptol::OneTimePad> :prove decrypt_of_encrypt_yields_original_plaintext_8_5
+docs::labs::Demos::Cryptol::OneTimePad> :prove decrypt_of_encrypt_yields_original_plaintext_8_5
 Q.E.D.
 ```
 
 ```Xcryptol-session
-labs::Demos::Cryptol::OneTimePad> :prove decrypt_of_encrypt_yields_original_plaintext_8_5
+docs::labs::Demos::Cryptol::OneTimePad> :prove decrypt_of_encrypt_yields_original_plaintext_8_5
 Q.E.D.
 ```
 
@@ -283,7 +283,7 @@ reasonably have been "GOODBYE". Then Eve can exploit Cryptol to
 deduce the pre-shared key Bob just used:
 
 ```Xcryptol-session
-labs::Demos::Cryptol::OneTimePad> :sat \psk2 -> (encrypt`{7} psk2 pt2) == ct2
+docs::labs::Demos::Cryptol::OneTimePad> :sat \psk2 -> (encrypt`{7} psk2 pt2) == ct2
 Satisfiable
 (\psk2 -> (encrypt`{7} psk2 pt2) == ct2) "ZUGESAG" = True
 (Total Elapsed Time: 0.044s, using "Z3")
@@ -301,9 +301,9 @@ stash `it` and try `it` (`it` is the counterexample produced by the
 last `:sat` command) on the message Bob received earlier:
 
 ```Xcryptol-session
-labs::Demos::Cryptol::OneTimePad> it
+docs::labs::Demos::Cryptol::OneTimePad> it
 {result = True, arg1 = "ZUGESAG"}
-labs::Demos::Cryptol::OneTimePad> :sat \pt3 -> (encrypt (it.arg1) pt3) == ct1
+docs::labs::Demos::Cryptol::OneTimePad> :sat \pt3 -> (encrypt (it.arg1) pt3) == ct1
 Satisfiable
 (\pt3 -> (encrypt "ZUGESAG" pt3) == ct) "HELLO" = True
 (Total Elapsed Time: 0.028s, using Z3)
@@ -317,5 +317,6 @@ Well that was fun. We have clearly expressed the one-time pad using
 Cryptol, demonstrated it on some test cases, verified some simple
 properties, and manipulated it for nefarious misdeeds.
 
-{ solicitation }
-{ navigation }
+{{ solicitation }}
+
+{{ navigation }}

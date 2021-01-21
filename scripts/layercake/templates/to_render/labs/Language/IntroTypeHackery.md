@@ -41,15 +41,15 @@ running in the `cryptol-course` directory with:
 
 ```Xcryptol session
 Loading module Cryptol
-Cryptol> :m labs::Language::IntroTypeHackery
+Cryptol> :m docs::labs::Language::IntroTypeHackery
 Loading module Cryptol
-Loading module labs::Language::IntroTypeHackery
+Loading module docs::labs::Language::IntroTypeHackery
 ```
 
 We start by defining a new module for this lab:
 
 ```cryptol
-module labs::Language::IntroTypeHackery where
+module docs::labs::Language::IntroTypeHackery where
 ```
 
 You do not need to enter the above into the interpreter; the previous 
@@ -301,5 +301,6 @@ gcdCommon x y = if x == 0 \/ y == 0 then max x y
                                     else gcdCommon  x     (y % x)
 ```
 
-{ solicitation }
-{ navigation }
+{{ solicitation }}
+
+{{ navigation }}

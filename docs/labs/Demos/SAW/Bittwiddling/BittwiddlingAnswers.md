@@ -68,15 +68,15 @@ in the `cryptol-course` directory with:
 `
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m labs::Demos::SAW::Bittwiddling::BittwiddlingAnswers
+Cryptol> :m docs::labs::Demos::SAW::Bittwiddling::BittwiddlingAnswers
 Loading module Cryptol
-Loading module labs::Demos::SAW::Bittwiddling::BittwiddlingAnswers
+Loading module docs::labs::Demos::SAW::Bittwiddling::BittwiddlingAnswers
 ```
 
 We start by defining a new module for this lab:
 
 ```cryptol
-module labs::Demos::SAW::Bittwiddling::BittwiddlingAnswers where
+module docs::labs::Demos::SAW::Bittwiddling::BittwiddlingAnswers where
 ```
 
 You do not need to enter the above into the interpreter; the previous 
@@ -164,11 +164,10 @@ How was your experience with this lab? Suggestions are welcome in the
 form of a ticket on the course GitHub page:
 https://github.com/weaversa/cryptol-course/issues
 
-
 # From here, you can go somewhere!
 
 ||||
 |-:|:-:|-|
 || [ ^ SAW Demos ](../Demos.md) ||
 | [ < Arithmetic Verifications ](../ArithmeticVerifications/ArithmeticVerifications.md) | **Bit Twiddling** ||
-|| [ ? Bit Twiddling ](./Bittwiddling.md) ||
+|| [ ? Bit Twiddling ](labs/Demos/SAW/Bittwiddling/Bittwiddling.md) ||

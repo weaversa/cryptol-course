@@ -1,3 +1,3 @@
-:m labs::Interpreter::Interpreter
+:m docs::labs::Interpreter::Interpreter
 :s base=10
 x + 2

@@ -39,23 +39,23 @@ running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m labs::ProjectEuler::ProjectEuler
+Cryptol> :m docs::labs::ProjectEuler::ProjectEuler
 Loading module Cryptol
-Loading module labs::ProjectEuler::cipher1
-Loading module labs::ProjectEuler::keylog
-Loading module labs::ProjectEuler::cipher2
-Loading module labs::ProjectEuler::ProjectEuler
+Loading module docs::labs::ProjectEuler::cipher1
+Loading module docs::labs::ProjectEuler::keylog
+Loading module docs::labs::ProjectEuler::cipher2
+Loading module docs::labs::ProjectEuler::ProjectEuler
 ```
 
 We start by defining a new module for this lab and importing some accessory
 modules that we will use:
 
 ```cryptol
-module labs::ProjectEuler::ProjectEuler where
+module docs::labs::ProjectEuler::ProjectEuler where
 
-import labs::ProjectEuler::cipher1
-import labs::ProjectEuler::keylog
-import labs::ProjectEuler::cipher2
+import docs::labs::ProjectEuler::cipher1
+import docs::labs::ProjectEuler::keylog
+import docs::labs::ProjectEuler::cipher2
 ```
 
 You do not need to enter the above into the interpreter; the previous 
@@ -83,7 +83,7 @@ Now that we have our function and a property about our function, we
 can test it using the Cryptol interpreter.
 
 ```Xcryptol-session
-labs::ProjectEuler::ProjectEuler> :sat inc1001
+docs::labs::ProjectEuler::ProjectEuler> :sat inc1001
 Satisfiable
 inc1001 1000 = True
 (Total Elapsed Time: 0.023s, using "Z3")
@@ -103,7 +103,7 @@ Note that if we don't include the `x > 1 /\ y > 1` clauses we get a
 trivial factorization.  Now we can use Cryptol to factor our number:
 
 ```Xcryptol-session
-labs::ProjectEuler::ProjectEuler> :sat factor3000013
+docs::labs::ProjectEuler::ProjectEuler> :sat factor3000013
 Satisfiable
 factor3000013 773 3881 = True
 (Total Elapsed Time: 0.498s, using "Z3")
@@ -271,5 +271,6 @@ can be found in cipher2.cry.
 > EXTRA CHALLENGE:
 > What about five-digit numbers? Other numbers of digits?
 
-{ solicitation }
-{ navigation }
+{{ solicitation }}
+
+{{ navigation }}

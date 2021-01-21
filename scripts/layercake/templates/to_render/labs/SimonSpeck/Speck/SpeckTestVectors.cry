@@ -1,15 +1,15 @@
-module labs::SimonSpeck::Speck::SpeckTestVectors where
+module docs::labs::SimonSpeck::Speck::SpeckTestVectors where
 
-import labs::SimonSpeck::Speck::speck_32_64   as speck_32_64
-import labs::SimonSpeck::Speck::speck_48_72   as speck_48_72
-import labs::SimonSpeck::Speck::speck_48_96   as speck_48_96
-import labs::SimonSpeck::Speck::speck_64_96   as speck_64_96
-import labs::SimonSpeck::Speck::speck_64_128  as speck_64_128
-import labs::SimonSpeck::Speck::speck_96_96   as speck_96_96
-import labs::SimonSpeck::Speck::speck_96_144  as speck_96_144
-import labs::SimonSpeck::Speck::speck_128_128 as speck_128_128
-import labs::SimonSpeck::Speck::speck_128_192 as speck_128_192
-import labs::SimonSpeck::Speck::speck_128_256 as speck_128_256
+import docs::labs::SimonSpeck::Speck::speck_32_64   as speck_32_64
+import docs::labs::SimonSpeck::Speck::speck_48_72   as speck_48_72
+import docs::labs::SimonSpeck::Speck::speck_48_96   as speck_48_96
+import docs::labs::SimonSpeck::Speck::speck_64_96   as speck_64_96
+import docs::labs::SimonSpeck::Speck::speck_64_128  as speck_64_128
+import docs::labs::SimonSpeck::Speck::speck_96_96   as speck_96_96
+import docs::labs::SimonSpeck::Speck::speck_96_144  as speck_96_144
+import docs::labs::SimonSpeck::Speck::speck_128_128 as speck_128_128
+import docs::labs::SimonSpeck::Speck::speck_128_192 as speck_128_192
+import docs::labs::SimonSpeck::Speck::speck_128_256 as speck_128_256
 
 K_32_64 = join [0x1918, 0x1110, 0x0908, 0x0100]
 P_32_64 = join [0x6574, 0x694c]

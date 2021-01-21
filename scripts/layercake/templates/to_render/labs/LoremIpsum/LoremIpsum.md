@@ -32,7 +32,7 @@ running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m labs::LoremIpsum::LoremIpsum
+Cryptol> :m docs::labs::LoremIpsum::LoremIpsum
 Loading module Cryptol
 ...
 ```
@@ -41,9 +41,9 @@ We start by defining a new module for this lab and importing some
 accessory modules that we will use:
 
 ```cryptol
-module labs::LoremIpsum::LoremIpsum where
+module docs::labs::LoremIpsum::LoremIpsum where
 
-import labs::LoremIpsum::KLI20
+import docs::labs::LoremIpsum::KLI20
 
 //This lab also requires three modules from previous labs.
 //Once you figure out which are needed, fill them in below.
@@ -459,5 +459,6 @@ secretMessageIssue1 = 0x7f0f165e95c728ab1d1c07aa3c12cc10d5a975394c37eb5870be8b54
 secretMessageIssue2 = 0x4ba6d9eb8489faed2223bd5e3bbf5bf313708c38b369b0fea673c76843cf5312252984b024c2f4263ef318dfbade320920558cb7e475c54811f955a612ab9e18128e1adb056e5775
 ```
 
-{ solicitation }
-{ navigation }
+{{ solicitation }}
+
+{{ navigation }}

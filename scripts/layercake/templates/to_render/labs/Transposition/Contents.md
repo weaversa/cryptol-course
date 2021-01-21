@@ -7,7 +7,8 @@ meant to be visited in the following order:
 * [RailFence](./RailFence.md): a specification of the Rail Fence cipher, which is easy on paper but hard in Cryptol.
 * [Route](./Route.md): an unguided suggestion for sufficiently motivated course participants to define the Route cipher using concepts learned in prior labs.
 
-{ graphical_view }
+{{ graphical_view }}
 
-{ solicitation }
-{ navigation }
+{{ solicitation }}
+
+{{ navigation }}

@@ -9,7 +9,8 @@
 * [Sudoku](./Sudoku.md)
   Diabolical made trivial.
 
-{ graphical_view }
+{{ graphical_view }}
 
-{ solicitation }
-{ navigation }
+{{ solicitation }}
+
+{{ navigation }}

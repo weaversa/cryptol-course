@@ -40,15 +40,15 @@ in the `cryptol-course` directory with:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m labs::CRC::CRC
+Cryptol> :m docs::labs::CRC::CRC
 Loading module Cryptol
-Loading module labs::CRC::CRC
+Loading module docs::labs::CRC::CRC
 ```
 
 We start by defining a new module for this lab:
 
 ```cryptol
-module labs::CRC::CRC where
+module docs::labs::CRC::CRC where
 ```
 
 You do not need to enter the above into the interpreter; the previous 
@@ -337,5 +337,6 @@ from https://en.wikipedia.org/wiki/Cyclic_redundancy_check.
 
 [3] CRC Calculator. Bastian Molkenthin. Retrieved June 7th, 2020, from http://www.sunshine2k.de/coding/javascript/crc/crc_js.html
 
-{ solicitation }
-{ navigation }
+{{ solicitation }}
+
+{{ navigation }}

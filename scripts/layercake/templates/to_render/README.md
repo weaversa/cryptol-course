@@ -18,8 +18,8 @@ applications of Cryptol. Many of the labs in this course are taught
 using [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol documents --- that is, they render nicely in a web browser or
 editor with Markdown support, and they can also be loaded directly
-into the Cryptol interpreter. This README.md is no exception! We start
-by defining a new module for this file:
+into the Cryptol interpreter. This `README.md` is no exception! We
+start by defining a new module for this file:
 
 ```cryptol
 module README where
@@ -127,7 +127,7 @@ first lab walks you through [installing and running Cryptol](INSTALL.md).
    of secret messages by feeding wrapped keys into the anomalous KLI20
    cryptographic engine.
 
-{ graphical_view }
+{{ graphical_view }}
 
 ## Supporting Materials
 
@@ -149,5 +149,6 @@ reference:
   Primitives](https://github.com/GaloisInc/cryptol/blob/master/docs/CryptolPrims.pdf)
   -- A simple list of all of the Cryptol language primitives.
 
-{ solicitation }
-{ navigation }
+{{ solicitation }}
+
+{{ navigation }}

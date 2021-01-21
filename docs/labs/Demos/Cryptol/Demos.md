@@ -19,7 +19,6 @@ representation.)
 
 [![Suggested Flow for Cryptol Demos](../../../misc/CryptolDemos.gv.svg)](../../../misc/CryptolDemos.gv.svg)
 
-
 # Solicitation
 
 How was your experience with this lab? Suggestions are welcome in the
@@ -32,5 +31,4 @@ https://github.com/weaversa/cryptol-course/issues
 |-:|:-:|-|
 || [ - Language Basics ](../../Language/Basics.md) ||
 || **Cryptol Demos** ||
-|| [ v Caesar ]( ./Caesar.md ) ||
-
+|| [ v Caesar ](Caesar.md) ||

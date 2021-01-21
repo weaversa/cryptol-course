@@ -18,8 +18,8 @@ applications of Cryptol. Many of the labs in this course are taught
 using [literate](https://en.wikipedia.org/wiki/Literate_programming)
 Cryptol documents --- that is, they render nicely in a web browser or
 editor with Markdown support, and they can also be loaded directly
-into the Cryptol interpreter. This README.md is no exception! We start
-by defining a new module for this file:
+into the Cryptol interpreter. This `README.md` is no exception! We
+start by defining a new module for this file:
 
 ```cryptol
 module README where
@@ -137,7 +137,6 @@ representation.)
 
 [![Suggested Flow for Cryptol Course](./misc/CryptolCourse.gv.svg)](./misc/CryptolCourse.gv.svg)
 
-
 ## Supporting Materials
 
 You will find references and supporting materials linked throughout
@@ -169,5 +168,4 @@ https://github.com/weaversa/cryptol-course/issues
 ||||
 |-:|:-:|-|
 || **Cryptol Course** ||
-|| [ v Installation ]( ./INSTALL.md ) ||
-
+|| [ v Installation ](INSTALL.md) ||

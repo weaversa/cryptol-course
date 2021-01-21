@@ -33,17 +33,17 @@ running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m labs::SimonSpeck::SimonSpeck
+Cryptol> :m docs::labs::SimonSpeck::SimonSpeck
 Loading module Cryptol
-Loading module labs::SimonSpeck::Simon::Simon
-Loading module labs::SimonSpeck::Simon::simon_32_64
-Loading module labs::SimonSpeck::SimonSpeck
+Loading module docs::labs::SimonSpeck::Simon::Simon
+Loading module docs::labs::SimonSpeck::Simon::simon_32_64
+Loading module docs::labs::SimonSpeck::SimonSpeck
 ```
 
 We start by defining a new module for this lab:
 
 ```cryptol
-module labs::SimonSpeck::SimonSpeck where
+module docs::labs::SimonSpeck::SimonSpeck where
 ```
 
 You do not need to enter the above into the interpreter; the previous 
@@ -168,7 +168,7 @@ functions of the `word size n` and `key words m`:
   * `key size m*n` -- The size of the key in bits
 
 In this lab we have defined a parameterized base module and a family
-of derived modules in `[CRYPTOLCOURSE]/labs/SimonSpeck/Simon/`. The
+of derived modules in `\[CRYPTOLCOURSE\]/docs/labs/SimonSpeck/Simon/`. The
 base module is called `Simon.cry` and the derived modules are named
 `simon_[bs]_[ks].cry` where `[ks]` and `[bs]` vary over the valid
 block and key sized.
@@ -176,9 +176,9 @@ block and key sized.
 Here is the header for the `Simon.cry` base module:
 
 ```example
-module labs::SimonSpeck::Simon::Simon where
+module docs::labs::SimonSpeck::Simon::Simon where
 
-module labs::SimonSpeck::Simon::Simon where
+module docs::labs::SimonSpeck::Simon::Simon where
 
 parameter
 
@@ -203,7 +203,7 @@ type keySize   = m * n
 
 // Other definitions omitted, see
 //
-//     [CRYPTOLCOURSE]/labs/SimonSpeck/Simon/Simon.cry
+//     \[CRYPTOLCOURSE\]/docs/labs/SimonSpeck/Simon/Simon.cry
 //
 // for the remainder of the Simon specification.
 ```
@@ -226,7 +226,7 @@ We can create a concrete module by specifying values for the module
 type parameters as follows:
 
 ```example
-module labs::SimonSpeck::Simon::simon_32_64 = labs::SimonSpeck::Simon::Simon where
+module docs::labs::SimonSpeck::Simon::simon_32_64 = docs::labs::SimonSpeck::Simon::Simon where
 
   type n = 16
   type m = 4
@@ -235,14 +235,14 @@ module labs::SimonSpeck::Simon::simon_32_64 = labs::SimonSpeck::Simon::Simon whe
 ```
 
 This code appears in the file
-`[CRYPTOLCOURSE]/labs/SimonSpeck/Simon/simon_32_64.cry` and defines a
-new module `labs::SimonSpeck::Simon::simon_32_64` with concrete values
+`\[CRYPTOLCOURSE\]/docs/labs/SimonSpeck/Simon/simon_32_64.cry` and defines a
+new module `docs::labs::SimonSpeck::Simon::simon_32_64` with concrete values
 for the `simon32/64` block cipher according to the specification. The
 user can import this module and use the concretized `encrypt` function
 as follows:
 
 ```
-import labs::SimonSpeck::Simon::simon_32_64 as simon_32_64
+import docs::labs::SimonSpeck::Simon::simon_32_64 as simon_32_64
 
 test_K = join [0x1918, 0x1110, 0x0908, 0x0100]
 test_P = join [0x6565, 0x6877]
@@ -260,7 +260,7 @@ we will describe some of the definitions and interesting features
 found in the specification.
 
 Additional documentation can be found in the Simon source file
-`[CRYPTOLCOURSE]/labs/SimonSpeck/Simon/Simon.cry` which you are
+`\[CRYPTOLCOURSE\]/docs/labs/SimonSpeck/Simon/Simon.cry` which you are
 encouraged to review as part of this lab.
 
 **Bit Sequences** `Simon` defines five different bit sequences and
@@ -377,8 +377,8 @@ functions:
 
 ```Xcryptol-session ci-none
 Loading module Cryptol
-Cryptol> :m labs::SimonSpeck::Speck::SpeckTestVectors
-labs::SimonSpeck::Simon::SpeckTestVectors> :prove all_speck_vectors_pass 
+Cryptol> :m docs::labs::SimonSpeck::Speck::SpeckTestVectors
+docs::labs::SimonSpeck::Simon::SpeckTestVectors> :prove all_speck_vectors_pass 
 Q.E.D.
 (Total Elapsed Time: 0.021s, using "Z3")
 ```
@@ -409,4 +409,3 @@ https://github.com/weaversa/cryptol-course/issues
 |-:|:-:|-|
 || [ - Key Wrapping ](../KeyWrapping/KeyWrapping.md) ||
 || **Parameterized Modules** ||
-

@@ -40,15 +40,15 @@ in the `cryptol-course` directory with:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m labs::CRC::CRCAnswers
+Cryptol> :m docs::labs::CRC::CRCAnswers
 Loading module Cryptol
-Loading module labs::CRC::CRCAnswers
+Loading module docs::labs::CRC::CRCAnswers
 ```
 
 We start by defining a new module for this lab:
 
 ```cryptol
-module labs::CRC::CRCAnswers where
+module docs::labs::CRC::CRCAnswers where
 ```
 
 You do not need to enter the above into the interpreter; the previous 
@@ -349,5 +349,4 @@ https://github.com/weaversa/cryptol-course/issues
 |-:|:-:|-|
 || [ ^ Cryptol Course ](../../README.md) ||
 | [ < Language Basics ](../Language/Basics.md) | **CRC** | [ Salsa20 > ](../Salsa20/Salsa20.md) |
-|| [ ? CRC ](./CRC.md) ||
-
+|| [ ? CRC ](labs/CRC/CRC.md) ||

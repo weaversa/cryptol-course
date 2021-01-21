@@ -30,15 +30,15 @@ running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m labs::Demos::Cryptol::NQueens
+Cryptol> :m docs::labs::Demos::Cryptol::NQueens
 Loading module Cryptol
-Loading module labs::Demos::Cryptol::NQueens
+Loading module docs::labs::Demos::Cryptol::NQueens
 ```
 
 We start by defining a new module for this lab:
 
 ```cryptol
-module labs::Demos::Cryptol::NQueens where
+module docs::labs::Demos::Cryptol::NQueens where
 ```
 
 You do not need to enter the above into the interpreter; the previous 
@@ -206,8 +206,8 @@ The instructions for [1] also work here:
 Here is one possible outcome for `n = 8`:
 
 ```Xcryptol-session
-labs::Demos::Cryptol::NQueens> :s base=10
-labs::Demos::Cryptol::NQueens> :sat nQueens : (Solution 8)
+docs::labs::Demos::Cryptol::NQueens> :s base=10
+docs::labs::Demos::Cryptol::NQueens> :sat nQueens : (Solution 8)
 Satisfiable
 (nQueens : Solution 8)
   [1, 7, 5, 0, 2, 4, 6, 3] = True
@@ -221,5 +221,6 @@ the Wikipedia article):
 
 <img src="./NQueensSolution.png" alt="Solution to 8-Queens Puzzle">
 
-{ solicitation }
-{ navigation }
+{{ solicitation }}
+
+{{ navigation }}

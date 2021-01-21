@@ -19,7 +19,8 @@ here.
    introduction to how one can use Cryptol and SAW to prove that an
    implementation matches its specification.
 
-{ graphical_view }
+{{ graphical_view }}
 
-{ solicitation }
-{ navigation }
+{{ solicitation }}
+
+{{ navigation }}

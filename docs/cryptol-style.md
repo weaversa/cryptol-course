@@ -337,6 +337,5 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [ - Language Basics ](./labs/Language/Basics.md) ||
+|| [ - Language Basics ](labs/Language/Basics.md) ||
 || **Style Guide** ||
-

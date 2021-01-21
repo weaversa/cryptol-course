@@ -31,19 +31,19 @@ Cryptol interpreter. Load this module from within the Cryptol
 interpreter running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
-Cryptol> :m labs::Transposition::Transposition
+Cryptol> :m docs::labs::Transposition::Transposition
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
-Loading module labs::CryptoProofs::CryptoProofs
-Loading module labs::Transposition::CommonProperties
-Loading module labs::Transposition::Transposition
+Loading module docs::labs::CryptoProofs::CryptoProofs
+Loading module docs::labs::Transposition::CommonProperties
+Loading module docs::labs::Transposition::Transposition
 ```
 
 We start by defining the module for this lab:
 
 ```cryptol
-module labs::Transposition::Transposition where
+module docs::labs::Transposition::Transposition where
 ```
 
 You do not need to enter the above into the interpreter; the previous 
@@ -56,7 +56,7 @@ Additionally, we will import some common properties to apply to this
 spec:
 
 ```cryptol
-import labs::Transposition::CommonProperties (injective, inverts)
+import docs::labs::Transposition::CommonProperties (injective, inverts)
 ```
 
 # Transposition Ciphers
@@ -175,7 +175,7 @@ permute_permutes pi seq = undefined
 
 **EXERCISE**: Given a permutation mapping `pi: [n]w`, return its 
 inverse `pi'` such that `permute pi'` `inverts` `permute pi`.  
-(`inverts` is imported from `labs::Transposition::CommonProperties`.)
+(`inverts` is imported from `docs::labs::Transposition::CommonProperties`.)
 
 (Hint: The idiomatic solution to this exercise, where `inverse` is 
 defined with ``take`{n} [0...]`` as one of the arguments to 
@@ -200,7 +200,7 @@ inverse_inverts pi seq = undefined
 **EXERCISE**: Define a predicate that `permute pi` is `injective` if 
 `pi` is a permutation mapping, and `:prove` it for various sequence 
 lengths and types.  (`injective` is imported from 
-`labs::Transposition::CommonProperties`.)
+`docs::labs::Transposition::CommonProperties`.)
 
 ```cryptol
 /** `permute pi` is `injective` if `pi` is a permutation mapping */
@@ -378,9 +378,9 @@ rearrange_trace w = out
 Here's how this function works for the string `"HE-LL-O-"`:
 
 ```Xcryptol-session
-labs::Transposition::TranspositionAnswers> :s ascii=on
-labs::Transposition::TranspositionAnswers> :s base=10
-labs::Transposition::Transposition> rearrange_trace "HE-LL-O-" 
+docs::labs::Transposition::TranspositionAnswers> :s ascii=on
+docs::labs::Transposition::TranspositionAnswers> :s base=10
+docs::labs::Transposition::Transposition> rearrange_trace "HE-LL-O-" 
 [("HE-LL-O--", 0, 0), ("HE-LL-O--", 1, 0), ("HE-LL-O--", 2, 0),
  ("HE-LL-O--", 2, 3), ("HEL-L-O--", 3, 4), ("HELL--O--", 4, 5),
  ("HELL--O--", 4, 6), ("HELLO----", 5, 7), ("HELLO----", 5, 8)]
@@ -541,6 +541,4 @@ https://github.com/weaversa/cryptol-course/issues
 ||||
 |-:|:-:|-|
 || [ ^ Transposition Ciphers ](Contents.md) ||
-| [ < Common Properties for Ciphers ](./CommonProperties.md) | **Transposition** | [ Esrever > ](./Esrever.md) |
-|| [ ! Transposition (Answers) ](./TranspositionAnswers.md) ||
-
+| [ < Common Properties for Ciphers ](CommonProperties.md) | **Transposition** | [ Esrever > ](Esrever.md) |

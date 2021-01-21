@@ -41,11 +41,11 @@ running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m labs::CryptoProofs::CryptoProofs
+Cryptol> :m docs::labs::CryptoProofs::CryptoProofs
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
-Loading module labs::CryptoProofs::CryptoProofs
+Loading module docs::labs::CryptoProofs::CryptoProofs
 ```
 
 The proofs in this lab require an array of different theorem provers
@@ -56,7 +56,7 @@ First, since we are creating a module, the first line needs to be the
 module definition.
 
 ```cryptol
-module labs::CryptoProofs::CryptoProofs where
+module docs::labs::CryptoProofs::CryptoProofs where
 ```
 
 You do not need to enter the above into the interpreter; the previous 
@@ -78,14 +78,14 @@ First, we import it.
 import specs::Primitive::Symmetric::Cipher::Block::DES
 ```
 
-When you loaded the `labs::CryptoProofs::CryptoProofs` module, these
+When you loaded the `docs::labs::CryptoProofs::CryptoProofs` module, these
 lines should have been printed:
 
 ```Xcryptol-session
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
-Loading module labs::CryptoProofs::CryptoProofs
+Loading module docs::labs::CryptoProofs::CryptoProofs
 ```
 
 In reverse order: the third line says that this module has been
@@ -96,7 +96,7 @@ Cryptol tells you that too.
 Next, we'll take a look at the type of the DES encryption function.
 
 ```Xcryptol-session
-labs::CryptoProofs::CryptoProofs> :t DES.encrypt
+docs::labs::CryptoProofs::CryptoProofs> :t DES.encrypt
 DES.encrypt : [64] -> [64] -> [64]
 ```
 
@@ -104,14 +104,14 @@ DES takes two 64-bit values and returns a 64-bit value. (The key comes
 first and then the plaintext.) Let's encrypt something with DES.
 
 ```Xcryptol-session
-labs::CryptoProofs::CryptoProofs> DES.encrypt 0x752979387592cb70 0x1122334455667788
+docs::labs::CryptoProofs::CryptoProofs> DES.encrypt 0x752979387592cb70 0x1122334455667788
 0xb5219ee81aa7499d
 ```
 
 Now decrypt:
 
 ```Xcryptol-session
-labs::CryptoProofs::CryptoProofs> DES.decrypt 0x752979387592cb70 0xb5219ee81aa7499d
+docs::labs::CryptoProofs::CryptoProofs> DES.decrypt 0x752979387592cb70 0xb5219ee81aa7499d
 0x1122334455667788
 ```
 
@@ -162,7 +162,7 @@ Now we can reverse it from the REPL. Let's use the solver to find a
 square root using only a squaring function!
 
 ```Xcryptol-session
-labs::CryptoProofs::CryptoProofs> :sat \x -> square x == 1764
+docs::labs::CryptoProofs::CryptoProofs> :sat \x -> square x == 1764
 Satisfiable
 (\x -> square x == 1764) 42 = True
 (Total Elapsed Time: 0.021s, using "Z3")
@@ -197,14 +197,14 @@ Note: For whatever reason, the default Z3 solver has trouble with this
 one. Try one of the other solvers, such as YICES:
 
 ```Xcryptol-session
-labs::CryptoProofs::CryptoProofs> :s prover=yices
+docs::labs::CryptoProofs::CryptoProofs> :s prover=yices
 ```
 
 Or use all the installed solvers in a first-to-the-post race.
 *Caution! May exhaust system resources.*
 
 ```Xcryptol-session
-labs::CryptoProofs::CryptoProofs> :s prover=any
+docs::labs::CryptoProofs::CryptoProofs> :s prover=any
 ```
 
 
@@ -245,7 +245,7 @@ applying `g` to the result of `f x` gets `x` back. Here's the
 invocation:
 
 ```Xcryptol-session
-labs::CryptoProofs::CryptoProofs> :prove \x -> g (f x) == x
+docs::labs::CryptoProofs::CryptoProofs> :prove \x -> g (f x) == x
 Q.E.D.
 (Total Elapsed Time: 0.023s, using "Z3")
 ```
@@ -379,9 +379,6 @@ https://github.com/weaversa/cryptol-course/issues
 |-:|:-:|-|
 || [ ^ Cryptol Course ](../../README.md) ||
 | [ < Salsa20 ](../Salsa20/Salsa20.md) | **Cryptographic Properties** | [ Key Wrapping > ](../KeyWrapping/KeyWrapping.md) |
-|| [ ! Cryptographic Properties (Answers) ](./CryptoProofsAnswers.md) ||
-||||
-|| [ + Salsa20 Properties ]( ../Salsa20/Salsa20Props.md ) ||
-|| [ + Transposition Ciphers ]( ../Transposition/Contents.md ) ||
-|| [ + Project Euler ]( ../ProjectEuler/ProjectEuler.md ) ||
-
+|| [ + Salsa20 Properties ](../Salsa20/Salsa20Props.md) ||
+|| [ + Transposition Ciphers ](../Transposition/Contents.md) ||
+|| [ + Project Euler ](../ProjectEuler/ProjectEuler.md) ||

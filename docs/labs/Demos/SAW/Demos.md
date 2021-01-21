@@ -29,7 +29,6 @@ representation.)
 
 [![Suggested Flow for SAW Demos](../../../misc/SAWDemos.gv.svg)](../../../misc/SAWDemos.gv.svg)
 
-
 # Solicitation
 
 How was your experience with this lab? Suggestions are welcome in the
@@ -42,5 +41,4 @@ https://github.com/weaversa/cryptol-course/issues
 |-:|:-:|-|
 || [ - Language Basics ](../../Language/Basics.md) ||
 || **SAW Demos** ||
-|| [ v Arithmetic Verifications ]( ./ArithmeticVerifications/ArithmeticVerifications.md ) ||
-
+|| [ v Arithmetic Verifications ](ArithmeticVerifications/ArithmeticVerifications.md) ||

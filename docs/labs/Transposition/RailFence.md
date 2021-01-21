@@ -36,28 +36,28 @@ Cryptol interpreter. Load this module from within the Cryptol
 interpreter running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
-Cryptol> :m labs::Transposition::RailFence
+Cryptol> :m docs::labs::Transposition::RailFence
 Loading module Cryptol
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
-Loading module labs::CryptoProofs::CryptoProofs
-Loading module labs::Transposition::CommonProperties
-Loading module labs::Transposition::Transposition
-Loading module labs::Transposition::RailFence
+Loading module docs::labs::CryptoProofs::CryptoProofs
+Loading module docs::labs::Transposition::CommonProperties
+Loading module docs::labs::Transposition::Transposition
+Loading module docs::labs::Transposition::RailFence
 ```
 
 We start by defining the module for this lab:
 
 ```cryptol
-module labs::Transposition::RailFence where
+module docs::labs::Transposition::RailFence where
 ```
 
 Additionally, we will import some common properties and transposition 
 cipher components to this spec:
 
 ```cryptol
-import labs::Transposition::Transposition
+import docs::labs::Transposition::Transposition
 ```
 
 # Rail Fence
@@ -197,6 +197,4 @@ https://github.com/weaversa/cryptol-course/issues
 ||||
 |-:|:-:|-|
 || [ ^ Transposition Ciphers ](Contents.md) ||
-| [ < Scytale ](./Scytale.md) | **Rail Fence** | [ Route > ](./Route.md) |
-|| [ ! Rail Fence (Answers) ](./RailFenceAnswers.md) ||
-
+| [ < Scytale ](Scytale.md) | **Rail Fence** | [ Route > ](Route.md) |

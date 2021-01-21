@@ -33,9 +33,9 @@ running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m labs::LoremIpsum::LoremIpsumAnswers
+Cryptol> :m docs::labs::LoremIpsum::LoremIpsumAnswers
 Loading module Cryptol
-Loading module labs::CRC::CRCAnswers
+Loading module docs::labs::CRC::CRCAnswers
 Loading module specs::Primitive::Symmetric::Cipher::Block::AES::GF28
 Loading module specs::Primitive::Symmetric::Cipher::Block::AES::State
 Loading module specs::Primitive::Symmetric::Cipher::Block::AES::SubBytePlain
@@ -49,22 +49,22 @@ Loading module specs::Primitive::Symmetric::Cipher::Block::AES_parameterized
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
 Loading module specs::Primitive::Symmetric::Cipher::Block::TripleDES
-Loading module labs::KeyWrapping::KeyWrappingAnswers
-Loading module labs::Salsa20::Salsa20Answers
-Loading module labs::LoremIpsum::KLI20
-Loading module labs::LoremIpsum::LoremIpsumAnswers
+Loading module docs::labs::KeyWrapping::KeyWrappingAnswers
+Loading module docs::labs::Salsa20::Salsa20Answers
+Loading module docs::labs::LoremIpsum::KLI20
+Loading module docs::labs::LoremIpsum::LoremIpsumAnswers
 ```
 
 We start by defining a new module for this lab and importing some
 accessory modules that we will use:
 
 ```cryptol
-module labs::LoremIpsum::LoremIpsumAnswers where
+module docs::labs::LoremIpsum::LoremIpsumAnswers where
 
-import labs::CRC::CRCAnswers
-import labs::KeyWrapping::KeyWrappingAnswers
-import labs::Salsa20::Salsa20Answers
-import labs::LoremIpsum::KLI20
+import docs::labs::CRC::CRCAnswers
+import docs::labs::KeyWrapping::KeyWrappingAnswers
+import docs::labs::Salsa20::Salsa20Answers
+import docs::labs::LoremIpsum::KLI20
 ```
 
 You do not need to enter the above into the interpreter; the previous 
@@ -334,7 +334,7 @@ KW-AE 128 (KEK, k) = [0x1fa68b0a8112b447, 0xaef34bd8fb5a7b82, 0x9d3e862371d2cfe5
 > We've already defined `KWAE` in the KeyWrapping lab. Let's test it.
 
 ```Xcryptol-session
-labs::LoremIpsum::LoremIpsumAnswers> split`{3} (TestKWAE (join [0x0001020304050607, 0x08090A0B0C0D0E0F]) (join [0x0011223344556677, 0x8899AABBCCDDEEFF]))
+docs::labs::LoremIpsum::LoremIpsumAnswers> split`{3} (TestKWAE (join [0x0001020304050607, 0x08090A0B0C0D0E0F]) (join [0x0011223344556677, 0x8899AABBCCDDEEFF]))
 [0x1fa68b0a8112b447, 0xaef34bd8fb5a7b82, 0x9d3e862371d2cfe5]
 ```
 
@@ -515,5 +515,6 @@ secretMessageIssue2 = 0x4ba6d9eb8489faed2223bd5e3bbf5bf313708c38b369b0fea673c768
 > We leave this exercise to the student. Don't forget to set `:set
   ascii=on`.
 
-{ solicitation }
-{ navigation }
+{{ solicitation }}
+
+{{ navigation }}

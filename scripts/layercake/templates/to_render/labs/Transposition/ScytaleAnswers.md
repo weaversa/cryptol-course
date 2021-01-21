@@ -3,7 +3,7 @@
 This module defines a classic transposition "cipher" that encrypts a 
 message by wrapping it around a (virtual) [scytale](https://en.wikipedia.org/wiki/Scytale).  
 The cipher is defined in terms of the 
-`labs::Transposition::Transposition` library, which defines `encrypt` 
+`docs::labs::Transposition::Transposition` library, which defines `encrypt` 
 and `decrypt` functions given a permutation mapping reflecting 
 positions on a scytale.
 
@@ -36,28 +36,28 @@ Cryptol interpreter. Load this module from within the Cryptol
 interpreter running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
-Cryptol> :m labs::Transposition::ScytaleAnswers
+Cryptol> :m docs::labs::Transposition::ScytaleAnswers
 Loading module Cryptol
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
-Loading module labs::CryptoProofs::CryptoProofsAnswers
-Loading module labs::Transposition::CommonPropertiesAnswers
-Loading module labs::Transposition::TranspositionAnswers
-Loading module labs::Transposition::ScytaleAnswers
+Loading module docs::labs::CryptoProofs::CryptoProofsAnswers
+Loading module docs::labs::Transposition::CommonPropertiesAnswers
+Loading module docs::labs::Transposition::TranspositionAnswers
+Loading module docs::labs::Transposition::ScytaleAnswers
 ```
 
 We start by defining the module for this lab:
 
 ```cryptol
-module labs::Transposition::ScytaleAnswers where
+module docs::labs::Transposition::ScytaleAnswers where
 ```
 
 Additionally, we will import the common transposition cipher 
 definitions:
 
 ```cryptol
-import labs::Transposition::TranspositionAnswers
+import docs::labs::Transposition::TranspositionAnswers
 ```
 
 # Scytale Encryption and Decryption
@@ -87,10 +87,10 @@ While informative, this definition only accepts messages whose length
 is a multiple of the rod diameter:
 
 ```Xcryptol-session
-labs::Transposition::ScytaleAnswers> :s ascii=on
-labs::Transposition::ScytaleAnswers> scytale`{3} "ATTACKATDAWN"
+docs::labs::Transposition::ScytaleAnswers> :s ascii=on
+docs::labs::Transposition::ScytaleAnswers> scytale`{3} "ATTACKATDAWN"
 "ACDTKATAWATN"
-labs::Transposition::ScytaleAnswers> scytale`{3} "ATTACKDAWN"
+docs::labs::Transposition::ScytaleAnswers> scytale`{3} "ATTACKDAWN"
 
 [error] at <interactive>:1:13--1:25:
   10 != 3 * anything
@@ -110,9 +110,9 @@ block size.  Revisiting the earlier example, `"ATTACKDAWN"` is length
 of size 3:
 
 ```Xcryptol-session
-labs::Transposition::ScytaleAnswers> `numBlocks:Integer where type numBlocks = 10 /^ 3
+docs::labs::Transposition::ScytaleAnswers> `numBlocks:Integer where type numBlocks = 10 /^ 3
 4
-labs::Transposition::ScytaleAnswers> `padLength:Integer where type padLength = 10 %^ 3 
+docs::labs::Transposition::ScytaleAnswers> `padLength:Integer where type padLength = 10 %^ 3 
 2
 ```
 
@@ -152,7 +152,7 @@ property pi_test = and
 ```
 
 ```Xcryptol-session
-labs::Transposition::ScytaleAnswers> :check pi_test
+docs::labs::Transposition::ScytaleAnswers> :check pi_test
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
@@ -194,13 +194,13 @@ pi_correct msg =
 `rearrange`, but proving this property blows up around `n = 16`.)
 
 ```Xcryptol-session
-labs::Transposition::ScytaleAnswers> :prove pi_correct`{3, 10}
+docs::labs::Transposition::ScytaleAnswers> :prove pi_correct`{3, 10}
 Q.E.D.
 (Total Elapsed Time: 0.141s, using Z3)
-labs::Transposition::ScytaleAnswers> :prove pi_correct`{3, 12}
+docs::labs::Transposition::ScytaleAnswers> :prove pi_correct`{3, 12}
 Q.E.D.
 (Total Elapsed Time: 0.251s, using Z3)
-labs::Transposition::ScytaleAnswers> :check pi_correct`{3, 25}
+docs::labs::Transposition::ScytaleAnswers> :check pi_correct`{3, 25}
 Using random testing.
 Passed 100 tests.
 Expected test coverage: 0.00% (100 of 2^^200 values)
@@ -213,5 +213,6 @@ Galois, Inc.'s previous work to define a more generic version that
 accommodates arbitrary message sizes and is specified in terms of 
 reusable transposition cipher components.
 
-{ solicitation }
-{ navigation }
+{{ solicitation }}
+
+{{ navigation }}

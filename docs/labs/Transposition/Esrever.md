@@ -2,7 +2,7 @@
 
 This module defines a trivial transposition "cipher" that just 
 reverses a message.  The cipher is defined in terms of the 
-`labs::Transposition::Transposition` library, which defines `encrypt` 
+`docs::labs::Transposition::Transposition` library, which defines `encrypt` 
 and `decrypt` functions given a `PermutationMapping`, which in this 
 case just returns ``reverse (take`{n} [0...])`` given a message of 
 length `n`.
@@ -35,28 +35,28 @@ Cryptol interpreter. Load this module from within the Cryptol
 interpreter running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
-Cryptol> :m labs::Transposition::Esrever
+Cryptol> :m docs::labs::Transposition::Esrever
 Loading module Cryptol
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
-Loading module labs::CryptoProofs::CryptoProofs
-Loading module labs::Transposition::CommonProperties
-Loading module labs::Transposition::Transposition
-Loading module labs::Transposition::Esrever
+Loading module docs::labs::CryptoProofs::CryptoProofs
+Loading module docs::labs::Transposition::CommonProperties
+Loading module docs::labs::Transposition::Transposition
+Loading module docs::labs::Transposition::Esrever
 ```
 
 We start by defining the module for this lab:
 
 ```cryptol
-module labs::Transposition::Esrever where
+module docs::labs::Transposition::Esrever where
 ```
 
 Additionally, we will import the common transposition cipher 
 definitions:
 
 ```cryptol
-import labs::Transposition::Transposition
+import docs::labs::Transposition::Transposition
 ```
 
 # Esrever Encryption and Decryption
@@ -116,6 +116,4 @@ https://github.com/weaversa/cryptol-course/issues
 ||||
 |-:|:-:|-|
 || [ ^ Transposition Ciphers ](Contents.md) ||
-| [ < Transposition ](./Transposition.md) | **Esrever** | [ Scytale > ](./Scytale.md) |
-|| [ ! Esrever (Answers) ](./EsreverAnswers.md) ||
-
+| [ < Transposition ](Transposition.md) | **Esrever** | [ Scytale > ](Scytale.md) |

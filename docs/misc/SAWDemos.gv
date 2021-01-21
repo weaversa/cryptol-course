@@ -11,8 +11,8 @@ digraph  {
   // URLs by node
   // recommended
   
-  ArithmeticVerifications    [URL="../labs/Demos/SAW/ArithmeticVerifications/ArithmeticVerifications.html"];
-  BitTwiddling               [URL="../labs/Demos/SAW/Bittwiddling/Bittwiddling.html"];
+  ArithmeticVerifications    [URL="../labs/Demos/SAW/ArithmeticVerifications/ArithmeticVerifications.md"];
+  BitTwiddling               [URL="../labs/Demos/SAW/Bittwiddling/Bittwiddling.md"];
 
   // branch nodes
   node [fillcolor="white"];

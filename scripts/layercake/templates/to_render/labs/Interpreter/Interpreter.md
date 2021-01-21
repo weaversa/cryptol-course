@@ -38,10 +38,10 @@ in the `cryptol-course` directory with:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m labs::Interpreter::Interpreter
+Cryptol> :m docs::labs::Interpreter::Interpreter
 Loading module Cryptol
-Loading module labs::Interpreter::Interpreter
-labs::Interpreter::Interpreter>
+Loading module docs::labs::Interpreter::Interpreter
+docs::labs::Interpreter::Interpreter>
 ```
 
 A Cryptol `module` is a named codeblock within a file.  The module
@@ -57,11 +57,11 @@ directory structure surrounding the file.
 In this file, we start by defining a new module for this lab:
 
 ```cryptol
-module labs::Interpreter::Interpreter where
+module docs::labs::Interpreter::Interpreter where
 ```
 
 That indicates that this file `Interpreter.md` will be found in the
-directory `labs/Interpreter`.
+directory `docs/labs/Interpreter`.
 
 *(Note: you do not need to enter the `module` instruction into the
 interpreter; the previous `:m ...` command loaded this literate
@@ -77,7 +77,7 @@ The interpreter has a number of different configuration settings. To
 view them type `:set`.
 
 ```Xcryptol-session
-labs::Interpreter::Interpreter> :set
+docs::labs::Interpreter::Interpreter> :set
 ascii = off
 base = 16
 core-lint = off
@@ -106,9 +106,9 @@ The most common setting to change is `base`. The default is `base =
 their hexadecimal representations. For example,
 
 ```Xcryptol-session
-labs::Interpreter::Interpreter> 0xa
+docs::labs::Interpreter::Interpreter> 0xa
 0xa
-labs::Interpreter::Interpreter> 10 : [4]
+docs::labs::Interpreter::Interpreter> 10 : [4]
 0xa
 ```
 
@@ -116,13 +116,13 @@ To make the interpreter display bitvectors in decimal (base 10), type
 `:set base=10`. To change back to hexadecimal, type `:set base=16`.
 
 ```Xcryptol-session
-labs::Interpreter::Interpreter> :set base=10
-labs::Interpreter::Interpreter> 0xa
+docs::labs::Interpreter::Interpreter> :set base=10
+docs::labs::Interpreter::Interpreter> 0xa
 10
-labs::Interpreter::Interpreter> 10 : [4]
+docs::labs::Interpreter::Interpreter> 10 : [4]
 10
-labs::Interpreter::Interpreter> :set base=16
-labs::Interpreter::Interpreter> 10 : [4]
+docs::labs::Interpreter::Interpreter> :set base=16
+docs::labs::Interpreter::Interpreter> 10 : [4]
 0xa
 ```
 
@@ -141,7 +141,7 @@ example, if we'd like to know more about the `:set base` command, we
 can type:
 
 ```Xcryptol-session
-labs::Interpreter::Interpreter> :h :set base
+docs::labs::Interpreter::Interpreter> :h :set base
 
     base = 16
 
@@ -154,7 +154,7 @@ Cryptol has a built-in command to reverse a list, called
 `reverse`. Let's look at the help for this command.
 
 ```Xcryptol-session
-labs::Interpreter::Interpreter> :h reverse
+docs::labs::Interpreter::Interpreter> :h reverse
 
     reverse : {n, a} (fin n) => [n]a -> [n]a
 
@@ -169,7 +169,7 @@ do not. The colon commands are commands that are outside of the
 Cryptol language, and only exist in the interpreter. You can see a full listing of these commands by typing `:h`.
 
 ```Xcryptol-session
-labs::Interpreter::Interpreter> :h
+docs::labs::Interpreter::Interpreter> :h
   :t, :type            Check the type of an expression.
   :b, :browse          Display environment for all loaded modules, or for a specific module.
   :?, :help            Display a brief description of a function, type, or command. (e.g. :help :help)
@@ -225,7 +225,7 @@ About `:browse` --- If you enter `:b` into the interpreter you will
 first see:
 
 ```Xcryptol-session
-labs::Interpreter::Interpreter> :b
+docs::labs::Interpreter::Interpreter> :b
 Type Synonyms
 =============
 
@@ -250,7 +250,7 @@ data. For example, the number `10` can be expressed as a 32-bit word
 via,
 
 ```Xcryptol-session
-labs::Interpreter::Interpreter> 10 : Word 32
+docs::labs::Interpreter::Interpreter> 10 : Word 32
 0x0000000a
 ```
 
@@ -268,7 +268,7 @@ the type of a function or variable. For example, the size of a
 bitvector can be represented in terms of the width of a number:
 
 ```Xcryptol-session
-labs::Interpreter::Interpreter> :t 10 : [width 32]
+docs::labs::Interpreter::Interpreter> :t 10 : [width 32]
 (10 : [width 32]) : [6]
 ```
 
@@ -279,7 +279,7 @@ variable. For example, `reverse` can be used to reverse the order of a
 sequence of bitvectors:
 
 ```Xcryptol-session
-labs::Interpreter::Interpreter> reverse [1, 2, 3] : [3][2]
+docs::labs::Interpreter::Interpreter> reverse [1, 2, 3] : [3][2]
 [0x3, 0x2, 0x1]
 ```
 
@@ -311,10 +311,10 @@ result `[3, 2, 1]` is automatically bound to the `it` symbol. We can
 then `reverse it` and see that we get `[1, 2, 3]` back.
 
 ```Xcryptol-session
-labs::Interpreter::Interpreter> :s base=10
-labs::Interpreter::Interpreter> reverse [1, 2, 3] : [3][2]
+docs::labs::Interpreter::Interpreter> :s base=10
+docs::labs::Interpreter::Interpreter> reverse [1, 2, 3] : [3][2]
 [3, 2, 1]
-labs::Interpreter::Interpreter> reverse it
+docs::labs::Interpreter::Interpreter> reverse it
 [1, 2, 3]
 ```
 
@@ -325,12 +325,12 @@ example, here we bind the result of `reverse [1, 2, 3] : [3][2]` to
 `r` still retains `[3, 2, 1]`.
 
 ```Xcryptol-session
-labs::Interpreter::Interpreter> let r = reverse [1, 2, 3] : [3][2]
-labs::Interpreter::Interpreter> r
+docs::labs::Interpreter::Interpreter> let r = reverse [1, 2, 3] : [3][2]
+docs::labs::Interpreter::Interpreter> r
 [3, 2, 1]
-labs::Interpreter::Interpreter> reverse r
+docs::labs::Interpreter::Interpreter> reverse r
 [1, 2, 3]
-labs::Interpreter::Interpreter> r
+docs::labs::Interpreter::Interpreter> r
 [3, 2, 1]
 ```
 
@@ -344,9 +344,9 @@ these kinds of definitions in a file and use the `:reload` (or `:r`)
 command when editing to maintain a consistent state.
 
 ```Xcryptol-session
-labs::Interpreter::Interpreter> let x = 0
-labs::Interpreter::Interpreter> let y = x + 1
-labs::Interpreter::Interpreter> let x = 1
+docs::labs::Interpreter::Interpreter> let x = 0
+docs::labs::Interpreter::Interpreter> let y = x + 1
+docs::labs::Interpreter::Interpreter> let x = 1
 ```
 
 
@@ -358,15 +358,15 @@ well as using `:load`. Where `:module` takes the module name, `:load`
 instead takes the filename.
 
 ```Xcryptol-session
-labs::Interpreter::Interpreter> :l labs/Interpreter/Interpreter.md
+docs::labs::Interpreter::Interpreter> :l docs/labs/Interpreter/Interpreter.md
 Loading module Cryptol
-Loading module labs::Interpreter::Interpreter
-labs::Interpreter::Interpreter>
+Loading module docs::labs::Interpreter::Interpreter
+docs::labs::Interpreter::Interpreter>
 ```
 
 Here we see that this file contains a module named
-`labs::Interpreter::Interpreter`, which really just describes its filename
-and directory path (labs/Interpreter/Interpreter.md).
+`docs::labs::Interpreter::Interpreter`, which really just describes its filename
+and directory path (docs/labs/Interpreter/Interpreter.md).
 
 We can browse the currently loaded module to see what new symbols it
 provides. Remember that the interpreter supports TAB completion so you
@@ -374,7 +374,7 @@ only need to type `:b l` then press the TAB key and the interpreter
 will fill in the rest.
 
 ```Xcryptol-session
-labs::Interpreter::Interpreter> :b labs::Interpreter::Interpreter
+docs::labs::Interpreter::Interpreter> :b docs::labs::Interpreter::Interpreter
 Type Synonyms
 =============
 
@@ -403,8 +403,8 @@ symbols.  (If your result does not match, try reloading the module.)
 To load a module by its name (rather than by filename), we use the
 `:module` (or `:m`) command. Namespace elements of a module name
 directly correlate with directory structure; e.g., this module
-`labs::Interpreter::Interpreter` maps directly to the file at
-`labs/Interpreter/Interpreter.md`. Thus in order for the module to be
+`docs::labs::Interpreter::Interpreter` maps directly to the file at
+`docs/labs/Interpreter/Interpreter.md`. Thus in order for the module to be
 found (essentially, finding the base directory for that path), either
 
   1) the Cryptol interpreter must have been started at the same base
@@ -430,10 +430,10 @@ Loading module Cryptol
 ```
 
 ```Xcryptol-session
-Cryptol> :m labs::Interpreter::Interpreter
+Cryptol> :m docs::labs::Interpreter::Interpreter
 Loading module Cryptol
-Loading module labs::Interpreter::Interpreter
-labs::Interpreter::Interpreter>
+Loading module docs::labs::Interpreter::Interpreter
+docs::labs::Interpreter::Interpreter>
 ```
 
 ## Editing
@@ -461,9 +461,9 @@ command line using the interpreter's `-c` flag:
 
 ```Xcryptol shell
 Loading module Cryptol
-$ cryptol -c ":m labs::Interpreter::Interpreter" -c ":s base=10" -c "x + 2"
+$ cryptol -c ":m docs::labs::Interpreter::Interpreter" -c ":s base=10" -c "x + 2"
 Loading module Cryptol
-Loading module labs::Interpreter::Interpreter
+Loading module docs::labs::Interpreter::Interpreter
 3
 ```
 
@@ -471,13 +471,13 @@ And here we issue the same commands by running the `test.sry` batch
 file using the interpreter's `-b` flag:
 
 ```Xcryptol shell
-$ cat labs/Interpreter/test.sry
-:m labs::Interpreter::Interpreter
+$ cat docs/labs/Interpreter/test.sry
+:m docs::labs::Interpreter::Interpreter
 :s base=10
 x + 2
-$ cryptol -b labs/Interpreter/test.sry
+$ cryptol -b docs/labs/Interpreter/test.sry
 Loading module Cryptol
-Loading module labs::Interpreter::Interpreter
+Loading module docs::labs::Interpreter::Interpreter
 3
 ```
 
@@ -531,5 +531,6 @@ y = x + 10
 f a = a + y
 ```
 
-{ solicitation }
-{ navigation }
+{{ solicitation }}
+
+{{ navigation }}

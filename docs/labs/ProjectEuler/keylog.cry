@@ -1,4 +1,4 @@
-module labs::ProjectEuler::keylog where
+module docs::labs::ProjectEuler::keylog where
 
 keylog = [
 [3, 1, 9],

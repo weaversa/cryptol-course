@@ -32,7 +32,7 @@ running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m labs::LoremIpsum::LoremIpsum
+Cryptol> :m docs::labs::LoremIpsum::LoremIpsum
 Loading module Cryptol
 ...
 ```
@@ -41,9 +41,9 @@ We start by defining a new module for this lab and importing some
 accessory modules that we will use:
 
 ```cryptol
-module labs::LoremIpsum::LoremIpsum where
+module docs::labs::LoremIpsum::LoremIpsum where
 
-import labs::LoremIpsum::KLI20
+import docs::labs::LoremIpsum::KLI20
 
 //This lab also requires three modules from previous labs.
 //Once you figure out which are needed, fill them in below.
@@ -471,5 +471,3 @@ https://github.com/weaversa/cryptol-course/issues
 |-:|:-:|-|
 || [ ^ Cryptol Course ](../../README.md) ||
 | [ < Key Wrapping ](../KeyWrapping/KeyWrapping.md) | **Capstone** ||
-|| [ ! Capstone (Answers) ](./LoremIpsumAnswers.md) ||
-
