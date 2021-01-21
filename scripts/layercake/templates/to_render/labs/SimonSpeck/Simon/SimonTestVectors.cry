@@ -1,15 +1,15 @@
-module docs::labs::SimonSpeck::Simon::SimonTestVectors where
+module labs::SimonSpeck::Simon::SimonTestVectors where
 
-import docs::labs::SimonSpeck::Simon::simon_32_64   as simon_32_64
-import docs::labs::SimonSpeck::Simon::simon_48_72   as simon_48_72
-import docs::labs::SimonSpeck::Simon::simon_48_96   as simon_48_96
-import docs::labs::SimonSpeck::Simon::simon_64_96   as simon_64_96
-import docs::labs::SimonSpeck::Simon::simon_64_128  as simon_64_128
-import docs::labs::SimonSpeck::Simon::simon_96_96   as simon_96_96
-import docs::labs::SimonSpeck::Simon::simon_96_144  as simon_96_144
-import docs::labs::SimonSpeck::Simon::simon_128_128 as simon_128_128
-import docs::labs::SimonSpeck::Simon::simon_128_192 as simon_128_192
-import docs::labs::SimonSpeck::Simon::simon_128_256 as simon_128_256
+import labs::SimonSpeck::Simon::simon_32_64   as simon_32_64
+import labs::SimonSpeck::Simon::simon_48_72   as simon_48_72
+import labs::SimonSpeck::Simon::simon_48_96   as simon_48_96
+import labs::SimonSpeck::Simon::simon_64_96   as simon_64_96
+import labs::SimonSpeck::Simon::simon_64_128  as simon_64_128
+import labs::SimonSpeck::Simon::simon_96_96   as simon_96_96
+import labs::SimonSpeck::Simon::simon_96_144  as simon_96_144
+import labs::SimonSpeck::Simon::simon_128_128 as simon_128_128
+import labs::SimonSpeck::Simon::simon_128_192 as simon_128_192
+import labs::SimonSpeck::Simon::simon_128_256 as simon_128_256
 
 K_32_64 = join [0x1918, 0x1110, 0x0908, 0x0100]
 P_32_64 = join [0x6565, 0x6877]

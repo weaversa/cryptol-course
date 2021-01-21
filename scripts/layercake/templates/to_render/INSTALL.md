@@ -87,9 +87,9 @@ free to load the next lab into the interpreter by typing:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m docs::labs::Overview::Overview
+Cryptol> :m labs::Overview::Overview
 Loading module Cryptol
-Loading module docs::labs::Overview::Overview
+Loading module labs::Overview::Overview
 ```
 
 You may now start using Visual Studio Code to work through the
@@ -261,10 +261,10 @@ Loading module Cryptol
 ```
 
 ```Xcryptol-session
-Cryptol> :module docs::labs::Demos::Cryptol::OneTimePad
+Cryptol> :module labs::Demos::Cryptol::OneTimePad
 Loading module Cryptol
-Loading module docs::labs::Demos::Cryptol::OneTimePad
-docs::labs::Demos::Cryptol::OneTimePad>
+Loading module labs::Demos::Cryptol::OneTimePad
+labs::Demos::Cryptol::OneTimePad>
 ```
 
 ### Using Docker on Windows 10
@@ -276,10 +276,10 @@ Loading module Cryptol
 ```
 
 ```Xcryptol-session
-Cryptol> :module docs::labs::Demos::Cryptol::OneTimePad
+Cryptol> :module labs::Demos::Cryptol::OneTimePad
 Loading module Cryptol
-Loading module docs::labs::Demos::Cryptol::OneTimePad
-docs::labs::Demos::Cryptol::OneTimePad>
+Loading module labs::Demos::Cryptol::OneTimePad
+labs::Demos::Cryptol::OneTimePad>
 ```
 
 ## Running from a Direct Install
@@ -296,10 +296,10 @@ Loading module Cryptol
 ```
 
 ```Xcryptol-session
-Cryptol> :module docs::labs::Demos::Cryptol::OneTimePad
+Cryptol> :module labs::Demos::Cryptol::OneTimePad
 Loading module Cryptol
-Loading module docs::labs::Demos::Cryptol::OneTimePad
-docs::labs::Demos::Cryptol::OneTimePad>
+Loading module labs::Demos::Cryptol::OneTimePad
+labs::Demos::Cryptol::OneTimePad>
 ```
 -----
 

@@ -2,7 +2,7 @@
 
 This module defines a trivial transposition "cipher" that just 
 reverses a message.  The cipher is defined in terms of the 
-`docs::labs::Transposition::Transposition` library, which defines `encrypt` 
+`labs::Transposition::Transposition` library, which defines `encrypt` 
 and `decrypt` functions given a `PermutationMapping`, which in this 
 case just returns ``reverse (take`{n} [0...])`` given a message of 
 length `n`.
@@ -35,28 +35,28 @@ Cryptol interpreter. Load this module from within the Cryptol
 interpreter running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
-Cryptol> :m docs::labs::Transposition::EsreverAnswers
+Cryptol> :m labs::Transposition::EsreverAnswers
 Loading module Cryptol
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
-Loading module docs::labs::CryptoProofs::CryptoProofsAnswers
-Loading module docs::labs::Transposition::CommonPropertiesAnswers
-Loading module docs::labs::Transposition::TranspositionAnswers
-Loading module docs::labs::Transposition::EsreverAnswers
+Loading module labs::CryptoProofs::CryptoProofsAnswers
+Loading module labs::Transposition::CommonPropertiesAnswers
+Loading module labs::Transposition::TranspositionAnswers
+Loading module labs::Transposition::EsreverAnswers
 ```
 
 We start by defining the module for this lab:
 
 ```cryptol
-module docs::labs::Transposition::EsreverAnswers where
+module labs::Transposition::EsreverAnswers where
 ```
 
 Additionally, we will import the common transposition cipher 
 definitions:
 
 ```cryptol
-import docs::labs::Transposition::TranspositionAnswers
+import labs::Transposition::TranspositionAnswers
 ```
 
 # Esrever Encryption and Decryption
@@ -91,17 +91,17 @@ pi_correct msg = (encrypt pi) msg == reverse msg
 ```
 
 ```Xcryptol-session
-docs::labs::Transposition::EsreverAnswers> :check pi_test
+labs::Transposition::EsreverAnswers> :check pi_test
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-docs::labs::Transposition::EsreverAnswers> :prove pi_correct`{7, Char}
+labs::Transposition::EsreverAnswers> :prove pi_correct`{7, Char}
 Q.E.D.
 (Total Elapsed Time: 0.006s, using Z3)
-docs::labs::Transposition::EsreverAnswers> :prove pi_correct`{128, Char}
+labs::Transposition::EsreverAnswers> :prove pi_correct`{128, Char}
 Q.E.D.
 (Total Elapsed Time: 0.014s, using Z3)
-docs::labs::Transposition::EsreverAnswers> :check pi_correct`{4096, Char}
+labs::Transposition::EsreverAnswers> :check pi_correct`{4096, Char}
 Using random testing.
 Passed 100 tests.
 Expected test coverage: 0.00% (100 of 2^^32768 values)
@@ -116,13 +116,13 @@ encrypt_decrypt_equiv = encrypt pi === decrypt pi
 ```
 
 ```Xcryptol-session
-docs::labs::Transposition::EsreverAnswers> :prove encrypt_decrypt_equiv`{32, Char}
+labs::Transposition::EsreverAnswers> :prove encrypt_decrypt_equiv`{32, Char}
 Q.E.D.
 (Total Elapsed Time: 0.008s, using Z3)
-docs::labs::Transposition::EsreverAnswers> :prove encrypt_decrypt_equiv`{512, Char}
+labs::Transposition::EsreverAnswers> :prove encrypt_decrypt_equiv`{512, Char}
 Q.E.D.
 (Total Elapsed Time: 0.053s, using Z3)
-docs::labs::Transposition::EsreverAnswers> :prove encrypt_decrypt_equiv`{4096, Char}
+labs::Transposition::EsreverAnswers> :prove encrypt_decrypt_equiv`{4096, Char}
 Q.E.D.
 (Total Elapsed Time: 0.730s, using Z3)
 ```

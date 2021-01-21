@@ -36,28 +36,28 @@ Cryptol interpreter. Load this module from within the Cryptol
 interpreter running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
-Cryptol> :m docs::labs::Transposition::RailFenceAnswers
+Cryptol> :m labs::Transposition::RailFenceAnswers
 Loading module Cryptol
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
-Loading module docs::labs::CryptoProofs::CryptoProofsAnswers
-Loading module docs::labs::Transposition::CommonPropertiesAnswers
-Loading module docs::labs::Transposition::TranspositionAnswers
-Loading module docs::labs::Transposition::RailFenceAnswers
+Loading module labs::CryptoProofs::CryptoProofsAnswers
+Loading module labs::Transposition::CommonPropertiesAnswers
+Loading module labs::Transposition::TranspositionAnswers
+Loading module labs::Transposition::RailFenceAnswers
 ```
 
 We start by defining the module for this lab:
 
 ```cryptol
-module docs::labs::Transposition::RailFenceAnswers where
+module labs::Transposition::RailFenceAnswers where
 ```
 
 Additionally, we will import some common properties and transposition 
 cipher components to this spec:
 
 ```cryptol
-import docs::labs::Transposition::TranspositionAnswers
+import labs::Transposition::TranspositionAnswers
 ```
 
 # Rail Fence
@@ -155,7 +155,7 @@ property cycle_test = and
 ```
 
 ```Xcryptol-session
-docs::labs::Transposition::RailFenceAnswers> :check cycle_test
+labs::Transposition::RailFenceAnswers> :check cycle_test
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
@@ -212,7 +212,7 @@ property pi_test = and
 ```
 
 ```Xcryptol-session
-docs::labs::Transposition::RailFenceAnswers> :check pi_test
+labs::Transposition::RailFenceAnswers> :check pi_test
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.

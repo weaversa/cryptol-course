@@ -1,6 +1,6 @@
 # Introduction
 
-`docs::labs::CryptoProofs::CryptoProofs` introduced the concepts of 
+`labs::CryptoProofs::CryptoProofs` introduced the concepts of 
 _injectivity_ and _inversion_, among others.  In this lab, we build 
 upon these concepts, introducing higher-order functions (functions 
 that take functions as values) and specifying reusable property 
@@ -39,13 +39,13 @@ interpreter. Load this module from within the Cryptol interpreter
 running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
-Cryptol> :m docs::labs::Transposition::CommonProperties
+Cryptol> :m labs::Transposition::CommonProperties
 Loading module Cryptol
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
-Loading module docs::labs::CryptoProofs::CryptoProofs
-Loading module docs::labs::Transposition::CommonProperties
+Loading module labs::CryptoProofs::CryptoProofs
+Loading module labs::Transposition::CommonProperties
 ```
 
 The proofs in this lab require an array of different theorem provers
@@ -56,7 +56,7 @@ this course.
 The first line of a Cryptol module needs to be a module definition:
 
 ```cryptol
-module docs::labs::Transposition::CommonProperties where
+module labs::Transposition::CommonProperties where
 ```
 
 You do not need to enter the above into the interpreter; the previous 
@@ -66,12 +66,12 @@ interpreter and only change `cryptol` code as directed by the
 exercises, reloading for `:m ...` to import your changes.
 
 In this lab, we'll redo exercises from 
-`docs::labs::CryptoProofs::CryptoProofs`, higher-order style, so we'll 
+`labs::CryptoProofs::CryptoProofs`, higher-order style, so we'll 
 import the same dependency.  We'll give it an alias this time so 
 Cryptol doesn't spew warnings about shadowing its definition of `f`:
 
 ```cryptol
-import docs::labs::CryptoProofs::CryptoProofs (known_key, known_ct, DESFixParity)
+import labs::CryptoProofs::CryptoProofs (known_key, known_ct, DESFixParity)
 import specs::Primitive::Symmetric::Cipher::Block::DES (DES)
 ```
 
@@ -80,33 +80,33 @@ import specs::Primitive::Symmetric::Cipher::Block::DES (DES)
 Let's count to 10...
 
 ```Xcryptol-session
-docs::labs::Transposition::CommonProperties> let _1 = 1 : Integer
-docs::labs::Transposition::CommonProperties> _1
+labs::Transposition::CommonProperties> let _1 = 1 : Integer
+labs::Transposition::CommonProperties> _1
 1
-docs::labs::Transposition::CommonProperties> 1 + it
+labs::Transposition::CommonProperties> 1 + it
 2
-docs::labs::Transposition::CommonProperties> 1 + it
+labs::Transposition::CommonProperties> 1 + it
 3
-docs::labs::Transposition::CommonProperties> 1 + it
+labs::Transposition::CommonProperties> 1 + it
 4
-docs::labs::Transposition::CommonProperties> 1 + it
+labs::Transposition::CommonProperties> 1 + it
 5
-docs::labs::Transposition::CommonProperties> 1 + it
+labs::Transposition::CommonProperties> 1 + it
 6
-docs::labs::Transposition::CommonProperties> 1 + it
+labs::Transposition::CommonProperties> 1 + it
 7
-docs::labs::Transposition::CommonProperties> 1 + it
+labs::Transposition::CommonProperties> 1 + it
 8
-docs::labs::Transposition::CommonProperties> 1 + it
+labs::Transposition::CommonProperties> 1 + it
 9
-docs::labs::Transposition::CommonProperties> 1 + it
+labs::Transposition::CommonProperties> 1 + it
 10
 ```
 
 That was repetitive.  Let's just ask Cryptol to count to 10:
 
 ```Xcryptol-session
-docs::labs::Transposition::CommonProperties> take`{10} (iterate (\x -> 1 + x) (1 : Integer))
+labs::Transposition::CommonProperties> take`{10} (iterate (\x -> 1 + x) (1 : Integer))
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 ```
 
@@ -121,16 +121,16 @@ Peano would be proud.  Wouldn't it be nice if Cryptol could just
 reuse `S` to repeatedly increment a counter?
 
 ```Xcryptol-session
-docs::labs::Transposition::CommonProperties> :t \(x : Integer) -> 1 + x
+labs::Transposition::CommonProperties> :t \(x : Integer) -> 1 + x
 (\(x : Integer) -> 1 + x) : Integer -> Integer
-docs::labs::Transposition::CommonProperties> :t S
+labs::Transposition::CommonProperties> :t S
 S : Integer -> Integer
 ```
 
 Wait a minute...it can!
 
 ```Xcryptol-session
-docs::labs::Transposition::CommonProperties> take`{10} (iterate S 1)
+labs::Transposition::CommonProperties> take`{10} (iterate S 1)
 [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 ```
 
@@ -141,7 +141,7 @@ But why bother?
 
 # Five Killer Apps: Silence of the Lambdas
 
-From `docs::labs::CryptoProofs::CryptoProofs`:
+From `labs::CryptoProofs::CryptoProofs`:
 
 > | Proof | Invocation |
 > |-|-|
@@ -221,8 +221,8 @@ encrypting that plaintext using DES with the `known_key` produces the
 `known_ct`.)  Avoid lambda.
 
 ```Xcryptol-session
-docs::labs::Transposition::CommonProperties> :s prover=boolector
-docs::labs::Transposition::CommonProperties> 
+labs::Transposition::CommonProperties> :s prover=boolector
+labs::Transposition::CommonProperties> 
 ```
 
 (Hint: A curried function of two arguments can be viewed as a 
@@ -233,8 +233,8 @@ are mutual inverses for all possible `pt`, given the same `key`.
 Do not mention `pt` in your proof commands.
 
 ```Xcryptol-session
-docs::labs::Transposition::CommonProperties> :s prover=abc
-docs::labs::Transposition::CommonProperties> 
+labs::Transposition::CommonProperties> :s prover=abc
+labs::Transposition::CommonProperties> 
 ```
 
 **EXERCISE**: Use Boolector to prove that `DES.encrypt` is injective 
@@ -242,8 +242,8 @@ for any given `key`.  Do not mention `pt`s in your proof command.
 Meditate on the nature of lambda and the (f)utility of names.
 
 ```Xcryptol-session
-docs::labs::Transposition::CommonProperties> :s prover=boolector
-docs::labs::Transposition::CommonProperties> 
+labs::Transposition::CommonProperties> :s prover=boolector
+labs::Transposition::CommonProperties> 
 ```
 
 **EXERCISE**: Use Yices to find two different keys and a single 
@@ -254,8 +254,8 @@ your command.  Guess whether such a collision will be found before
 you observe a collision of black holes in nearby outer space.
 
 ```Xcryptol-session
-docs::labs::Transposition::CommonProperties> :s prover=yices
-docs::labs::Transposition::CommonProperties> 
+labs::Transposition::CommonProperties> :s prover=yices
+labs::Transposition::CommonProperties> 
 ```
 
 **EXERCISE**: Use ABC to prove that the two keys you just found are 
@@ -264,8 +264,8 @@ equivalent keys; i.e., prove that keyed `DES.encrypt` and
 Avoid lambda.
 
 ```Xcryptol-session
-docs::labs::Transposition::CommonProperties> :s prover=abc
-docs::labs::Transposition::CommonProperties> 
+labs::Transposition::CommonProperties> :s prover=abc
+labs::Transposition::CommonProperties> 
 ```
 
 **EXERCISE**: Use ABC to prove that `DES.encrypt key` is equivalent 
@@ -273,8 +273,8 @@ to `DES.encrypt (DESFixParity key)`.  Do not mention `pt` in your
 proof command.
 
 ```Xcryptol-session
-docs::labs::Transposition::CommonProperties> :s prover=abc
-docs::labs::Transposition::CommonProperties> 
+labs::Transposition::CommonProperties> :s prover=abc
+labs::Transposition::CommonProperties> 
 ```
 
 **EXERCISE**: Finally, try to find a collision with keys of distinct 
@@ -284,8 +284,8 @@ consequences...)  Feel free to go crazy with lambda.  Ponder the
 abject hopelessness of classical crypto in a post-quantum world...
 
 ```Text
-docs::labs::Transposition::CommonProperties> :s prover=abc
-docs::labs::Transposition::CommonProperties> 
+labs::Transposition::CommonProperties> :s prover=abc
+labs::Transposition::CommonProperties> 
 ```
 
 # Conclusion

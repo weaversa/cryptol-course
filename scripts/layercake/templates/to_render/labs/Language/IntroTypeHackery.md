@@ -41,15 +41,15 @@ running in the `cryptol-course` directory with:
 
 ```Xcryptol session
 Loading module Cryptol
-Cryptol> :m docs::labs::Language::IntroTypeHackery
+Cryptol> :m labs::Language::IntroTypeHackery
 Loading module Cryptol
-Loading module docs::labs::Language::IntroTypeHackery
+Loading module labs::Language::IntroTypeHackery
 ```
 
 We start by defining a new module for this lab:
 
 ```cryptol
-module docs::labs::Language::IntroTypeHackery where
+module labs::Language::IntroTypeHackery where
 ```
 
 You do not need to enter the above into the interpreter; the previous 

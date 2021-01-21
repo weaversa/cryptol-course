@@ -38,19 +38,19 @@ in the `cryptol-course` directory with:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m docs::labs::Salsa20::Salsa20PropsAnswers
+Cryptol> :m labs::Salsa20::Salsa20PropsAnswers
 Loading module Cryptol
-Loading module docs::labs::Salsa20::Salsa20Answers
-Loading module docs::labs::Salsa20::Salsa20PropsAnswers
+Loading module labs::Salsa20::Salsa20Answers
+Loading module labs::Salsa20::Salsa20PropsAnswers
 ```
 
 We start by defining a new module for this lab and importing the
 Salsa20 specification from a prior lab:
 
 ```cryptol
-module docs::labs::Salsa20::Salsa20PropsAnswers where
+module labs::Salsa20::Salsa20PropsAnswers where
 
-import docs::labs::Salsa20::Salsa20Answers
+import labs::Salsa20::Salsa20Answers
 ```
 
 You do not need to enter the above into the interpreter; the previous 

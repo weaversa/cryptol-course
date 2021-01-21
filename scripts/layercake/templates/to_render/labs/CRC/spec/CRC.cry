@@ -1,4 +1,4 @@
-module docs::labs::CRC::spec::CRC where
+module labs::CRC::spec::CRC where
 
 /**
  * Cyclic Redundancy Check (CRC)

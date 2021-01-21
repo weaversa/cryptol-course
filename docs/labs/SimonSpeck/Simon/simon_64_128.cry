@@ -1,4 +1,4 @@
-module docs::labs::SimonSpeck::Simon::simon_64_128 = docs::labs::SimonSpeck::Simon::Simon where
+module labs::SimonSpeck::Simon::simon_64_128 = labs::SimonSpeck::Simon::Simon where
 
   type n = 32
   type m = 4

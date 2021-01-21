@@ -34,26 +34,26 @@ Cryptol interpreter. Load this module from within the Cryptol
 interpreter running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
-Cryptol> :m docs::labs::Transposition::Route
+Cryptol> :m labs::Transposition::Route
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
-Loading module docs::labs::CryptoProofs::CryptoProofs
-Loading module docs::labs::Transposition::CommonProperties
-Loading module docs::labs::Transposition::Transposition
-Loading module docs::labs::Transposition::Route
+Loading module labs::CryptoProofs::CryptoProofs
+Loading module labs::Transposition::CommonProperties
+Loading module labs::Transposition::Transposition
+Loading module labs::Transposition::Route
 ```
 
 Start by defining the module for this lab:
 
 ```cryptol
-module docs::labs::Transposition::Route where
+module labs::Transposition::Route where
 ```
 
 You should import your common definitions for transposition ciphers:
 
 ```cryptol
-import docs::labs::Transposition::Transposition
+import labs::Transposition::Transposition
 ```
 
 # Route

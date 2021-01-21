@@ -2,7 +2,7 @@
 
 This module defines a trivial transposition "cipher" that just 
 reverses a message.  The cipher is defined in terms of the 
-`docs::labs::Transposition::Transposition` library, which defines `encrypt` 
+`labs::Transposition::Transposition` library, which defines `encrypt` 
 and `decrypt` functions given a `PermutationMapping`, which in this 
 case just returns ``reverse (take`{n} [0...])`` given a message of 
 length `n`.
@@ -35,28 +35,28 @@ Cryptol interpreter. Load this module from within the Cryptol
 interpreter running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
-Cryptol> :m docs::labs::Transposition::Esrever
+Cryptol> :m labs::Transposition::Esrever
 Loading module Cryptol
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
-Loading module docs::labs::CryptoProofs::CryptoProofs
-Loading module docs::labs::Transposition::CommonProperties
-Loading module docs::labs::Transposition::Transposition
-Loading module docs::labs::Transposition::Esrever
+Loading module labs::CryptoProofs::CryptoProofs
+Loading module labs::Transposition::CommonProperties
+Loading module labs::Transposition::Transposition
+Loading module labs::Transposition::Esrever
 ```
 
 We start by defining the module for this lab:
 
 ```cryptol
-module docs::labs::Transposition::Esrever where
+module labs::Transposition::Esrever where
 ```
 
 Additionally, we will import the common transposition cipher 
 definitions:
 
 ```cryptol
-import docs::labs::Transposition::Transposition
+import labs::Transposition::Transposition
 ```
 
 # Esrever Encryption and Decryption

@@ -68,15 +68,15 @@ in the `cryptol-course` directory with:
 `
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m docs::labs::Demos::SAW::Bittwiddling::BittwiddlingAnswers
+Cryptol> :m labs::Demos::SAW::Bittwiddling::BittwiddlingAnswers
 Loading module Cryptol
-Loading module docs::labs::Demos::SAW::Bittwiddling::BittwiddlingAnswers
+Loading module labs::Demos::SAW::Bittwiddling::BittwiddlingAnswers
 ```
 
 We start by defining a new module for this lab:
 
 ```cryptol
-module docs::labs::Demos::SAW::Bittwiddling::BittwiddlingAnswers where
+module labs::Demos::SAW::Bittwiddling::BittwiddlingAnswers where
 ```
 
 You do not need to enter the above into the interpreter; the previous 

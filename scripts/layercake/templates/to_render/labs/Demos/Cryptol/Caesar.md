@@ -28,15 +28,15 @@ running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m docs::labs::Demos::Cryptol::Caesar
+Cryptol> :m labs::Demos::Cryptol::Caesar
 Loading module Cryptol
-Loading module docs::labs::Demos::Cryptol::Caesar
+Loading module labs::Demos::Cryptol::Caesar
 ```
 
 The Cryptol module starts by defining a new module for this lab:
 
 ```cryptol
-module docs::labs::Demos::Cryptol::Caesar where
+module labs::Demos::Cryptol::Caesar where
 ```
 
 You do not need to enter the above into the interpreter; the previous 
@@ -66,9 +66,9 @@ caesar msg = map rot3 msg
 ```
 
 ```Xcryptol-session
-docs::labs::Demos::Cryptol::Caesar> :s prover=abc
-docs::labs::Demos::Cryptol::Caesar> :s ascii=on
-docs::labs::Demos::Cryptol::Caesar> caesar "ATTACK AT DAWN"
+labs::Demos::Cryptol::Caesar> :s prover=abc
+labs::Demos::Cryptol::Caesar> :s ascii=on
+labs::Demos::Cryptol::Caesar> caesar "ATTACK AT DAWN"
 "XQQXZH XQ AXTK"
 ```
 
@@ -133,7 +133,7 @@ property charIsAtIndex = indexCorrect alphabet
 ```
 
 ```Xcryptol-session
-docs::labs::Demos::Cryptol::Caesar> :prove charIsAtIndex
+labs::Demos::Cryptol::Caesar> :prove charIsAtIndex
 Q.E.D.
 (Total Elapsed Time: 0.072s, using "ABC")
 ```
@@ -141,10 +141,10 @@ Q.E.D.
 The property even holds for other sequences, repeating or not:
 
 ```Xcryptol-session
-docs::labs::Demos::Cryptol::Caesar> :prove \(A : [64]Char) -> indexCorrect A
+labs::Demos::Cryptol::Caesar> :prove \(A : [64]Char) -> indexCorrect A
 Q.E.D.
 (Total Elapsed Time: 1.172s, using "ABC")
-docs::labs::Demos::Cryptol::Caesar> :prove \(L : [33][32]) -> indexCorrect L
+labs::Demos::Cryptol::Caesar> :prove \(L : [33][32]) -> indexCorrect L
 Q.E.D.
 (Total Elapsed Time: 0.347s, using "ABC")
 ```
@@ -175,22 +175,22 @@ Note the `alphabet >>> key` part: Cryptol allows rotation not only
 over bit sequences, ...
 
 ```Xcryptol-session
-docs::labs::Demos::Cryptol::Caesar> :s ascii=off
-docs::labs::Demos::Cryptol::Caesar> :s base=2
-docs::labs::Demos::Cryptol::Caesar> 0b11001010 <<< 4
+labs::Demos::Cryptol::Caesar> :s ascii=off
+labs::Demos::Cryptol::Caesar> :s base=2
+labs::Demos::Cryptol::Caesar> 0b11001010 <<< 4
 0b10101100
 ```
 
 ...but over sequences of arbitrary shape...
 
 ```Xcryptol-session
-docs::labs::Demos::Cryptol::Caesar> :s base=10
-docs::labs::Demos::Cryptol::Caesar> [1, 2, 3, 4, 5 : Integer] <<< 3
+labs::Demos::Cryptol::Caesar> :s base=10
+labs::Demos::Cryptol::Caesar> [1, 2, 3, 4, 5 : Integer] <<< 3
 [4, 5, 1, 2, 3]
-docs::labs::Demos::Cryptol::Caesar> :s ascii=on
-docs::labs::Demos::Cryptol::Caesar> "RACECAR " <<< 4
+labs::Demos::Cryptol::Caesar> :s ascii=on
+labs::Demos::Cryptol::Caesar> "RACECAR " <<< 4
 "CAR RACE"
-docs::labs::Demos::Cryptol::Caesar> :t (<<<)
+labs::Demos::Cryptol::Caesar> :t (<<<)
 (<<<) : {n, ix, a} (fin n, Integral ix) => [n]a -> ix -> [n]a
 ```
 
@@ -235,15 +235,15 @@ variables, it makes more sense to `:check` these (this saves
 the solver some work and often speeds up such tests).
 
 ```Xcryptol-session
-docs::labs::Demos::Cryptol::Caesar> :check v1
+labs::Demos::Cryptol::Caesar> :check v1
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-docs::labs::Demos::Cryptol::Caesar> :check v2
+labs::Demos::Cryptol::Caesar> :check v2
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-docs::labs::Demos::Cryptol::Caesar> :check v3
+labs::Demos::Cryptol::Caesar> :check v3
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
@@ -273,10 +273,10 @@ property recovery_14 = recovery`{14}
 ```
 
 ```Xcryptol-session
-docs::labs::Demos::Cryptol::Caesar> :prove recovery_4
+labs::Demos::Cryptol::Caesar> :prove recovery_4
 Q.E.D.
 (Total Elapsed Time: 0.245s, using "ABC")
-docs::labs::Demos::Cryptol::Caesar> :prove recovery_14
+labs::Demos::Cryptol::Caesar> :prove recovery_14
 Q.E.D.
 (Total Elapsed Time: 0.956s, using "ABC")
 ```
@@ -288,7 +288,7 @@ So is this a good cipher?  Well, no.  Let's...here.  We can manually
 deduce a key from known ciphertext...
 
 ```Xcryptol-session
-docs::labs::Demos::Cryptol::Caesar> map (\k -> (k, decrypt k "SXQW SJLXK FJB J SRWPUNQNRVNA BLQVRMC")) [0..25]
+labs::Demos::Cryptol::Caesar> map (\k -> (k, decrypt k "SXQW SJLXK FJB J SRWPUNQNRVNA BLQVRMC")) [0..25]
 [(0, "SXQW SJLXK FJB J SRWPUNQNRVNA BLQVRMC"),
  (1, "TYRX TKMYL GKC K TSXQVOROSWOB CMRWSND"),
  (2, "UZSY ULNZM HLD L UTYRWPSPTXPC DNSXTOE"),
@@ -322,8 +322,8 @@ solving...here we switch solvers back to `z3` because `abc` sometimes
 has troubles with this one.
 
 ```Xcryptol-session
-docs::labs::Demos::Cryptol::Caesar> :s prover=z3
-docs::labs::Demos::Cryptol::Caesar> :sat \k -> encrypt k "ILLUMINATI CONFIRMED" == "NQQZRNSFYN HTSKNWRJI"
+labs::Demos::Cryptol::Caesar> :s prover=z3
+labs::Demos::Cryptol::Caesar> :sat \k -> encrypt k "ILLUMINATI CONFIRMED" == "NQQZRNSFYN HTSKNWRJI"
 Satisfiable
 (\k -> encrypt k "ILLUMINATI CONFIRMED" == "NQQZRNSFYN HTSKNWRJI")
   21 = True

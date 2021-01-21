@@ -41,11 +41,11 @@ running in the `cryptol-course` directory with:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m docs::labs::CryptoProofs::CryptoProofsAnswers
+Cryptol> :m labs::CryptoProofs::CryptoProofsAnswers
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
-Loading module docs::labs::CryptoProofs::CryptoProofsAnswers
+Loading module labs::CryptoProofs::CryptoProofsAnswers
 ```
 
 The proofs in this lab require an array of different theorem provers
@@ -56,7 +56,7 @@ First, since we are creating a module, the first line needs to be the
 module definition.
 
 ```cryptol
-module docs::labs::CryptoProofs::CryptoProofsAnswers where
+module labs::CryptoProofs::CryptoProofsAnswers where
 ```
 
 You do not need to enter the above into the interpreter; the previous 
@@ -78,14 +78,14 @@ First, we import it.
 import specs::Primitive::Symmetric::Cipher::Block::DES
 ```
 
-When you loaded the `docs::labs::CryptoProofs::CryptoProofsAnswers` module,
+When you loaded the `labs::CryptoProofs::CryptoProofsAnswers` module,
 these lines should have been printed:
 
 ```example
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
-Loading module docs::labs::CryptoProofs::CryptoProofsAnswers
+Loading module labs::CryptoProofs::CryptoProofsAnswers
 ```
 
 In reverse order: the third line says that this module has been
@@ -96,7 +96,7 @@ Cryptol tells you that too.
 Next, we'll take a look at the type of the DES encryption function.
 
 ```Xcryptol-session
-docs::labs::CryptoProofs::CryptoProofsAnswers> :t DES.encrypt
+labs::CryptoProofs::CryptoProofsAnswers> :t DES.encrypt
 DES.encrypt : [64] -> [64] -> [64]
 ```
 
@@ -104,14 +104,14 @@ DES takes two 64-bit values and returns a 64-bit value. (The key comes
 first and then the plaintext.) Let's encrypt something with DES.
 
 ```Xcryptol-session
-docs::labs::CryptoProofs::CryptoProofsAnswers> DES.encrypt 0x752979387592cb70 0x1122334455667788
+labs::CryptoProofs::CryptoProofsAnswers> DES.encrypt 0x752979387592cb70 0x1122334455667788
 0xb5219ee81aa7499d
 ```
 
 Now decrypt:
 
 ```Xcryptol-session
-docs::labs::CryptoProofs::CryptoProofsAnswers> DES.decrypt 0x752979387592cb70 0xb5219ee81aa7499d
+labs::CryptoProofs::CryptoProofsAnswers> DES.decrypt 0x752979387592cb70 0xb5219ee81aa7499d
 0x1122334455667788
 ```
 
@@ -162,7 +162,7 @@ Now we can reverse it from the REPL. Let's use the solver to find a
 square root using only a squaring function!
 
 ```Xcryptol-session
-docs::labs::CryptoProofs::CryptoProofsAnswers> :sat \x -> square x == 1764
+labs::CryptoProofs::CryptoProofsAnswers> :sat \x -> square x == 1764
 Satisfiable
 (\x -> square x == 1764) 42 = True
 (Total Elapsed Time: 0.021s, using "Z3")
@@ -197,20 +197,20 @@ Note: For whatever reason, the default Z3 solver has trouble with this
 one. Try one of the other solvers, such as YICES:
 
 ```Xcryptol-session
-docs::labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
+labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
 ```
 
 Or use all the installed solvers in a first-to-the-post race.
 *Caution! May exhaust system resources.*
 
 ```Xcryptol-session
-docs::labs::CryptoProofs::CryptoProofsAnswers> :s prover=any
+labs::CryptoProofs::CryptoProofsAnswers> :s prover=any
 ```
 
 > Solution:
 >
 >```Xcryptol-session
->docs::CryptoProofs::CryptoProofsAnswers> :sat \pt -> DES.encrypt known_key pt == known_ct
+>CryptoProofs::CryptoProofsAnswers> :sat \pt -> DES.encrypt known_key pt == known_ct
 >Satisfiable
 >(\pt -> DES.encrypt known_key pt == known_ct)
 >  0x70617373776f7264 = True
@@ -236,7 +236,7 @@ provided: `0x1234567890ab`.
 > Solution:
 >
 >```Xcryptol-session ci-none
->docs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct
+>CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct
 >```
 > At this point, the solver hangs, unable to find a solution in any
 > reasonable time. This is because DES is a well-designed cryptographic
@@ -245,7 +245,7 @@ provided: `0x1234567890ab`.
 > and large amounts of compute power, but not by a single computer
 > running a SAT solver.
 >```Xcryptol-session
->docs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct /\ take key == 0x1234567890ab
+>CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct /\ take key == 0x1234567890ab
 >Satisfiable
 >(\key -> DES.encrypt key
 >                     matched_pt == matched_ct /\ take key == 0x1234567890ab)
@@ -273,7 +273,7 @@ applying `g` to the result of `f x` gets `x` back. Here's the
 invocation:
 
 ```Xcryptol-session
-docs::labs::CryptoProofs::CryptoProofsAnswers> :prove \x -> g (f x) == x
+labs::CryptoProofs::CryptoProofsAnswers> :prove \x -> g (f x) == x
 Q.E.D.
 (Total Elapsed Time: 0.023s, using "Z3")
 ```
@@ -296,7 +296,7 @@ went wrong.
 > Solution:
 >
 >```Xcryptol-session
->docs::CryptoProofs::CryptoProofsAnswers> :prove \x -> f (g x) == x
+>CryptoProofs::CryptoProofsAnswers> :prove \x -> f (g x) == x
 >Counterexample
 >(\x -> f (g x) == x) 3 = False
 >(Total Elapsed Time: 0.003s, using Yices)
@@ -307,7 +307,7 @@ went wrong.
 >Let's look a little closer.
 >
 >```Xcryptol-session
->docs::CryptoProofs::CryptoProofsAnswers> g 3
+>CryptoProofs::CryptoProofsAnswers> g 3
 >0
 >```
 >
@@ -328,11 +328,11 @@ normal functions! For example: `\x y z -> x+y+z`
 >Solution:
 >
 >```Xcryptol-session
->docs::CryptoProofs::CryptoProofsAnswers> :s prover=abc
->docs::CryptoProofs::CryptoProofsAnswers> :prove \key pt -> DES.decrypt key (DES.encrypt key pt) == pt
+>CryptoProofs::CryptoProofsAnswers> :s prover=abc
+>CryptoProofs::CryptoProofsAnswers> :prove \key pt -> DES.decrypt key (DES.encrypt key pt) == pt
 >Q.E.D.
 >(Total Elapsed Time: 3.909s, using "ABC")
->docs::CryptoProofs::CryptoProofsAnswers> :prove \key ct -> DES.encrypt key (DES.decrypt key ct) == ct
+>CryptoProofs::CryptoProofsAnswers> :prove \key ct -> DES.encrypt key (DES.decrypt key ct) == ct
 >Q.E.D.
 >(Total Elapsed Time: 3.582s, using "ABC")
 >```
@@ -360,8 +360,8 @@ few minutes!)
 
 > Solution:
 >```Xcryptol-session
->docs::CryptoProofs::CryptoProofsAnswers> :s prover=boolector
->docs::CryptoProofs::CryptoProofsAnswers> :prove \k p1 p2 -> p1 != p2 ==> DES.encrypt k p1 != DES.encrypt k p2
+>CryptoProofs::CryptoProofsAnswers> :s prover=boolector
+>CryptoProofs::CryptoProofsAnswers> :prove \k p1 p2 -> p1 != p2 ==> DES.encrypt k p1 != DES.encrypt k p2
 >Q.E.D.
 >(Total Elapsed Time: 58.598s, using "Boolector")
 >```
@@ -384,8 +384,8 @@ that both keys encrypt that plaintext to the same ciphertext.
 
 > Solution:
 >```Xcryptol-session
->docs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
->docs::CryptoProofs::CryptoProofsAnswers> :sat \k1 k2 pt -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2 pt
+>CryptoProofs::CryptoProofsAnswers> :s prover=yices
+>CryptoProofs::CryptoProofsAnswers> :sat \k1 k2 pt -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2 pt
 >Satisfiable
 >(\k1 k2 pt -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2 pt)
 >  0x0000000000000000 0x0100000000000000 0x0000000000000000 = True
@@ -415,8 +415,8 @@ plaintext inputs.
 
 > Solution:
 >```Xcryptol-session
->docs::CryptoProofs::CryptoProofsAnswers> :s prover=abc
->docs::CryptoProofs::CryptoProofsAnswers> :prove \pt -> DES.encrypt 0x0000000000000000 pt == DES.encrypt 0x0100000000000000 pt
+>CryptoProofs::CryptoProofsAnswers> :s prover=abc
+>CryptoProofs::CryptoProofsAnswers> :prove \pt -> DES.encrypt 0x0000000000000000 pt == DES.encrypt 0x0100000000000000 pt
 >Q.E.D.
 >(Total Elapsed Time: 0.521s, using ABC)
 >```
@@ -459,7 +459,7 @@ of DES in terms of bits?
 
 > Solution
 >```Xcryptol-session
->docs::CryptoProofs::CryptoProofsAnswers> :prove \key pt -> DES.encrypt key pt == DES.encrypt (DESFixParity key) pt
+>CryptoProofs::CryptoProofsAnswers> :prove \key pt -> DES.encrypt key pt == DES.encrypt (DESFixParity key) pt
 >Q.E.D.
 >(Total Elapsed Time: 0.807s, using ABC)
 >```

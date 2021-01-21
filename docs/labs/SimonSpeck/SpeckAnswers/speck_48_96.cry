@@ -1,4 +1,4 @@
-module docs::labs::SimonSpeck::SpeckAnswers::speck_48_96 = docs::labs::SimonSpeck::SpeckAnswers::Speck where
+module labs::SimonSpeck::SpeckAnswers::speck_48_96 = labs::SimonSpeck::SpeckAnswers::Speck where
 
   type n = 24
   type m = 4

@@ -40,15 +40,15 @@ in the `cryptol-course` directory with:
 
 ```Xcryptol-session
 Loading module Cryptol
-Cryptol> :m docs::labs::CRC::CRC
+Cryptol> :m labs::CRC::CRC
 Loading module Cryptol
-Loading module docs::labs::CRC::CRC
+Loading module labs::CRC::CRC
 ```
 
 We start by defining a new module for this lab:
 
 ```cryptol
-module docs::labs::CRC::CRC where
+module labs::CRC::CRC where
 ```
 
 You do not need to enter the above into the interpreter; the previous 

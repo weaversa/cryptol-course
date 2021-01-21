@@ -1,4 +1,4 @@
-module docs::labs::SimonSpeck::SpeckAnswers::Speck where
+module labs::SimonSpeck::SpeckAnswers::Speck where
 
 parameter
 
