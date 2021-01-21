@@ -65,6 +65,7 @@ jobs:
       dist: focal
       os: linux
       script:
+        - cd $(CRYPTOL_COURSE)
         - chmod +x scripts/extract_snippets && chmod +x scripts/poor_test_runner.sh
         - scripts/extract_snippets --output=output -v docs/labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/docs/labs/Demos/Cryptol/*.md.icry
         - scripts/extract_snippets --output=output -v docs/labs/Interpreter/*.md && scripts/poor_test_runner.sh -v output/docs/labs/Interpreter/*.md.icry
@@ -72,9 +73,11 @@ jobs:
         - scripts/extract_snippets --output=output -v docs/labs/Overview/*.md && scripts/poor_test_runner.sh -v output/docs/labs/Overview/*.md.icry
         - shopt -s globstar && scripts/extract_snippets --output=output -v **/*Answers.md && scripts/poor_test_runner.sh -v output/**/*Answers.md.icry
 before_script:
-  - cd docs/
+  - export CRYPTOL_COURSE=$(pwd)
+  - export CRYPTOL_COURSE_DOCS=$(pwd)/docs
 script:
-  - export CRYPTOLPATH=$(pwd)
+  - export CRYPTOLPATH=$(CRYPTOL_COURSE_DOCS)
+  - cd $(CRYPTOL_COURSE_DOCS)
 # README tests
   - cryptol -e -c ":m README" -c ":prove"
 # Interpreter lab tests
