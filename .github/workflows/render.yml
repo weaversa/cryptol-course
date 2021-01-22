@@ -27,3 +27,9 @@ jobs:
           ${GITHUB_WORKSPACE}/scripts/layercake/generate_github_action.sh
         shell:
           bash
+      - name: Verify Existence of Generated Views
+        run: |
+          [ -d "${GITHUB_WORKSPACE}/docs" ] && echo "docs/ exists."
+          [ -d "${GITHUB_WORKSPACE}/gh-pages" ] && echo "gh-pages/ exists."
+
+          
