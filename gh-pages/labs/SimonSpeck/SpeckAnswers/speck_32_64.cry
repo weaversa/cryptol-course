@@ -1,8 +1,0 @@
-module labs::SimonSpeck::SpeckAnswers::speck_32_64 = labs::SimonSpeck::SpeckAnswers::Speck where
-
-  type n = 16
-  type m = 4
-  a = 7
-  b = 2
-  type T = 22
-
