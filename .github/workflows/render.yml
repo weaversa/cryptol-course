@@ -14,6 +14,8 @@ jobs:
       - # remove before merging to `master`
         name: Switch to Current Branch  
         run: git checkout ${{ env.BRANCH }}
+      - name: Setup Graphviz
+        uses: ts-graphviz/setup-graphviz@v1
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
