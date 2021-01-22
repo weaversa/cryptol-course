@@ -4,7 +4,7 @@ on:
     branches:
       - navlinks # change to `master` before merging
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,9 +21,23 @@ jobs:
         uses: abatilo/actions-poetry@v2.0.0
         with:
           poetry-version: 1.1.4
-      - name: Install and Build
+      - name: Generate
         run: |
           ${GITHUB_WORKSPACE}/scripts/layercake/generate.sh
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Check that `/docs` exists
+        run: |
+          [ -d ${GITHUB_WORKSPACE}/docs ] && echo "/docs exists" || exit 1
+      - name: Check that `/gh-pages` exists
+        run: |
+          [ -d ${GITHUB_WORKSPACE}/gh-pages ] && echo "/gh-pages exists" || exit 1
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
       - name: Deploy `docs`
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
