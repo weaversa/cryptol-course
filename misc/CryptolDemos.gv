@@ -1,0 +1,40 @@
+digraph  {
+  //splines = ortho;
+  //concentrate = true;
+
+  bgcolor="transparent";
+  rankdir="LR";
+
+  node [shape="box", style="rounded,filled", fillcolor="white", penwidth = 2];
+  edge [penwidth = 1];
+
+  // URLs by node
+  // recommended
+  
+  Caesar                     [URL="../labs/Demos/Cryptol/Caesar.md"];
+  OneTimePad                 [URL="../labs/Demos/Cryptol/OneTimePad.md"];
+  nQueens                    [URL="../labs/Demos/Cryptol/NQueens.md"];
+  Sudoku                     [URL="../labs/Demos/Cryptol/Sudoku.md"];
+
+  // branch nodes
+  node [fillcolor="white"];
+  
+
+  // newline/space labels
+  
+  OneTimePad                 [label = "One-Time Pad"]
+
+  // recommended flow
+  edge [color=red];
+  
+  Caesar -> OneTimePad;
+  OneTimePad -> nQueens;
+  nQueens -> Sudoku;
+
+  // branches
+  edge [color=black];
+  
+
+  // ranks
+
+}

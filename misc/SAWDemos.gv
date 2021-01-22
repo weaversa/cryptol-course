@@ -1,0 +1,37 @@
+digraph  {
+  //splines = ortho;
+  //concentrate = true;
+
+  bgcolor="transparent";
+  rankdir="LR";
+
+  node [shape="box", style="rounded,filled", fillcolor="white", penwidth = 2];
+  edge [penwidth = 1];
+
+  // URLs by node
+  // recommended
+  
+  ArithmeticVerifications    [URL="../labs/Demos/SAW/ArithmeticVerifications/ArithmeticVerifications.md"];
+  BitTwiddling               [URL="../labs/Demos/SAW/Bittwiddling/Bittwiddling.md"];
+
+  // branch nodes
+  node [fillcolor="white"];
+  
+
+  // newline/space labels
+  
+  ArithmeticVerifications    [label = "Arithmetic\nVerifications"]
+  BitTwiddling               [label = "Bit Twiddling"]
+
+  // recommended flow
+  edge [color=red];
+  
+  ArithmeticVerifications -> BitTwiddling;
+
+  // branches
+  edge [color=black];
+  
+
+  // ranks
+
+}
