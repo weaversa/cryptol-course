@@ -85,21 +85,21 @@ jobs:
       - name: Install Cryptol
         uses: engineerd/configurator@v0.0.5
         with:
-          name: cryptol
+          name: "cryptol"
           url: "https://github.com/GaloisInc/cryptol/releases/download/2.10.0/cryptol-2.10.0-Linux-x86_64.tar.gz"
-          pathInArchive: bin/cryptol
+          pathInArchive: "bin/cryptol"
       - name: Install SAW
         uses: engineerd/configurator@v0.0.5
         with:
-          name: saw
+          name: "saw"
           url: "https://github.com/GaloisInc/saw-script/releases/download/v0.6/saw-0.6-Linux-x86_64.tar.gz"
-          pathInArchive: bin/saw
+          pathInArchive: "bin/saw"
       - name: Install Z3
         uses: engineerd/configurator@v0.0.5
         with:
-          name: z3
+          name: "z3"
           url: "https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-ubuntu-16.04.zip"
-          pathInArchive: bin/z3
+          pathInArchive: "bin/z3"
       - name: Run test script
         run: |
           echo "PATH: $PATH"
