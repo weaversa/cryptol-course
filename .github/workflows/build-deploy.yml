@@ -67,12 +67,12 @@ jobs:
           CLEAN: true
   test-docs:
     name: Test Cryptol modules in `/docs`
-    strategy:
-      matrix:
-        os:
-          - macos-latest
-          - ubuntu-latest
-    runs-on: {{ matrix.os }}
+    # strategy:
+    #   matrix:
+    #     os:
+    #       - macos-latest
+    #       - ubuntu-latest
+    runs-on: ubuntu-latest
     needs: build-docs
     steps:
       - name: Checkout
@@ -84,7 +84,7 @@ jobs:
           path: docs
       - name: Install OS-specific releases of Cryptol, SAW, and Z3
         run: |
-          ${GITHUB_WORKSPACE}/scripts/install-deps-{{ matrix.os }}.sh
+          ${GITHUB_WORKSPACE}/scripts/install-deps-ubuntu-latest.sh
       - name: Run test script
         run: |
           ${GITHUB_WORKSPACE}/scripts/test_cryptol_modules.sh
