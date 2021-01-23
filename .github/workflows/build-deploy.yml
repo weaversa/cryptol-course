@@ -87,4 +87,5 @@ jobs:
           ${GITHUB_WORKSPACE}/scripts/install-deps-ubuntu-latest.sh
       - name: Run test script
         run: |
+          echo "PATH: $PATH"
           ${GITHUB_WORKSPACE}/scripts/test_cryptol_modules.sh
