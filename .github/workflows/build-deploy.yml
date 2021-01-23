@@ -82,9 +82,9 @@ jobs:
         with:
           name: docs-artifact
           path: docs
-      # - name: Install OS-specific releases of Cryptol, SAW, and Z3
-      #   run: |
-      #     ${GITHUB_WORKSPACE}/scripts/install-deps-ubuntu-latest.sh
-      # - name: Run test script
-      #   run: |
-      #     ${GITHUB_WORKSPACE}/scripts/test_cryptol_modules.sh
+      - name: Install OS-specific releases
+        run: |
+          ${GITHUB_WORKSPACE}/scripts/install-deps-ubuntu-latest.sh
+      - name: Run test script
+        run: |
+          ${GITHUB_WORKSPACE}/scripts/test_cryptol_modules.sh
