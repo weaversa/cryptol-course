@@ -84,7 +84,7 @@ jobs:
           path: docs
       - name: Install dependencies
         run:
-          sudo apt-get install libgmp libncurses
+          sudo apt-get install libgmp-dev libncurses-dev
       - name: Install Cryptol 2.10.0
         working-directory: $GITHUB_WORKSPACE/deps
         run: |
