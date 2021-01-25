@@ -84,7 +84,7 @@ jobs:
           path: docs
       - name: Install dependencies
         run:
-          sudo apt-get install -Y libgmp libncurses
+          sudo apt-get install libgmp libncurses
       - name: Install Cryptol 2.10.0
         working-directory: $GITHUB_WORKSPACE/deps
         run: |
@@ -131,7 +131,7 @@ jobs:
       #   with:
       #     name: "z3"
       #     url: "https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-ubuntu-16.04.zip"
-      #     pathInArchive: "bin/z3"
+      #     pathInArchive: "z3"
       # - name: Run test script
       #   run: |
       #     echo "PATH: $PATH"
