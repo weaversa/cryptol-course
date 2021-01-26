@@ -1,24 +1,31 @@
 # Acquiring the Cryptol course material
 
 All of the Cryptol course material (presentations, labs, supporting
-data files) is available on
-[GitHub](https://github.com/weaversa/cryptol-course). You can
-   * clone or download the files using the green `clone` button on the
-GitHub page,
-   * download a zip file by clicking
-[here](https://github.com/weaversa/cryptol-course/archive/master.zip),
-   * use the command line to acquire a copy by ensuring you're in a
-writable working directory and issuing `git clone
-https://github.com/weaversa/cryptol-course.git` *(no password or keys
-required)*, or
-   * if you don't have `git` installed, `curl -L -ocryptol-course.zip
-https://github.com/weaversa/cryptol-course/archive/master.zip && unzip
-cryptol-course.zip`.
+data files) is available on the `docs` branch of
+[the `weaversa/cryptol-course` repo on GitHub](https://github.com/weaversa/cryptol-course).
+You can acquire this course material by doing any of the following:
+   * Download [this ZIP file](https://github.com/weaversa/cryptol-course/archive/docs.zip)
+     into a writeable "workspace" folder of your choice.
+   * **OR** if `git` is installed on your system, clone this repo and
+     check out its `docs` branch *(no password or keys required)*:
+     ```
+     > cd {a writeable folder for your workspace}
+     > git clone git@github.com:weaversa/cryptol-course.git
+     > git fetch --all
+     > git checkout docs
+     ```
+   * **OR** if `git` is not installed, download it via `curl` or a
+     similar command line data transfer utility:
+     ```
+     > cd {a writeable folder for your workspace}
+     > curl -L -o cryptol-course.zip https://github.com/weaversa/cryptol-course/archive/docs.zip
+     > unzip cryptol-course.zip
+     ```
 
-The presentation material is formatted in Markdown (.md) files. These
-can be viewed directly in most browsers by installing a Markdown
-viewer extension *(an exercise left to the reader)*, or by accessing
-the material directly from the GitHub website.
+The presentation material is formatted in Markdown (`.md`) files that
+can be viewed directly in most browsers or IDEs by installing a
+Markdown plugin *(an exercise left to the reader)*, or by browsing
+the accompanying [GitHub Pages](https://weaversa.github.io/cryptol-course).
 
 -----
 
@@ -36,7 +43,7 @@ a requirement for success here.
 ## Recommended Installation Instructions (Visual Studio Code + Docker)
 
 1. Download [the Cryptol course
-   repository](https://github.com/weaversa/cryptol-course/archive/master.zip)
+   repository](https://github.com/weaversa/cryptol-course/archive/docs.zip)
    and unzip it somewhere on your computer.
 2. Install Docker:
    [https://docs.docker.com/get-docker](https://docs.docker.com/get-docker)
@@ -161,18 +168,16 @@ Galois provides releases of Cryptol at
 https://cryptol.net/downloads.html and releases of SAW at
 https://saw.galois.com/downloads.html. For Linux variants, Cryptol
 comes bundled with SAW, so you will only need to install SAW to get
-both tools. *(Note that the Ubuntu files indicate Ubuntu14.04, but
-they work on later versions of Ubuntu as well.)*
+both tools.
 
 The `bin` directory (containing `cryptol` and/or `saw`) of the archive
 you downloaded should be placed in your system path.
 
-For CentOS, Ubuntu, or MacOS, the whole process would look something
-like (depending on the which OS variant you have):
+For CentOS or Ubuntu, the whole process would look like:
 
 ```
-$ curl -fsSL https://github.com/GaloisInc/saw-script/releases/download/v0.5/saw-0.5-Ubuntu14.04-64.tar.gz | tar -xz
-$ export PATH=$(pwd)/saw-0.5-Ubuntu14.04-64/bin:${PATH}
+$ curl -fsSL https://github.com/GaloisInc/saw-script/releases/download/v0.6/saw-0.6-Linux-x86_64.tar.gz | tar -xz
+$ export PATH=$(pwd)/saw-0.6-Linux-x86_64/bin:${PATH}
 ```
 
 *If you are running Windows 10, or you _only_ want Cryptol, you can
@@ -181,25 +186,26 @@ these instructions do not currently provide any details on how to
 install Cryptol on Windows 10, though the installer is self
 explanatory.*
 
-*Prebuilt SAW binaries for CentOS, Ubuntu, and MacOS can be found
-here: https://saw.galois.com/*
+*Prebuilt SAW binaries for CentOS, Ubuntu, and MacOS can also be
+found here: https://saw.galois.com/builds/
 
 #### Downloading Z3
 
-Both Cryptol and SAW require a tool called `z3`. This tool is not
-bundled with Cryptol or SAW, so it must be installed separately.
-*(Note that the version of `z3` available via default `apt` repos is
-old and incompatible with this course.)*
+Both Cryptol and SAW require the [Z3 Prover](https://github.com/z3prover/z3),
+a third-party theorem prover based on [Boolean satisfiability (SAT)](https://en.wikipedia.org/wiki/Boolean_satisfiability_problem)
+developed by Microsoft. Z3 is not bundled with Cryptol or SAW, so it
+must be installed separately.
+*(Note that the `z3` package available via default `apt` repos is
+out of date and incompatible with this course.)*
 
-Pre-built binaries for Z3 can be found at
-https://github.com/Z3Prover/z3/releases.  Z3 can also be compiled from
-source without much, if any, trouble. The source is available at
-https://github.com/Z3Prover/z3.  The base directory (containing `z3`
-and more) of the zip file you download or built should be placed in
-your system path.
+Z3 can be installed as a [pre-built binary release](https://github.com/Z3Prover/z3/releases)
+or compiled from [source](https://github.com/z3prover/z3) using
+Visual Studio, GNU Make, or CMake. After installation, the directory
+containing the (downloaded or built) `z3` binary should be added to
+your system's `PATH` environment variable.
 
-For CentOS, Ubuntu, or MacOS, the whole process would look something
-like (depending on which OS build and version you download):
+For Mac OS, the whole process would look something like
+(depending on which OS build and version you download):
 
 ```
 $ curl -fsSL https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-osx-10.14.6.zip -o z3-4.8.8-x64-osx-10.14.6.zip
@@ -309,7 +315,7 @@ Support exists for Cryptol (such as syntax highlighting and
 interpreter bindings) in a number of popular software development
 tools.
 
-## VS Code
+## Visual Studio Code
 
 The [Cryptol
 Highlighting](https://github.com/GaloisInc/cryptol-vscode.git) plugin
