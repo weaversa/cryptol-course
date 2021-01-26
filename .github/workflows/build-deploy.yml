@@ -21,10 +21,10 @@ jobs:
         with:
           poetry-version: 1.1.4
       - name: Generate `docs`
-        run: |
+        run:
           ${GITHUB_WORKSPACE}/scripts/layercake/generate.sh
       - name: Check that `/docs` exists
-        run: |
+        run:
           [ -d ${GITHUB_WORKSPACE}/docs ] && echo "/docs exists" || exit 1
       - name: Upload `docs` artifact
         uses: actions/upload-artifact@v2
@@ -90,9 +90,11 @@ jobs:
           cryptol --version
           saw --version
           z3 --version
-      - name: Run test script
-        run: |
+      - name: Set CRYPTOLPATH to `docs`
+        run:
           echo "CRYPTOLPATH=${GITHUB_WORKSPACE}/docs" >> $GITHUB_ENV
+      - name: Run test script
+        run:
           ${GITHUB_WORKSPACE}/scripts/test_cryptol_modules.sh
   build-gh-pages:
     name: Build `gh-pages`
