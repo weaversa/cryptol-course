@@ -4,40 +4,40 @@ on:
     branches:
       - navlinks # change to `master` before merging
 jobs:
-  build-docs:
-    name: Build `docs`
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Setup Graphviz
-        uses: ts-graphviz/setup-graphviz@v1
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: 3.9.1
-      - name: Setup Poetry
-        uses: abatilo/actions-poetry@v2.0.0
-        with:
-          poetry-version: 1.1.4
-      - name: Generate `docs`
-        run: |
-          ${GITHUB_WORKSPACE}/scripts/layercake/generate.sh
-      - name: Check that `/docs` exists
-        run: |
-          [ -d ${GITHUB_WORKSPACE}/docs ] && echo "/docs exists" || exit 1
-      # - name: Upload `docs` artifact
-      #   uses: actions/upload-artifact@v2
-      #   with:
-      #     name: docs-artifact
-      #     path: docs
-      # - name: Deploy `docs`
-      #   uses: JamesIves/github-pages-deploy-action@3.7.1
-      #   with:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     BRANCH: docs
-      #     FOLDER: docs
-      #     CLEAN: true
+  # build-docs:
+  #   name: Build `docs`
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #     - name: Setup Graphviz
+  #       uses: ts-graphviz/setup-graphviz@v1
+  #     - name: Setup Python
+  #       uses: actions/setup-python@v2
+  #       with:
+  #         python-version: 3.9.1
+  #     - name: Setup Poetry
+  #       uses: abatilo/actions-poetry@v2.0.0
+  #       with:
+  #         poetry-version: 1.1.4
+  #     - name: Generate `docs`
+  #       run: |
+  #         ${GITHUB_WORKSPACE}/scripts/layercake/generate.sh
+  #     - name: Check that `/docs` exists
+  #       run: |
+  #         [ -d ${GITHUB_WORKSPACE}/docs ] && echo "/docs exists" || exit 1
+  #     # - name: Upload `docs` artifact
+  #     #   uses: actions/upload-artifact@v2
+  #     #   with:
+  #     #     name: docs-artifact
+  #     #     path: docs
+  #     # - name: Deploy `docs`
+  #     #   uses: JamesIves/github-pages-deploy-action@3.7.1
+  #     #   with:
+  #     #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #     #     BRANCH: docs
+  #     #     FOLDER: docs
+  #     #     CLEAN: true
   # build-gh-pages:
   #   name: Build `gh-pages`
   #   runs-on: ubuntu-latest
@@ -115,7 +115,7 @@ jobs:
         run: |
           echo "Path before 'Check Dependency Versions': $PATH"
           echo "$(which cryptol)"
-          [ -e cryptol-2.10.0-Linux-x86_64/bin/cryptol ] && "cryptol exists in '$(pwd)'" || exit 1
+          [ -e cryptol-2.10.0-Linux-x86_64/bin/cryptol ] && echo "cryptol exists in '$(pwd)'" || exit 1
         # cryptol --version
         # saw --version
         # z3 --version
