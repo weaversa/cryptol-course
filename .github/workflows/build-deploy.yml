@@ -109,6 +109,7 @@ jobs:
       - name: Test Cryptol commands in Docker image
         run: |
           cd ${GITHUB_WORKSPACE}/docs
+          shopt -s expand_aliases
           alias cryptol='docker run --entrypoint cryptol -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course galoisinc/cryptol:2.10.0'
           source ${GITHUB_WORKSPACE}/scripts/test_cryptol_modules.sh
   build-gh-pages:
