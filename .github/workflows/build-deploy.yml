@@ -91,25 +91,6 @@ jobs:
       - name: Run test script
         run: |
           ${GITHUB_WORKSPACE}/scripts/test_cryptol_modules.sh
-  test-docs-docker:
-    name: Test `docs` on Docker image
-    needs: build-docs
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Download `docs` artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: docs-artifact
-          path: docs
-      - name: Test `docs` on Docker image 
-        run: |
-          cd docs
-          docker pull galoisinc/cryptol:2.10.0
-          shopt -s expand_aliases
-          alias cryptol='docker run --entrypoint cryptol -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course -it galoisinc/cryptol:2.10.0'
-          source ${GITHUB_WORKSPACE}/scripts/test_cryptol_modules.sh
   build-gh-pages:
     name: Build `gh-pages`
     runs-on: ubuntu-latest
