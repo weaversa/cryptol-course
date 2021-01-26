@@ -88,7 +88,7 @@ jobs:
       - name: Install Cryptol 2.10.0
         run: |
           echo "wd: $(pwd)"
-          wget https://github.com/GaloisInc/cryptol/releases/download/2.10.0/cryptol-2.10.0-Linux-x86_64.tar.gz
+          wget -q https://github.com/GaloisInc/cryptol/releases/download/2.10.0/cryptol-2.10.0-Linux-x86_64.tar.gz
           [ -e cryptol-2.10.0-Linux-x86_64.tar.gz ] && echo "Downloaded cryptol" || exit 1
           tar -xzf cryptol-2.10.0-Linux-x86_64.tar.gz
           [ -d cryptol-2.10.0-Linux-x86_64 ] && echo "Extracted cryptol" || exit 1
@@ -97,10 +97,9 @@ jobs:
           chmod +x cryptol-2.10.0-Linux-x86_64/bin/cryptol
           echo "Add cryptol-2.10.0-Linux-x86_64/bin to GitHub PATH?"
           echo "$GITHUB_WORKSPACE/deps/cryptol-2.10.0-Linux-x86_64/bin" >> $GITHUB_PATH
-          echo "Path after 'Install Cryptol': $PATH"
       # - name: Install SAW 0.6
       #   run: |
-      #     wget https://github.com/GaloisInc/saw-script/releases/download/v0.6/saw-0.6-Linux-x86_64.tar.gz
+      #     wget -q https://github.com/GaloisInc/saw-script/releases/download/v0.6/saw-0.6-Linux-x86_64.tar.gz
       #     tar -xzf saw-0.6-Linux-x86_64.tar.gz
       #     rm saw-0.6-Linux-x86_64.tar.gz
       #     chmod +x saw-0.6-Linux-x86_64/bin/saw
@@ -115,6 +114,8 @@ jobs:
       - name: Check Dependency Versions
         run: |
           echo "Path before 'Check Dependency Versions': $PATH"
+          echo "$(which cryptol)"
+          [ -e cryptol-2.10.0-Linux-x86_64/bin/cryptol ] && "cryptol exists in '$(pwd)'" || exit 1
         # cryptol --version
         # saw --version
         # z3 --version
