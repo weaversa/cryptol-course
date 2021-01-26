@@ -26,45 +26,45 @@ jobs:
       - name: Check that `/docs` exists
         run: |
           [ -d ${GITHUB_WORKSPACE}/docs ] && echo "/docs exists" || exit 1
-      - name: Upload `docs` artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: docs-artifact
-          path: docs
-      - name: Deploy `docs`
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: docs
-          FOLDER: docs
-          CLEAN: true
-  build-gh-pages:
-    name: Build `gh-pages`
-    runs-on: ubuntu-latest
-    needs: build-docs
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Download `docs` artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: docs-artifact
-          path: docs
-      - name: Generate `gh-pages`
-        run: |
-          #!/bin/bash
-          [ -d ${GITHUB_WORKSPACE}/docs/ ] && echo "/docs exists" || exit 1
-          cp -r ${GITHUB_WORKSPACE}/docs/ ${GITHUB_WORKSPACE}/gh-pages/
-          shopt -s extglob
-          sed -i "s/\.md/\.html/" ${GITHUB_WORKSPACE}/gh-pages/misc/*.@(gv|svg)
-          [ -d ${GITHUB_WORKSPACE}/gh-pages/ ] && echo "/gh-pages exists" || exit 1
-      - name: Deploy `gh-pages`
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages
-          FOLDER: gh-pages
-          CLEAN: true
+      # - name: Upload `docs` artifact
+      #   uses: actions/upload-artifact@v2
+      #   with:
+      #     name: docs-artifact
+      #     path: docs
+      # - name: Deploy `docs`
+      #   uses: JamesIves/github-pages-deploy-action@3.7.1
+      #   with:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #     BRANCH: docs
+      #     FOLDER: docs
+      #     CLEAN: true
+  # build-gh-pages:
+  #   name: Build `gh-pages`
+  #   runs-on: ubuntu-latest
+  #   needs: build-docs
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v2
+  #     - name: Download `docs` artifact
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: docs-artifact
+  #         path: docs
+  #     - name: Generate `gh-pages`
+  #       run: |
+  #         #!/bin/bash
+  #         [ -d ${GITHUB_WORKSPACE}/docs/ ] && echo "/docs exists" || exit 1
+  #         cp -r ${GITHUB_WORKSPACE}/docs/ ${GITHUB_WORKSPACE}/gh-pages/
+  #         shopt -s extglob
+  #         sed -i "s/\.md/\.html/" ${GITHUB_WORKSPACE}/gh-pages/misc/*.@(gv|svg)
+  #         [ -d ${GITHUB_WORKSPACE}/gh-pages/ ] && echo "/gh-pages exists" || exit 1
+  #     - name: Deploy `gh-pages`
+  #       uses: JamesIves/github-pages-deploy-action@3.7.1
+  #       with:
+  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  #         BRANCH: gh-pages
+  #         FOLDER: gh-pages
+  #         CLEAN: true
   test-docs:
     name: Test Cryptol modules in `/docs`
     # strategy:
@@ -89,11 +89,11 @@ jobs:
         run: |
           echo "wd: $(pwd)"
           wget https://github.com/GaloisInc/cryptol/releases/download/2.10.0/cryptol-2.10.0-Linux-x86_64.tar.gz
-          [ -e cryptol-2.10.0-Linux-x86_64.tar.gz ] && "Downloaded cryptol" || exit 1
+          [ -e cryptol-2.10.0-Linux-x86_64.tar.gz ] && echo "Downloaded cryptol" || exit 1
           tar -xzf cryptol-2.10.0-Linux-x86_64.tar.gz
-          [ -d cryptol-2.10.0-Linux-x86_64 ] && "Extracted cryptol" || exit 1
+          [ -d cryptol-2.10.0-Linux-x86_64 ] && echo "Extracted cryptol" || exit 1
           rm cryptol-2.10.0-Linux-x86_64.tar.gz
-          [ -e cryptol-2.10.0-Linux-x86_64.tar.gz ] && exit 1 || "Extracted cryptol"
+          [ -e cryptol-2.10.0-Linux-x86_64.tar.gz ] && exit 1 || echo "Extracted cryptol"
           chmod +x cryptol-2.10.0-Linux-x86_64/bin/cryptol
           echo "Add cryptol-2.10.0-Linux-x86_64/bin to GitHub PATH?"
           echo "$GITHUB_WORKSPACE/deps/cryptol-2.10.0-Linux-x86_64/bin" >> $GITHUB_PATH
