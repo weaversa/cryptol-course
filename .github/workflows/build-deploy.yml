@@ -77,50 +77,45 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Download `docs` artifact
-        uses: actions/download-artifact@v2
-        with:
-          name: docs-artifact
-          path: docs
+      # - name: Download `docs` artifact
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: docs-artifact
+      #     path: docs
       - name: Install package dependencies (if not already present)
         run:
           sudo apt-get install libgmp-dev libncurses-dev
-      - name: Make Directory for Binary Dependencies
-        run:
-          mkdir $GITHUB_WORKSPACE/deps
       - name: Install Cryptol 2.10.0
-        working-directory: $GITHUB_WORKSPACE/deps
         run: |
+          echo "wd: $(pwd)"
           wget https://github.com/GaloisInc/cryptol/releases/download/2.10.0/cryptol-2.10.0-Linux-x86_64.tar.gz
-          [ -e cryptol-2.10.0-Linux-x86_64.tar.gz ] && "Downloaded cryptol"|| exit 1
+          [ -e cryptol-2.10.0-Linux-x86_64.tar.gz ] && "Downloaded cryptol" || exit 1
           tar -xzf cryptol-2.10.0-Linux-x86_64.tar.gz
           [ -d cryptol-2.10.0-Linux-x86_64 ] && "Extracted cryptol" || exit 1
           rm cryptol-2.10.0-Linux-x86_64.tar.gz
           [ -e cryptol-2.10.0-Linux-x86_64.tar.gz ] && exit 1 || "Extracted cryptol"
           chmod +x cryptol-2.10.0-Linux-x86_64/bin/cryptol
-          echo "Add $GITHUB_WORKSPACE/deps/cryptol-2.10.0-Linux-x86_64/bin to GitHub PATH?"
+          echo "Add cryptol-2.10.0-Linux-x86_64/bin to GitHub PATH?"
           echo "$GITHUB_WORKSPACE/deps/cryptol-2.10.0-Linux-x86_64/bin" >> $GITHUB_PATH
-      - name: Install SAW 0.6
-        working-directory: $GITHUB_WORKSPACE/deps
-        run: |
-          wget https://github.com/GaloisInc/saw-script/releases/download/v0.6/saw-0.6-Linux-x86_64.tar.gz
-          tar -xzf saw-0.6-Linux-x86_64.tar.gz
-          rm saw-0.6-Linux-x86_64.tar.gz
-          chmod +x saw-0.6-Linux-x86_64/bin/saw
-          echo "$GITHUB_WORKSPACE/deps/saw-0.6-Linux-x86_64/bin" >> $GITHUB_PATH
-      - name: Install Z3 4.8.8
-        working-directory: $GITHUB_WORKSPACE/deps
-        run: |
-          curl -fsSL https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-ubuntu-16.04.zip -o z3-4.8.8-x64-ubuntu-16.04.zip
-          unzip -j z3-4.8.8-x64-ubuntu-16.04.zip -d z3-4.8.8-x64-ubuntu-16.04
-          rm z3-4.8.8-x64-ubuntu-16.04.zip
-          chmod +x z3-4.8.8-x64-ubuntu-16.04/z3
-          echo "$GITHUB_WORKSPACE/deps/z3-4.8.8-x64-ubuntu-16.04" >> $GITHUB_PATH
+      # - name: Install SAW 0.6
+      #   run: |
+      #     wget https://github.com/GaloisInc/saw-script/releases/download/v0.6/saw-0.6-Linux-x86_64.tar.gz
+      #     tar -xzf saw-0.6-Linux-x86_64.tar.gz
+      #     rm saw-0.6-Linux-x86_64.tar.gz
+      #     chmod +x saw-0.6-Linux-x86_64/bin/saw
+      #     echo "$GITHUB_WORKSPACE/deps/saw-0.6-Linux-x86_64/bin" >> $GITHUB_PATH
+      # - name: Install Z3 4.8.8
+      #   run: |
+      #     curl -fsSL https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-ubuntu-16.04.zip -o z3-4.8.8-x64-ubuntu-16.04.zip
+      #     unzip -j z3-4.8.8-x64-ubuntu-16.04.zip -d z3-4.8.8-x64-ubuntu-16.04
+      #     rm z3-4.8.8-x64-ubuntu-16.04.zip
+      #     chmod +x z3-4.8.8-x64-ubuntu-16.04/z3
+      #     echo "$GITHUB_WORKSPACE/deps/z3-4.8.8-x64-ubuntu-16.04" >> $GITHUB_PATH
       - name: Check Dependency Versions
         run: |
           cryptol --version
-          saw --version
-          z3 --version
+          # saw --version
+          # z3 --version
       # - name: Install Cryptol
       #   uses: engineerd/configurator@v0.0.5
       #   with:
