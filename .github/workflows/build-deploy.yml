@@ -65,13 +65,9 @@ jobs:
         run: |
           cd deps
           wget -q https://github.com/GaloisInc/cryptol/releases/download/2.10.0/cryptol-2.10.0-Linux-x86_64.tar.gz
-          [ -e cryptol-2.10.0-Linux-x86_64.tar.gz ] && echo "Downloaded cryptol" || exit 1
           tar -xzf cryptol-2.10.0-Linux-x86_64.tar.gz
-          [ -d cryptol-2.10.0-Linux-x86_64 ] && echo "Extracted cryptol" || exit 1
           rm cryptol-2.10.0-Linux-x86_64.tar.gz
-          [ -e cryptol-2.10.0-Linux-x86_64.tar.gz ] && exit 1 || echo "Removed cryptol"
           chmod +x cryptol-2.10.0-Linux-x86_64/bin/cryptol
-          echo "Add cryptol-2.10.0-Linux-x86_64/bin to GitHub PATH?"
           echo "$(pwd)/cryptol-2.10.0-Linux-x86_64/bin" >> $GITHUB_PATH
       - name: Install SAW 0.6
         run: |
@@ -91,13 +87,12 @@ jobs:
           echo "$(pwd)/z3-4.8.8-x64-ubuntu-16.04" >> $GITHUB_PATH
       - name: Check Dependency Versions
         run: |
-          cd deps
           cryptol --version
           saw --version
           z3 --version
       - name: Run test script
         run: |
-          echo "PATH: $PATH"
+          echo "CRYPTOLPATH=$(pwd)/docs" >> $GITHUB_ENV
           ${GITHUB_WORKSPACE}/scripts/test_cryptol_modules.sh
   build-gh-pages:
     name: Build `gh-pages`
