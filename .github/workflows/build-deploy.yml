@@ -72,7 +72,7 @@ jobs:
     #     os:
     #       - macos-latest
     #       - ubuntu-latest
-    needs: build-docs
+    # needs: build-docs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
