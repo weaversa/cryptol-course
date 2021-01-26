@@ -92,7 +92,7 @@ jobs:
           z3 --version
       - name: Run test script
         run: |
-          echo "CRYPTOLPATH=$(pwd)/docs" >> $GITHUB_ENV
+          echo "CRYPTOLPATH=${GITHUB_WORKSPACE}/docs" >> $GITHUB_ENV
           ${GITHUB_WORKSPACE}/scripts/test_cryptol_modules.sh
   build-gh-pages:
     name: Build `gh-pages`
