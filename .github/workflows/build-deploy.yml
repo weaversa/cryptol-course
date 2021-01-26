@@ -21,10 +21,10 @@ jobs:
         with:
           poetry-version: 1.1.4
       - name: Generate `docs`
-        run:
+        run: |
           ${GITHUB_WORKSPACE}/scripts/layercake/generate.sh
       - name: Check that `/docs` exists
-        run:
+        run: |
           [ -d ${GITHUB_WORKSPACE}/docs ] && echo "/docs exists" || exit 1
       - name: Upload `docs` artifact
         uses: actions/upload-artifact@v2
@@ -56,10 +56,10 @@ jobs:
           name: docs-artifact
           path: docs
       - name: Install package dependencies (if not already present)
-        run:
+        run: |
           sudo apt-get install libgmp-dev libncurses-dev
       - name: Make directory for Cryptol/SAW/Z3 binaries
-        run:
+        run: |
           mkdir deps
       - name: Install Cryptol 2.10.0
         run: |
@@ -91,10 +91,10 @@ jobs:
           saw --version
           z3 --version
       - name: Set CRYPTOLPATH to `docs`
-        run:
+        run: |
           echo "CRYPTOLPATH=${GITHUB_WORKSPACE}/docs" >> $GITHUB_ENV
       - name: Run test script
-        run:
+        run: |
           ${GITHUB_WORKSPACE}/scripts/test_cryptol_modules.sh
   build-gh-pages:
     name: Build `gh-pages`
