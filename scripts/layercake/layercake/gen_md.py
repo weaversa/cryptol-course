@@ -98,8 +98,8 @@ def relative_path_yaml_constructor(base_path: Path):
 if __name__ == "__main__":
     CRYPTOL_COURSE_PATH = Path(__file__).resolve().parents[3]
     SCRIPT_PATH = CRYPTOL_COURSE_PATH/'scripts/layercake'
-    TEMPLATES_PATH = SCRIPT_PATH/'templates'
-    TO_RENDER_PATH = TEMPLATES_PATH/'to_render'
+    SCRIPT_TEMPLATES_PATH = SCRIPT_PATH/'templates'
+    MARKDOWN_TEMPLATES_PATH = CRYPTOL_COURSE_PATH/'templates'
     DEPS_YML_PATH = SCRIPT_PATH/'deps.yml'
 
     DOCS_PATH = CRYPTOL_COURSE_PATH/'docs'
@@ -107,7 +107,7 @@ if __name__ == "__main__":
 
     MAX_CHARS = 1000000
 
-    add_constructor(PATH_TAG, relative_path_yaml_constructor(TO_RENDER_PATH), Loader=SafeLoader)
+    add_constructor(PATH_TAG, relative_path_yaml_constructor(MARKDOWN_TEMPLATES_PATH), Loader=SafeLoader)
     add_implicit_resolver(PATH_TAG, re_compile('.*\.md'), Loader=SafeLoader)
 
     with DEPS_YML_PATH.open() as DEPS_YML:
@@ -119,15 +119,15 @@ if __name__ == "__main__":
     }
 
     env = Environment(
-        loader=FileSystemLoader(TEMPLATES_PATH)
+        loader=FileSystemLoader([SCRIPT_TEMPLATES_PATH, MARKDOWN_TEMPLATES_PATH])
     )
 
     graphical_view_template = env.get_template('graphical_view.md')
     solicitation_template = env.get_template('solicitation.md')
     navigation_template = env.get_template('navigation.md')
 
-    for path in TO_RENDER_PATH.rglob("*"):
-        rpath = path.relative_to(TO_RENDER_PATH)
+    for path in MARKDOWN_TEMPLATES_PATH.rglob("*"):
+        rpath = path.relative_to(MARKDOWN_TEMPLATES_PATH)
         wpath = DOCS_PATH/rpath
 
         wpath.parent.mkdir(parents=True, exist_ok=True)
@@ -149,11 +149,11 @@ if __name__ == "__main__":
                 print(f'{ (exercise_path if is_answers else rpath) } not in label_by_rel_path')
 
             with wpath.open('w') as W:
-                template = env.get_template(str(path.relative_to(TEMPLATES_PATH)))
+                template = env.get_template(str(path.relative_to(MARKDOWN_TEMPLATES_PATH)))
 
                 label = label_by_rel_path.get(exercise_path if is_answers else rpath, '')
 
-                svg_url = relpath( TO_RENDER_PATH / f"misc/{ id(label) }.gv.svg", path.parent )
+                svg_url = relpath( MARKDOWN_TEMPLATES_PATH / f"misc/{ id(label) }.gv.svg", path.parent )
                 rel_svg_url = f"{ '' if svg_url.startswith('.') else './' }{ svg_url }"
 
                 graphical_view = graphical_view_template.render({
@@ -162,7 +162,7 @@ if __name__ == "__main__":
                 })
                 solicitation = solicitation_template.render()
                 navigation = navigation_template.render(
-                    navlinks(label, deps, TO_RENDER_PATH, path.parent)
+                    navlinks(label, deps, MARKDOWN_TEMPLATES_PATH, path.parent)
                 )
 
                 rendering = (
