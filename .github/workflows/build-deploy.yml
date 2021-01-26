@@ -23,7 +23,7 @@ jobs:
       - name: Generate `docs`
         run: |
           ${GITHUB_WORKSPACE}/scripts/layercake/generate.sh
-      - name: Check that `/docs` exists
+      - name: Check that `docs` exists
         run: |
           [ -d ${GITHUB_WORKSPACE}/docs ] && echo "/docs exists" || exit 1
       - name: Upload `docs` artifact
@@ -85,7 +85,7 @@ jobs:
         run: |
           ${GITHUB_WORKSPACE}/scripts/test_cryptol_modules.sh
   test-docs-docker:
-    name: Test `/docs` on Cryptol Docker image
+    name: Test `docs` on Cryptol Docker image
     needs: build-docs
     runs-on: ubuntu-latest
     steps:
