@@ -93,10 +93,11 @@ jobs:
           tar -xzf cryptol-2.10.0-Linux-x86_64.tar.gz
           [ -d cryptol-2.10.0-Linux-x86_64 ] && echo "Extracted cryptol" || exit 1
           rm cryptol-2.10.0-Linux-x86_64.tar.gz
-          [ -e cryptol-2.10.0-Linux-x86_64.tar.gz ] && exit 1 || echo "Extracted cryptol"
+          [ -e cryptol-2.10.0-Linux-x86_64.tar.gz ] && exit 1 || echo "Removed cryptol"
           chmod +x cryptol-2.10.0-Linux-x86_64/bin/cryptol
           echo "Add cryptol-2.10.0-Linux-x86_64/bin to GitHub PATH?"
           echo "$GITHUB_WORKSPACE/deps/cryptol-2.10.0-Linux-x86_64/bin" >> $GITHUB_PATH
+          echo "Path after 'Install Cryptol': $PATH"
       # - name: Install SAW 0.6
       #   run: |
       #     wget https://github.com/GaloisInc/saw-script/releases/download/v0.6/saw-0.6-Linux-x86_64.tar.gz
@@ -113,9 +114,10 @@ jobs:
       #     echo "$GITHUB_WORKSPACE/deps/z3-4.8.8-x64-ubuntu-16.04" >> $GITHUB_PATH
       - name: Check Dependency Versions
         run: |
-          cryptol --version
-          # saw --version
-          # z3 --version
+          echo "Path before 'Check Dependency Versions': $PATH"
+        # cryptol --version
+        # saw --version
+        # z3 --version
       # - name: Install Cryptol
       #   uses: engineerd/configurator@v0.0.5
       #   with:
