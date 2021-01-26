@@ -50,11 +50,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      # - name: Download `docs` artifact
-      #   uses: actions/download-artifact@v2
-      #   with:
-      #     name: docs-artifact
-      #     path: docs
+      - name: Download `docs` artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: docs-artifact
+          path: docs
       - name: Install package dependencies (if not already present)
         run:
           sudo apt-get install libgmp-dev libncurses-dev
