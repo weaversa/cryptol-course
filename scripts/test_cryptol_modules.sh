@@ -5,13 +5,13 @@ cryptol -e -c ":m README" -c ":prove"
 cryptol -e -c ":m labs::Interpreter::Interpreter" -c ":s base=10" -c "x + 2"
 
 # Arithmetic verification tests
-"! command -v saw >/dev/null 2>&1 || make -C labs/Demos/SAW/ArithmeticVerifications"
+# "! command -v saw >/dev/null 2>&1 || make -C labs/Demos/SAW/ArithmeticVerifications"
 
 # Bittwiddling lab tests
 cryptol -e -c ":m labs::Demos::SAW::Bittwiddling::Bittwiddling"
-clang -emit-llvm -c labs/Demos/SAW/Bittwiddling/bittwiddling.c -o labs/Demos/SAW/Bittwiddling/bittwiddling.bc
+# clang -emit-llvm -c labs/Demos/SAW/Bittwiddling/bittwiddling.c -o labs/Demos/SAW/Bittwiddling/bittwiddling.bc
 cryptol -e -c ":m labs::Demos::SAW::Bittwiddling::BittwiddlingAnswers"
-"! command -v saw >/dev/null 2>&1 || (cd labs/Demos/SAW/Bittwiddling && saw BittwiddlingAnswers.saw)"
+# "! command -v saw >/dev/null 2>&1 || (cd labs/Demos/SAW/Bittwiddling && saw BittwiddlingAnswers.saw)"
 
 # Salsa20 lab tests
 cryptol -e -c ":m labs::Salsa20::Salsa20"
