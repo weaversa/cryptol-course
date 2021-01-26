@@ -31,13 +31,6 @@ jobs:
         with:
           name: docs-artifact
           path: docs
-      - name: Deploy `docs`
-        uses: JamesIves/github-pages-deploy-action@3.7.1
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: docs
-          FOLDER: docs
-          CLEAN: true
   test-docs:
     name: Test `docs` on Ubuntu
     needs: build-docs
@@ -112,10 +105,10 @@ jobs:
           shopt -s expand_aliases
           alias cryptol='docker run --entrypoint cryptol -v $(pwd):/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course galoisinc/cryptol:2.10.0'
           source ${GITHUB_WORKSPACE}/scripts/test_cryptol_modules.sh
-  build-gh-pages:
-    name: Build `gh-pages`
+  deploy:
+    name: Build `gh-pages` and deploy (along with `docs`)
     runs-on: ubuntu-latest
-    needs: test-docs
+    needs: [test-docs, test-docs-docker]
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -132,6 +125,13 @@ jobs:
           shopt -s extglob
           sed -i "s/\.md/\.html/" ${GITHUB_WORKSPACE}/gh-pages/misc/*.@(gv|svg)
           [ -d ${GITHUB_WORKSPACE}/gh-pages/ ] && echo "/gh-pages exists" || exit 1
+      - name: Deploy `docs`
+        uses: JamesIves/github-pages-deploy-action@3.7.1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: docs
+          FOLDER: docs
+          CLEAN: true
       - name: Deploy `gh-pages`
         uses: JamesIves/github-pages-deploy-action@3.7.1
         with:
