@@ -132,6 +132,8 @@ newline_labels:
   - Common Properties for Ciphers
   - Arithmetic Verifications
 
+# groups of nodes explicitly rendered into same "column" of generated
+# graphical view, per lab (branches are implicitly grouped)
 ranks:
   Cryptol Course:
     Intro:
