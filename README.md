@@ -63,9 +63,10 @@ with the same names.
 `cryptol-course` has been cloned or downloaded) by installing
 [Python 3.9+](https://python.org) and
 [Poetry](https://python-poetry.org/), setting the `GITHUB_WORKSPACE`
-environment variable to the folder containing `cryptol-course` and
+environment variable to the folder containing `cryptol-course`, and
 running `generate.sh` (`GITHUB_WORKSPACE` is a default environment
-variable for GitHub Actions):
+variable for GitHub Actions; these instructions assume a Linux or
+Mac OS host):
 
 ```
 cryptol-course> GITHUB_WORKSPACE=$(pwd) scripts/layercake/generate.sh
@@ -78,3 +79,147 @@ test script can be run after setting CRYPTOLPATH to the generated
 ```
 cryptol-course> CRYPTOLPATH=$(pwd)/docs scripts/test_cryptol_modules.sh
 ```
+
+## Adding a New Lab/Module
+
+Suppose we wish to introduce a new Literate Cryptol module
+"Frobnicator" to the course, as part of a new lab "Frobnication".  We
+would start by writing a Markdown file consistent with other modules
+in the course, with at least the following snippet...
+
+````gfm
+```cryptol
+module Frobnication::Frobnicator where
+```
+````
+
+...and subsequent Cryptol definitions, often accompanied by exercises
+for course participants, e.g.
+
+````gfm
+**EXERCISE**: Define a function `frobnicate` that frobnicates the
+characters of a given `String n` `w` using a `Frobnifier` `f`.
+(Replace `undefined` with your definition.)
+
+```cryptol
+frobnicate: Frobnifier -> String n -> String n
+frobnicate f w = undefined
+```
+````
+
+This Markdown file would be located at
+`/templates/labs/Frobnication/Frobnicator.md`.  If it has
+`**EXERCISE**`s, a corresponding file with solutions would be located
+at `/templates/labs/Frobnication/FrobnicatorAnswers.md`:
+
+````gfm
+**EXERCISE**: Define a function `frobnicate` that frobnicates the
+characters of a given `String n` `w` using a `Frobnifier` `f`.
+(Replace `undefined` with your definition.)
+
+```cryptol
+frobnicate:
+    {n}
+    fin n =>
+    Frobnifier -> String n -> String n
+frobnicate f w = last ws
+  where
+    ws = [ w ]
+        # [ updates wx [i, j] (wx @@ [j, i])
+          | (i, j) <- r`{n}
+          | wx <- ws
+          ]
+
+    r:
+        {m}
+        fin m =>
+        [m-(min 1 m)](Integer, Integer)
+    r =
+        [ (i, (x % (`m - i)) + i)
+        | (i, x) <- enumerate (random f : [m - (min 1 m)]Integer)
+        ]
+```
+````
+
+### Metadata
+
+Recommended course modules are to be taken in a certain order, and
+optional ones are suggested to be taken after a recommended one, each
+meeting prerequisites necessary to successfully complete a given
+module.  These are represented in the metadata file `deps.yml`, which
+specifies a recommended path and optional branches from recommended
+modules using
+[Yet Another Markup Language (YAML)](https://yaml.org/).
+
+For our frobnicating example, we would add an entry to `urls` with a
+label and the location of the file with unanswered exercises:
+
+```yaml
+urls:
+  ...
+  Frobnicators:
+    labs/Frobnication/Frobnicator.md
+```
+
+This example would be optional, so a branch would be added from a
+recommended module, perhaps `Cryptographic Properties`:
+
+```yaml
+branches:
+  ...
+  Cryptographic Properties:
+    - ...
+    - Frobnicators
+```
+
+To add a multi-module lab with recommended content (e.g.
+`Block Modes` with modules for `ECB`, `CBC`, etc.), the lab would be
+added to the recommended path for `Cryptol Course`, and a recommended
+path would be specified for the new lab:
+
+```yaml
+urls:
+  ...
+  Block Modes:
+    labs/BlockModes/Overview.md
+  ECB:
+    labs/BlockModes/ECB.md
+  CBC:
+    labs/BlockModes/CBC.md
+  ...
+
+paths:
+  Cryptol Course:
+    - ...
+    - Block Modes
+    - ...
+  ...
+  Block Modes:
+    - ECB
+    - CBC
+    ...
+```
+
+The overview Markdown could include a `{{ graphical_view }}` template
+field, which the deployment scripts would replace with GraphViz and
+SVG files and a link from the overview to the SVG file.  Each module
+(including the overview) could have a field `{{ solicitation }}`
+replaced with standard boilerplate inviting participants to submit
+feedback via GitHub Issues, and a field `{{ navlinks }}` that would
+be replaced with a table of links to related modules.  These would be
+deployed to the `docs` branch that can be downloaded for local
+browsing, and the `gh-pages` branch which can be viewed at the
+[GitHub Pages for the course](https://weaversa.github.io/cryptol-course).
+
+There's more opportunity for CI scripting and templating.  For
+example, we have written a script to extract code blocks with the
+`Xcryptol-session` info string and generate unit tests to confirm
+that Cryptol behaves as documented in each module.  We could also
+sanity-check pre/post-requisites for modules, e.g. checking that a
+module includes a `:prove` example if it says it does, or that a
+module's listed prerequisites are included among postrequisites of
+its dependencies.
+
+# Go Forth and Educate
+
+Happy authoring!
