@@ -1,179 +1,225 @@
-[![Build Status](https://travis-ci.com/weaversa/cryptol-course.svg?branch=master)](https://travis-ci.com/weaversa/cryptol-course)
+![Build/Deploy](https://github.com/weaversa/cryptol-course/workflows/Build%20and%20Deploy/badge.svg)
+![Broken Links](https://github.com/weaversa/cryptol-course/workflows/Check%20for%20Broken%20Links/badge.svg)
 
-# Programming with Cryptol
+# Cryptol Course Development
 
-**Purpose:** The purpose of the course is to provide an overview of
-the capabilities of [Cryptol](https://github.com/GaloisInc/cryptol), a
-domain specific language for cryptography. The material can be
-undertaken in a self-paced fashion, or is amenable to a more
-structured classroom (virtual or physical) presentation and
-experimentation environment. The course also briefly touches on the
-[Software Analysis Workbench](https://github.com/GaloisInc/saw-script)
-(SAW), a related tool for proving properties about software.
+This is the development branch of an online course on the
+[Cryptol](https://github.com/GaloisInc/Cryptol)
+language and interpreter for cryptographic algorithm specifications.
+The course itself is rendered from `/templates` and deployed to the
+[`docs`](https://github.com/weaversa/cryptol-course/tree/docs)
+branch (for downloading course materials), and the
+[`gh-pages`](https://github.com/weaversa/cryptol-course/tree/gh-pages)
+branch for the accompanying
+[GitHub Pages site](https://weaversa.github.io/cryptol-course).
 
-## How To Take This Course
+## Generation/Testing/Deployment Workflow
 
-This course is composed of a series of labs which introduce aspects of
-applications of Cryptol. Many of the labs in this course are taught
-using [literate](https://en.wikipedia.org/wiki/Literate_programming)
-Cryptol documents --- that is, they render nicely in a web browser or
-editor with Markdown support, and they can also be loaded directly
-into the Cryptol interpreter. This README.md is no exception! We start
-by defining a new module for this file:
+This Cryptol course comprises a series of "labs" (each with one or
+more "modules"), where labs depend on completion of prior labs and
+introduce new Cryptol concepts. These are documented under
+`/templates`, which includes Markdown files with template fields
+(specific to this project) and non-Markdown files retained as-is.
+Markdown files have
+[Jinja](https://jinja.palletsprojects.com/en/2.11.x/) tags that are
+processed by the Python script `gen_md.py`, which processes the
+following template fields, and writes the rendered Markdown and
+copies non-Markdown files into `/docs`:
+
+  * `{{ graphical-view }}`
+    Includes and links to a Scalable Vector Graphics (SVG) file
+    that diagrams and links to the recommended (path) and optional
+    (branches) modules of a lab (or the entire course)
+  * `{{ navlinks }}`
+    Represents a table with navigational links:
+    * (`^`) "up" to an overview of modules in a lab, which
+      recommends an order in which to visit its modules and shows any
+      optional modules branching from a recommended one
+      (the entire course is a top-level lab)
+    * (`v`) "down" to the first recommended module in a lab
+    * (`<`) "back" to the prior recommended module in a lab
+    * (`>`) "forward" to the next recommended module in a lab
+    * (`+`) "branch" into an optional module
+    * (`-`) "return" to the recommended module from which this one
+      branches
+  * `{{ solicitation }}`
+    boilerplate indicating where to post issues with the course
+
+Another script (`gen_svgs.py`) generates the SVGs with graphical
+views of each multi-module lab (including the entire course) into
+`/docs/misc`.
+
+These scripts import metadata from `deps.yml`.
+
+The scripts are run in [GitHub Actions](https://github.com/actions)
+workflows, which also test the generated `/docs` on various platforms
+(Docker, Ubuntu, etc.), copy `/docs` to `/gh-pages` and replace `.md`
+URLs in SVGs with `.html`, and deploy these directories to branches
+with the same names.
+
+## Running Scripts
+
+`/docs` can be generated locally (assuming the main branch of
+`cryptol-course` has been cloned or downloaded) by installing
+[Python 3.9+](https://python.org) and
+[Poetry](https://python-poetry.org/), setting the `GITHUB_WORKSPACE`
+environment variable to the folder containing `cryptol-course`, and
+running `generate.sh` (`GITHUB_WORKSPACE` is a default environment
+variable for GitHub Actions; these instructions assume a Linux or
+Mac OS host):
+
+```
+cryptol-course> GITHUB_WORKSPACE=$(pwd) scripts/layercake/generate.sh
+```
+
+From here (assuming `cryptol` has been installed or aliased), the
+test script can be run after setting CRYPTOLPATH to the generated
+`/docs` folder:
+
+```
+cryptol-course> CRYPTOLPATH=$(pwd)/docs scripts/test_cryptol_modules.sh
+```
+
+## Adding a New Lab/Module
+
+Suppose we wish to introduce a new Literate Cryptol module
+"Frobnicator" to the course, as part of a new lab "Frobnication".  We
+would start by writing a Markdown file consistent with other modules
+in the course, with at least the following snippet...
+
+````gfm
+```cryptol
+module Frobnication::Frobnicator where
+```
+````
+
+...and subsequent Cryptol definitions, often accompanied by exercises
+for course participants, e.g.
+
+````gfm
+**EXERCISE**: Define a function `frobnicate` that frobnicates the
+characters of a given `String n` `w` using a `Frobnifier` `f`.
+(Replace `undefined` with your definition.)
 
 ```cryptol
-module README where
+frobnicate: Frobnifier -> String n -> String n
+frobnicate f w = undefined
 ```
+````
 
-Labs have exercises that look like this:
+This Markdown file would be located at
+`/templates/labs/Frobnication/Frobnicator.md`.  If it has
+`**EXERCISE**`s, a corresponding file with solutions would be located
+at `/templates/labs/Frobnication/FrobnicatorAnswers.md`:
 
-**EXERCISE**: Literate Cryptol documents are meant to be edited while
-you work through a lab. For instance, you might be asked to fill in a
-portion of a Cryptol snippet:
-
-```comment
-CBCEncrypt : {n} (fin n) => ([128] -> [128]) -> [128] -> [n][128] -> [n][128]
-CBCEncrypt Ek iv pt = undefined
-    //  Implement a parameterized version of the CBC encryption mode
-
-CBCDecrypt : {n} (fin n) => ([128] -> [128]) -> [128] -> [n][128] -> [n][128]
-CBCDecrypt Dk iv ct = undefined
-    //  Implement a parameterized version of the CBC decryption mode
-```
-
-You might solve this problem by editing the literate document and
-changing this snippet to the following:
+````gfm
+**EXERCISE**: Define a function `frobnicate` that frobnicates the
+characters of a given `String n` `w` using a `Frobnifier` `f`.
+(Replace `undefined` with your definition.)
 
 ```cryptol
-CBCEncrypt : {n} (fin n) => ([128] -> [128]) -> [128] -> [n][128] -> [n][128]
-CBCEncrypt Ek iv pt =
-    [ Ek (pi ^ ci) | pi <- pt | ci <- [iv] # CBCEncrypt Ek iv pt ]
+frobnicate:
+    {n}
+    fin n =>
+    Frobnifier -> String n -> String n
+frobnicate f w = last ws
+  where
+    ws = [ w ]
+        # [ updates wx [i, j] (wx @@ [j, i])
+          | (i, j) <- r`{n}
+          | wx <- ws
+          ]
 
-CBCDecrypt : {n} (fin n) => ([128] -> [128]) -> [128] -> [n][128] -> [n][128]
-CBCDecrypt Dk iv ct =
-    [ Dk ci ^ ci' | ci <- ct | ci' <- [iv] # ct ]
+    r:
+        {m}
+        fin m =>
+        [m-(min 1 m)](Integer, Integer)
+    r =
+        [ (i, (x % (`m - i)) + i)
+        | (i, x) <- enumerate (random f : [m - (min 1 m)]Integer)
+        ]
+```
+````
+
+### Metadata
+
+Recommended course modules are to be taken in a certain order, and
+optional ones are suggested to be taken after a recommended one, each
+meeting prerequisites necessary to successfully complete a given
+module.  These are represented in the metadata file `deps.yml`, which
+specifies a recommended path and optional branches from recommended
+modules using
+[Yet Another Markup Language (YAML)](https://yaml.org/).
+
+For our frobnicating example, we would add an entry to `urls` with a
+label and the location of the file with unanswered exercises:
+
+```yaml
+urls:
+  ...
+  Frobnicators:
+    labs/Frobnication/Frobnicator.md
 ```
 
-Exercises will often have corresponding properties that you can use to
-verify your work. For example:
+This example would be optional, so a branch would be added from a
+recommended module, perhaps `Cryptographic Properties`:
 
-```cryptol
-property CBCInverts iv (pt : [100][128]) =
-    CBCDecrypt (\x -> x - 1) iv (CBCEncrypt (\x -> x + 1) iv pt) == pt
+```yaml
+branches:
+  ...
+  Cryptographic Properties:
+    - ...
+    - Frobnicators
 ```
 
-```Xcryptol-session
-┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
-┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
-┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
-version 2.10.0
-https://cryptol.net  :? for help
+To add a multi-module lab with recommended content (e.g.
+`Block Modes` with modules for `ECB`, `CBC`, etc.), the lab would be
+added to the recommended path for `Cryptol Course`, and a recommended
+path would be specified for the new lab:
 
-Loading module Cryptol
-Cryptol> :module README
-Loading module Cryptol
-Loading module README
-README> :prove CBCInverts
-Q.E.D.
-(Total Elapsed Time: 0.081s, using "Z3")
+```yaml
+urls:
+  ...
+  Block Modes:
+    labs/BlockModes/Overview.md
+  ECB:
+    labs/BlockModes/ECB.md
+  CBC:
+    labs/BlockModes/CBC.md
+  ...
+
+paths:
+  Cryptol Course:
+    - ...
+    - Block Modes
+    - ...
+  ...
+  Block Modes:
+    - ECB
+    - CBC
+    ...
 ```
 
-Don't worry if Cryptol is not yet installed on your computer -- the
-first lab walks you through [installing and running Cryptol](INSTALL.md).
+The overview Markdown could include a `{{ graphical_view }}` template
+field, which the deployment scripts would replace with GraphViz and
+SVG files and a link from the overview to the SVG file.  Each module
+(including the overview) could have a field `{{ solicitation }}`
+replaced with standard boilerplate inviting participants to submit
+feedback via GitHub Issues, and a field `{{ navlinks }}` that would
+be replaced with a table of links to related modules.  These would be
+deployed to the `docs` branch that can be downloaded for local
+browsing, and the `gh-pages` branch which can be viewed at the
+[GitHub Pages for the course](https://weaversa.github.io/cryptol-course).
 
+There's more opportunity for CI scripting and templating.  For
+example, we have written a script to extract code blocks with the
+`Xcryptol-session` info string and generate unit tests to confirm
+that Cryptol behaves as documented in each module.  We could also
+sanity-check pre/post-requisites for modules, e.g. checking that a
+module includes a `:prove` example if it says it does, or that a
+module's listed prerequisites are included among postrequisites of
+its dependencies.
 
-## Suggested Lab Order
+# Go Forth and Educate
 
-1. [Installation](./INSTALL.md): Get up and running.
-2. [Cryptol and SAW Overview](./labs/Overview/Overview.md): Learn about
-   how Cryptol and SAW are used.
-3. [Cryptol Interpreter](./labs/Interpreter/Interpreter.md): Learn how
-   to use the Cryptol Interpreter.
-4. [Language Basics](./labs/Language/Basics.md): A resource
-   for (most) of the language features you'll need to be successful
-   here.
-    * [Style Guide](./cryptol-style.md): Cryptol style guide we 
-      developed for the course.
-    * [Cryptol Demos](./labs/Demos/Cryptol/Demos.md): Lightweight
-      walkthroughs that demonstrate common Cryptol concepts.
-    * [SAW Demos](./labs/Demos/SAW/Demos.md): Demonstrations of using
-      Cryptol with the Software Analysis Workbench to verify software.
-    * [Type Hackery](./labs/Language/IntroTypeHackery.md): Demonstrates 
-      various challenges and solutions involving Cryptol's type system
-5. [Cyclic Redundancy Checks](./labs/CRC/CRC.md): Create your first
-   specification.
-6. [Salsa20](./labs/Salsa20/Salsa20.md): Create your second
-   specification.
-7. [Prove Cryptographic Properties](./labs/CryptoProofs/CryptoProofs.md):
-   Learn about common cryptographic properties and how to prove them
-   with Cryptol.
-    * [Salsa20 Properties](./labs/Salsa20/Salsa20Props.md): Prove some
-      cryptographic properties about Salsa20.
-    * [Transposition Ciphers](./labs/Transposition/Contents.md):
-      Learn how to use higher-order functions to create and prove
-      properties about a number of common transposition ciphers.
-    * [Project Euler](./labs/ProjectEuler/ProjectEuler.md): If you
-      enjoyed the last lab, go ahead and try your hand at using
-      Cryptol's connection to automated provers (SMT solvers) to solve
-      some classic computational puzzles.
-8. [Methods for Key Wrapping](./labs/KeyWrapping/KeyWrapping.md):
-   Create a Cryptol specification of NIST's [SP800-38F key wrap
-   standard](https://csrc.nist.gov/publications/detail/sp/800-38f/final).
-    * [Parameterized Modules: Simon and Speck](./labs/SimonSpeck/SimonSpeck.md):
-      Learn about Cryptol's parameterized modules by creating a
-      Cryptol specification of NSA's Speck block cipher.
-9. [Capstone: Putting it all together](./labs/LoremIpsum/LoremIpsum.md):
-   Use components and techniques from other labs to decrypt a series
-   of secret messages by feeding wrapped keys into the anomalous KLI20
-   cryptographic engine.
-
-## Graphical View of the Course
-
-The general course flow is represented by the red lines. The black
-lines indicate labs designed to give you more opportunities to
-practice Cryptol, but are not strictly necessary for course
-completion. (Click on the image below for a navigable representation.)
-
-<a href="./misc/CryptolCourse.gv.svg">
-    <img class="center" src="./misc/CryptolCourse.gv.svg" alt="Dependencies and Suggested Course Flow">
-</a>
-
-## Supporting Materials
-
-You will find references and supporting materials linked throughout
-the course, but here are some key manuals and documents for easy
-reference:
-
-* [Programming
-  Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf)
-  -- A comprehensive reference for the Cryptol language. Contains many
-  examples for programming language features including a full workup
-  of AES.
-
-* [Cryptol
-  Syntax](https://github.com/GaloisInc/cryptol/blob/master/docs/Syntax.pdf)
-  -- A comprehensive guide to Cryptol Syntax.
-
-* [Cryptol
-  Primitives](https://github.com/GaloisInc/cryptol/blob/master/docs/CryptolPrims.pdf)
-  -- A simple list of all of the Cryptol language primitives.
-
-# From here, you can go somewhere!
-
-||||
-|-:|:-:|-|
-|| **Course README** ||
-|| [v Installation](./INSTALL.md) ||
-
-# Solicitation
-
-How was your experience with this lab? Suggestions are welcome in the
-form of a ticket on the course GitHub page:
-https://github.com/weaversa/cryptol-course/issues
-
-# From here, you can go somewhere!
-
-||||
-|-:|:-:|-|
-|| **Cryptol Course** ||
-|| [ v Installation ]( ./INSTALL.md ) ||
+Happy authoring!
