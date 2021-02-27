@@ -1,0 +1,24 @@
+:m NIST_800_38F::tests::Test_KW_AE_AES128
+:check
+:m NIST_800_38F::tests::Test_KW_AD_AES128
+:check
+:m NIST_800_38F::tests::Test_KW_AE_AES192
+:check
+:m NIST_800_38F::tests::Test_KW_AD_AES192
+:check
+:m NIST_800_38F::tests::Test_KW_AE_AES256
+:check
+:m NIST_800_38F::tests::Test_KW_AD_AES256
+:check
+:m NIST_800_38F::tests::Test_KWP_AE_AES128
+:check
+:m NIST_800_38F::tests::Test_KWP_AD_AES128
+:check
+:m NIST_800_38F::tests::Test_KWP_AE_AES192
+:check
+:m NIST_800_38F::tests::Test_KWP_AD_AES192
+:check
+:m NIST_800_38F::tests::Test_KWP_AE_AES256
+:check
+:m NIST_800_38F::tests::Test_KWP_AD_AES256
+:check

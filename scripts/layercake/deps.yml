@@ -1,0 +1,143 @@
+# URL by component/lab (relative to `templates/to_render` input or `docs/` output)
+urls:
+  # Cryptol Course (suggested course flow)
+  Cryptol Course:
+    README.md
+  Installation:
+    INSTALL.md
+  Overview:
+    labs/Overview/Overview.md
+  Interpreter:
+    labs/Interpreter/Interpreter.md
+  Language Basics:
+    labs/Language/Basics.md
+  Type Hackery:
+    labs/Language/IntroTypeHackery.md
+  CRC:
+    labs/CRC/CRC.md
+  Salsa20:
+    labs/Salsa20/Salsa20.md
+  Cryptographic Properties:
+    labs/CryptoProofs/CryptoProofs.md
+  Key Wrapping:
+    labs/KeyWrapping/KeyWrapping.md
+  Capstone:
+    labs/LoremIpsum/LoremIpsum.md
+
+  # Cryptol Demos lab
+  Cryptol Demos:
+    labs/Demos/Cryptol/Demos.md
+  Caesar:
+    labs/Demos/Cryptol/Caesar.md
+  One-Time Pad:
+    labs/Demos/Cryptol/OneTimePad.md
+  n-Queens:
+    labs/Demos/Cryptol/NQueens.md
+  Sudoku:
+    labs/Demos/Cryptol/Sudoku.md
+
+  # SAW Demos lab
+  SAW Demos:
+    labs/Demos/SAW/Demos.md
+  Arithmetic Verifications:
+    labs/Demos/SAW/ArithmeticVerifications/ArithmeticVerifications.md
+  Bit Twiddling:
+    labs/Demos/SAW/Bittwiddling/Bittwiddling.md
+
+  # Transposition lab
+  Transposition Ciphers:
+    labs/Transposition/Contents.md
+  Common Properties for Ciphers:
+    labs/Transposition/CommonProperties.md
+  Transposition:
+    labs/Transposition/Transposition.md
+  Esrever:
+    labs/Transposition/Esrever.md
+  Scytale:
+    labs/Transposition/Scytale.md
+  Rail Fence:
+    labs/Transposition/RailFence.md
+  Route:
+    labs/Transposition/Route.md
+
+  # standalone labs
+  Parameterized Modules:
+    labs/SimonSpeck/SimonSpeck.md
+  Salsa20 Properties:
+    labs/Salsa20/Salsa20Props.md
+  Style Guide:
+    cryptol-style.md
+  Project Euler:
+    labs/ProjectEuler/ProjectEuler.md
+
+# recommended paths through each lab
+paths:
+  Cryptol Course:
+    - Installation
+    - Overview
+    - Interpreter
+    - Language Basics
+    - CRC
+    - Salsa20
+    - Cryptographic Properties
+    - Key Wrapping
+    - Capstone
+  Cryptol Demos:
+    - Caesar
+    - One-Time Pad
+    - n-Queens
+    - Sudoku
+  SAW Demos:
+    - Arithmetic Verifications
+    - Bit Twiddling
+  Transposition Ciphers:
+    - Common Properties for Ciphers
+    - Transposition
+    - Esrever
+    - Scytale
+    - Rail Fence
+    - Route
+
+# branches from recommended path per lab
+branches:
+  Cryptol Course:
+    Language Basics:
+      - Style Guide
+      - Cryptol Demos
+      - SAW Demos
+      - Type Hackery
+    Cryptographic Properties:
+      - Salsa20 Properties
+      - Transposition Ciphers
+      - Project Euler
+    Key Wrapping:
+      - Parameterized Modules
+
+# components with `**EXERCISE**`s but no `Answers`
+unanswered:
+  - Cryptol Course
+  - Cryptol Demos
+  - Parameterized Modules
+  - Route
+  - SAW Demos
+  - Language Basics
+
+# labels to break into newlines
+newline_labels:
+  - Language Basics
+  - Salsa20 Properties
+  - Cryptographic Properties
+  - Transposition Ciphers
+  - Parameterized Modules
+  - Common Properties for Ciphers
+  - Arithmetic Verifications
+
+# groups of nodes explicitly rendered into same "column" of generated
+# graphical view, per lab (branches are implicitly grouped)
+ranks:
+  Cryptol Course:
+    Intro:
+      - Installation
+      - Overview
+      - Interpreter
+      - Language Basics

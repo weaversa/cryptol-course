@@ -3,4 +3,4 @@ baseurl: /cryptol-course
 plugins:
   - jekyll-relative-links
 include:
-  - labs/KeyWrapping/kwtestvectors
+  - docs/labs/KeyWrapping/kwtestvectors
