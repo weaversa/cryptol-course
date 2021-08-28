@@ -1,2 +1,1 @@
-image:
-  file: .devcontainer/Dockerfile
+image: ghcr.io/galoisinc/cryptol:2.11.0
