@@ -3,12 +3,8 @@ image: ghcr.io/galoisinc/cryptol:2.11.0
 tasks:
   - init: gp open README.md
     command: echo 'Welcome to the Cryptol course!'
-    command: echo 'The presentation material is formatted in Markdown
-             (.md) files. To view, click the "Open Preview to the Side"
-             icon above the Markdown document.'
-    command: echo 'To enter the Cryptol interpreter, type "cryptol" at
-             the terminal window. We'll do this automatically for you
-             now.'
+    command: echo 'The presentation material is formatted in Markdown (.md) files. To view, click the "Open Preview to the Side" icon above the Markdown document.'
+    command: echo 'To enter the Cryptol interpreter, type "cryptol" at the terminal window. We'll do this automatically for you now.'
     command: cryptol
     
 vscode:
