@@ -2,4 +2,8 @@ image: ghcr.io/galoisinc/cryptol:2.11.0
 
 vscode:
   extensions:
+    # Add PDF viewing support to VSCode
     - https://marketplace.visualstudio.com/_apis/public/gallery/publishers/tomoki1207/vsextensions/pdf/1.1.0/vspackage
+    # Enhanced Markdown support (displays equations in markdown)
+    - shd101wyy.markdown-preview-enhanced
+

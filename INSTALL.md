@@ -1,3 +1,22 @@
+# Easy Button
+
+Likely, the easiest way to take the course is via
+[Gitpod.io](https://gitpod.io), a development environment hosting
+service that opens the course right in your web-browser. We have
+pre-loaded all of the tools you'll need to complete the main Cryptol
+track of this course (we are currently missing support for
+SAW). Simply click the link below to start. Your personal Gitpod
+instance will need a couple of minutes to initialize the first time
+you click the link. If you close the Gitpod browser window, your work
+will be saved. To continue where you left off, just click the link
+again at some later date.
+
+https://gitpod.io/#https://github.com/weaversa/cryptol-course
+
+However, if you would like to take the course locally (which involves
+installing software on your computer), you may follow the instructions
+that follow.
+
 # Acquiring the Cryptol course material
 
 All of the Cryptol course material (presentations, labs, supporting
