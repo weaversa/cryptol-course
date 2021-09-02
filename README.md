@@ -1,5 +1,7 @@
 [![Build Status](https://travis-ci.com/weaversa/cryptol-course.svg?branch=master)](https://travis-ci.com/weaversa/cryptol-course)
 
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/weaversa/cryptol-course)
+
 # Programming with Cryptol
 
 **Purpose:** The purpose of the course is to provide an overview of

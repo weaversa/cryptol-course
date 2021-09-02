@@ -11,7 +11,7 @@ you click the link. If you close the Gitpod browser window, your work
 will be saved. To continue where you left off, just click the link
 again at some later date.
 
-https://gitpod.io/#https://github.com/weaversa/cryptol-course
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/weaversa/cryptol-course)
 
 However, if you would like to take the course locally (which involves
 installing software on your computer), you may follow the instructions
