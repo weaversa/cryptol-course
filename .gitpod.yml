@@ -1,13 +1,18 @@
 image: ghcr.io/galoisinc/cryptol:2.11.0
 
 tasks:
-  - init: gp preview README.md
+  - init: gp open README.md
     command: echo 'Welcome to the Cryptol course!'
-
+    command: echo 'The presentation material is formatted in Markdown
+             (.md) files. To view, click the "Open Preview to the Side"
+             icon above the Markdown document.'
+    command: echo 'To enter the Cryptol interpreter, type "cryptol" at
+             the command prompt. We'll do this automatically for you
+             now.'
+    command: cryptol
+    
 vscode:
   extensions:
     # Add PDF viewing support to VSCode
     - https://tomoki1207.gallery.vsassets.io/_apis/public/gallery/publisher/tomoki1207/extension/pdf/1.1.0/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage
-    # Enhanced Markdown support (displays equations in markdown)
-    # - shd101wyy.markdown-preview-enhanced
 

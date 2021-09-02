@@ -15,7 +15,9 @@ https://gitpod.io/#https://github.com/weaversa/cryptol-course
 
 However, if you would like to take the course locally (which involves
 installing software on your computer), you may follow the instructions
-that follow.
+that follow. If you decide to try the Gitpod route, it may still be a
+good idea to read through the instructions here near the end that
+demonstrate, briefly, how to run Cryptol.
 
 # Acquiring the Cryptol course material
 
