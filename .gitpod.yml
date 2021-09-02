@@ -7,7 +7,7 @@ tasks:
              (.md) files. To view, click the "Open Preview to the Side"
              icon above the Markdown document.'
     command: echo 'To enter the Cryptol interpreter, type "cryptol" at
-             the command prompt. We'll do this automatically for you
+             the terminal window. We'll do this automatically for you
              now.'
     command: cryptol
     
