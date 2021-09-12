@@ -1,4 +1,4 @@
-image: ghcr.io/galoisinc/cryptol:2.11.0
+image: ghcr.io/galoisinc/cryptol:2.10.0
 
 tasks:
   - init: gp open README.md
