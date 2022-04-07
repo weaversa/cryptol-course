@@ -9,7 +9,7 @@ jobs:
       image: ghcr.io/weaversa/cryptol-course:2.12
     steps:
      - name: Checkout
-       uses: actions/checkout@v3
+       uses: actions/checkout@v2
 # README tests
      - run: cryptol -e -c ":m README" -c ":prove"
 # Interpreter lab tests
