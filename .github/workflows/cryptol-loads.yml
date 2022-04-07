@@ -4,7 +4,8 @@ on: [push]
 
 jobs:
   build:
-    runs-on: ghcr.io/weaversa/cryptol-course:2.12
+    runs-on: ubuntu-latest
+    container: ghcr.io/weaversa/cryptol-course:2.12
     steps:
 # README tests
      - run: cryptol -e -c ":m README" -c ":prove"
