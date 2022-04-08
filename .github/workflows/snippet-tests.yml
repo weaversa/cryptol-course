@@ -1,4 +1,4 @@
-name: Cryptol Loads
+name: Snippet Tests
 
 on: [push]
 
