@@ -8,6 +8,9 @@ jobs:
     container:
       image: ghcr.io/weaversa/cryptol-course:2.12
       options: --user root
+    defaults:
+      run:
+        shell: bash
     steps:
      - name: Checkout
        uses: actions/checkout@v2
