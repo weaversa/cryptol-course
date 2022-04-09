@@ -2,7 +2,9 @@
 # https://hub.docker.com/repository/docker/cryptolcourse/dev
 # To use this Dockerfile directly, uncomment the appropriate line in
 # devcontainer.json
-FROM debian:buster
+# FROM debian:buster
+FROM ubuntu:latest
+RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
 RUN apt-get update \
     && apt-get install -y curl make libgmp-dev gperf autoconf clang wget unzip vim emacs-nox git curl dos2unix \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
