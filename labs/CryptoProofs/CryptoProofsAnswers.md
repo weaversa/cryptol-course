@@ -213,7 +213,8 @@ labs::CryptoProofs::CryptoProofsAnswers> :s prover=any
 >labs::CryptoProofs::CryptoProofsAnswers> :sat \pt -> DES.encrypt known_key pt == known_ct
 >Satisfiable
 >(\pt -> DES.encrypt known_key pt == known_ct)
->  0x70617373776f7264 = True
+>  0x70617373776f7264
+>  = True
 >(Total Elapsed Time: 0.348s, using "Yices")
 >```
 
@@ -248,8 +249,9 @@ provided: `0x1234567890ab`.
 >labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct /\ take key == 0x1234567890ab
 >Satisfiable
 >(\key -> DES.encrypt key
->                     matched_pt == matched_ct /\ take key == 0x1234567890ab)
->  0x1234567890ab1236 = True
+>   matched_pt == matched_ct /\ take key == 0x1234567890ab)
+>  0x1234567890ab1236
+>  = True
 >(Total Elapsed Time: 4.496s, using Z3)
 
 ### 2.2 Proof of Inversion
@@ -331,10 +333,10 @@ normal functions! For example: `\x y z -> x+y+z`
 >labs::CryptoProofs::CryptoProofsAnswers> :s prover=abc
 >labs::CryptoProofs::CryptoProofsAnswers> :prove \key pt -> DES.decrypt key (DES.encrypt key pt) == pt
 >Q.E.D.
->(Total Elapsed Time: 3.909s, using "ABC")
+>(Total Elapsed Time: 0.565s, using "ABC")
 >labs::CryptoProofs::CryptoProofsAnswers> :prove \key ct -> DES.encrypt key (DES.decrypt key ct) == ct
 >Q.E.D.
->(Total Elapsed Time: 3.582s, using "ABC")
+>(Total Elapsed Time: 0.556s, using "ABC")
 >```
 
 ### 2.3 Proof of Injectivity
