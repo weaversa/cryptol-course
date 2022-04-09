@@ -14,6 +14,7 @@ COPY --from=ghcr.io/galoisinc/cryptol:2.12.0 /usr/local/bin /usr/local/bin
 # Get latest what4-solvers compiled for ubuntu
 RUN wget https://github.com/GaloisInc/what4-solvers/releases/download/snapshot-20220131/ubuntu-latest-bin.zip
 RUN unzip -o ubuntu-latest-bin.zip -d /usr/local/bin && rm -rf ubuntu-latest-bin.zip
+RUN chmod a+x /usr/local/bin/*
 
 RUN useradd -m -p '' cryptol && chown -R cryptol:cryptol /home/cryptol
 USER cryptol

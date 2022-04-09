@@ -157,11 +157,11 @@ square : Integer -> Integer
 square x = x * x
 ```
 
-
 Now we can reverse it from the REPL. Let's use the solver to find a
 square root using only a squaring function!
 
 ```Xcryptol-session
+labs::CryptoProofs::CryptoProofs> :s prover=z3
 labs::CryptoProofs::CryptoProofs> :sat \x -> square x == 1764
 Satisfiable
 (\x -> square x == 1764) 42 = True
