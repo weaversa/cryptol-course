@@ -1,4 +1,4 @@
-[![Cryptol Course](https://github.com/weaversa/cryptol-course/workflows/cryptol-loads/badge.svg)](https://github.com/GaloisInc/cryptol/actions?query=workflow%3Acryptol-loads)
+[![Cryptol Course](https://github.com/weaversa/cryptol-course/workflows/cryptol-loads/badge.svg)](https://github.com/weaversa/cryptol-course/actions?query=workflow%3Acryptol-loads)
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/weaversa/cryptol-course)
 
