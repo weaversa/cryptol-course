@@ -1,7 +1,4 @@
-[![Cryptol Course](https://github.com/weaversa/cryptol-course/actions/workflows/cryptol-loads/badge.svg)](https://github.com/weaversa/cryptol-course/actions?query=workflow%3Acryptol-loads)
-
-![Cryptol Course](https://github.com/weaversa/cryptol-course/actions/workflows/cryptol-loads/badge.svg)
-
+[![Cryptol Course](https://github.com/weaversa/cryptol-course/actions/workflows/cryptol-loads.yml/badge.svg)](https://github.com/weaversa/cryptol-course/actions?query=workflow%3Acryptol-loads)
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/weaversa/cryptol-course)
 
