@@ -10,9 +10,8 @@ instance will need a couple of minutes to initialize the first time
 you click the link. If you close the Gitpod browser window, your work
 will be saved, though every time you return to the link, Gitpod will
 start a fresh workspace. To restart a previous workspace, go to
-https://gitpod.io/workspaces/. If you change the filter from Active to
-All, you will see all your recent workspaces. You can pin a workspace
-to keep it on the list of active ones.
+https://gitpod.io/workspaces/. You can also pin a workspace to keep it
+from being deleted after 14 days of inactivity.
 
 With this method, you can save files on a virtual machine and start
 and stop it at will. There isn't an easy way to transfer files from
