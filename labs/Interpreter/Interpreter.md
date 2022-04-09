@@ -88,6 +88,7 @@ hash-consing = on
 ignore-safety = off
 infLength = 5
 mono-binds = on
+path = ...
 prover = z3
 prover-stats = on
 prover-validate = off
@@ -99,6 +100,7 @@ tc-solver = z3 -smt2 -in
 tests = 100
 warnDefaulting = off
 warnShadowing = on
+warnUninterp = on
 ```
 
 The most common setting to change is `base`. The default is `base =
@@ -229,11 +231,6 @@ labs::Interpreter::Interpreter> :b
 Type Synonyms
 =============
 
-  Public
-  ------
-
-    type uint32_t = [32]
-
   From Cryptol
   ------------
 
@@ -242,7 +239,11 @@ Type Synonyms
     type lg2 n = width (max 1 n - 1)
     type String n = [n]Char
     type Word n = [n]
-    ...
+
+  From labs::Interpreter::Interpreter
+  -----------------------------------
+       
+    type uint32_t = [32]
 ```
 
 Type synonyms are helper functions used to express the type of some
@@ -377,21 +378,15 @@ will fill in the rest.
 labs::Interpreter::Interpreter> :b labs::Interpreter::Interpreter
 Type Synonyms
 =============
-
-  Public
-  ------
-
-    type uint32_t = [32]
-
+    
+  type uint32_t = [32]
+   
 Symbols
 =======
-
-  Public
-  ------
-
-    f : uint32_t -> uint32_t
-    x : uint32_t
-    y : uint32_t
+    
+  f : uint32_t -> uint32_t
+  x : uint32_t
+  y : uint32_t
 ```
 
 Here we see that this module provides one type synonym and three
@@ -424,7 +419,7 @@ cryptol-course$ cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
-version 2.10.0
+version 2.12.0
 https://cryptol.net  :? for help
 Loading module Cryptol
 ```

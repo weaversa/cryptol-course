@@ -970,9 +970,8 @@ And here is a command that tests the bound we just found, `2^^29 + 1`.
 
 ```Xcryptol-session
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, n = (2^^29 + 1)}
-KWPAE`{k = 2 ^^ 32 - 1,
-       n = (2 ^^ 29 +
-            1)} : ([128] -> [128]) -> [34359738360] -> [34359738432]
+KWPAE`{k = 2 ^^ 32 - 1, n = (2 ^^ 29 + 1)} :
+  ([128] -> [128]) -> [34359738360] -> [34359738432]
 ```
 
 Well folks, it appears we (...well, Cryptol) just found a bug (albeit

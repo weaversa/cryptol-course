@@ -418,7 +418,7 @@ iterative process. For instance, we **could** find a list of partial
 sums from the sequence `[1..10]` as follows:
 
 ```Xcryptol-session
-labs::KeyWrapping::KeyWrapping> sums where sums = [0] # [ x + partial | x <- [1..10] | partial <- sums]
+labs::KeyWrapping::KeyWrapping> sums where sums = [0] # [ x + partial | x <- [1..10] | partial <- sums ]
 Showing a specific instance of polymorphic result:
   * Using 'Integer' for type argument 'a' of 'Cryptol::fromTo'
 [0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55]
@@ -948,9 +948,8 @@ And here is a command that tests the bound we just found, `2^^29 + 1`.
 
 ```Xcryptol-session
 labs::KeyWrapping::KeyWrappingAnswers> :t KWPAE`{k = 2^^32 - 1, n = (2^^29 + 1)}
-KWPAE`{k = 2 ^^ 32 - 1,
-       n = (2 ^^ 29 +
-            1)} : ([128] -> [128]) -> [34359738360] -> [34359738432]
+KWPAE`{k = 2 ^^ 32 - 1, n = (2 ^^ 29 + 1)} :
+  ([128] -> [128]) -> [34359738360] -> [34359738432]
 ```
 
 Well folks, it appears we (...well, Cryptol) just found a bug (albeit

@@ -8,8 +8,16 @@ track of this course (we are currently missing support for
 SAW). Simply click the link below to start. Your personal Gitpod
 instance will need a couple of minutes to initialize the first time
 you click the link. If you close the Gitpod browser window, your work
-will be saved. To continue where you left off, just click the link
-again at some later date.
+will be saved, though every time you return to the link, Gitpod will
+start a fresh workspace. To restart a previous workspace, go to
+https://gitpod.io/workspaces/. If you change the filter from Active to
+All, you will see all your recent workspaces. You can pin a workspace
+to keep it on the list of active ones.
+
+With this method, you can save files on a virtual machine and start
+and stop it at will. There isn't an easy way to transfer files from
+the virtual machine to your own computer, but you can simply copy text
+from the editor in the browser and paste it anywhere you want.
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/weaversa/cryptol-course)
 
@@ -146,64 +154,25 @@ The Cryptol and *optional* SAW docker images can be downloaded by
 issuing the following Docker commands in your computer's terminal.
 
 ```
-$ docker pull cryptolcourse/cryptol
+$ docker pull ghcr.io/galoisinc/cryptol:2.12.0
 ...
-$ docker pull cryptolcourse/saw
+$ docker pull ghcr.io/galoisinc/saw:0.9
 ...
 ```
 
 You should now test your installation by running Cryptol. Instructions
 can be found by scrolling down to the "Running Cryptol" section.
 
-### Option 2: Homebrew
-
-[Homebrew](https://brew.sh) is a package manager for MacOS, Linux, and
-Windows Subsystem for Linux. Instructions for installing Homebrew can
-be found on [Homebrew's website](https://brew.sh), and consist of
-pasting a simple command into a shell prompt.
-
-Once Homebrew is installed, Cryptol (along with its `z3` dependency)
-can be installed via:
-
-```
-brew update && brew install cryptol
-```
-
-Unfortunately, SAW is not available via Homebrew.
-
-You should now test your installation by running Cryptol. Instructions
-can be found by scrolling down to the "Running Cryptol" section.
-
-### Option 3: Downloading pre-built Cryptol and SAW binaries
+### Option 2: Downloading pre-built Cryptol and SAW binaries
 
 #### Downloading Cryptol and SAW
 
 Galois provides releases of Cryptol at
 https://cryptol.net/downloads.html and releases of SAW at
-https://saw.galois.com/downloads.html. For Linux variants, Cryptol
-comes bundled with SAW, so you will only need to install SAW to get
-both tools. *(Note that the Ubuntu files indicate Ubuntu14.04, but
-they work on later versions of Ubuntu as well.)*
+https://saw.galois.com/downloads.html.
 
 The `bin` directory (containing `cryptol` and/or `saw`) of the archive
 you downloaded should be placed in your system path.
-
-For CentOS, Ubuntu, or MacOS, the whole process would look something
-like (depending on the which OS variant you have):
-
-```
-$ curl -fsSL https://github.com/GaloisInc/saw-script/releases/download/v0.5/saw-0.5-Ubuntu14.04-64.tar.gz | tar -xz
-$ export PATH=$(pwd)/saw-0.5-Ubuntu14.04-64/bin:${PATH}
-```
-
-*If you are running Windows 10, or you _only_ want Cryptol, you can
-find an installer at https://cryptol.net/downloads.html. Note that
-these instructions do not currently provide any details on how to
-install Cryptol on Windows 10, though the installer is self
-explanatory.*
-
-*Prebuilt SAW binaries for CentOS, Ubuntu, and MacOS can be found
-here: https://saw.galois.com/*
 
 #### Downloading Z3
 
@@ -218,19 +187,6 @@ source without much, if any, trouble. The source is available at
 https://github.com/Z3Prover/z3.  The base directory (containing `z3`
 and more) of the zip file you download or built should be placed in
 your system path.
-
-For CentOS, Ubuntu, or MacOS, the whole process would look something
-like (depending on which OS build and version you download):
-
-```
-$ curl -fsSL https://github.com/Z3Prover/z3/releases/download/z3-4.8.8/z3-4.8.8-x64-osx-10.14.6.zip -o z3-4.8.8-x64-osx-10.14.6.zip
-$ unzip -j z3-4.8.8-x64-osx-10.14.6.zip -d z3-4.8.8
-$ export PATH=$(pwd)/z3-4.8.8:${PATH}
-```
-
-It may behoove you at this point to add these paths to your user
-profile by adding an `export PATH=...` line to your `.bashrc`,
-`.profile`, etc. file to ensure future access to the tools.
 
 You should now test your installation by running Cryptol. Instructions
 can be found by scrolling down to the "Running Cryptol" section.
@@ -276,7 +232,7 @@ is used by both Cryptol and SAW.
 ### Using Docker on Linux and MacOS
 
 ```
-.../cryptol-course> docker run --rm -it --read-only --mount type=bind,src=$(pwd),dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course cryptolcourse/cryptol
+$ docker run --rm -it --read-only --mount type=bind,src=$(pwd),dst=$(pwd) --workdir=$(pwd) --user=$(id -u):$(id -g) --env TERM=dumb --env CRYPTOLPATH=$(pwd) ghcr.io/galoisinc/cryptol:2.12.0 +RTS -N -RTS --no-call-stacks $*
     ...
 Loading module Cryptol
 ```
@@ -291,7 +247,7 @@ labs::Demos::Cryptol::OneTimePad>
 ### Using Docker on Windows 10
 
 ```
-...\cryptol-course> docker run --rm -it --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course cryptolcourse/cryptol
+...\cryptol-course> docker run --rm -it --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course ghcr.io/galoisinc/cryptol:2.12.0
     ...
 Loading module Cryptol
 ```
