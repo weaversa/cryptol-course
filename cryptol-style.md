@@ -26,7 +26,7 @@ with *4 spaces*. Indent the `where` keyword two spaces to set it apart
 from the rest of the code and indent the definitions in a `where`
 clause 2 spaces. Some examples:
 
-```Xcryptol
+```cryptol
 sayHello : {a} (fin a) => [a][8] -> [a+7][8]
 sayHello name = greeting
   where
@@ -64,7 +64,7 @@ The `:` should always be surrounded by a single space on either
 side. This aligns type definitions with value definitions (where the
 `=` is also surrounded by a single space on either side). For example,
 
-```Xcryptol
+```cryptol
 a : [32]
 a = 10
 b : [4][32]
@@ -86,7 +86,7 @@ func _ = undefined
 
 `func` should be:
 
-```Xcryptol
+```cryptol
 func :
    {a, b}
    (fin a, fin b) =>
@@ -100,7 +100,7 @@ The basecase for `=` should be surrounded by a single space on either
 side. This aligns value definitions with type definitions (where the
 `:` is also surrounded by a single space on either side). For example,
 
-```Xcryptol
+```cryptol
 fish : [32]
 fish = 10
 ```
@@ -108,7 +108,7 @@ fish = 10
 When multiple definitions are in the same where clause, align the
 `=` with the longest definition. For example,
 
-```Xcryptol
+```cryptol
 horse    : [4][32]
 horse    = [1, 2, 3, 4]
 
@@ -118,7 +118,7 @@ elephant = [False, True]
 
 Format records as follows:
 
-```Xcryptol
+```cryptol
 Person :
     { firstName : String 10
     , lastName  : String 10
@@ -158,7 +158,7 @@ directions = [ North
 Shortcircuit logical operators are preferred to if-then-else in
 properties. For example,
 
-```Xcryptol
+```cryptol
 property myProperty x =
     x != 0 ==> (100/x) <= 100
 ```
@@ -184,7 +184,7 @@ foo = if ...
 
 The same rule applies in nested where clauses:
 
-```Xcryptol
+```cryptol
 foo x y = z
   where
     z = if x == 0x0000
@@ -229,7 +229,7 @@ it applies to and starts on a new line with `/**`, followed by any
 number of lines (preferably starting with ` *`) and ending with the
 line ` */`.
 
-```Xcryptol
+```cryptol
 /**
  * Here is a docstring comment for the function named foo.
  * This comment will appear in the Cryptol interpreter
@@ -259,7 +259,7 @@ good practice provided it does not become too verbose.
 
 Separate end-of-line comments from the code using two spaces.
 
-```Xcryptol
+```cryptol
 modp : [32] -> [32]
 modp n = n % p
   where
