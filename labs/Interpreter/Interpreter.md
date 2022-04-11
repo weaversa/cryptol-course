@@ -65,9 +65,9 @@ directory `labs/Interpreter`.
 
 *(Note: you do not need to enter the `module` instruction into the
 interpreter; the previous `:m ...` command loaded this literate
-Cryptol file automatically.  In general, you should run `Xcryptol
-session` commands in the interpreter and leave `cryptol` code alone to
-be parsed by `:m ...`.)*
+Cryptol file automatically.  In general, you should run 
+`Xcryptol-session` commands in the interpreter and leave `cryptol`
+code alone to be parsed by `:m ...`.)*
 
 # Using the Cryptol interpreter
 
@@ -413,7 +413,7 @@ what directory Cryptol is started in. To set the CRYPTOLPATH variable
 (in Linux) such that we can access the labs and specs for this class,
 do this:
 
-```Xcryptol shell
+```sh
 $ export CRYPTOLPATH=<path-to-cryptol-course>
 cryptol-course$ cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
@@ -444,7 +444,7 @@ an environment variable called `EDITOR`. For example, if in a Linux
 like environment, the following command will change the default to
 [Emacs](https://www.gnu.org/software/emacs/).
 
-```Xcryptol shell
+```sh
 $ export EDITOR="emacs -nw"
 ```
 
@@ -454,8 +454,7 @@ Interpreter commands can be issued directly from the command line, or
 from a batch file. For example, here we issue some commands from the
 command line using the interpreter's `-c` flag:
 
-```Xcryptol shell
-Loading module Cryptol
+```sh
 $ cryptol -c ":m labs::Interpreter::Interpreter" -c ":s base=10" -c "x + 2"
 Loading module Cryptol
 Loading module labs::Interpreter::Interpreter
@@ -465,7 +464,7 @@ Loading module labs::Interpreter::Interpreter
 And here we issue the same commands by running the `test.sry` batch
 file using the interpreter's `-b` flag:
 
-```Xcryptol shell
+```sh
 $ cat labs/Interpreter/test.sry
 :m labs::Interpreter::Interpreter
 :s base=10
@@ -480,7 +479,7 @@ Loading module labs::Interpreter::Interpreter
 
 The last few items covered here (and more) can be found querying Cryptol's usage options via:
 
-```Xcryptol shell
+```sh
 $ cryptol --help
 Usage: cryptol [OPTIONS]
   -b FILE     --batch=FILE             run the script provided and exit
