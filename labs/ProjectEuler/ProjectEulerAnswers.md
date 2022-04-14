@@ -220,9 +220,9 @@ property doublepalindrome x l =
 ```
 
 ```Xcryptol-session
-labs::ProjectEuler::ProjectEulerAnswers> :s prover=z3
 labs::ProjectEuler::ProjectEulerAnswers> :s base=10
 labs::ProjectEuler::ProjectEulerAnswers> :s satNum=all
+labs::ProjectEuler::ProjectEulerAnswers> :s prover=z3
 labs::ProjectEuler::ProjectEulerAnswers> :sat doublepalindrome`{3, 9}
 Satisfiable
 doublepalindrome`{3, 9} 313 [3, 1, 3] = True
@@ -338,6 +338,7 @@ property productdigits n ls =
 ```
 
 ```Xcryptol-session
+labs::ProjectEuler::ProjectEulerAnswers> :s satNum=all
 labs::ProjectEuler::ProjectEulerAnswers> :sat productdigits`{6, [32]}
 Satisfiable
 productdigits`{6, [32]}
@@ -350,6 +351,7 @@ productdigits`{6, [32]}
   [[1, 4, 2, 9, 8, 5, 7], [2, 8, 5, 9, 7, 1, 4],
    [4, 2, 8, 9, 5, 7, 1], [5, 7, 1, 9, 4, 2, 8],
    [7, 1, 4, 9, 2, 8, 5], [8, 5, 7, 9, 1, 4, 2]] = True
+Models Found: 2
 (Total Elapsed Time: 1.658s, using "Z3")
 ```
 
@@ -434,10 +436,12 @@ decrypt s key = s ^ (take ks)
 
 ```Xcryptol-session
 labs::ProjectEuler::ProjectEulerAnswers> :s ascii=on
+labs::ProjectEuler::ProjectEulerAnswers> :s satNum=all
 labs::ProjectEuler::ProjectEulerAnswers> :sat XORtowords cipher1
 Satisfiable
 XORtowords cipher1 "abe" = True
 XORtowords cipher1 "aba" = True
+Models Found: 2
 (Total Elapsed Time: 1.594s, using "Z3")
 labs::ProjectEuler::ProjectEulerAnswers> decrypt cipher1 "abe"
 "Four score and seven years ago our fathers brought forth on this continent, a new nation, conceived in Liberty, and dedicated to the proposition that all men are created equal.  Now we are engaged in a great civil war, testing whether that nation, or any nation so conceived and so dedicated, can long endure. We are met on a great battle-field of that war. We have come to dedicate a portion of that field, as a final resting place for those who here gave their lives that that nation might live. It is altogether fitting and proper that we should do this.  But, in a larger sense, we can not dedicate-we can not consecrate-we can not hallow-this ground. The brave men, living and dead, who struggled here, have consecrated it, far above our poor power to add or detract. The world will little note, nor long remember what we say here, but it can never forget what they did here. It is for us the living, rather, to be dedicated here to the unfinished work which they who fought here have thus far so nobly advanced. It is rather for us to be here dedicated to the great task remaining before us-that from these honored dead we take increased devotion to that cause for which they gave the last full measure of devotion-that we here highly resolve that these dead shall not have died in vain-that this nation, under God, shall have a new birth of freedom-and that government of the people, by the people, for the people, shall not perish from the earth."
@@ -474,6 +478,7 @@ passcode l = [ loop l kl != 0 | kl <- keylog ] == ~0
 
 ```Xcryptol-session
 labs::ProjectEuler::ProjectEulerAnswers> :s base=10
+labs::ProjectEuler::ProjectEulerAnswers> :s satNum=1
 labs::ProjectEuler::ProjectEulerAnswers> :sat passcode`{1}
 Unsatisfiable
 (Total Elapsed Time: 0.024s, using "Z3")
@@ -510,6 +515,7 @@ passcode`{8} [7, 3, 1, 6, 2, 8, 9, 0] = True
 > What about five-digit numbers? Other numbers of digits?
 
 ```Xcryptol-session
+labs::ProjectEuler::ProjectEulerAnswers> :s satNum=1
 labs::ProjectEuler::ProjectEulerAnswers> :sat \(x : [32]) -> x > 999 /\ x ^^ 2 % 10000 == x
 Satisfiable
 (\(x : [32]) -> x > 999 /\ x ^^ 2 % 10000 == x) 9376 = True
@@ -527,6 +533,7 @@ squaredrop n l =
 ```
 
 ```Xcryptol-session
+labs::ProjectEuler::ProjectEulerAnswers> :s satNum=1
 labs::ProjectEuler::ProjectEulerAnswers> :sat squaredrop`{8}
 Satisfiable
 squaredrop`{8} 9376 [8, 7, 9, 0, 9, 3, 7, 6] = True
