@@ -220,6 +220,7 @@ property doublepalindrome x l =
 ```
 
 ```Xcryptol-session
+labs::ProjectEuler::ProjectEulerAnswers> :s prover=z3
 labs::ProjectEuler::ProjectEulerAnswers> :s base=10
 labs::ProjectEuler::ProjectEulerAnswers> :s satNum=all
 labs::ProjectEuler::ProjectEulerAnswers> :sat doublepalindrome`{3, 9}
