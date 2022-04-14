@@ -331,11 +331,11 @@ checks".
 # References
 
 [1] Cyclic redundancy check. In Wikipedia. Retrieved June 7th, 2020,
-from https://en.wikipedia.org/wiki/Cyclic_redundancy_check.
+from [Wikipedia - Cyclic Redundancy Check](https://en.wikipedia.org/wiki/Cyclic_redundancy_check.)
 
-[2] Mathematics of cyclic redundancy checks. In Wikipedia. Retrieved June 7th, 2020, from https://en.wikipedia.org/wiki/Mathematics_of_cyclic_redundancy_checks
+[2] Mathematics of cyclic redundancy checks. In Wikipedia. Retrieved June 7th, 2020, from [Wikipedia - Mathematics of Cyclic Reundancy Checks](https://en.wikipedia.org/wiki/Mathematics_of_cyclic_redundancy_checks)
 
-[3] CRC Calculator. Bastian Molkenthin. Retrieved June 7th, 2020, from http://www.sunshine2k.de/coding/javascript/crc/crc_js.html
+[3] CRC Calculator. Bastian Molkenthin. Retrieved June 7th, 2020, from [CRC Calculator](http://www.sunshine2k.de/coding/javascript/crc/crc_js.html)
 
 # Solicitation
 
