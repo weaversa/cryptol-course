@@ -222,9 +222,9 @@ permute_permutes pi seq =
 labs::Transposition::TranspositionAnswers> :prove permute_permutes`{4, Char, Integer}
 Q.E.D.
 (Total Elapsed Time: 0.157s, using "Z3")
-labs::Transposition::TranspositionAnswers> :prove permute_permutes`{6, Char, Integer}
+labs::Transposition::TranspositionAnswers> :prove permute_permutes`{5, Char, Integer}
 Q.E.D.
-(Total Elapsed Time: 22.503s, using "Z3")
+(Total Elapsed Time: 1.657s, using "Z3")
 labs::Transposition::TranspositionAnswers> :check permute_permutes`{8, [2]Char, Integer}
 Using random testing.
 Passed 100 tests.
@@ -266,9 +266,9 @@ inverse_inverts pi seq =
 labs::Transposition::TranspositionAnswers> :prove inverse_inverts`{4, Char, Integer}
 Q.E.D.
 (Total Elapsed Time: 0.022s, using "Z3")
-labs::Transposition::TranspositionAnswers> :prove inverse_inverts`{8, Char, Integer}
+labs::Transposition::TranspositionAnswers> :prove inverse_inverts`{7, Char, Integer}
 Q.E.D.
-(Total Elapsed Time: 3.038s, using "Z3")
+(Total Elapsed Time: 0.871s, using "Z3")
 labs::Transposition::TranspositionAnswers> :check inverse_inverts`{128, [2]Char, Integer}
 Using random testing.
 Passed 100 tests.
@@ -435,13 +435,13 @@ Q.E.D.
 (Total Elapsed Time: 0.304s, using "Z3")
 labs::Transposition::TranspositionAnswers> :prove swap_equiv`{4096, Char, Integer}
 Q.E.D.
-(Total Elapsed Time: 6.001s, using "Z3")
+(Total Elapsed Time: 28.616s, using "Z3")
 labs::Transposition::TranspositionAnswers> :prove swap_correct`{32, Char, Integer}
 Q.E.D.
 (Total Elapsed Time: 0.049s, using "Z3")
 labs::Transposition::TranspositionAnswers> :prove swap_correct`{256, Char, Integer}
 Q.E.D.
-(Total Elapsed Time: 3.686s, using "Z3")
+(Total Elapsed Time: 25.205s, using "Z3")
 labs::Transposition::TranspositionAnswers> :check swap_correct`{4096, Char, Integer}
 Using random testing.
 Passed 100 tests.
@@ -553,7 +553,7 @@ Q.E.D.
 (Total Elapsed Time: 0.242s, using "Z3")
 labs::Transposition::TranspositionAnswers> :prove partition_rearranges`{16}
 Q.E.D.
-(Total Elapsed Time: 4.377s, using "Z3")
+(Total Elapsed Time: 1.430s, using "Z3")
 labs::Transposition::TranspositionAnswers> :check partition_rearranges`{512}
 Using random testing.
 Passed 100 tests.
@@ -617,7 +617,7 @@ Q.E.D.
 (Total Elapsed Time: 0.477s, using "Z3")
 labs::Transposition::TranspositionAnswers> :prove rearrange_equiv`{12}
 Q.E.D.
-(Total Elapsed Time: 10.214s, using "Z3")
+(Total Elapsed Time: 35.182s, using "Z3")
 labs::Transposition::TranspositionAnswers> :check rearrange_equiv`{128}
 Using random testing.
 Passed 100 tests.
@@ -662,7 +662,7 @@ Q.E.D.
 (Total Elapsed Time: 0.040s, using "Z3")
 labs::Transposition::TranspositionAnswers> :prove partition'_rearranges`{16}
 Q.E.D.
-(Total Elapsed Time: 12.524s, using "Z3")
+(Total Elapsed Time: 8.147s, using "Z3")
 labs::Transposition::TranspositionAnswers> :check partition'_rearranges`{256}
 Using random testing.
 Passed 100 tests.
@@ -732,7 +732,7 @@ Q.E.D.
 (Total Elapsed Time: 0.031s, using "Z3")
 labs::Transposition::TranspositionAnswers> :prove unpad_unpads`{8, 4}
 Q.E.D.
-(Total Elapsed Time: 7.033s, using "Z3")
+(Total Elapsed Time: 1.881s, using "Z3")
 labs::Transposition::TranspositionAnswers> :check unpad_unpads`{25, 7}
 Using random testing.
 Passed 100 tests.
