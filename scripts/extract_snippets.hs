@@ -14,12 +14,12 @@ import Text.Regex.TDFA ((=~))
 import System.Directory (createDirectoryIfMissing)
 
 
--- | Extract ```Xcryptol session code fences from Markdown
+-- | Extract ```Xcryptol-session code fences from Markdown
 xCryptolSessionBlocks :: Node -> [Text]
 xCryptolSessionBlocks (Node _ nodeType children) =
     case nodeType of
         CODE_BLOCK info text ->
-            (if ((pack "Xcryptol session") == info) then [text] else [])
+            (if ((pack "Xcryptol-session") == info) then [text] else [])
             ++ childBlocks
         otherwise -> childBlocks
   where
@@ -39,7 +39,7 @@ data SnippetLine =
     -- | `Loading ...` (`:m` response)
   | Response Text Bool
 
--- | Parse a line from an interactive/batch Cryptol session snippet
+-- | Parse a line from an interactive/batch cryptol-session snippet
 -- | Lines beginning with alphanumeric characters delimited by `::` 
 -- | and followed by `>` with no spaces are probably prompt commands.
 lineSnippet :: Text -> SnippetLine
