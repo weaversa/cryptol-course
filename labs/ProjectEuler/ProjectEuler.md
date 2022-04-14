@@ -163,10 +163,11 @@ hand at.
 [factorions](https://en.wikipedia.org/wiki/Factorion))
 
 *Hints*: 
- * the factorial function is usually defined recursively, but
- that tends to make SAT solving difficult. Since you only need to
- calculate the factorial of the numbers 0-9, make your function just
- do a case by case calculation.
+ * the factorial function is usually defined recursively, but that
+ tends to make SAT solving difficult. Since you only need to calculate
+ the factorial of the numbers 0-9, make your function just do a case
+ by case calculation. Also, the solver `yices` seems to be the best
+ here.
  * To get the digital representation of
  the number, create a function which takes in a number and a list of
  numbers and returns `True` exactly when the list is the base 10

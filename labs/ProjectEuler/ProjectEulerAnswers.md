@@ -94,11 +94,12 @@ property pythagoreantriple a b c =
 [factorions](https://en.wikipedia.org/wiki/Factorion))
 
 *Hints*: 
- * the factorial function is usually defined recursively, but
- that tends to make SAT solving difficult. Since you only need to
- calculate the factorial of the numbers 0-9, make your function just
- do a case by case calculation. 
- * To get the digital representation of
+ * the factorial function is usually defined recursively, but that
+ tends to make SAT solving difficult. Since you only need to calculate
+ the factorial of the numbers 0-9, make your function just do a case
+ by case calculation. Also, the solver `yices` seems to be the best
+ here.
+  * To get the digital representation of
  the number, create a function which takes in a number and a list of
  numbers and returns `True` exactly when the list is the base 10
  representation. Finally, it can be shown that the most number of
@@ -140,29 +141,43 @@ property factorionprop n l =
 ```
 
 ```Xcryptol-session
+labs::ProjectEuler::ProjectEulerAnswers> :s prover=yices
 labs::ProjectEuler::ProjectEulerAnswers> :s satNum=all
 labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [1]Integer -> _
 Satisfiable
 (factorionprop : _ -> [1]Integer -> _) 2 [2] = True
 (factorionprop : _ -> [1]Integer -> _) 1 [1] = True
-(Total Elapsed Time: 0.029s, using "Z3")
+Models found: 2
+(Total Elapsed Time: 0.029s, using "Yices")
 labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [2]Integer -> _
 Unsatisfiable
-(Total Elapsed Time: 0.038s, using "Z3")
+(Total Elapsed Time: 0.038s, using "Yices")
 labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [3]Integer -> _
 Satisfiable
 (factorionprop : _ -> [3]Integer -> _) 145 [1, 4, 5] = True
-(Total Elapsed Time: 0.048s, using "Z3")
+(Total Elapsed Time: 0.048s, using "Yices")
 labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [4]Integer -> _
 Unsatisfiable
-(Total Elapsed Time: 0.136s, using "Z3")
+(Total Elapsed Time: 0.136s, using "Yices")
 labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [5]Integer -> _
 Satisfiable
-(factorionprop : _ -> [5]Integer -> _) 40585 [4, 0, 5, 8, 5] = True
-(Total Elapsed Time: 0.404s, using "Z3")
+(factorionprop : _ -> [5]Integer -> _)
+  40585
+  [4, 0, 5, 8, 5]
+  = True
+(Total Elapsed Time: 0.075s, using "Yices")
 labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [6]Integer -> _
 Unsatisfiable
-(Total Elapsed Time: 53.026s, using "Z3")
+(Total Elapsed Time: 0.185s, using "Yices")
+labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [7]Integer -> _
+Unsatisfiable
+(Total Elapsed Time: 0.088s, using "Yices")
+labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [8]Integer -> _
+Unsatisfiable
+(Total Elapsed Time: 0.059s, using "Yices")
+labs::ProjectEuler::ProjectEulerAnswers> :sat factorionprop : _ -> [9]Integer -> _
+Unsatisfiable
+(Total Elapsed Time: 0.063s, using "Yices")
 ```
 
 
