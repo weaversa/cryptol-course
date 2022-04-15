@@ -250,7 +250,7 @@ for any given `key`.  Do not mention `pt`s in your proof command.
 Meditate on the nature of lambda and the (f)utility of names.
 
 ```Xcryptol-session
-labs::Transposition::CommonPropertiesAnswers> :s prover=boolector
+labs::Transposition::CommonPropertiesAnswers> :s prover=w4-boolector
 labs::Transposition::CommonPropertiesAnswers> :prove \key -> injective (DES.encrypt key)
 Q.E.D.
 (Total Elapsed Time: 48.986s, using "Boolector")
