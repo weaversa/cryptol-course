@@ -87,7 +87,7 @@ run_tests() {
         dos2unix -q -n "$STDOUT" "$TMP" && mv "$TMP" "$STDOUT"
 
         log "$0:   Logging \"$CRYPTOL_ALIAS\" in batch mode running $ICRY to $ACTUAL ..."
-        $CRYPTOL_ALIAS -b $CRYPTOL_MNT$ICRY > $ACTUAL
+        $CRYPTOL_ALIAS -b $CRYPTOL_MNT$ICRY | tee $ACTUAL
         log "$0:   Removing Windows carriage returns in $ACTUAL..."
         dos2unix -q -n $ACTUAL $TMP && mv $TMP $ACTUAL
 
