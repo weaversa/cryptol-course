@@ -1,6 +1,6 @@
 {
     "name": "Cryptol Course Dev",
-    //"image": "cryptolcourse/dev",
+    //"image": "ghcr.io/weaversa/cryptol-course:2.12",
     "dockerFile": "Dockerfile",
     "runArgs": [],
 
