@@ -1088,7 +1088,7 @@ locating the current module in the course repository on
 
 ```cryptol
 // Uncomment and fill in
-//zeroPrepend : {} (?) => ? -> ?
+//zeroPrepend : {} () => _ -> _
 zeroPrepend input = undefined
 ```
 
