@@ -92,8 +92,14 @@ labs::Transposition::ScytaleAnswers> scytale`{3} "ATTACKATDAWN"
 "ACDTKATAWATN"
 labs::Transposition::ScytaleAnswers> scytale`{3} "ATTACKDAWN"
 
-[error] at <interactive>:1:13--1:25:
-  10 != 3 * anything
+[error] at <interactive>:6:13--6:25:
+  • Unsolvable constraint:
+      3 * ?m == 10
+        arising from
+        matching types
+        at <interactive>:6:13--6:25
+  where
+  ?m is type argument 'row' of 'scytale' at <interactive>:6:1--6:8
 ```
 
 **EXERCISE**: Can we account for uneven message lengths and define a 
