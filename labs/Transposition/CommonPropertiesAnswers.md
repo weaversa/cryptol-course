@@ -305,7 +305,7 @@ parity; alternatively, try to prove that no such collision exists.
 consequences...)  Feel free to go crazy with lambda. Ponder the 
 abject hopelessness of classical crypto in a post-quantum world...
 
-```ignore
+```ignore-cryptol-session
 labs::Transposition::CommonPropertiesAnswers> :s prover=any
 labs::Transposition::CommonPropertiesAnswers> :sat \key key_ pt -> DESFixParity key != DESFixParity key_ /\ DES.encrypt key pt == DES.encrypt key_ pt
 ...
