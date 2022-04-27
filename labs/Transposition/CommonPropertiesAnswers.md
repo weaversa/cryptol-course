@@ -302,10 +302,10 @@ Q.E.D.
 **EXERCISE**: Finally, try to find a collision with keys of distinct 
 parity; alternatively, try to prove that no such collision exists.  
 (This wasn't in `CryptoProofs`, but let's be extra and observe the 
-consequences...)  Feel free to go crazy with lambda.  Ponder the 
+consequences...)  Feel free to go crazy with lambda. Ponder the 
 abject hopelessness of classical crypto in a post-quantum world...
 
-```Xcryptol-session
+```Xignore-cryptol-session
 labs::Transposition::CommonPropertiesAnswers> :s prover=any
 labs::Transposition::CommonPropertiesAnswers> :sat \key key_ pt -> DESFixParity key != DESFixParity key_ /\ DES.encrypt key pt == DES.encrypt key_ pt
 ...
