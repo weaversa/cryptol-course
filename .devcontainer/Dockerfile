@@ -6,26 +6,10 @@
 FROM ubuntu:latest
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
 RUN apt-get update \
-    && apt-get install -y curl make cmake libgmp-dev gperf autoconf gcc clang wget unzip vim emacs-nox git curl dos2unix bash-completion \
+    && apt-get install -y curl make cmake libgmp-dev gperf autoconf gcc clang-12 wget unzip vim emacs-nox git curl dos2unix bash-completion \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
-COPY --from=ghcr.io/galoisinc/saw:0.9 /usr/local/bin /usr/local/bin
-COPY --from=ghcr.io/galoisinc/cryptol:2.12.0 /usr/local/bin /usr/local/bin
-
-# Get latest what4-solvers compiled for ubuntu
-RUN wget https://github.com/GaloisInc/what4-solvers/releases/download/snapshot-20220131/ubuntu-latest-bin.zip
-RUN unzip -o ubuntu-latest-bin.zip -d /usr/local/bin && rm -rf ubuntu-latest-bin.zip
-
-# Install slightly older Boolector
-RUN wget https://github.com/Boolector/boolector/archive/refs/tags/3.2.1.tar.gz -O boolector-3.2.1.tar.gz
-RUN tar -xvzf boolector-3.2.1.tar.gz && rm -rf boolector-3.2.1.tar.gz
-RUN cd boolector-3.2.1 \
-    && ./contrib/setup-btor2tools.sh \
-    && ./contrib/setup-lingeling.sh \
-    && ./configure.sh \
-    && cd build \
-    && make -j 4 boolector boolector-bin \
-    && cp bin/boolector /usr/local/bin/boolector
-RUN rm -rf boolector-3.2.1
+COPY --from=ghcr.io/galoisinc/saw:nightly /usr/local/bin /usr/local/bin
+COPY --from=ghcr.io/galoisinc/cryptol:nightly /usr/local/bin /usr/local/bin
 
 RUN chmod a+x /usr/local/bin/*
 
