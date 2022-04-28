@@ -20,6 +20,13 @@ COPY --from=ghcr.io/galoisinc/cryptol:nightly /usr/local/bin /usr/local/bin
 RUN wget https://github.com/GaloisInc/what4-solvers/releases/download/snapshot-20220131/ubuntu-latest-bin.zip
 RUN unzip -o ubuntu-latest-bin.zip -d /usr/local/bin && rm -rf ubuntu-latest-bin.zip
 
+# Install recent abc
+RUN git clone https://github.com/berkeley-abc/abc.git
+RUN cd abc \
+    && OPTFLAGS="-O2" ABC_USE_NO_READLINE=1 make -j 4 abc \
+    && cp abc /usr/local/bin
+RUN rm -rf abc
+
 # Install slightly older Boolector
 RUN wget https://github.com/Boolector/boolector/archive/refs/tags/3.2.1.tar.gz -O boolector-3.2.1.tar.gz
 RUN tar -xvzf boolector-3.2.1.tar.gz && rm -rf boolector-3.2.1.tar.gz
