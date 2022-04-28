@@ -11,6 +11,7 @@ RUN apt-get update \
 COPY --from=ghcr.io/galoisinc/saw:nightly /usr/local/bin /usr/local/bin
 COPY --from=ghcr.io/galoisinc/cryptol:nightly /usr/local/bin /usr/local/bin
 
+RUN ln -s /usr/bin/clang-12 /usr/bin/clang
 RUN chmod a+x /usr/local/bin/*
 
 RUN useradd -m -p '' cryptol && chown -R cryptol:cryptol /home/cryptol
