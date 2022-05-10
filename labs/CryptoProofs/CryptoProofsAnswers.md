@@ -236,7 +236,7 @@ provided: `0x1234567890ab`.
 
 > Solution:
 >
->```Xcryptol-session ci-none
+>```Xcryptol-session-ci-none
 >labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct
 >```
 > At this point, the solver hangs, unable to find a solution in any

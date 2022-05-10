@@ -1624,7 +1624,7 @@ correct by printing `Q.E.D.`. This means Cryptol has proven that your
 `R` is correct for all possible inputs (which is either `2^^96` for
 the 32-bit proof or `2^^192` for the 64-bit proof).
 
-```Xcryptol-session ci-none
+```Xcryptol-session-ci-none
 labs::Language::Basics> :prove RInverseProperty`{32}
 Q.E.D.
 (Total Elapsed Time: 0.008s, using "Z3")
