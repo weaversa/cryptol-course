@@ -2038,9 +2038,11 @@ lazyAbsMin x y = if x == 0 then 0 else min (abs x) (abs y)
 Does not produce an error when `x` is zero, regardless of the value of
 `y`. For instance:
 
-```Xcryptol-session
+```Xcryptol-session-ci-none
 labs::Language::Basics> lazyAbsMin 1 (0/0)
+```
 
+```Xcryptol-session
 division by 0
 labs::Language::Basics> lazyAbsMin 0 (0/0)
 0x00000000
