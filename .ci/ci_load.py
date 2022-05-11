@@ -1,7 +1,7 @@
 import cryptol
 import os
 
-pwd = os. getcwd()
+pwd = os.getcwd()
 
 not_cryptol = ["README.md", "INSTALL.md"]
 
