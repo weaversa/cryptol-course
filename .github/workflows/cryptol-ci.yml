@@ -3,7 +3,7 @@ name: Cryptol Checks
 on: [push]
 
 env:
-  PYTHONPATH: "$GITHUB_PATH/.ci "
+  PYTHONPATH: $GITHUB_PATH/.ci
 
 
 jobs:
