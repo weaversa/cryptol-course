@@ -375,7 +375,7 @@ able to load the `SpeckTestVectors` module also located in the `Speck`
 folder as follows and verify that you have correctly implemented the
 functions:
 
-```Xcryptol-session-ci-none
+```Xcryptol-session
 Loading module Cryptol
 Cryptol> :m labs::SimonSpeck::Speck::SpeckTestVectors
 labs::SimonSpeck::Simon::SpeckTestVectors> :prove all_speck_vectors_pass 
