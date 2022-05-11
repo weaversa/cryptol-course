@@ -8,7 +8,7 @@ env:
 
 jobs:
   ci-load:
-    runs-on: ubuntu-latest
+#    runs-on: ubuntu-latest
     container:
       image: ghcr.io/weaversa/cryptol-course:2.12
       options: --user root
@@ -22,13 +22,14 @@ jobs:
 
   ci-check:
     needs: ci-load
-    runs-on: ubuntu-latest
+#    runs-on: ubuntu-latest
     container:
       image: ghcr.io/weaversa/cryptol-course:2.12
       options: --user root
     steps:
     - name: Checkout
       uses: actions/checkout@v2
+    - run: echo $GITHUB_PATH
     - run: echo $PYTHONPATH
     # Start cryptol-remote-api server
     - run: start-cryptol-remote-api.sh
