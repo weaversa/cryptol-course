@@ -231,7 +231,7 @@ matched_ct = 0x95d07f8a72707733
 To make this solvable, try it again with the first six bytes of key
 provided: `0x1234567890ab`.
 
-```Xcryptol-session ci-none
+```Xcryptol-session-ci-none
 labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct
 ```
 
@@ -250,6 +250,7 @@ Satisfiable
   0x1234567890ab1236
   = True
 (Total Elapsed Time: 4.496s, using Z3)
+```
 
 ### 2.2 Proof of Inversion
 
