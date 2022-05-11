@@ -3,8 +3,7 @@ name: Cryptol Checks
 on: [push]
 
 env:
-  PYTHONPATH: $GITHUB_PATH/.ci
-
+  PYTHONPATH: /__w/cryptol-course/.ci
 
 jobs:
   ci-load:
@@ -29,8 +28,6 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - run: echo $GITHUB_PATH
-    - run: echo $PYTHONPATH
     # Start cryptol-remote-api server
     - run: start-cryptol-remote-api.sh
     # Run checks
