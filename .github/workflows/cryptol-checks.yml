@@ -15,5 +15,5 @@ jobs:
     - run: start-cryptol-remote-api.sh
 # Run checks
     - env:
-        PYTHONPATH: $GITHUB_PATH/.ci 
+        PYTHONPATH: "$GITHUB_PATH/.ci "
       run: find . -name "ci.py" -print0 | xargs -P 4 -n 1 -0 -I % python3 %
