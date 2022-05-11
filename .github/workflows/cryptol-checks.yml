@@ -11,9 +11,9 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - env:
-      PYTHONPATH: $GITHUB_PATH/.ci 
 # Start cryptol-remote-api server
     - run: start-cryptol-remote-api.sh
 # Run checks
-    - run: find . -name "ci.py" -print0 | xargs -P 4 -n 1 -0 -I % python3 %
+    - env:
+        PYTHONPATH: $GITHUB_PATH/.ci 
+      run: find . -name "ci.py" -print0 | xargs -P 4 -n 1 -0 -I % python3 %
