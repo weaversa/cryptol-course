@@ -1,0 +1,16 @@
+name: Cryptol Python Loads
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/weaversa/cryptol-course:2.12
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+# Start cryptol-remote-api server
+    - run: start-cryptol-remote-api.sh
+# Load all files
+    - run: python3 .ci/ci_load.py
