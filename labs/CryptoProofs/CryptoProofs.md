@@ -81,14 +81,14 @@ import specs::Primitive::Symmetric::Cipher::Block::DES
 When you loaded the `labs::CryptoProofs::CryptoProofs` module, these
 lines should have been printed:
 
-```Xcryptol-session
+```example
 Loading module Cryptol
 Loading module specs::Primitive::Symmetric::Cipher::Block::Cipher
 Loading module specs::Primitive::Symmetric::Cipher::Block::DES
 Loading module labs::CryptoProofs::CryptoProofs
 ```
 
-In reverse order: the third line says that this module has been
+In reverse order: the last line says that this module has been
 loaded.  Since it imported the DES module, Cryptol helpfully tells you
 that DES has been loaded.  Since DES imported the Cipher module,
 Cryptol tells you that too.
@@ -161,7 +161,6 @@ Now we can reverse it from the REPL. Let's use the solver to find a
 square root using only a squaring function!
 
 ```Xcryptol-session
-labs::CryptoProofs::CryptoProofs> :s prover=z3
 labs::CryptoProofs::CryptoProofs> :sat \x -> square x == 1764
 Satisfiable
 (\x -> square x == 1764) 42 = True
@@ -280,7 +279,7 @@ normal functions! For example: `\x y z -> x+y+z`
 ### 2.3 Proof of Injectivity
 
 A function for which every input generates a distinct output is
-referred to in mathematics as *injective* or *one-to-one*. Cryptol can
+referred to in mathematics as *injective* (*one-to-one*). Cryptol can
 be used to prove that a function is injective.
 
 **EXERCISE**: 2.3.1 DES Injectivity
