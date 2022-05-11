@@ -407,7 +407,7 @@ varType0 = False : [10]
 When you reload this file in the interpreter, you will see the
 following error:
 
-```Xcryptol-session
+```comment
   Type mismatch:
     Expected type: [10]
     Inferred type: Bit
@@ -638,7 +638,7 @@ funType0 a = a + 7 : [5]
 
 Upon reloading this file, we would see:
 
-```Xcryptol-session
+```comment
   Type mismatch:
     Expected type: [5] -> [5]
     Inferred type: [5]
@@ -659,7 +659,7 @@ funType0 a = a + 7 : [5]
 
 Upon reloading this file, we would see:
 
-```Xcryptol-session
+```comment
   Type mismatch:
     Expected type: 5
     Inferred type: 4
@@ -1624,7 +1624,7 @@ correct by printing `Q.E.D.`. This means Cryptol has proven that your
 `R` is correct for all possible inputs (which is either `2^^96` for
 the 32-bit proof or `2^^192` for the 64-bit proof).
 
-```Xcryptol-session ci-none
+```Xcryptol-session-ci-none
 labs::Language::Basics> :prove RInverseProperty`{32}
 Q.E.D.
 (Total Elapsed Time: 0.008s, using "Z3")
@@ -2038,9 +2038,11 @@ lazyAbsMin x y = if x == 0 then 0 else min (abs x) (abs y)
 Does not produce an error when `x` is zero, regardless of the value of
 `y`. For instance:
 
-```Xcryptol-session
+```Xcryptol-session-ci-none
 labs::Language::Basics> lazyAbsMin 1 (0/0)
+```
 
+```Xcryptol-session
 division by 0
 labs::Language::Basics> lazyAbsMin 0 (0/0)
 0x00000000

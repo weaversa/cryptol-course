@@ -299,7 +299,7 @@ than the number of seconds left before the [Sun swallows the
 Earth](https://en.wikipedia.org/wiki/Future_of_Earth). However, if
 you'd prefer to try, Cryptol's `:exhaust` is the command to use.
 
-```Xcryptol-session ci-none
+```Xcryptol-session-ci-none
 labs::Salsa20::Salsa20> 2^^256 : Integer
 115792089237316195423570985008687907853269984665640564039457584007913129639936
 labs::Salsa20::Salsa20> :exhaust quarterroundIsInjectiveProp
