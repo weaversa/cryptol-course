@@ -1,0 +1,37 @@
+name: Python Saw
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/weaversa/cryptol-course:2.12
+      options: --user root
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      # Build .bc file for Salsa20
+      - run: clang -c -g -emit-llvm labs/Demos/SAW/Salsa20/src/salsa20.c -o labs/Demos/SAW/Salsa20/salsa20.bc -Ilabs/Demos/SAW/Salsa20/include
+      - name: Archive .bc file
+        uses: actions/upload-artifact@v3
+	with:
+	  name: salsa20.bc
+	  path: labs/Demos/SAW/Salsa20/salsa20.bc
+
+  saw-prove:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/weaversa/cryptol-course:2.12
+      options: --user root
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Download Salsa20.bc
+        uses: actions/download-artifact@v3
+	with:
+	  name: salsa20.bc
+      # Start saw-remote-api server
+      - run: start-saw-remote-api.sh
+      # Run Salsa20 Python SAW Script
+      - run: python3 labs/Demos/SAW/Salsa20/proof/salsa20.py
