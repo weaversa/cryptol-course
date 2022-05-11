@@ -2,9 +2,6 @@ name: Cryptol Checks
 
 on: [push]
 
-env:
-  PYTHONPATH: /__w/cryptol-course/.ci
-
 jobs:
   ci-load:
     runs-on: ubuntu-latest
@@ -28,6 +25,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - name: set pythonpath
+        run: echo "PYTHONPATH=.ci" >> $GITHUB_ENV
       # Start cryptol-remote-api server
       - run: start-cryptol-remote-api.sh
       # Run checks
