@@ -8,7 +8,7 @@ env:
 
 jobs:
   ci-load:
-#    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     container:
       image: ghcr.io/weaversa/cryptol-course:2.12
       options: --user root
@@ -22,7 +22,7 @@ jobs:
 
   ci-check:
     needs: ci-load
-#    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     container:
       image: ghcr.io/weaversa/cryptol-course:2.12
       options: --user root
