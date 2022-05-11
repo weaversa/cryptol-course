@@ -5,16 +5,48 @@
 
 FROM ubuntu:latest
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
-RUN apt-get update \
-    && apt-get install -y curl make cmake libgmp-dev gperf autoconf build-essential clang-12 wget unzip vim emacs-nox git curl dos2unix bash-completion \
+RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y \
+    curl \
+    make \
+    cmake \
+    libgmp-dev \
+    gperf \
+    autoconf \
+    build-essential \
+    clang-12 \
+    wget \
+    unzip \
+    vim \
+    emacs-nox \
+    git \
+    curl \
+    dos2unix \
+    bash-completion \
+    bash \
+    htop \
+    man \
+    sudo \
+    python3 \
+    python3-pip \
+    ca-certificates \
+    locales \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+RUN pip3 install cryptol saw-client
 
 # Link clang
 RUN ln -s /usr/bin/clang-12 /usr/bin/clang
 RUN ln -s /usr/bin/clang++-12 /usr/bin/clang++
 
 COPY --from=ghcr.io/galoisinc/saw:nightly /usr/local/bin /usr/local/bin
+COPY --from=ghcr.io/galoisinc/saw-remote-api:nightly /usr/local/bin/saw-remote-api /usr/local/bin/saw-remote-api
+ENV SAW_SERVER_URL=http://0.0.0.0:36691
+RUN echo 'saw-remote-api http --host 0.0.0.0 --port 36691 / &' >> /usr/local/bin/start-saw-remote-api.sh
+
 COPY --from=ghcr.io/galoisinc/cryptol:nightly /usr/local/bin /usr/local/bin
+COPY --from=ghcr.io/galoisinc/cryptol-remote-api:nightly /usr/local/bin/cryptol-remote-api /usr/local/bin/cryptol-remote-api
+ENV CRYPTOL_SERVER_URL=http://0.0.0.0:36681
+RUN echo 'cryptol-remote-api http --host 0.0.0.0 --port 36681 / &' >> /usr/local/bin/start-cryptol-remote-api.sh
 
 # Get latest what4-solvers compiled for ubuntu
 RUN wget https://github.com/GaloisInc/what4-solvers/releases/download/snapshot-20220131/ubuntu-latest-bin.zip
@@ -41,10 +73,15 @@ RUN rm -rf boolector-3.2.1
 
 RUN chmod a+x /usr/local/bin/*
 
-RUN useradd -m -p '' cryptol && chown -R cryptol:cryptol /home/cryptol
+# RUN useradd -m -p '' cryptol 
+
+RUN adduser --gecos '' --disabled-password cryptol \
+    && echo "cryptol ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd \
+    && chown -R cryptol:cryptol /home/cryptol
 USER cryptol
+
 ENV LANG C.UTF-8
-RUN chsh -s /bin/bash
+RUN sudo chsh -s /bin/bash $(whoami)
 ENV SHELL=/bin/bash
 RUN echo 'export PS1="\$(pwd)> "' >> /home/cryptol/.bashrc
 
