@@ -1,0 +1,19 @@
+name: Cryptol Checks
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/weaversa/cryptol-course:2.12
+      options: --user root
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - env:
+      PYTHONPATH: $GITHUB_PATH/.ci 
+# Start cryptol-remote-api server
+    - run: start-cryptol-remote-api.sh
+# Run checks
+    - run: find . -name "ci.py" -print0 | xargs -P 4 -n 1 -0 -I % python3 %
