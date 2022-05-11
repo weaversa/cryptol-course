@@ -23,9 +23,10 @@ from the editor in the browser and paste it anywhere you want.
 
 However, if you would like to take the course locally (which involves
 installing software on your computer), you may follow the instructions
-that follow. If you decide to try the Gitpod route, it may still be a
-good idea to read through [the instructions near the end that
-demonstrate, briefly, how to run Cryptol](INSTALL.md#running-from-a-direct-install).
+below. If you decide to try the Gitpod route, it may still be a good
+idea to read through [the instructions near the end that demonstrate,
+briefly, how to run
+Cryptol](INSTALL.md#running-from-a-direct-install).
 
 # Acquiring the Cryptol course material
 
