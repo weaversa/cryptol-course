@@ -60,7 +60,7 @@ module labs::CryptoProofs::CryptoProofsAnswers where
 ```
 
 You do not need to enter the above into the interpreter; the previous 
-`:m ...` command loaded this literate Cryptol file automatically.  
+`:m ...` command loaded this literate Cryptol file automatically.
 In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
@@ -88,7 +88,7 @@ Loading module specs::Primitive::Symmetric::Cipher::Block::DES
 Loading module labs::CryptoProofs::CryptoProofsAnswers
 ```
 
-In reverse order: the third line says that this module has been
+In reverse order: the line says that this module has been
 loaded.  Since it imported the DES module, Cryptol helpfully tells you
 that DES has been loaded.  Since DES imported the Cipher module,
 Cryptol tells you that too.
@@ -157,7 +157,6 @@ square : Integer -> Integer
 square x = x * x
 ```
 
-
 Now we can reverse it from the REPL. Let's use the solver to find a
 square root using only a squaring function!
 
@@ -207,16 +206,14 @@ Or use all the installed solvers in a first-to-the-post race.
 labs::CryptoProofs::CryptoProofsAnswers> :s prover=any
 ```
 
-> Solution:
->
->```Xcryptol-session
->labs::CryptoProofs::CryptoProofsAnswers> :sat \pt -> DES.encrypt known_key pt == known_ct
->Satisfiable
->(\pt -> DES.encrypt known_key pt == known_ct)
->  0x70617373776f7264
->  = True
->(Total Elapsed Time: 0.348s, using "Yices")
->```
+```Xcryptol-session
+labs::CryptoProofs::CryptoProofsAnswers> :sat \pt -> DES.encrypt known_key pt == known_ct
+Satisfiable
+(\pt -> DES.encrypt known_key pt == known_ct)
+  0x70617373776f7264
+  = True
+(Total Elapsed Time: 0.348s, using "Yices")
+```
 
 
 **EXERCISE**: 2.1.2 Breaking DES
@@ -234,25 +231,25 @@ matched_ct = 0x95d07f8a72707733
 To make this solvable, try it again with the first six bytes of key
 provided: `0x1234567890ab`.
 
-> Solution:
->
->```Xcryptol-session ci-none
->labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct
->```
-> At this point, the solver hangs, unable to find a solution in any
-> reasonable time. This is because DES is a well-designed cryptographic
-> algorithm and is therefore designed to resist attacks on the key.
-> DES keys have been broken using specialized algorithms
-> and large amounts of compute power, but not by a single computer
-> running a SAT solver.
->```Xcryptol-session
->labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct /\ take key == 0x1234567890ab
->Satisfiable
->(\key -> DES.encrypt key
->   matched_pt == matched_ct /\ take key == 0x1234567890ab)
->  0x1234567890ab1236
->  = True
->(Total Elapsed Time: 4.496s, using Z3)
+```Xcryptol-session ci-none
+labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct
+```
+
+At this point, the solver hangs, unable to find a solution in any
+reasonable time. This is because DES is a well-designed cryptographic
+algorithm and is therefore designed to resist attacks on the key.
+DES keys have been broken using specialized algorithms
+and large amounts of compute power, but not by a single computer
+running a SAT solver.
+
+```Xcryptol-session
+labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct /\ take key == 0x1234567890ab
+Satisfiable
+(\key -> DES.encrypt key
+   matched_pt == matched_ct /\ take key == 0x1234567890ab)
+  0x1234567890ab1236
+  = True
+(Total Elapsed Time: 4.496s, using Z3)
 
 ### 2.2 Proof of Inversion
 
@@ -295,27 +292,25 @@ this work the other way around? Try it! If the proof fails, it will
 provide a *counterexample*. Use the counterexample to understand what
 went wrong.
 
-> Solution:
->
->```Xcryptol-session
->labs::CryptoProofs::CryptoProofsAnswers> :prove \x -> f (g x) == x
->Counterexample
->(\x -> f (g x) == x) 3 = False
->(Total Elapsed Time: 0.003s, using Yices)
->```
->
->Here we see that Cryptol has found that not only is our theorem
->false, but provides a counterexample that we can analyze to see why.
->Let's look a little closer.
->
->```Xcryptol-session
->labs::CryptoProofs::CryptoProofsAnswers> g 3
->0
->```
->
->The reason this doesn't work is because `g` is defined over the
->integers.  Therefore, the division operator `(/)` computes integer
->division, so the expected result of `1/3` is rounded down to `0`.
+```Xcryptol-session
+labs::CryptoProofs::CryptoProofsAnswers> :prove \x -> f (g x) == x
+Counterexample
+(\x -> f (g x) == x) 3 = False
+(Total Elapsed Time: 0.003s, using Yices)
+```
+
+Here we see that Cryptol has found that not only is our theorem
+false, but provides a counterexample that we can analyze to see why.
+Let's look a little closer.
+
+```Xcryptol-session
+labs::CryptoProofs::CryptoProofsAnswers> g 3
+0
+```
+
+The reason this doesn't work is because `g` is defined over the
+integers.  Therefore, the division operator `(/)` computes integer
+division, so the expected result of `1/3` is rounded down to `0`.
 
 **EXERCISE**: 2.2.2 DES inversion
 
@@ -327,17 +322,15 @@ normal functions! For example: `\x y z -> x+y+z`
 
 *Hint*: For fastest results, use the `abc` prover.
 
->Solution:
->
->```Xcryptol-session
->labs::CryptoProofs::CryptoProofsAnswers> :s prover=abc
->labs::CryptoProofs::CryptoProofsAnswers> :prove \key pt -> DES.decrypt key (DES.encrypt key pt) == pt
->Q.E.D.
->(Total Elapsed Time: 0.565s, using "ABC")
->labs::CryptoProofs::CryptoProofsAnswers> :prove \key ct -> DES.encrypt key (DES.decrypt key ct) == ct
->Q.E.D.
->(Total Elapsed Time: 0.556s, using "ABC")
->```
+```Xcryptol-session
+labs::CryptoProofs::CryptoProofsAnswers> :s prover=abc
+labs::CryptoProofs::CryptoProofsAnswers> :prove \key pt -> DES.decrypt key (DES.encrypt key pt) == pt
+Q.E.D.
+(Total Elapsed Time: 0.565s, using "ABC")
+labs::CryptoProofs::CryptoProofsAnswers> :prove \key ct -> DES.encrypt key (DES.decrypt key ct) == ct
+Q.E.D.
+(Total Elapsed Time: 0.556s, using "ABC")
+```
 
 ### 2.3 Proof of Injectivity
 
@@ -360,13 +353,12 @@ few minutes!)
 
 *Hint*: Consider using the implication operator `==>`
 
-> Solution:
->```Xcryptol-session
->labs::CryptoProofs::CryptoProofsAnswers> :s prover=boolector
->labs::CryptoProofs::CryptoProofsAnswers> :prove \k p1 p2 -> p1 != p2 ==> DES.encrypt k p1 != DES.encrypt k p2
->Q.E.D.
->(Total Elapsed Time: 58.598s, using "Boolector")
->```
+```Xcryptol-session
+labs::CryptoProofs::CryptoProofsAnswers> :s prover=boolector
+labs::CryptoProofs::CryptoProofsAnswers> :prove \k p1 p2 -> p1 != p2 ==> DES.encrypt k p1 != DES.encrypt k p2
+Q.E.D.
+(Total Elapsed Time: 58.598s, using "Boolector")
+```
 
 ### 2.4 Collision Detection
 
@@ -384,18 +376,17 @@ finding a solution may not be possible.)
 Use the solver to find two different keys and a single plaintext such
 that both keys encrypt that plaintext to the same ciphertext.
 
-> Solution:
->```Xcryptol-session
->labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
->labs::CryptoProofs::CryptoProofsAnswers> :sat \k1 k2 pt -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2 pt
->Satisfiable
->(\k1 k2 pt -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2 pt)
->  0x0000000000000000
->  0x0100000000000000
->  0x0000000000000000
->  = True
->(Total Elapsed Time: 1.258s, using "Yices")
->```
+```Xcryptol-session
+labs::CryptoProofs::CryptoProofsAnswers> :s prover=yices
+labs::CryptoProofs::CryptoProofsAnswers> :sat \k1 k2 pt -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2 pt
+Satisfiable
+(\k1 k2 pt -> k1 != k2 /\ DES.encrypt k1 pt == DES.encrypt k2 pt)
+  0x0000000000000000
+  0x0100000000000000
+  0x0000000000000000
+  = True
+(Total Elapsed Time: 1.258s, using "Yices")
+```
 
 ### 2.5 Equivalence Checking
 
@@ -418,13 +409,12 @@ plaintext inputs.
 
 *Hint*: Use the `abc` prover.
 
-> Solution:
->```Xcryptol-session
->labs::CryptoProofs::CryptoProofsAnswers> :s prover=abc
->labs::CryptoProofs::CryptoProofsAnswers> :prove \pt -> DES.encrypt 0x0000000000000000 pt == DES.encrypt 0x0100000000000000 pt
->Q.E.D.
->(Total Elapsed Time: 0.521s, using ABC)
->```
+```Xcryptol-session
+labs::CryptoProofs::CryptoProofsAnswers> :s prover=abc
+labs::CryptoProofs::CryptoProofsAnswers> :prove \pt -> DES.encrypt 0x0000000000000000 pt == DES.encrypt 0x0100000000000000 pt
+Q.E.D.
+(Total Elapsed Time: 0.521s, using ABC)
+```
 
 **EXERCISE**: 2.5.2 DES Parity Bits
 
@@ -439,8 +429,6 @@ Write a function `DESFixParity : [64] -> [64]` that takes any 64-bit
 vector and returns the equivalent DES key with properly computed
 parity bits. (This is the first and only time in this lab that you'll
 need to edit this file directly.)
-
-> Solution:
 
 ```cryptol
 DESFixParity : [64] -> [64]
@@ -462,14 +450,14 @@ function that first corrects the parity bits on those keys.
 Given that this proof passes, what is the actual maximum key strength
 of DES in terms of bits?
 
-> Solution
->```Xcryptol-session
->labs::CryptoProofs::CryptoProofsAnswers> :prove \key pt -> DES.encrypt key pt == DES.encrypt (DESFixParity key) pt
->Q.E.D.
->(Total Elapsed Time: 0.807s, using ABC)
->```
-> Since 8 of the 64 bits are ignored, DES has a maximum key strength
-> of 56 bits.
+```Xcryptol-session
+labs::CryptoProofs::CryptoProofsAnswers> :prove \key pt -> DES.encrypt key pt == DES.encrypt (DESFixParity key) pt
+Q.E.D.
+(Total Elapsed Time: 0.807s, using ABC)
+```
+
+Since 8 of the 64 bits are ignored, DES has a maximum key strength
+of 56 bits.
 
 # Solicitation
 
