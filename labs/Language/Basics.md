@@ -407,7 +407,7 @@ varType0 = False : [10]
 When you reload this file in the interpreter, you will see the
 following error:
 
-```Xcryptol-session
+```comment
   Type mismatch:
     Expected type: [10]
     Inferred type: Bit
@@ -638,7 +638,7 @@ funType0 a = a + 7 : [5]
 
 Upon reloading this file, we would see:
 
-```Xcryptol-session
+```comment
   Type mismatch:
     Expected type: [5] -> [5]
     Inferred type: [5]
@@ -659,7 +659,7 @@ funType0 a = a + 7 : [5]
 
 Upon reloading this file, we would see:
 
-```Xcryptol-session
+```comment
   Type mismatch:
     Expected type: 5
     Inferred type: 4
