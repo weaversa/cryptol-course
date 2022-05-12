@@ -32,8 +32,6 @@ RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y \
     locales \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-RUN pip3 install cryptol saw-client
-
 # Link clang
 RUN ln -s /usr/bin/clang-12 /usr/bin/clang
 RUN ln -s /usr/bin/clang++-12 /usr/bin/clang++
@@ -47,6 +45,16 @@ COPY --from=ghcr.io/galoisinc/cryptol:nightly /usr/local/bin /usr/local/bin
 COPY --from=ghcr.io/galoisinc/cryptol-remote-api:nightly /usr/local/bin/cryptol-remote-api /usr/local/bin/cryptol-remote-api
 ENV CRYPTOL_SERVER_URL=http://0.0.0.0:36681
 RUN echo 'cryptol-remote-api http --host 0.0.0.0 --port 36681 / &' >> /usr/local/bin/start-cryptol-remote-api.sh
+
+# Get fresh Python clients for Cryptol and SAW
+RUN git clone https://github.com/GaloisInc/saw-script.git /usr/local/share/saw-script
+RUN cd /usr/local/share/saw-script && git submodule update --init
+
+# Install Python client dependencies
+RUN pip3 install typing_extensions argo_client BitVector
+
+# Link to nightly python clients
+ENV PYTHONPATH "${PYTHONPATH}:/usr/local/share/saw-script/deps/cryptol/cryptol-remote-api/python:/usr/local/share/saw-script/saw-remote-api/python"
 
 # Get latest what4-solvers compiled for ubuntu
 RUN wget https://github.com/GaloisInc/what4-solvers/releases/download/snapshot-20220131/ubuntu-latest-bin.zip
