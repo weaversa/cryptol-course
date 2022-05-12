@@ -151,14 +151,12 @@ privileges, follow the steps in [Option 2](#option-2-homebrew) or
 [Option 3](#option-3-downloading-pre-built-cryptol-and-saw-binaries)
 for user-mode solutions.)*
 
-The Cryptol and *optional* SAW docker images can be downloaded by
-issuing the following Docker commands in your computer's terminal.
+This Cryptol course has a Docker image with Cryptol and SAW
+pre-installed that can be downloaded by issuing the following Docker
+command in your computer's terminal.
 
 ```
-$ docker pull ghcr.io/galoisinc/cryptol:2.12.0
-...
-$ docker pull ghcr.io/galoisinc/saw:0.9
-...
+$ docker pull ghcr.io/weaversa/cryptol-course:2.12
 ```
 
 You should now test your installation by running Cryptol. Instructions
@@ -233,8 +231,8 @@ is used by both Cryptol and SAW.
 ### Using Docker on Linux and MacOS
 
 ```
-$ docker run --rm -it --read-only --mount type=bind,src=$(pwd),dst=$(pwd) --workdir=$(pwd) --user=$(id -u):$(id -g) --env TERM=dumb --env CRYPTOLPATH=$(pwd) ghcr.io/galoisinc/cryptol:2.12.0 +RTS -N -RTS --no-call-stacks $*
-    ...
+$ docker run --rm -it --read-only --mount type=bind,src=$(pwd),dst=$(pwd) --workdir=$(pwd) --user=$(id -u):$(id -g) --env CRYPTOLPATH=$(pwd) ghcr.io/weaversa/cryptol-course:2.12 cryptol
+...
 Loading module Cryptol
 ```
 
@@ -248,7 +246,7 @@ labs::Demos::Cryptol::OneTimePad>
 ### Using Docker on Windows 10
 
 ```
-...\cryptol-course> docker run --rm -it --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course ghcr.io/galoisinc/cryptol:2.12.0
+...\cryptol-course> docker run --rm -it --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course ghcr.io/weaversa/cryptol-course:2.12
     ...
 Loading module Cryptol
 ```
