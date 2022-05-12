@@ -24,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/weaversa/cryptol-course:2.12
-#      options: --user root
+      options: --user cryptol
     steps:
       - name: Checkout
         uses: actions/checkout@v2
