@@ -219,9 +219,9 @@ your `cryptol-course` directory. To do this, run `docker` from within
 the `cryptol-course` directory and as follows:
 
 Details:
-- `docker run --rm -it --read-only` indicates that the commands are to
-be run in a read-only interactive TTY, and the newly generated
-container will be removed upon exit.
+- `docker run --rm -it` indicates that the commands are to be run in
+an interactive TTY, and the newly generated container will be removed
+upon exit.
 - If you are currently in the root of the `cryptol-course` directory,
 you can use `--mount`, and `--env` to mount the directory in the
 docker container and set the `CRYPTOLPATH` environment variable for
@@ -231,7 +231,7 @@ is used by both Cryptol and SAW.
 ### Using Docker on Linux and MacOS
 
 ```
-$ docker run --rm -it --read-only --mount type=bind,src=$(pwd),dst=$(pwd) --workdir=$(pwd) --user=$(id -u):$(id -g) --env CRYPTOLPATH=$(pwd) ghcr.io/weaversa/cryptol-course:2.12 cryptol
+$ docker run --rm -it --mount type=bind,src=$(pwd),dst=$(pwd) --workdir=$(pwd) --user=$(id -u):$(id -g) --env CRYPTOLPATH=$(pwd) ghcr.io/weaversa/cryptol-course:2.12 cryptol
 ...
 Loading module Cryptol
 ```
@@ -246,7 +246,7 @@ labs::Demos::Cryptol::OneTimePad>
 ### Using Docker on Windows 10
 
 ```
-...\cryptol-course> docker run --rm -it --read-only --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course ghcr.io/weaversa/cryptol-course:2.12
+...\cryptol-course> docker run --rm -it --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course ghcr.io/weaversa/cryptol-course:2.12
     ...
 Loading module Cryptol
 ```
