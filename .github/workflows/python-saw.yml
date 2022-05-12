@@ -33,7 +33,7 @@ jobs:
         with:
           name: salsa20-bc
           path: labs/Demos/SAW/Salsa20/
-      - run: file labs/Demos/SAW/Salsa20/salsa20.bc
+      - run: unzip labs/Demos/SAW/Salsa20/salsa20.bc
       # Start saw-remote-api server
       - run: start-saw-remote-api.sh
       # Run Salsa20 Python SAW Script
