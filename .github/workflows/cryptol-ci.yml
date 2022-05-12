@@ -27,8 +27,6 @@ jobs:
         uses: actions/checkout@v2
       - name: set pythonpath
         run: echo "PYTHONPATH=${PYTHONPATH}:${PWD}/.ci" >> $GITHUB_ENV
-      - run: echo $PYTHONPATH
-      - run: echo $PWD
       # Start cryptol-remote-api server
       - run: start-cryptol-remote-api.sh
       # Run checks
