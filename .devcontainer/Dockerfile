@@ -39,12 +39,12 @@ RUN ln -s /usr/bin/clang++-12 /usr/bin/clang++
 COPY --from=ghcr.io/galoisinc/saw:nightly /usr/local/bin /usr/local/bin
 COPY --from=ghcr.io/galoisinc/saw-remote-api:nightly /usr/local/bin/saw-remote-api /usr/local/bin/saw-remote-api
 ENV SAW_SERVER_URL=http://0.0.0.0:36691
-RUN echo 'saw-remote-api http --host 0.0.0.0 --port 36691 / &' >> /usr/local/bin/start-saw-remote-api.sh
+RUN echo 'saw-remote-api --read-only http --host 0.0.0.0 --port 36691 / &' >> /usr/local/bin/start-saw-remote-api.sh
 
 COPY --from=ghcr.io/galoisinc/cryptol:nightly /usr/local/bin /usr/local/bin
 COPY --from=ghcr.io/galoisinc/cryptol-remote-api:nightly /usr/local/bin/cryptol-remote-api /usr/local/bin/cryptol-remote-api
 ENV CRYPTOL_SERVER_URL=http://0.0.0.0:36681
-RUN echo 'cryptol-remote-api http --host 0.0.0.0 --port 36681 / &' >> /usr/local/bin/start-cryptol-remote-api.sh
+RUN echo 'cryptol-remote-api --read-only http --host 0.0.0.0 --port 36681 / &' >> /usr/local/bin/start-cryptol-remote-api.sh
 
 # Get fresh Python clients for Cryptol and SAW
 RUN git clone https://github.com/GaloisInc/saw-script.git /usr/local/share/saw-script
