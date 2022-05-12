@@ -32,6 +32,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: salsa20-bc
+          path: labs/Demos/SAW/Salsa20/
       # Start saw-remote-api server
       - run: start-saw-remote-api.sh
       # Run Salsa20 Python SAW Script
