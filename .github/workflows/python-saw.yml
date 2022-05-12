@@ -20,6 +20,7 @@ jobs:
           path: labs/Demos/SAW/Salsa20/salsa20.bc
 
   saw-prove:
+    needs: build
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/weaversa/cryptol-course:2.12
