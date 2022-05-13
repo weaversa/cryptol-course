@@ -68,20 +68,18 @@ RUN cd abc \
 RUN rm -rf abc
 
 # Install slightly older Boolector
-RUN wget https://github.com/Boolector/boolector/archive/refs/tags/3.2.1.tar.gz -O boolector-3.2.1.tar.gz
-RUN tar -xvzf boolector-3.2.1.tar.gz && rm -rf boolector-3.2.1.tar.gz
-RUN cd boolector-3.2.1 \
+RUN wget https://github.com/Boolector/boolector/archive/refs/tags/3.2.2.tar.gz -O boolector-3.2.2.tar.gz
+RUN tar -xvzf boolector-3.2.2.tar.gz && rm -rf boolector-3.2.2.tar.gz
+RUN cd boolector-3.2.2 \
     && ./contrib/setup-btor2tools.sh \
     && ./contrib/setup-lingeling.sh \
     && ./configure.sh \
     && cd build \
     && make -j 4 boolector boolector-bin \
     && cp bin/boolector /usr/local/bin/boolector
-RUN rm -rf boolector-3.2.1
+RUN rm -rf boolector-3.2.2
 
 RUN chmod a+x /usr/local/bin/*
-
-# RUN useradd -m -p '' cryptol 
 
 RUN adduser --gecos '' --disabled-password cryptol \
     && echo "cryptol ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd \
