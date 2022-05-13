@@ -492,14 +492,17 @@ partition'_rearranges =
         isNotPadding c = c != '-'
 ```
 
-
 **EXERCISE**: Define a property `partition_equiv` that `partition` 
 and `partition'` are functionally equivalent.  Are they?  If not, why 
 not?  Can either or both still be used for transposition ciphers?
 
+**EXERCISE**: Better yet! Cryptol has built-in sorting primitives `sort` and
+`sortBy`. Try you hand at using the `sortBy` primitive to implement
+partitioning.
+
 ## Reduction of Padded Partition Mappings
 
-Phew!  Now that we have defined a `partition` function...
+Phew! Now that we have defined a `partition` function...
 
 **EXERCISE**: Define a function `unpad` that uses `partition` (or 
 `partition'`) and `take` to reduce a permutation mapping `(n + p) w` 
