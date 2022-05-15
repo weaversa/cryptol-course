@@ -5,7 +5,7 @@
 
 FROM ubuntu:latest
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
-RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y \
+RUN apt-get update -y && DEBIAN_FRONTEND="noninteractive" apt-get install -y \
     curl \
     make \
     cmake \
@@ -14,6 +14,8 @@ RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y \
     autoconf \
     build-essential \
     clang-12 \
+    clang-tools-12 \
+    clang-format-12 \
     wget \
     unzip \
     vim \
@@ -39,12 +41,14 @@ RUN ln -s /usr/bin/clang++-12 /usr/bin/clang++
 COPY --from=ghcr.io/galoisinc/saw:nightly /usr/local/bin /usr/local/bin
 COPY --from=ghcr.io/galoisinc/saw-remote-api:nightly /usr/local/bin/saw-remote-api /usr/local/bin/saw-remote-api
 ENV SAW_SERVER_URL=http://0.0.0.0:36691
-RUN echo 'saw-remote-api --read-only http --host 0.0.0.0 --port 36691 / &' >> /usr/local/bin/start-saw-remote-api.sh
+RUN echo 'saw-remote-api --read-only http --host 0.0.0.0 --port 36691 / &' >> /usr/local/bin/start-saw-remote-api-read-only
+RUN echo 'saw-remote-api http --host 0.0.0.0 --port 36691 / &' >> /usr/local/bin/start-saw-remote-api
 
 COPY --from=ghcr.io/galoisinc/cryptol:nightly /usr/local/bin /usr/local/bin
 COPY --from=ghcr.io/galoisinc/cryptol-remote-api:nightly /usr/local/bin/cryptol-remote-api /usr/local/bin/cryptol-remote-api
 ENV CRYPTOL_SERVER_URL=http://0.0.0.0:36681
-RUN echo 'cryptol-remote-api --read-only http --host 0.0.0.0 --port 36681 / &' >> /usr/local/bin/start-cryptol-remote-api.sh
+RUN echo 'cryptol-remote-api --read-only http --host 0.0.0.0 --port 36681 / &' >> /usr/local/bin/start-cryptol-remote-api-read-only
+RUN echo 'cryptol-remote-api http --host 0.0.0.0 --port 36681 / &' >> /usr/local/bin/start-cryptol-remote-api
 
 # Get fresh Python clients for Cryptol and SAW
 RUN git clone https://github.com/GaloisInc/saw-script.git /usr/local/share/saw-script
@@ -89,6 +93,6 @@ USER cryptol
 ENV LANG C.UTF-8
 RUN sudo chsh -s /bin/bash $(whoami)
 ENV SHELL=/bin/bash
-RUN echo 'export PS1="\$(pwd)> "' >> /home/cryptol/.bashrc
+RUN echo 'export PS1="[\u \W]\$ "' >> /home/cryptol/.bashrc
 
 # ENTRYPOINT ["/bin/bash"]

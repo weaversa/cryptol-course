@@ -34,6 +34,6 @@ jobs:
           name: salsa20-bc
           path: labs/Demos/SAW/Salsa20/
       # Start saw-remote-api server
-      - run: start-saw-remote-api.sh
+      - run: start-saw-remote-api-read-only
       # Run Salsa20 Python SAW Script
       - run: python3 labs/Demos/SAW/Salsa20/proof/salsa20.py
