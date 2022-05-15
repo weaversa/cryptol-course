@@ -12,7 +12,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       # Start cryptol-remote-api server
-      - run: start-cryptol-remote-api.sh
+      - run: start-cryptol-remote-api-read-only
       # Load all files
       - run: python3 .ci/ci_load.py
 
@@ -28,6 +28,6 @@ jobs:
       - name: set pythonpath
         run: echo "PYTHONPATH=${PYTHONPATH}:${PWD}/.ci" >> $GITHUB_ENV
       # Start cryptol-remote-api server
-      - run: start-cryptol-remote-api.sh
+      - run: start-cryptol-remote-api-read-only
       # Run checks
       - run: for f in `find . -name "ci.py"`; do python3 $f; done
