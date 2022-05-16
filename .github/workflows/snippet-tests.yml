@@ -1,0 +1,23 @@
+name: Snippet Tests
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/weaversa/cryptol-course:2.12
+      options: --user root
+    defaults:
+      run:
+        shell: bash
+    steps:
+     - name: Checkout
+       uses: actions/checkout@v2
+     - run: apt-get install dos2unix
+     - run: chmod +x scripts/extract_snippets && chmod +x scripts/poor_test_runner.sh
+     - run: scripts/extract_snippets --output=output -v labs/Demos/Cryptol/*.md && scripts/poor_test_runner.sh -v output/labs/Demos/Cryptol/*.md.icry
+     - run: scripts/extract_snippets --output=output -v labs/Interpreter/*.md && scripts/poor_test_runner.sh -v output/labs/Interpreter/*.md.icry
+     - run: scripts/extract_snippets --output=output -v labs/Language/*.md && scripts/poor_test_runner.sh -v output/labs/Language/*.md.icry
+     - run: scripts/extract_snippets --output=output -v labs/Overview/*.md && scripts/poor_test_runner.sh -v output/labs/Overview/*.md.icry
+     - run: shopt -s globstar && scripts/extract_snippets --output=output -v **/*Answers.md && scripts/poor_test_runner.sh -v output/**/*Answers.md.icry
