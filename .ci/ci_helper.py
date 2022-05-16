@@ -14,7 +14,7 @@ def check(c, name, *args):
         sys.exit(1)
 
 def randBV(bits):
-    return cryptol.BV(bits, random.getrandbits())
+    return cryptol.BV(bits, random.getrandbits(bits))
 
 def randList(elements, bits):
     array = []

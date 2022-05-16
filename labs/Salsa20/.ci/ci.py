@@ -16,3 +16,10 @@ check(c, "littleendianExamplesProp")
 check(c, "Salsa20CoreExamplesProp")
 check(c, "Salsa20ExpansionExamplesProp")
 check(c, "Salsa20EncryptExamplesProp")
+
+
+c.load_module("labs::Salsa20::Salsa20PropsAnswers")
+
+print("Running proofs in labs::Salsa20::Salsa20PropsAnswers")
+
+check(c, "Salsa20CoreCollidesProp", randBV(32))
