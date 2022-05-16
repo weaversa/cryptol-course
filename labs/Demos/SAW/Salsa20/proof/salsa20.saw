@@ -1,0 +1,85 @@
+include "./common/llvm.saw";
+
+import "./specs/Salsa20.cry";
+
+let prover nm = yices;
+
+let bytes n = (llvm_array n uint8_t);
+let words n = llvm_array n i32;
+
+let oneptr_update_func n ty f = do {
+    v <- alloc WRITE ty n FRESH;
+    execute [v.p];
+    let t = v.t;
+    points_to v.p (from_cryptol {{ f t }});
+};
+
+let quarterround_setup = do {
+    y0 <- alloc WRITE i32 "y0" FRESH;
+    y1 <- alloc WRITE i32 "y1" FRESH;
+    y2 <- alloc WRITE i32 "y2" FRESH;
+    y3 <- alloc WRITE i32 "y3" FRESH;
+
+    execute [y0.p, y1.p, y2.p, y3.p];
+
+    let (y0t, y1t, y2t, y3t) = (y0.t, y1.t, y2.t, y3.t);
+    let zs = {{ quarterround [y0t,y1t,y2t,y3t] }};
+    points_to y0.p (from_cryptol {{ zs@0 }});
+    points_to y1.p (from_cryptol {{ zs@1 }});
+    points_to y2.p (from_cryptol {{ zs@2 }});
+    points_to y3.p (from_cryptol {{ zs@3 }});
+};
+
+let rowround_setup =
+    oneptr_update_func "y" (words 16) {{ rowround }};
+
+let columnround_setup =
+    oneptr_update_func "x" (words 16) {{ columnround }};
+
+let doubleround_setup =
+    oneptr_update_func "x" (words 16) {{ doubleround }};
+
+let salsa20_setup =
+    oneptr_update_func "seq" (bytes 64) {{ Salsa20 }};
+
+let salsa20_expansion_32 = do {
+    k <- alloc CONST (bytes 32) "k" FRESH;
+    n <- alloc CONST (bytes 16) "n" FRESH;
+    pks <- pointer WRITE (bytes 64);
+
+    execute [k.p, n.p, pks];
+
+    let (kt, nt) = (k.t, n.t);
+    let rks = {{ Salsa20_expansion`{a=2}(kt, nt)}};
+    points_to pks (from_cryptol rks);
+};
+
+let s20_encrypt32 n = do {
+    let zerot = from_cryptol {{ 0 : [32] }};
+    let nt = from_cryptol {{ `n : [32] }};
+    key <- alloc CONST (bytes 32) "key" FRESH;
+    v <- alloc CONST (bytes 8) "nonce" FRESH;
+    m <- alloc WRITE (bytes n) "buf" FRESH;
+    
+    execute [key.p, v.p, zerot, m.p, nt];
+
+    let (keyt, vt, mt) = (key.t, v.t, m.t);
+    points_to m.p (from_cryptol {{ Salsa20_encrypt (keyt, vt, mt) }});
+    returns zerot;
+};
+
+m <- llvm_load_module "artifacts/salsa20.bc";
+
+let verify = crucible_llvm_verify m;
+
+qr        <- verify "s20_quarterround" []       false quarterround_setup   abc;
+rr        <- verify "s20_rowround"     [qr]     false rowround_setup       abc;
+cr        <- verify "s20_columnround"  [qr]     false columnround_setup    abc;
+dr        <- verify "s20_doubleround"  [cr,rr]  false doubleround_setup    abc;
+s20       <- verify "s20_hash"         [dr]     false salsa20_setup        abc;
+s20e32    <- verify "s20_expand32"     [s20]    true  salsa20_expansion_32 abc;
+s20enc_63 <- verify "s20_crypt32"      [s20e32] true  (s20_encrypt32 63)   abc;
+s20enc_64 <- verify "s20_crypt32"      [s20e32] true  (s20_encrypt32 64)   abc;
+s20enc_65 <- verify "s20_crypt32"      [s20e32] true  (s20_encrypt32 65)   abc;
+
+print "Done!";

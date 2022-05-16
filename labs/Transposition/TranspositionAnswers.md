@@ -691,9 +691,24 @@ partition_equiv`{8, [32]} (\b -> b ! 0)
 (Total Elapsed Time: 0.147s, using "Z3")
 ```
 
+**EXERCISE**: Better yet! Cryptol has built-in sorting primitives `sort` and
+`sortBy`. Try you hand at using the `sortBy` primitive to implement
+partitioning.
+
+```Xcryptol-session
+labs::Transposition::TranspositionAnswers> :prove \(x : [10][8]) -> sortBy (\a _ -> a != '-') x == partition (\a -> a != '-') x
+Q.E.D.
+(Total Elapsed Time: 1.811s, using "Z3")
+```
+
+I'm sure you're thinking we should've just started w/ the `sortBy`
+solution. Well, us developing this lab is part of the reason the
+`sortBy` primitive exists. So, consider the above as an historical
+reference of our earlier stumblings.
+
 ## Reduction of Padded Partition Mappings
 
-Phew!  Now that we have defined a `partition` function...
+Phew! Now that we have defined a `partition` function...
 
 **EXERCISE**: Define a function `unpad` that uses `partition` (or 
 `partition'`) and `take` to reduce a permutation mapping `(n + p) w` 
