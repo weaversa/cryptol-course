@@ -1,7 +1,7 @@
 from ci_helper import *
 import cryptol
 
-c = cryptol.connect()
+c = cryptol.connect(reset_server=True)
 
 c.load_module("labs::KeyWrapping::KeyWrappingAnswers")
 
