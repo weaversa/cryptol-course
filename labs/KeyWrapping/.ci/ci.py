@@ -17,11 +17,6 @@ check(c, "MSBProp")
 check(c, "bitstringProp")
 check(c, "intProp")
 
-# Add these to proofs
-#prove(c, "WStep2'Prop", ????)
-#prove(c, "W'Prop", ????)
-#prove(c, "KWAEInvProp", ????)
-
 check(c, "KWAETests")
 check(c, "KWADTests")
 check(c, "TKWAETests")
