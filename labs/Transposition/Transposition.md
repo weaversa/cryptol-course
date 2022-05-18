@@ -492,7 +492,7 @@ partition'_rearranges =
         isNotPadding c = c != '-'
 ```
 
-**EXERCISE**: Define a property `partition_equiv` that `partition` 
+**EXERCISE**: Define a property `partition'_equiv` that `partition` 
 and `partition'` are functionally equivalent.  Are they?  If not, why 
 not?  Can either or both still be used for transposition ciphers?
 

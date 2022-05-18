@@ -669,7 +669,7 @@ Passed 100 tests.
 Expected test coverage: 0.00% (100 of 2^^2048 values)
 ```
 
-**EXERCISE**: Define a property `partition_equiv` that `partition` 
+**EXERCISE**: Define a property `partition'_equiv` that `partition` 
 and `partition'` are functionally equivalent.  Are they?  If not, why 
 not?  Can either or both still be used for transposition ciphers?
 
