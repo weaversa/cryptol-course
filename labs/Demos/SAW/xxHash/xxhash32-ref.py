@@ -43,7 +43,7 @@ class Contract_XXH32_avalanche(Contract):
 
         self.execute_func(hash_)
 
-        self.returns_f("XXH64_avalanche {hash_}")
+        self.returns_f("XXH32_avalanche {hash_}")
 
 
 class Contract_XXH32_NULL (Contract):
@@ -72,7 +72,7 @@ class Contract_XXH32_top(Contract):
 
     
 class xxhash32EasyTest(unittest.TestCase):
-    def test_xxhash64(self):
+    def test_xxhash32(self):
         connect(reset_server=True)
         if __name__ == "__main__": view(LogResults())
 
