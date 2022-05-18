@@ -36,7 +36,7 @@ jobs:
         with:
           name: bc-files
           path: labs/Demos/SAW/
-      - run: ls labs/Demos/SAW
+      - run: ls labs/Demos/SAW/Salsa20 && ls labs/Demos/SAW/xxHash
       # Start saw-remote-api server
       - run: start-saw-remote-api-read-only
       # Run Python SAW Script
