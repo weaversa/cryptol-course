@@ -13,6 +13,7 @@ c.load_module("labs::Transposition::RailFenceAnswers")
 
 print("Running tests in labs::Transposition::RailFenceAnswers")
 
+check(c, "cycle_test")
 check(c, "pi_test")
 
 c.load_module("labs::Transposition::ScytaleAnswers")
@@ -20,3 +21,10 @@ c.load_module("labs::Transposition::ScytaleAnswers")
 print("Running tests in labs::Transposition::ScytaleAnswers")
 
 check(c, "pi_test")
+
+c.load_module("labs::Transposition::TranspositionAnswers")
+
+print("Running tests in labs::Transposition::ScytaleAnswers")
+
+check(c, "isPermutation_test")
+check(c, "isPermutationMapping_test")
