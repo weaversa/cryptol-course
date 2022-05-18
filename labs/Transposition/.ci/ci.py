@@ -1,22 +1,21 @@
 from ci_helper import *
 import cryptol
 
-c = cryptol.connect(reset_server=True)
+if __name__ == '__main__':
+    c = cryptol.connect(reset_server=True)
 
-c.load_module("labs::Transposition::EsreverAnswers")
+    properties_by_module = {
+        "Esrever": "pi_test",
+        "RailFence": "cycle_test pi_test",
+        "Scytale": "pi_test",
+        "Transposition": "isPermutationMapping_test isPermutation_test",
+    }
 
-print("Running tests in labs::Transposition::EsreverAnswers")
+    for (mod, properties) in properties_by_module.items():
+        answers = f"labs::Transposition::{mod}Answers"
 
-check(c, "pi_test")
+        c.load_module(answers)
+        print(f"Running tests in {answers}")
 
-c.load_module("labs::Transposition::RailFenceAnswers")
-
-print("Running tests in labs::Transposition::RailFenceAnswers")
-
-check(c, "pi_test")
-
-c.load_module("labs::Transposition::ScytaleAnswers")
-
-print("Running tests in labs::Transposition::ScytaleAnswers")
-
-check(c, "pi_test")
+        for prop in properties.split():
+            check(c, prop)
