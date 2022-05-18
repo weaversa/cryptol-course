@@ -11,13 +11,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      # Build .bc file for Salsa20
+      # Build .bc files
       - run: clang -c -g -emit-llvm labs/Demos/SAW/Salsa20/src/salsa20.c -o labs/Demos/SAW/Salsa20/salsa20.bc -Ilabs/Demos/SAW/Salsa20/include
+      - run: make --directory=labs/Demos/SAW/xxHash xxhash64-ref.bc
       - name: Archive file
         uses: actions/upload-artifact@v3
         with:
-          name: salsa20-bc
-          path: labs/Demos/SAW/Salsa20/salsa20.bc
+          name: bc-files
+          path: |
+            labs/Demos/SAW/Salsa20/salsa20.bc
+            labs/Demos/SAW/xxHash/xxhash64-ref.bc
 
   saw-prove:
     needs: build
@@ -31,8 +34,10 @@ jobs:
       - name: Download salsa20-bc
         uses: actions/download-artifact@v3
         with:
-          name: salsa20-bc
-          path: labs/Demos/SAW/Salsa20/
+          name: bc-files
+          path: |
+            labs/Demos/SAW/Salsa20/
+	    labs/Demos/SAW/xxHash/
       # Start saw-remote-api server
       - run: start-saw-remote-api-read-only
       # Run Salsa20 Python SAW Script
