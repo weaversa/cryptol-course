@@ -31,11 +31,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - name: Download salsa20-bc
+      - name: Download bc-files
         uses: actions/download-artifact@v3
         with:
           name: bc-files
           path: labs/Demos/SAW/
+      - run: ls labs/Demos/SAW
       # Start saw-remote-api server
       - run: start-saw-remote-api-read-only
       # Run Python SAW Script
