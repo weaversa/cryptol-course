@@ -15,7 +15,7 @@ if __name__ == '__main__':
         answers = f"labs::Transposition::{mod}Answers"
 
         c.load_module(answers)
-        print(f"Running tests in {answers}")
+        print(f"Running properties in {answers}")
 
         for prop in properties.split():
             check(c, prop)
