@@ -48,7 +48,7 @@ class Contract_XXH32_avalanche(Contract):
 
 class Contract_XXH32_NULL (Contract):
     def specification(self) -> None:
-        length = self.fresh_var(i32, "length")
+        length = self.fresh_var(i64, "length")
         seed = self.fresh_var(i32, "seed")
 
         self.execute_func(null(), length, seed)
@@ -63,7 +63,7 @@ class Contract_XXH32_top(Contract):
         
     def specification(self) -> None:
         (input_, input_p) = ptr_to_fresh(self, LLVMArrayType(i8, self.size)) 
-        length = cry_f("{self.size} : [32]")
+        length = cry_f("{self.size} : [64]")
         seed = self.fresh_var(i32, "seed")
 
         self.execute_func(input_p, length, seed)
