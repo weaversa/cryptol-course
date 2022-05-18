@@ -11,15 +11,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      # Build .bc files
-      - run: clang -c -g -emit-llvm labs/Demos/SAW/Salsa20/src/salsa20.c -o labs/Demos/SAW/Salsa20/salsa20.bc -Ilabs/Demos/SAW/Salsa20/include
-      - run: make --directory=labs/Demos/SAW/xxHash xxhash64-ref.bc
+      - name: Build .bc files
+        run: |
+          clang -c -g -emit-llvm labs/Demos/SAW/Salsa20/src/salsa20.c -o labs/Demos/SAW/Salsa20/salsa20.bc -Ilabs/Demos/SAW/Salsa20/include
+          make --directory=labs/Demos/SAW/xxHash xxhash32-ref.bc
+          make --directory=labs/Demos/SAW/xxHash xxhash64-ref.bc
       - name: Archive file
         uses: actions/upload-artifact@v3
         with:
           name: bc-files
           path: |
             labs/Demos/SAW/Salsa20/salsa20.bc
+            labs/Demos/SAW/xxHash/xxhash32-ref.bc
             labs/Demos/SAW/xxHash/xxhash64-ref.bc
 
   saw-prove:
@@ -36,8 +39,10 @@ jobs:
         with:
           name: bc-files
           path: labs/Demos/SAW/
-      # Start saw-remote-api server
-      - run: start-saw-remote-api-read-only
-      # Run Python SAW Script
-      - run: python3 labs/Demos/SAW/Salsa20/proof/salsa20.py
-      - run: python3 labs/Demos/SAW/xxHash/xxhash64-ref.py
+      - name: Start saw-remote-api server
+        run: start-saw-remote-api-read-only
+      - name: Run Python SAW Script
+        run: |
+          python3 labs/Demos/SAW/Salsa20/proof/salsa20.py
+          python3 labs/Demos/SAW/xxHash/xxhash32-ref.py
+          python3 labs/Demos/SAW/xxHash/xxhash64-ref.py
