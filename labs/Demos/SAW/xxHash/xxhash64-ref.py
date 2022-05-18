@@ -79,7 +79,7 @@ class xxhash64EasyTest(unittest.TestCase):
         pwd = os.getcwd()
         
         cryname = pwd + "/labs/Demos/SAW/xxHash/xxhash.cry"
-        bcname = pwd + "/labs/Demos/SAW//xxHash/xxhash64-ref.bc"
+        bcname = pwd + "/labs/Demos/SAW/xxhash64-ref.bc"
 
 
         print( "******" + cryname + "******")

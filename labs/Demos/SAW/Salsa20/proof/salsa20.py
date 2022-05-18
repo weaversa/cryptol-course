@@ -129,7 +129,7 @@ class Salsa20EasyTest(unittest.TestCase):
 
         pwd = os.getcwd()
         
-        bcname = pwd + "/labs/Demos/SAW/Salsa20/salsa20.bc"
+        bcname = pwd + "/labs/Demos/SAW/salsa20.bc"
         cryname = pwd + "/labs/Demos/SAW/Salsa20/Salsa20.cry"
 
         cryptol_load_file(cryname)
