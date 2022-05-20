@@ -492,13 +492,37 @@ partition'_rearranges =
         isNotPadding c = c != '-'
 ```
 
-**EXERCISE**: Define a property `partition_equiv` that `partition` 
+**EXERCISE**: Define a property `partition'_equiv` that `partition` 
 and `partition'` are functionally equivalent.  Are they?  If not, why 
 not?  Can either or both still be used for transposition ciphers?
 
-**EXERCISE**: Better yet! Cryptol has built-in sorting primitives `sort` and
-`sortBy`. Try you hand at using the `sortBy` primitive to implement
-partitioning.
+```cryptol
+/** `partition` and `partition'` are functionally equivalent...or are they? */
+partition'_equiv: {n, a} (fin n, Eq a) => (a -> Bit) -> [n]a -> Bit
+partition'_equiv _ = False
+```
+
+**EXERCISE**: Better yet! Cryptol has built-in sorting primitives 
+`sort` and `sortBy`. Try you hand at using the `sortBy` primitive 
+to implement partitioning. (Hint: `True > False`.)
+
+```cryptol
+partition'': {n, a} fin w => (a -> Bit) -> [n]a -> [n]a
+partition'' _ w = sortBy cmp w
+  where
+    cmp a b = undefined
+```
+
+```cryptol
+/** `partition''` and `partition` are functionally equivalent */
+partition''_equiv: {n, a} (fin n, Eq a) => (a -> Bit) -> [n]a -> Bit
+partition''_equiv _ = False
+```
+
+I'm sure you're thinking we should've just started w/ the `sortBy`
+solution. Well, us developing this lab is part of the reason the
+`sortBy` primitive exists. So, consider the above as an historical
+reference of our earlier stumblings.
 
 ## Reduction of Padded Partition Mappings
 
