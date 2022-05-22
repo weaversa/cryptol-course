@@ -331,7 +331,7 @@ checks".
 # References
 
 [1] Cyclic redundancy check. In Wikipedia. Retrieved June 7th, 2020,
-from [Wikipedia - Cyclic Redundancy Check](https://en.wikipedia.org/wiki/Cyclic_redundancy_check.)
+from [Wikipedia - Cyclic Redundancy Check](https://en.wikipedia.org/wiki/Cyclic_redundancy_check)
 
 [2] Mathematics of cyclic redundancy checks. In Wikipedia. Retrieved June 7th, 2020, from [Wikipedia - Mathematics of Cyclic Reundancy Checks](https://en.wikipedia.org/wiki/Mathematics_of_cyclic_redundancy_checks)
 
