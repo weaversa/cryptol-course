@@ -1,4 +1,6 @@
-[![Cryptol Course](https://github.com/weaversa/cryptol-course/actions/workflows/cryptol-loads.yml/badge.svg)](https://github.com/weaversa/cryptol-course/actions?query=workflow%3Acryptol-loads)
+[![Cryptol loads and runs](https://github.com/weaversa/cryptol-course/actions/workflows/cryptol-ci.yml/badge.svg)](https://github.com/weaversa/cryptol-course/actions/workflows/cryptol-ci.yml)
+[![Saw loads and runs](https://github.com/weaversa/cryptol-course/actions/workflows/python-saw.yml/badge.svg)](https://github.com/weaversa/cryptol-course/actions/workflows/python-saw.yml)
+[![Markdown Cryptol interpreter blocks match expected results](https://github.com/weaversa/cryptol-course/actions/workflows/snippet-tests.yml/badge.svg)](https://github.com/weaversa/cryptol-course/actions/workflows/snippet-tests.yml)
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/weaversa/cryptol-course)
 
