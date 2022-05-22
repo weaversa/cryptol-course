@@ -5,6 +5,8 @@
 
 [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/weaversa/cryptol-course)
 
+[Click here for a web-based version of this course.](https://weaversa.github.io/cryptol-course/)
+
 # Programming with Cryptol
 
 **Purpose:** The purpose of the course is to provide an overview of
