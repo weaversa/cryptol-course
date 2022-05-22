@@ -669,34 +669,47 @@ Passed 100 tests.
 Expected test coverage: 0.00% (100 of 2^^2048 values)
 ```
 
-**EXERCISE**: Define a property `partition_equiv` that `partition` 
+**EXERCISE**: Define a property `partition'_equiv` that `partition` 
 and `partition'` are functionally equivalent.  Are they?  If not, why 
 not?  Can either or both still be used for transposition ciphers?
 
 ```cryptol
 /** `partition` and `partition'` are functionally equivalent...or are they? */
-partition_equiv: {n, a} (fin n, Eq a) => (a -> Bit) -> [n]a -> Bit
-partition_equiv f = partition`{n} f === partition'`{n} f
+partition'_equiv: {n, a} (fin n, Eq a) => (a -> Bit) -> [n]a -> Bit
+partition'_equiv f = partition`{n} f === partition'`{n} f
 ```
 
 ```Xcryptol-session
-labs::Transposition::TranspositionAnswers> :prove partition_equiv`{8, Bit} (\b -> b)
+labs::Transposition::TranspositionAnswers> :prove partition'_equiv`{8, Bit} (\b -> b)
 Q.E.D.
 (Total Elapsed Time: 1.669s, using "Z3")
-labs::Transposition::TranspositionAnswers> :prove partition_equiv`{8, [32]} (\b -> b ! 0)
+labs::Transposition::TranspositionAnswers> :prove partition'_equiv`{8, [32]} (\b -> b ! 0)
 Counterexample
-partition_equiv`{8, [32]} (\b -> b ! 0)
+partition'_equiv`{8, [32]} (\b -> b ! 0)
   [0x00000000, 0x01000000, 0x00000020, 0x40000020, 0x00000040,
    0x00000001, 0x00000001, 0x00000002] = False
 (Total Elapsed Time: 0.147s, using "Z3")
 ```
 
-**EXERCISE**: Better yet! Cryptol has built-in sorting primitives `sort` and
-`sortBy`. Try you hand at using the `sortBy` primitive to implement
-partitioning.
+**EXERCISE**: Better yet! Cryptol has built-in sorting primitives 
+`sort` and `sortBy`. Try you hand at using the `sortBy` primitive 
+to implement partitioning.  (Hint: `True > False`.)
+
+```cryptol
+partition'': {n, a} fin n => (a -> Bit) -> [n]a -> [n]a
+partition'' f w = sortBy cmp w
+  where
+    cmp a b = f a >= f b
+```
+
+```cryptol
+/** `partition''` and `partition'` are functionally equivalent */
+partition''_equiv: {n, a} (fin n, Eq a) => (a -> Bit) -> [n]a -> Bit
+partition''_equiv f = partition`{n} f === partition''`{n} f
+```
 
 ```Xcryptol-session
-labs::Transposition::TranspositionAnswers> :prove \(x : [10][8]) -> sortBy (\a _ -> a != '-') x == partition (\a -> a != '-') x
+labs::Transposition::TranspositionAnswers> :prove partition''_equiv`{10, [8]} (\a -> a != '-')
 Q.E.D.
 (Total Elapsed Time: 1.811s, using "Z3")
 ```
