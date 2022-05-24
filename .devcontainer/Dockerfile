@@ -4,6 +4,11 @@
 # devcontainer.json
 
 FROM ubuntu:latest
+
+## Uncomment for gitpod.io build
+# FROM gitpod/workspace-nix:latest
+# USER root
+
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
 RUN apt-get update -y && DEBIAN_FRONTEND="noninteractive" apt-get install -y \
     make \

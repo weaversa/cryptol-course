@@ -6,7 +6,7 @@ from saw_client import *
 from saw_client.crucible import cry, cry_f
 from saw_client.llvm import Contract, void, SetupVal, FreshVar, i8, i32, LLVMType, LLVMArrayType
 from saw_client.proofscript import z3
-
+from saw_client.dashboard import Dashboard
 
 def ptr_to_fresh(c : Contract, ty : LLVMType, name : Optional[str] = None) -> Tuple[FreshVar, SetupVal]:
     """Add to``Contract`` ``c`` an allocation of a pointer of type ``ty`` initialized to an unknown fresh value.
@@ -125,6 +125,7 @@ class Salsa20CryptContract(Contract):
 class Salsa20EasyTest(unittest.TestCase):
     def test_salsa20(self):
         connect(reset_server=True)
+        if __name__ == "__main__": view(Dashboard(path=__file__))
         if __name__ == "__main__": view(LogResults())
 
         pwd = os.getcwd()

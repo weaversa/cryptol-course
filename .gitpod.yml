@@ -1,4 +1,4 @@
-image: ghcr.io/weaversa/cryptol-course:2.12
+image: ghcr.io/weaversa/cryptol-course:gitpod
 
 tasks:
   - init: gp open README.md
@@ -7,5 +7,5 @@ tasks:
 vscode:
   extensions:
     # Add PDF viewing support to VSCode
-    - https://tomoki1207.gallery.vsassets.io/_apis/public/gallery/publisher/tomoki1207/extension/pdf/1.1.0/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage
+    - tomoki1207.pdf
     - jldodds.cryptol
