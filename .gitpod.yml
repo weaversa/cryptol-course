@@ -2,7 +2,7 @@ image: ghcr.io/weaversa/cryptol-course:gitpod
 
 tasks:
   - command: gp open README.md
-    command: echo 'Welcome to the Cryptol course! The presentation material is formatted in Markdown (.md) files. To view, click the "Open Preview to the Side" icon above and at the far right of the Markdown document. To enter the Cryptol interpreter, type "cryptol" at the terminal window. We will do this automatically for you now.' && cryptol
+  - command: echo 'Welcome to the Cryptol course! The presentation material is formatted in Markdown (.md) files. To view, click the "Open Preview to the Side" icon above and at the far right of the Markdown document. To enter the Cryptol interpreter, type "cryptol" at the terminal window. We will do this automatically for you now.' && cryptol
     
 vscode:
   extensions:
