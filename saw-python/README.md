@@ -3,7 +3,7 @@
 - Get saw-python to run
 - directory layout
 
-# Python Contracts
+# Python Contracts Introduction
 
 Here's the general layout for SAW in Python:
 
@@ -59,7 +59,7 @@ RCS : [32] -> [32] -> [32]
 RCS xs shift = xs >>> shift
 ```
 
-Now let's make our Python contract:
+Now let's make our Python `Contract` object with the required `specificaiton` function:
 
 ```python
 class RCS_Contract(Contract):
@@ -72,7 +72,7 @@ class RCS_Contract(Contract):
     self.returns_f("{bits} >>> {shift}")
 ```
 
-Every `Contract` object keeps track of the state of symbolic variables internally, so throughout there will be many calls to `self`. 
+Let's break down `specification` piece by piece.
 
 ### Fresh Symbolic Variables
 
@@ -81,11 +81,10 @@ are not optional inputs, and they mostly serve for error messages. The string ca
 
 ### Execute Functions
 The command `self.execute_func(inputs)` will symbolically execute the function. There should be exactly as many comma separated inputs as there are 
-in the C function. As usual with SAW, one can only place preconditions before this command and postconditions after this command 
-(there are no preconditions or postconditions in this contract; we'll discuss those later).
+in the C function. One can only place preconditions before this command and postconditions after this command.
 
 ### Return Statements
-The command `self.returns_f(string)` asserts the current function returns the Cryptol term parsed from a Python String. To use Python variables in scope within the string use 
+The command `self.returns_f(string)` asserts the current function returns the Cryptol term parsed from a Python string. To use Python variables in scope within the string use 
 `{variable_name}`. For example,
 
 |`self.`|`returns_f`|`("{bits} >>> {shift}")`|
@@ -108,21 +107,15 @@ For example, consider the following made up SAW line:
   self.returns_f("{{a = take`{{5}} {blah}, b = take`{{{N}}} blah }} == foo `blah")
 ```
 
-We parse the Cryptol string as a boolean assertion between records
+Suppose `blah` is a local Python variable equal to `23` and `N` is a local Python variable equal to `2`. Then we parse the Cryptol string as the following boolean assertion between records:
 
 ```cryptol
 {a = take`{5} 23, b = take`{2} 23} == foo `blah
 ```
 
-where `blah` is a local Python variable equal to `23`, `N` is a local Python variable equal to `2`, `foo` some function returning a record, and `blah` some 
+where `foo` is some Cryptol function returning a record, and `blah` is some 
 Cryptol type in the specification loaded.
 
-### Preconditions and Postconditions
-
-The [C specification](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf) has the following to say about bit shifts:
-
-> If the value of the right operand is negative or is
-> greater than or equal to the width of the promoted left operand, the behavior is undefined.
 
 Due to this, we should probably add a precondition to the previous code:
 
@@ -143,49 +136,375 @@ The command `precondition_f(string)` asserts the constraint parsed from the Cryp
 precondition after `execute_func`. Similarly, the `postcondition_f(string)` command asserts the constrained is satisfied after execution. There is also a
 positionally agnostic command `proclaim_f(string)`. This latter command can be useful in helper functions (more on this later).
 
-### Unit Testing
+## Unit Testing
 
-<insert example of verification>
+The [C specification](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf) has the following to say about bit shifts:
 
-## Pointers
+> If the value of the right operand is negative or is
+> greater than or equal to the width of the promoted left operand, the behavior is undefined.
 
-Let's change our right circular shift function to accept a pointer to an integer instead:
-
-```C
-void RCS(uint32_t *bits, uint32_t shift) {
-  bits = (bits << shift) | (bits >> (sizeof(bits)*8 - shift));
-  return;
-}
-```
-
-Then our contract may change to
+Hopefully SAW alerts us of this behavior. To check, we need to make a test:
 
 ```python
+class RCSTest(unittest.TestCase):
+  def test_RCS(self):
+    connect(reset_server=True)
+    if __name__ == "__main__": view(LogResults(verbose_failure=True))
+    
+    bcname  = "/some/path/to/your/file.bc"
+    mod = llvm_load_module(bcname)
+    
+    cryname = "/some/path/to/your/file.cry"
+    cryptol_load_file(cryname)
+    
+    RCS_result = llvm_verify(mod, 'RCS', RCS_Contract())
+    self.assertIs(RCS_result.is_success(), True)
+```
+
+For a contract the specification function should be called `specification`. For tests, it doesn't matter what you name your tests. Here we named it `test_RCS`. These tests will be ran when you try running the Python.
+
+Let's break down the first few lines of this function:
+
+- The command `connect(reset_server=True)` connects to the server so we can use the SAW Python API
+- The line `if __name__ == "__main__": view(LogResults(verbose_failure=True))` allows us to view the output with verbose error messages. If you don't want verbose error messages, then just use `if __name__ == "__main__": view(LogResults())`
+- The line `bcname  = "/some/path/to/your/file.bc"` declares which bitcode file we're analyzing. If you have multiple bitcodes files, then make a variable for each file. 
+- The line `mod = llvm_load_module(bcname)` creates the object we will pass to verification that represents the bitcode.
+- The line `cryname = "/some/path/to/your/file.cry"` specifies the path to the Cryptol specification.
+- The line `cryptol_load_file(cryname)` loads the Cryptol specification.
+
+Now that we've set up our environment, let's actually verify our contract! This is done at the line
+
+|`RCS_result =` | `llvm_verify(` | `mod,` | `'RCS',` | `RCS_Contract()`| `)`|
+|----------|-----------|----|------|---------------|----|
+|Assign this variable| to the result of trying to verify| the bitcode| function with this name| using this contract|.|
+
+Now that we have the result, we want to assert this result succeeded using `self.assertIs(RCS_result.is_success(), True)`.
+
+
+## Debugging C with SAW
+
+The full code is:
+
+```python3
+import unittest
+from saw_client             import *
+from saw_client.crucible    import * 
+from saw_client.llvm        import * 
+from saw_client.proofscript import *
+from saw_client.llvm_type   import * 
+
 class RCS_Contract(Contract):
   def specification(self):
-    bits   = self.fresh_var(i32, "bits")
-    bits_p = self.alloc(i32, name="bits_p", points_to=bits, read_only=False) 
+    xs    = self.fresh_var(i32, "xs") 
     shift = self.fresh_var(i32, "shift")
     
     self.precondition_f("{shift} <= 32")
     
-    self.execute_func(bits_p, shift)
+    self.execute_func(xs, shift)
 
-    self.postcondition_f("bits_p == ")
+    self.returns_f("{xs} >>> {shift}")
+
+class RCSTest(unittest.TestCase):
+  def test_RCS(self):
+    connect(reset_server=True)
+    if __name__ == "__main__": view(LogResults(verbose_failure=True))
+    
+    bcname  = "/some/path/to/your/file.bc"
+    cryname = "/some/path/to/your/file.cry"
+    
+    cryptol_load_file(cryname)
+    mod = llvm_load_module(bcname)
+    
+    RCS_result = llvm_verify(mod, 'RCS', RCS_Contract())
+    self.assertIs(RCS_result.is_success(), True)
+```
+
+Running the code with 
+
+`command`
+
+we get the output
+
+```
+put output here
+```
+
+As expected, this alerts us of a bug:
+
+```
+
+```
+
+One remedy to this is the following:
+
+```
+uint32_t RCS(uint32_t bits, uint32_t shift) {
+  shift %= 64
+  if(shift == 0) return bits;
+  return (bits << shift) | (bits >> (sizeof(bits)*8 - shift));
+}
+```
+
+Running SAW gives:
+
+```
+
+```
+
+Aha! We forgot about the case when `shift` is zero! Let's try again with
+
+```
+uint32_t RCS(uint32_t bits, uint32_t shift) {
+  shift %= 64
+  if(shift == 0) return bits;
+  return (bits << shift) | (bits >> (sizeof(bits)*8 - shift));
+}
+```
+
+Finally, SAW is happy!
+
+```
+
+```
+
+# Pointers, Arrays, and Structs
+
+## Pointers and Arrays
+
+We'll begin by writing a function that given two arrays adds the second to the first. One way to write this is to 
+write a function that just mutates the first array and returns nothing:
+
+```C
+
+```
+
+An alternative way to do this would be to create a new array storing the result and return it:
+
+```C
+
+```
+
+Finally, we could mutate the first input and return it:
+
+```C
+
+```
+
+The corresponding Cryptol specification is:
+
+```cryptol
+
+```
+
+### Initializing Arrays and Pointers
+
+To initialize the arrays and pointers we'll use the `alloc` command and `array_ty` type:
+
+```python
+def Array5AddMutate_Contract(Contract):
+  def specification(self):
+    a   = self.fresh_var(array_ty(5, i32), "a")
+    a_p = self.alloc(array_ty(5, i32), points_to=a) 
+    b   = self.fresh_var(array_ty(5, i32), "b")
+    b_p = self.alloc(array_ty(5, i32), points_to=b, read_only=True)
+    
+    self.execute_func(a_p, b_p)
+    
+    self.points_to(a_p, cry_f("rowAdd {a} {b}"))
     
     self.returns(void)
 ```
 
-## Arrays
+The `array_ty(type, length)` command creates a type representing an array with entries of type `type` and length `length`. The `alloc` command will initialize a symbolic pointer. Let's break down the initialization of `b_p`:
 
-## Structs
+| `b_p` | `self.alloc(` | `array_ty(5, i32)`|`,`|`points_to=b`|`,`|`read_only=True`|`)`|
+|-------|---------------|-------------------|---|-------------|---|----------------|---|
+| Assign this variable to | a symbolic pointer in the current contract | that has the following type | and | points to this object | with | read only permissions| . |
 
-## Verifying Options
+In C arrays are passed as pointers to the first element of the array, so when we call `execute_func` we supply `a_p` and `b_p` rather than `a` and `b`.
 
-### Assumptions
+To verify correctness, we assert that after function exectution `a_p` points to what the Cryptol specification claims it should using `self.points_to(a_p, cry_f("rowAdd {a} {b}"))`. 
 
-Sometimes we wish to assume the validity of functions. For example, we might want to black box a call to a library function. 
+Finally, as mentioned, a specification must always have a `self.returns` or `self.returns_f` line. Since our function returns nothing, we use `self.returns(void)`.
 
-### Lemmas
+### Helper Functions
 
-### Uninterpreting Functions
+To limit code reuse we can define helper functions in Python. For example, the following construct is often used:
+
+```python
+def ptr_to_fresh(c : Contract, ty : LLVMType, name : Optional[str] = None, read_only : Optional[bool] = False) -> Tuple[FreshVar, SetupVal]:
+    var = c.fresh_var(ty, name)
+    ptr = c.alloc(ty, points_to = var, read_only=read_only)
+    return (var, ptr)
+```
+
+Given a contract and a type this function outputs a tuple `(var, ptr)` where `var` is a fresh symbolic variable of the given type and `ptr` is a pointer pointing to this variable. We give optional arguments to name the fresh symbolic variable and to set the pointer to read_only. 
+
+To see this in action let's rewrite our previous contract using this:
+
+```python
+def Array5AddNewVar_Contract(Contract):
+  def specification(self):
+    (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
+    (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
+    
+    self.execute_func(a_p, b_p)
+    
+    self.points_to(a_p, cry_f("rowAdd {a} {b}"))
+    
+    self.returns(void)
+```
+
+### Auxilary Variables and Post Conditions
+
+A SAW contract is strictly divided into three parts: 
+1. Preconditions
+2. Execution
+3. Postconditions
+
+SAW will complain if you place a precondition after `execute_func` and similarly for postcondition. If a function returns a value that was not passed through `execute_func`, then you will have to initialize new fresh symbolic variables. For example, consider contracts for the next two C functions:
+
+```python
+def Array5AddNewVar_Contract(Contract):
+  def specification(self):
+    (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
+    (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
+    
+    self.execute_func(a_p, b_p)
+    
+    (c, c_p) = ptr_to_fresh(self, array_ty(5, i32), name="c")
+    self.points_to(c_p, cry_f("rowAdd {a} {b}"))
+    
+    self.returns(c_p)
+    
+def Array5AddAlias_Contract(Contract):
+  def specification(self):
+    (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
+    (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
+    
+    self.execute_func(a_p, b_p)
+    
+    (aPost, aPost_p) = ptr_to_fresh(self, array_ty(5, i32), name="aPost")
+    self.postcondition_f("{aPost} == rowAdd {a} {b}")
+    
+    self.returns(aPost_p)
+```
+
+One could replace `self.postcondition_f("{aPost} == rowAdd {a} {b}")` with `self.points_to(aPost_p, cry_f("rowAdd {a} {b}"))`. A SAW symbolic array translates into a Cryptol array and a Cryptol array translates into a SAW symbolic array.
+
+### Parameterized Contracts
+
+Suppose our C code was written as 
+
+```C
+
+```
+
+where the length of the array is not specified. The corresponding Cryptol code might be
+
+```cryptol
+
+```
+
+SAW does not have inductive reasoning capabilities. Suppose later in our program we realize we want to verify the above function not just for arrays of size 5, but also those of a different fixed size, say 10. One option would be to just make a new contract. But then later we realize we need to verify the function with arrays of a different fixed size, say 14. Rewriting the same contract over and over is a waste of code space. Instead, we could supply parameters to the Contract and write it once:
+
+```python
+def arrayAddNewVar_Contract(Contract):
+  def __init__(self, length : int):
+    super().__init__()
+    self.length = length
+
+  def specification(self):
+    (a, a_p) = ptr_to_fresh(self, array_ty(length, i32), name="a")
+    (b, b_p) = ptr_to_fresh(self, array_ty(length, i32), name="b", read_only=True)
+    
+    self.execute_func(a_p, b_p)
+    
+    self.points_to(a_p, cry_f("rowAdd {a} {b}"))
+    
+    self.returns(void)
+```
+
+Then we have a unit test for each size:
+
+```python
+class ArrayTests(unittest.TestCase):
+  def test_rowAdds(self):
+    connect(reset_server=True)
+    if __name__ == "__main__": view(LogResults(verbose_failure=True))
+    
+    bcname  = "/some/path/to/your/file.bc"
+    cryname = "/some/path/to/your/file.cry"
+    
+    cryptol_load_file(cryname)
+    mod = llvm_load_module(bcname)
+    
+    arrayAddNewVar05_result = llvm_verify(mod, 'arrayAddNewVar', arrayAddNewVar_Contract(5))
+    arrayAddNewVar10_result = llvm_verify(mod, 'arrayAddNewVar', arrayAddNewVar_Contract(10))
+    arrayAddNewVar15_result = llvm_verify(mod, 'arrayAddNewVar', arrayAddNewVar_Contract(15))
+    self.assertIs(arrayAddNewVar05_result.is_success(), True)
+    self.assertIs(arrayAddNewVar10_result.is_success(), True)
+    self.assertIs(arrayAddNewVar15_result.is_success(), True)
+```
+ 
+### Explicit Arrays
+
+Another way to initialize arrays is through the `array` command. For example, suppose I have the following C function (taken from [here](https://github.com/GaloisInc/saw-script/blob/337ca6c9edff3bcbcd6924289471abd5ee714c82/saw-remote-api/python/tests/saw/test-files/llvm_array_swap.c)):
+
+```C
+#include <stdint.h>
+
+void array_swap(uint32_t a[2]) {
+    uint32_t tmp = a[0];
+    a[0] = a[1];
+    a[1] = tmp;
+}
+```
+
+Here's a contract that doesn't even require Cryptol (taken from [here](https://github.com/GaloisInc/saw-script/blob/337ca6c9edff3bcbcd6924289471abd5ee714c82/saw-remote-api/python/tests/saw/test_llvm_array_swap.py)):
+
+```python
+class ArraySwapContract(Contract):
+    def specification(self):
+        a0 = self.fresh_var(i32, "a0")
+        a1 = self.fresh_var(i32, "a1")
+        a  = self.alloc(array_ty(2, i32), points_to=array(a0, a1))
+
+        self.execute_func(a)
+
+        self.points_to(a[0], a1)
+        self.points_to(a[1], a0)
+        self.returns(void)
+```
+
+Explicit arrays can be useful when you want to assert a condition on a particular element of the array. Of course, a drawback is you have to initialize every member of the array. However, this can be problematic for large arrays. Ideally, one would just have to declare the array implicitly as before and then pass this array to a Cryptol specification for postconditions as was done in the previous examples.
+
+
+## Structs 
+
+Consider the following struct:
+
+```C
+typedef struct {
+  uint32_t *vector;
+  uint32_t size;
+} 
+```
+
+
+### Struct Initialization
+
+
+
+### Structs in Cryptol
+
+
+
+### Struct Helper Functions
+
+
+
+# Assumptions and Lemmas
+
+
+# Uninterpreting Functions
