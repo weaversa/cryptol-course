@@ -99,7 +99,7 @@ which can be converted to an image viewable in a web browser:
 > dot -Tpng -o build/salsa20.png build/salsa20.bc.callgraph.dot
 ```
 
-<a href="./salsa20.bc.png">
+<a href="../../../../misc/salsa20.bc.png">
     <img class="center" src="./misc/salsa20.bc.png" alt="salsa20.bc call graph">
 </a>
 
@@ -108,7 +108,7 @@ which can be converted to an image viewable in a web browser:
 We are not aware of any similar tool to graphically depict Cryptol
 modules, but here is a manually generated graph for `Salsa20.cry`:
 
-<a href="./Salsa20.cry.png">
+<a href="../../../../misc/Salsa20.cry.png">
     <img class="center" src="./misc/Salsa20.cry.png" alt="Salsa20.cry partial dependency graph">
 </a>
 
@@ -120,7 +120,7 @@ Finally, here is another manually generated graph that shows which SAW
 method specifications are verified against which implementation
 functions, using which Cryptol definitions:
 
-<a href="./salsa20.saw.png">
+<a href="../../../../salsa20.saw.png">
     <img class="center" src="./misc/salsa20.saw.png" alt="salsa20.saw verification/override graph">
 </a>
 
