@@ -100,7 +100,7 @@ which can be converted to an image viewable in a web browser:
 ```
 
 <a href="../../../../misc/salsa20.bc.png">
-    <img class="center" src="./misc/salsa20.bc.png" alt="salsa20.bc call graph">
+    <img class="center" src="../../../../misc/salsa20.bc.png" alt="salsa20.bc call graph">
 </a>
 
 (`llvm.*` are LLVM "intrinsics" that we can ignore for now.)
@@ -109,7 +109,7 @@ We are not aware of any similar tool to graphically depict Cryptol
 modules, but here is a manually generated graph for `Salsa20.cry`:
 
 <a href="../../../../misc/Salsa20.cry.png">
-    <img class="center" src="./misc/Salsa20.cry.png" alt="Salsa20.cry partial dependency graph">
+    <img class="center" src="../../../../misc/Salsa20.cry.png" alt="Salsa20.cry partial dependency graph">
 </a>
 
 (These also call numerous functions from the Cryptol prelude, but we
@@ -121,7 +121,7 @@ method specifications are verified against which implementation
 functions, using which Cryptol definitions:
 
 <a href="../../../../salsa20.saw.png">
-    <img class="center" src="./misc/salsa20.saw.png" alt="salsa20.saw verification/override graph">
+    <img class="center" src="../../../../misc/salsa20.saw.png" alt="salsa20.saw verification/override graph">
 </a>
 
 Support for
