@@ -2,9 +2,7 @@ include "./common/llvm.saw";
 
 import "./specs/Salsa20.cry";
 
-let prover nm = yices;
-
-let bytes n = (llvm_array n uint8_t);
+let bytes n = llvm_array n uint8_t;
 let words n = llvm_array n i32;
 
 let oneptr_update_func n ty f = do {

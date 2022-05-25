@@ -10,6 +10,7 @@ That tutorial
   * specifies and verifies a simple bitcount implementation
   * introduces verification of pointer-based implementations
   * describes and motivates a _compositional_ verification of Salsa20
+    (feel free to return to our module and revisit the next part later)
   * offers an extended exercise on proof maintenance for HMAC
 
 # Uninterpreted Functions
@@ -75,13 +76,14 @@ SMT solvers that are beyond the scope of this course.)
 ## Practice with Uninterpreted Functions and Overrides
 
 Now that we have added uninterpreted functions to our repertoire, let's
-apply them to Salsa20...but first, let's more closely examine our
-target and the Galois tutorial's progress toward verifying it...
+apply them to Salsa20...but first, let's more closely examine the
+Galois tutorial's implementation and progress toward verifying it...
 
-Clang/LLVM includes a command line tool called `opt`. `opt` is
+Clang/LLVM includes a command line tool called
+[`opt`](https://llvm.org/docs/CommandGuide/opt.html). `opt` is
 primarily an _optimizer_ (hence its name), but can also be used for
-analysis. For now we are interested in its feature to generate a
-_callgraph_:
+bitcode analysis. For now we are interested in its feature to generate
+a _callgraph_:
 
 ```
 > cd labs/Demos/Salsa20
@@ -113,31 +115,30 @@ modules, but here is a manually generated graph for `Salsa20.cry`:
 </a>
 
 (These also call numerous functions from the Cryptol prelude, but we
-can ignore most these for now. `rotl` implements `(<<<)`, so we include
-it in the graph.)
+can ignore most of these for now. `rotl` implements `(<<<)`, so we
+include it in the graph.)
 
 Finally, here is another manually generated graph that shows which SAW
-method specifications are verified against which implementation
-functions, using which Cryptol definitions:
+method specifications are verified (or not) against which
+implementation functions, using which Cryptol definitions, and which
+potential overrides (based on the implementation's callgraph) and
+function uninterpretations (based on dependencies among Cryptol
+definitions) are used, in `salsa20.sw`:
 
 <a href="../../../../salsa20.saw.png">
     <img class="center" src="../../../../misc/salsa20.saw.png" alt="salsa20.saw verification/override graph">
 </a>
 
+This assumes that each function in the implementation is specified by
+one SAW method specification, which in turn refers to one Cryptol
+specification that closely reflects the function being verified. This
+is often not the case, but if so, shows a close correspondence between
+specification and implementation, simplifying the assurance case.
+
 Support for
 [visualizing a SAW Remote API for Python script](https://github.com/GaloisInc/saw-script/issues/1664)
-is in early development.
-
-The edge labels for `s20_encrypt32` represent that it was verified for
-different buffer lengths, whereas no other method specifications
-require an argument. In general, one could visualize this as a given
-edge with source and destination labels representing arguemnts to
-respective SAW method specifications. This assumes that each function
-in the implementation is specified by a SAW method specification, which
-in turn refers to one Cryptol specification that closely reflects the
-function being verified. This is often not the case, but if so, shows a
-close correspondence between specification and implementation,
-simplifying the assurance case.
+is in early development. This dashboard dynamically visualizes the
+override graph of a SAW Remote API for Python proof script.
 
 Informed by these visualizations, perhaps we can fill in some gaps...
 
@@ -145,13 +146,14 @@ Informed by these visualizations, perhaps we can fill in some gaps...
 (replace `abc` with `w4_unint_yices([<uninterpreted functions>])`) in
 `salsa20.saw` that are straightforwardly implemented by functions in
 `salsa20.bc`. (`s20_quarterround` implements `quarterround`, `s20_hash`
-implements `Salsa20`, etc.) How does this affect proof times?
+implements `Salsa20`, etc., as depicted by dashed blue edges in the
+above graph.) How does this affect proof times?
 
-**EXERCISE**: Add a method specification and override to verify that
-`rotl` in `salsa20.bc` implements `(<<<)`. Use this override to verify
-the function that directly calls `rotl`. How does this affect proof
-times? Can you specify `(<<<)` as an uninterpreted function?
-
-**EXERCISE**: Are any potential overrides missing from other
-`llvm_verify` instructions in `salsa20.saw`? How does adding these
-affect proof times?
+**EXERCISE**: Based on the above `salsa20.saw` diagram, are any
+potential overrides missing from other `llvm_verify` instructions in
+`salsa20.saw`? (Unused potential overrides are depicted as dashed red
+edges in the above graph.) Are any implementation functions left
+unspecified or unused in the compositional verification? (Dashed red
+edges to nodes without an entry for a SAW method specification.) How
+does specifying, verifying, and adding corresponding overrides and
+uninterpreted functions affect proof times?
