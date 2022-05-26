@@ -1,4 +1,3 @@
-# from pathlib import Path
 import os
 import unittest
 from cryptol.cryptoltypes import to_cryptol
