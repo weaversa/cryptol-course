@@ -1,0 +1,8 @@
+module rcs where
+
+increment : [32] -> [32]
+increment x = x + 1
+
+
+RCS : [32] -> Integer -> [32]
+RCS xs shift = xs >>> shift
