@@ -380,7 +380,7 @@ def Array5AddNewVar_Contract(Contract):
 ```
 ### Postconditions and `points_to`
 
-Consider a contract for the third C function:
+Consider another implementation of the previous contract
 
 ```python    
 def Array5AddAlias_Contract(Contract):
@@ -390,10 +390,10 @@ def Array5AddAlias_Contract(Contract):
     
     self.execute_func(a_p, b_p)
     
-    (aPost, aPost_p) = ptr_to_fresh(self, array_ty(5, i32), name="aPost")
-    self.postcondition_f("{aPost} == rowAdd {a} {b}")
+    (c, c_p) = ptr_to_fresh(self, array_ty(5, i32), name="c")
+    self.postcondition_f("{c} == rowAdd {a} {b}")
     
-    self.returns(aPost_p)
+    self.returns(c_p)
 ```
 
 One could replace `self.postcondition_f("{aPost} == rowAdd {a} {b}")` with `self.points_to(aPost_p, cry_f("rowAdd {a} {b}"))`. A SAW symbolic array translates into a Cryptol array and a Cryptol array translates into a SAW symbolic array.
@@ -574,6 +574,8 @@ Explicit arrays can be useful when you want to assert a condition on a particula
 
 ## Structs 
 
+//Dj help
+
 Consider the following struct:
 
 ```C
@@ -590,9 +592,9 @@ typedef struct {
 
 ### Structs in Cryptol
 
+# Ask Sean for name? Compositional Logic?
 
-
-# Assumptions and Lemmas
+## Assumptions and Lemmas
 
 Sometimes one might want to blackbox certain parts of the verification such as functions coming from libraries, especially if they have already been formally verified. For example, the height of [height-balanced binary trees](https://en.wikipedia.org/wiki/Self-balancing_binary_search_tree) on n nodes is given by the ceiling of `log(n)`. In C we might use the `math` library to write the helper function
 
@@ -643,6 +645,42 @@ addOneRemoveTwo_result = llvm_verify(mod, 'addOneRemoveTwo', addOneRemoveTwo(), 
 
 One can think of lemmas as rewrite rules under the hood. Whenever SAW encounters log2 function in the C it will interpret its behavior as what is specified in the `log2Contract()`.
 
-# Uninterpreting Functions
+## Uninterpreting Functions
 
 An alternative to passing in lemmas is uninterpreting a funciton. This is useful when you don't care about the specifics of the values produced by a total function, but rather, the types of the value produced. For example, hashing algorithms are often total functions. We often don't care about the particular bits of a hash function, but rather, that the hash function returned some 32-bit integer. 
+
+//add in use when function complicated
+//add uninterpreting may cause failure (logic needed sometimes). This can be avoided sometimes by making sure for every function you are uninterpreting you are also passing in a corresponding lemma
+
+
+# Advanced Topics and Exercises
+
+//Dj add stuff
+
+## Global Variables
+
+//DJ add stuff
+
+//maybe something with `extern`
+
+### Nested DEFINE Statements
+
+// SAWs limitations
+// Worse case: edit the source code
+
+## Aliasing
+
+// Talk about in general what aliasing is
+// DJ add stuff (specifically with aliases)
+// Talk about SAW limitations and lemmas
+
+### Wrapper Functions
+
+// Worse case scenario: editing the source code
+
+## Large Data
+
+// Dj add the stuff about inputting in a big array
+
+## Capstone
+
