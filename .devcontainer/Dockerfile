@@ -40,10 +40,9 @@ RUN apt-get update -y && DEBIAN_FRONTEND="noninteractive" apt-get install -y \
     cargo \
     && apt-get clean && rm -rf /var/lib/apt/lists/*
 
-# Link clang
+# Link clang-12 utils
 
-RUN ln -s /usr/bin/clang-12 /usr/bin/clang
-RUN ln -s /usr/bin/clang++-12 /usr/bin/clang++
+RUN find /usr/bin/ -name "*-12" -exec basename {} \; | sed "s/\-12//" | xargs -I{} ln -s /usr/bin/'{}'-12 /usr/bin/'{}'
 
 # Install SAW
 
