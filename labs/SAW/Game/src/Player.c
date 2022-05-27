@@ -1,5 +1,12 @@
 #include "Player.h"
 
+
+uint32_t levelUp(uint32_t level)
+{
+  return (level + 1);
+}
+
+
 uint32_t initializeDefaultPlayer(player_t* player)
 {
   // Variables

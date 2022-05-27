@@ -1,0 +1,4 @@
+module Player where
+
+levelUp : [32] -> [32]
+levelUp level = level + 1
