@@ -427,6 +427,8 @@ OK
 
 # Pointers, Arrays, and Structs
 
+// There are many subsections to this section... does it seem cluttered or unorganized?
+
 ## Pointers and Arrays
 
 We'll begin by writing a function that given two arrays adds the
