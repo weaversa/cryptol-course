@@ -23,7 +23,7 @@ $ saw-remote-api http --host 0.0.0.0 --port 36691 &
 Congrats! You now have a server version of SAW running in the
 background ready to accept commands on port `36691`.
 
-- directory layout
+- directory layout //maybe here put something about where to find these files in the directory structure and how to run them?
 
 # Python Contracts Introduction
 
