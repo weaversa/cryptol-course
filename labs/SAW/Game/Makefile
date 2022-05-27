@@ -1,3 +1,6 @@
+# Note: Makefile assumes user already started the SAW remote API
+# $ start-saw-remote-api
+
 # Variables to hold relative file paths
 SRC=src
 PROOF=proof
