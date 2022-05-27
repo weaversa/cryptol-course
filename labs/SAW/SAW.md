@@ -72,11 +72,44 @@ right circular shift we want to verify:
 
 ```C
 uint32_t RCS(uint32_t bits, uint32_t shift) {
-  return (bits << shift) | (bits >> (sizeof(bits)*8 - shift));
+  return (bits << (sizeof(bits) * 8 - shift)) | (bits >> shift);
 }
 ```
 
-and the corresponding Cryptol specification:
+SAW doesn't actually verify C source, but rather C compiled down to
+LLVM intermediate representation (IR), or bitcode. This can be
+accomplished via the `clang` compiler. In this instance, we can create
+the bitcode by entering the follwing command in a terminal:
+
+```sh
+$ clang -emit-llvm labs/SAW/src/rcs.c -c -o labs/SAW/src/rcs.bc
+```
+
+We can inspect the bitcode using SAW by loading the module and
+printing some metadata.
+
+```Xsaw-session
+$ saw
+ ┏━━━┓━━━┓━┓━┓━┓
+ ┃ ━━┓ ╻ ┃ ┃ ┃ ┃
+ ┣━━ ┃ ╻ ┃┓ ╻ ┏┛
+ ┗━━━┛━┛━┛┗━┛━┛ version 0.9.0.99 (<non-dev-build>)
+
+sawscript> r <- llvm_load_module "labs/SAW/src/rcs.bc"
+sawscript> print r
+Module: rcs.bc
+Types:
+
+Globals:
+
+External references:
+
+Definitions:
+  i32 @RCS(i32 %0, i32 %1)
+
+``
+
+The corresponding Cryptol specification for right circular shift is:
 
 ```cryptol
 RCS : [32] -> [32] -> [32]
@@ -84,7 +117,7 @@ RCS xs shift = xs >>> shift
 ```
 
 For the SAW Python API we make a `Contract` object with the required
-`specificaiton` function:
+`specification` function:
 
 ```python
 class RCS_Contract(Contract):
@@ -221,6 +254,7 @@ using `self.assertIs(RCS_result.is_success(), True)`.
 The full code is:
 
 ```python3
+import os
 import unittest
 from saw_client             import *
 from saw_client.crucible    import * 
@@ -242,29 +276,58 @@ class RCSTest(unittest.TestCase):
     connect(reset_server=True)
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
     
-    bcname  = "/some/path/to/your/file.bc"
-    cryname = "/some/path/to/your/file.cry"
+    pwd = os.getcwd()
+    bcname  = pwd + "/../src/rcs.bc"
+    cryname = pwd + "/spec/rcs.cry"
     
     cryptol_load_file(cryname)
     mod = llvm_load_module(bcname)
     
     RCS_result = llvm_verify(mod, 'RCS', RCS_Contract())
     self.assertIs(RCS_result.is_success(), True)
+
+if __name__ == "__main__":
+    unittest.main()
 ```
 
-Running the code with 
-
-`command`
-
-we get the output
+We can now run the proof script.
 
 ```
-put output here
+$ cd labs/SAW/proof
+$ python3 rcs.py
+ifying RCS ...
+[03:08:29.987] Simulating RCS ...
+[03:08:29.988] Checking proof obligations RCS ...
+[03:08:30.007] Subgoal failed: RCS safety assertion:
+internal: error: in RCS
+Undefined behavior encountered
+Details:
+  Poison value created
+        The second operand of `shl` was equal to or greater than the number of bits in the first operand
+        
+[03:08:30.007] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 382}
+[03:08:30.007] ----------Counterexample----------
+[03:08:30.007]   shift0: 134217728
+[03:08:30.007] ----------------------------------
+
+F
+======================================================================
+FAIL: test_RCS (__main__.RCSTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "cryptol-course/labs/SAW/proof/rcs.py", line 31, in test_RCS
+      self.assertIs(RCS_result.is_success(), True)
+      AssertionError: False is not True
+      
+      ----------------------------------------------------------------------
+      Ran 1 test in 0.750s
+      
+      FAILED (failures=1)
+      🛑  The goal failed to verify.
 ```
 
 SAW alerted us about potentially undefined behavior mentioned in the
-[C
-specification](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf)
+[C specification](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf)
 has the following to say about bit shifts:
 
 > If the value of the right operand is negative or is greater than or
@@ -274,39 +337,94 @@ has the following to say about bit shifts:
 As expected, this alerts us of a bug:
 
 ```
-
+        The second operand of `shl` was equal to or greater than the number of bits in the first operand
+        
+[03:08:30.007] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 382}
+[03:08:30.007] ----------Counterexample----------
+[03:08:30.007]   shift0: 134217728
+[03:08:30.007] ----------------------------------
 ```
+
+SAW also provides a handy counterexample, namely, when `shift =
+134217728` (clearly larger than 31), we encounter undefined behavior.
 
 One remedy to this is the following:
 
 ```
 uint32_t RCS(uint32_t bits, uint32_t shift) {
-  shift %= sizeof(bits)*8;
-  return (bits << shift) | (bits >> (sizeof(bits)*8 - shift));
+  shift %= sizeof(bits) * 8;
+  return (bits << (sizeof(bits) * 8 - shift)) | (bits >> shift);
 }
 ```
 
-Running SAW gives:
+Recompiling and running SAW gives:
 
 ```
+rcs.py:30):
+error: Proof failed.
+    stdout:
+[03:11:54.334] Verifying RCS ...
+[03:11:54.334] Simulating RCS ...
+[03:11:54.335] Checking proof obligations RCS ...
+[03:11:54.351] Subgoal failed: RCS safety assertion:
+internal: error: in RCS
+Undefined behavior encountered
+Details:
+  Poison value created
+        The second operand of `shl` was equal to or greater than the number of bits in the first operand
+        
+[03:11:54.351] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 388}
+[03:11:54.351] ----------Counterexample----------
+[03:11:54.351]   shift0: 0
+[03:11:54.351] ----------------------------------
 
+F
+======================================================================
+FAIL: test_RCS (__main__.RCSTest)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "cryptol-course/labs/SAW/proof/rcs.py", line 31, in test_RCS
+      self.assertIs(RCS_result.is_success(), True)
+      AssertionError: False is not True
+      
+      ----------------------------------------------------------------------
+      Ran 1 test in 0.723s
+      
+      FAILED (failures=1)
+      🛑  The goal failed to verify.~
 ```
 
-Aha! We forgot about the case when `shift` is zero! Let's try again with
+Aha! The counter example shows that we forgot about the case when
+`shift` is zero! This causes `(sizeof(bits) * 8 - 0)` to be `32`,
+which is equal to the wordsize of `bits`, and hence causes `<<` to
+exhibit undefined behavior.
+
+Let's try again with
 
 ```
 uint32_t RCS(uint32_t bits, uint32_t shift) {
   shift %= sizeof(bits)*8;
   if(shift == 0) return bits;
-  return (bits << shift) | (bits >> (sizeof(bits)*8 - shift));
+  return (bits << (sizeof(bits) * 8 - shift)) | (bits >> shift);
 }
 ```
 
-Finally, SAW is happy (or, more importantly, the C is correct and free
-of undefined behavior)!
+Finally, SAW is happy. More importantly, the C is correct and free of
+undefined behavior.
 
 ```
+$ clang ../src/rcs.c -o ../src/rcs.bc -c -emit-llvm && python3 rcs.py
+[03:14:09.561] Verifying RCS ...
+[03:14:09.562] Simulating RCS ...
+[03:14:09.563] Checking proof obligations RCS ...
+[03:14:09.614] Proof succeeded! RCS
+✅  Verified: lemma_RCS_Contract (defined at cryptol-course/labs/SAW/proof/rcs.py:30)
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.780s
 
+OK
+✅  The goal was verified!
 ```
 
 # Pointers, Arrays, and Structs
