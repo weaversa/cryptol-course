@@ -2,7 +2,7 @@
 
 To run any of the examples in this lab, you need to first start the
 Software Analysis Workbench (SAW) remote API (`saw-remote-api`).  If
-you are using the development container that comes w/ this course
+you are using the development container that comes with this course
 (`ghcr.io/weaversa/cryptol-course`), you can enter the following
 command in your terminal:
 
@@ -41,6 +41,9 @@ class contractName(Contract):
 class testName(unittest.TestCase):
   def specificTestName(self):
     # Verify contracts
+
+if __name__ == "__main__":
+    unittest.main()
 ```
 
 ## Imports
@@ -107,7 +110,7 @@ External references:
 Definitions:
   i32 @RCS(i32 %0, i32 %1)
 
-``
+```
 
 The corresponding Cryptol specification for right circular shift is:
 
@@ -168,37 +171,32 @@ can use `self.returns(void)`.
 ### Terms from Cryptol
 
 The command `cry(string)` converts a Python string into a
-`CryptolTerm` that can be used in SAW. The `_f` indicates one can pass
-in Python local variables into the strings by surrounding the variable
-with braces as we did in `{bits} >>> {shift}`. In fact, `returns_f` is
+`CryptolTerm` that can be used in SAW. The `cry_f(string)` command is similar to `cry`,
+but the `_f` indicates one can pass Python local variables into the strings. To do this, surround the variable
+with braces as we did in `returns_f("{bits} >>> {shift}")`. In fact, `returns_f` is
 just syntactic sugar for `returns(cry_f(string))`.
 
 The `CryptolTerm` class is a subclass of `SetupVal`. This allows using
 `CryptolTerm` as a `SetupVal`.
 
-Braces are sometimes used in Cryptol to assign type parameters or
-record types. To have the parser parse a literal brace in a Cryptol
-string repeat the `{` or `}` symbols.  For example, consider the
-following made up SAW line:
+Braces are sometimes used in Cryptol to assign type parameters or declare records. 
+The symbols `{{` and `}}` are used to denote literal braces for these cases when parsing Python strings.  For example, let's think how to parse the following line:
 
 ```python
-  self.returns_f("{{a = take`{{5}} {blah}, b = take`{{{N}}} blah }} == foo `blah")
+  self.returns_f("{{a = take`{{5}} {blah}, b = take`{{{N}}} {blah} }} == foo `")
 ```
 
-Suppose `blah` is a local Python variable equal to `23` and `N` is a
-local Python variable equal to `2`. The above string pasrses in
-Cryptol as
+If `blah` is a local Python variable equal to `23` and `N` is a
+local Python variable equal to `2`, then the string parses in Cryptol as
 
 ```cryptol
 {a = take`{5} 23, b = take`{2} 23} == foo `blah
 ```
 
-where `foo` is some Cryptol function returning a record, and `blah` is
+where `foo` is some Cryptol function returning a record and `blah` is
 some Cryptol type in the specification loaded.
 
 ## Unit Testing
-
-Hopefully SAW alerts us of this behavior. To check, we need to make a test:
 
 ```python
 class RCSTest(unittest.TestCase):
@@ -436,26 +434,43 @@ second to the first. One way to write this is to write a function that
 just mutates the first array and returns nothing:
 
 ```C
-
+void addRow5Mutate(uint32_t a[5], uint32_t b[5]) {
+  for(int i  = 0 ; i < 5; i++) {
+    a[i] += b[i];
+  }
+  return;
+}
 ```
 
 An alternative way to do this would be to create a new array storing
 the result and return it:
 
 ```C
-
+uint32_t* addRow5NewVar(uint32_t a[5], uint32_t b[5]) {
+  uint32_t* c = (uint32_t*) malloc(5*sizeof(uint32_t));
+  for(int i  = 0 ; i < 5; i++) {
+    c[i] = a[i] + b[i];
+  }
+  return c;
+}
 ```
 
 Finally, we could mutate the first input and return it:
 
 ```C
-
+uint32_t* addRow5Alias(uint32_t a[5], uint32_t b[5]) {
+  for(int i  = 0 ; i < 5; i++) {
+    a[i] += b[i];
+  }
+  return a;
+}
 ```
 
 The corresponding Cryptol specification is:
 
 ```cryptol
-
+addRow5 : [4][32] -> [4][32] -> [4][32]
+addRow5 a b = a + b
 ```
 
 ### Initializing Arrays and Pointers
@@ -464,7 +479,7 @@ To initialize the arrays and pointers we'll use the `alloc` command
 and `array_ty` type:
 
 ```python
-def Array5AddMutate_Contract(Contract):
+def addRow5Mutate_Contract(Contract):
   def specification(self):
     a   = self.fresh_var(array_ty(5, i32), "a")
     a_p = self.alloc(array_ty(5, i32), points_to=a) 
@@ -518,7 +533,7 @@ constraints.
 To see this in action, let's rewrite our previous contract:
 
 ```python
-def Array5AddMutate_Contract(Contract):
+def addRow5Mutate_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -544,7 +559,7 @@ new fresh symbolic variables. For example, consider the proposed
 contract for the next C function:
 
 ```python
-def Array5AddNewVar_Contract(Contract):
+def addRow5NewVar_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -571,7 +586,7 @@ to the previous contract is moving the declaration of `c_p` to the
 postcondition block:
 
 ```python
-def Array5AddNewVar_Contract(Contract):
+def addRow5NewVar_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -583,14 +598,33 @@ def Array5AddNewVar_Contract(Contract):
     
     self.returns(c_p)
 ```
+
+#### Python Wildcards
+
+Python supports wildcards, denoted by `_`, like Cryptol. Wildcards are placeholders for values we don't use. For example, we could rewrite the `Array5AddNewVar_Contract` as follows: 
+
+```python
+def addRow5NewVar_Contract(Contract):
+  def specification(self):
+    (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
+    (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
+    
+    self.execute_func(a_p, b_p)
+    
+    (_, c_p) = ptr_to_fresh(self, array_ty(5, i32), name="c")
+    self.points_to(c_p, cry_f("rowAdd {a} {b}"))
+    
+    self.returns(c_p)
+```
+
 ### Postconditions and `points_to`
 
 Consider another implementation of the previous contract
 
 ```python    
-def Array5AddAlias_Contract(Contract):
+def addRow5NewVar_Contract(Contract):
   def specification(self):
-    (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
+    (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a", read_only=True)
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
     
     self.execute_func(a_p, b_p)
@@ -602,7 +636,7 @@ def Array5AddAlias_Contract(Contract):
 ```
 
 One could replace `self.postcondition_f("{aPost} == rowAdd {a} {b}")`
-with `self.points_to(aPost_p, cry_f("rowAdd {a} {b}"))`. A SAW
+with `self.points_to(c_p, cry_f("rowAdd {a} {b}"))`. A SAW
 symbolic array translates into a Cryptol array and a Cryptol array
 translates into a SAW symbolic array.
 
@@ -611,41 +645,43 @@ translates into a SAW symbolic array.
 Suppose our C code was written as 
 
 ```C
-
+uint32_t* addRowAlias(uint32_t* a, uint32_t* b, uint32_t length) {
+  for(int i  = 0 ; i < length; i++) {
+    a[i] += b[i];
+  }
+  return a;
+}
 ```
 
 where the length of the array is not specified. The corresponding
 Cryptol code might be
 
 ```cryptol
-
+addRow : {length} (fin length) => [n][32] -> [n][32] -> [n][32]
+addRow a b = a + b
 ```
 
-SAW does not have inductive reasoning capabilities. Suppose later in
-our program we realize we want to verify the above function not just
-for arrays of size 5, but also those of a different fixed size,
-say 10. One option would be to just make a new contract. However,
-rewriting the same contract over and over is a waste of code. Instead,
-we could supply parameters to the Contract and write it once:
+SAW does not have inductive reasoning capabilities. One option would be to make a new contract for 
+each `length` that's actually used. Instead we can make a single contract with a length input:
 
 ```python
-def arrayAddNewVar_Contract(Contract):
+def addRowAlias_Contract(Contract):
   def __init__(self, length : int):
     super().__init__()
     self.length = length
 
   def specification(self):
-    (a, a_p) = ptr_to_fresh(self, array_ty(length, i32), name="a")
-    (b, b_p) = ptr_to_fresh(self, array_ty(length, i32), name="b", read_only=True)
+    (a, a_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="a")
+    (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
     
     self.execute_func(a_p, b_p)
     
-    self.points_to(a_p, cry_f("rowAdd {a} {b}"))
+    self.points_to(a_p, cry_f("rowAdd`{{{self.length}}} {a} {b}"))
     
     self.returns(void)
 ```
 
-Then we have a unit test for each size:
+However, we still need to make a test for each length encountered:
 
 ```python
 class ArrayTests(unittest.TestCase):
@@ -659,13 +695,15 @@ class ArrayTests(unittest.TestCase):
     cryptol_load_file(cryname)
     mod = llvm_load_module(bcname)
     
-    arrayAddNewVar05_result = llvm_verify(mod, 'arrayAddNewVar', arrayAddNewVar_Contract(5))
-    arrayAddNewVar10_result = llvm_verify(mod, 'arrayAddNewVar', arrayAddNewVar_Contract(10))
-    self.assertIs(arrayAddNewVar05_result.is_success(), True)
-    self.assertIs(arrayAddNewVar10_result.is_success(), True)
+    arrayAddNewVar05_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(5))
+    arrayAddNewVar10_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(10))
+    self.assertIs(addRowAlias05_result.is_success(), True)
+    self.assertIs(addRowAlias10_result.is_success(), True)
 ```
 
 ### Array Example Full Code
+
+//Fix this
 
 ```python
 import unittest
@@ -704,14 +742,15 @@ def arrayAddNewVar_Contract(Contract):
     self.length = length
 
   def specification(self):
-    (a, a_p) = ptr_to_fresh(self, array_ty(length, i32), name="a")
-    (b, b_p) = ptr_to_fresh(self, array_ty(length, i32), name="b", read_only=True)
+    (a, a_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="a", read_only=True)
+    (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
     
     self.execute_func(a_p, b_p)
     
-    self.points_to(a_p, cry_f("rowAdd {a} {b}"))
+    (_, c_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="c")
+    self.points_to(c_p, cry_f("rowAdd`{{{self.length}}} {a} {b}"))
     
-    self.returns(void)
+    self.returns(c_p)
 
 def array5AddAlias_Contract(Contract):
   def specification(self):
@@ -720,10 +759,9 @@ def array5AddAlias_Contract(Contract):
     
     self.execute_func(a_p, b_p)
     
-    (aPost, aPost_p) = ptr_to_fresh(self, array_ty(5, i32), name="aPost")
-    self.postcondition_f("{aPost} == rowAdd {a} {b}")
+    self.points_to(a_p, cry_f("addRow5 {a} {b}"))
     
-    self.returns(aPost_p)
+    self.returns(a_p)
 
 class ArrayTests(unittest.TestCase):
   def test_rowAdds(self):
@@ -749,6 +787,8 @@ class ArrayTests(unittest.TestCase):
 ```
 
 ### Preconditions and Indices
+
+//SHOW SOMETHING FAILING BECAUSE LACK OF PRECONDITION. For this could have a function that takes in an arbitrary sized array, but the function that uses it only has an array of size 5. Then explain how the SAW, when analyzing the first function in isolation, has no way of knowing the input in use cases actually has fixed size 5 so you need a precondition
 
 A common situation where one might use `precondition_f` is when an
 integer is passed into a function and is used to index into an array:
@@ -794,7 +834,7 @@ implicitly as before and then pass this array to a Cryptol
 specification for postconditions as was done in the previous examples.
 
 
-## Structs 
+# Structs 
 
 //Dj help
 
@@ -811,7 +851,7 @@ typedef struct {
 
 ### Structs in Cryptol
 
-# Ask Sean for name? Compositional Logic?
+# Using Gained Knowledge
 
 ## Assumptions and Lemmas
 
