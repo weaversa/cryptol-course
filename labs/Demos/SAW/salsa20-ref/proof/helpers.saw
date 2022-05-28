@@ -1,0 +1,143 @@
+// Sawscript utility definitions, inspired by @weaversa's
+// https://github.com/GaloisInc/saw-demos/blob/master/common/llvm.saw
+
+// let prover=yices;
+// let unint_prover=w4_unint_yices;
+
+// TODO: Use real provers after sanity-checking exercises
+let prover = quickcheck 10;
+let unint_prover (_: [String]) = (quickcheck 10);
+
+// Remove 'crucible' from common commands
+let alloc          = llvm_alloc;
+let alloc_readonly = llvm_alloc_readonly;
+let points_to      = llvm_points_to;
+let precond        = llvm_precond;
+let from_cryptol   = llvm_term;
+
+let global       = llvm_global;
+let global_alloc = llvm_alloc_global;
+let global_init name = do {
+  global_alloc name;
+  points_to (global name)
+            (llvm_global_initializer name);
+};
+let NULL     = llvm_null;
+let element  = llvm_elem;
+let equal    = llvm_equal;
+let execute  = llvm_execute_func;
+let postcond = llvm_postcond;
+let returns  = llvm_return;
+let array    = llvm_array;
+
+let verify module function_name overrides spec =
+  llvm_verify module function_name overrides true spec prover;
+
+let unint_verify module function_name overrides spec unints =
+  llvm_verify module function_name overrides true spec (if (null unints) then prover else unint_prover unints);
+
+// Declare constants used to denote what kind of space a pointer is
+// pointing to.
+let CONST   = {{ 0 : [2] }}; //Points to allocated space that is READ ONLY.
+let WRITE   = {{ 1 : [2] }}; //Points to allocated space that can be modified.
+let UNALLOC = {{ 2 : [2] }}; //Pointer does not point to allocated space.
+
+// Some constants for checking return values of boolean functions
+let TRUE  = from_cryptol {{ 1 : [1] }};
+let FALSE = from_cryptol {{ 0 : [1] }};
+
+/**
+ * Returns a fresh `Term` of specified `type` with given `name`
+ */
+let symbolic_value (type : LLVMType) (name : String) =
+  llvm_fresh_var name type;
+
+/**
+ * Returns a SetupValue of a fresh variable
+ */
+let symbolic_variable (type : LLVMType) (name : String) = do {
+     r <- symbolic_value type name;
+     return (from_cryptol r);
+};
+
+/**
+ * Returns a tuple of SetupValue and Term of a new symbolic value
+ */
+let symbolic_setup_tuple (type : LLVMType) (name : String) = do {
+  cfvTerm <- symbolic_value type name;
+  let setupVal = from_cryptol cfvTerm;
+  return (setupVal, cfvTerm);
+};
+
+/**
+ * Initializes pointer of specified `type` to specified `value` and
+ * returns the pointer
+ */
+let alloc_init ty v = do {
+    p <- alloc ty;
+    points_to p v;
+    return p;
+};
+
+/**
+ * Creates a fresh symbolic variable with name of specified type,
+ * initializes the pointer to the variable's location, and returns
+ * the tuple (variable, pointer)
+ */
+let pointer_to_fresh (type : LLVMType) (name : String) = do {
+    (x_s, x_t) <- symbolic_setup_tuple type name;
+    p <- alloc_init type x_s;
+    return (x_t, p);
+};
+
+/**
+ * Initializes read-only pointer of specified `type` to specified
+ * `value` and returns the pointer
+ */
+let alloc_readonly_init ty v = do {
+    p <- alloc_readonly ty;
+    points_to p v;
+    return p;
+};
+
+/**
+ * Creates a fresh, read-only, symbolic variable with name and type,
+ * returns tuple (variable, pointer)
+ */
+let pointer_to_fresh_readonly (type : LLVMType) (name : String) = do {
+    (x_s, x_t) <- symbolic_setup_tuple type name;
+    p <- alloc_readonly_init type x_s;
+    return (x_t, p);
+};
+
+// Standard LLVM type names
+let i8 = llvm_int 8;
+let i16 = llvm_int 16;
+let i32 = llvm_int 32;
+let i64 = llvm_int 64;
+
+// Standard C type names
+let int8_t = llvm_int 8;
+let int16_t = llvm_int 16;
+let int32_t = llvm_int 32;
+let int64_t = llvm_int 64;
+let uint8_t = llvm_int 8;
+let uint16_t = llvm_int 16;
+let uint32_t = llvm_int 32;
+let uint64_t = llvm_int 64;
+let char = llvm_int 8;
+
+// This function called within a specification will cause llvm_verify
+// to error and, most importantly, provide a handy backtrace.
+let error = do {
+  llvm_precond {{ True }};
+  llvm_postcond {{ True }};
+  return {{ True }};
+};
+
+// This function is useful in the opposite case of an `if` statement
+// with an `error`.
+let noerror = do {
+  return {{ True }};
+};
+

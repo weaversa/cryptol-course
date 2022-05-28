@@ -1,0 +1,53 @@
+// proof/salsa20-ref.saw
+
+// qualified import of Salsa20 from `cryptol-specs`
+import "../spec/Salsa20.cry" as Salsa20;
+
+// based on "helpers.saw" from _Program Verification with SAW_:
+// https://saw.galois.com/intro/
+include "helpers.saw";
+
+/**
+ * method specification for `salsa20_wordtobyte`, which implements
+ * `Salsa20::Salsa20`, the Salsa20 "hash" (original written spec) or
+ * "core" (updated term on website <https://cr.yp.to/salsa20.html>)
+ *
+ * static void salsa20_wordtobyte(u8 output[64], const i32 input[16])
+ */
+let salsa20_wordtobyte_setup : CrucibleSetup () = do {
+    p_output <- alloc (array 64 i8);
+    (input, p_input) <- pointer_to_fresh_readonly (array 16 i32) "input";
+
+    execute [p_output, p_input];
+
+    points_to p_output (from_cryptol {{ Salsa20::Salsa20 (join [Salsa20::littleendian_inverse x | x <- input]) }});
+};
+
+// TODO: Define remaining function specifications
+
+/**
+ * verification script for `salsa20/ref` bitcode
+ * 
+ * Encapsulating verification results into a `TopLevel` monad allows us
+ * to include this in other SAW scripts with fewer side effects.
+ */
+let verify_salsa20_ref (bc : String) : TopLevel () = do {
+    m <- llvm_load_module bc;
+    
+    salsa20_wordtobyte_result <- verify m "salsa20_wordtobyte" [] salsa20_wordtobyte_setup;
+    // ECRYPT_init_result <- verify m "ECRYPT_init" [] ECRYPT_init_setup;
+    // ECRYPT_keysetup_result <- verify m "ECRYPT_keysetup" [] ECRYPT_keysetup_setup;
+    // ECRYPT_ivsetup_result <- verify m "ECRYPT_ivsetup" [] ECRYPT_ivsetup_setup;
+    // ECRYPT_encrypt_bytes_result <- unint_verify m "ECRYPT_encrypt_bytes" [ salsa20_wordtobyte_result ] ECRYPT_encrypt_bytes_setup [...];
+    // ECRYPT_decrypt_bytes_result <- unint_verify m "ECRYPT_decrypt_bytes" [ ECRYPT_encrypt_bytes_result ] ECRYPT_decrypt_bytes_setup [...];
+    // ECRYPT_keystream_bytes_result <- unint_verify m "ECRYPT_keystream_bytes" [ ECRYPT_encrypt_bytes_result ] ECRYPT_keystream_bytes_setup [...];
+    
+    print (str_concat (str_concat "TODO: Verify `" bc) "`...");
+};
+
+let main : TopLevel () = do {
+    for [ "../build/salsa20-ref-mips64.bc"
+        , "../build/salsa20-ref-mips64le.bc" ] verify_salsa20_ref;
+
+    print "Done!";
+};

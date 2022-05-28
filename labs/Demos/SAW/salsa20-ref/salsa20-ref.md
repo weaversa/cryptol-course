@@ -1,0 +1,1051 @@
+# Low-Level Specification and Refinement
+
+Galois's implementation of Salsa20 was written mostly to test and
+demonstrate SAW features. Let's try to apply these techniques to a
+corresponding reference implementation written by the author of the
+original written spec, Dr. Daniel J. Bernstein. The spec, supporting
+documentation, and several implementations are freely available on the
+author's [website](https://cr.yp.to/snuffle.html).
+
+
+## Building and Analyzing the Reference Implementation
+
+Let's examine `ref`, "a reference implementation that fits into the
+eSTREAM performance-testing framework". (
+[eSTREAM](https://www.ecrypt.eu.org/stream/) is a research project for
+stream ciphers organized by [ECRYPT](https://www.ecrypt.eu.org/), a
+collaborative research network backed by the European Union.)
+
+```
+cryptol-course$ cd labs/Demos/SAW/salsa20-ref
+salsa20-ref$ mkdir build
+salsa20-ref$ clang -c -g -emit-llvm -o build/salsa20-ref.bc src/salsa20.c
+salsa20-ref$ opt -dot-callgraph -o /dev/null build/salsa20-ref.bc
+Writing 'build/salsa20-ref.bc.callgraph.dot'...
+$ dot -Tpng -o build/salsa20-ref.bc.png build/salsa20-ref.bc.callgraph.dot
+```
+
+<a href="../../../../misc/salsa20-ref.bc.png">
+    <img class="center" src="../../../../misc/salsa20-ref.bc.png" alt="salsa20-ref.bc call graph">
+</a>
+
+In this callgraph, we see...numerous `ECRYPT` functions (which we can
+surmise "fit...the eSTREAM...framework", some isolated `setup`
+functions, and very few functions overall, none of which are called
+`doubleround`, `Salsa20_expansion`, etc. We'll have to inspect the
+source to understand how the reference implementation relates to our
+Cryptol spec (and the written spec). At least it's short and simple...
+
+Given the source and callgraph, we can outline a SAW script to verify
+the LLVM bitcode. We will need to define function specifications, use
+results as overrides reflecting the callgraph, and use uninterpreted
+functions reflecting our Cryptol specification. That's the plan,
+anyway...
+
+**EXERCISE**: Create and test the following SAW script.
+
+```SAW
+// proof/salsa20-ref.saw
+
+// qualified import of Salsa20 from `cryptol-specs`
+import "../spec/Salsa20.cry" as Salsa20;
+
+// based on "helpers.saw" from _Program Verification with SAW_:
+// https://saw.galois.com/intro/
+include "helpers.saw";
+
+// TODO: Define remaining function specifications
+
+/**
+ * verification script for `salsa20/ref` bitcode
+ * 
+ * Encapsulating verification results into a `TopLevel` monad allows us
+ * to include this in other SAW scripts with fewer side effects.
+ */
+let main : TopLevel () = do {
+    m <- llvm_load_module "../build/salsa20-ref.bc";
+	
+    // salsa20_wordtobyte_result <- verify m "salsa20_wordtobyte" [] salsa20_wordtobyte_setup;
+    // ECRYPT_init_result <- verify m "ECRYPT_init" [] ECRYPT_init_setup;
+    // ECRYPT_keysetup_result <- verify m "ECRYPT_keysetup" [] ECRYPT_keysetup_setup;
+    // ECRYPT_ivsetup_result <- verify m "ECRYPT_ivsetup" [] ECRYPT_ivsetup_setup;
+    // ECRYPT_encrypt_bytes_result <- unint_verify m "ECRYPT_encrypt_bytes" [ salsa20_wordtobyte_result ] ECRYPT_encrypt_bytes_setup [...];
+    // ECRYPT_decrypt_bytes_result <- unint_verify m "ECRYPT_decrypt_bytes" [ ECRYPT_encrypt_bytes_result ] ECRYPT_decrypt_bytes_setup [...];
+    // ECRYPT_keystream_bytes_result <- unint_verify m "ECRYPT_keystream_bytes" [ ECRYPT_encrypt_bytes_result ] ECRYPT_keystream_bytes_setup [...];
+    
+    print "TODO: Verify `build/salsa20-ref.bc`...";
+};
+```
+
+```
+$ saw proof/salsa20-ref.saw
+[12:34:56.789] Loading file "/home/mwbenke/workspace/cryptol-course/labs/Demos/SAW/salsa20-ref/proof/salsa20-ref.saw"
+
+[12:34:56.789] TODO: Verify `../build/salsa20-ref.bc`...
+[12:34:56.789] Done!
+```
+
+
+### Preprocessor Directives
+
+Let's examine `src/salsa20.c` and start specifying functions...
+
+```C
+#include "ecrypt-sync.h"
+```
+
+A header file specifying an eSTREAM interface for "synchronous stream
+ciphers without authentication mechanism". Probably matters later...
+
+```C
+#define ROTATE(v,c) (ROTL32(v,c))
+#define XOR(v,w) ((v) ^ (w))
+#define PLUS(v,w) (U32V((v) + (w)))
+#define PLUSONE(v) (PLUS((v),1))
+```
+
+Macros enable developers to consistently repeat simple statements
+without overhead from function calls. This improves perfomance but does
+not yield a symbol for Clang/LLVM, and thus SAW, to reference. In other
+words, we cannot straightforwardly decompose a function down into its
+macro invocations.
+
+Symbols `ROTL32` and `U32V` must be defined in `ecrypt-portable.h` or a
+dependency:
+
+```
+$ grep *.h -n -e "#define ROTL32"
+ecrypt-machine.h:25:#define ROTL32(v, n) _lrotl(v, n)
+ecrypt-portable.h:87:#define ROTL32(v, n) \
+$ cat ecrypt-machine.h | head -n 25
+/* ecrypt-machine.h */
+
+/*
+ * This file is included by 'ecrypt-portable.h'. It allows to override
+ * the default macros for specific platforms. Please carefully check
+ * the machine code generated by your compiler (with optimisations
+ * turned on) before deciding to edit this file.
+ */
+
+/* ------------------------------------------------------------------------- */
+
+#if (defined(ECRYPT_DEFAULT_ROT) && !defined(ECRYPT_MACHINE_ROT))
+
+#define ECRYPT_MACHINE_ROT
+
+#if (defined(WIN32) && defined(_MSC_VER))
+
+#undef ROTL32
+...
+#define ROTL32(v, n) _lrotl(v, n)
+$ cat ecrypt-portable.h | head -n 89
+/* ecrypt-portable.h */
+...
+/*
+ * *** Please do not edit this file. ***
+ *
+ * The default macros can be overridden for specific architectures by
+ * editing 'ecrypt-machine.h'.
+ */
+
+#ifndef ECRYPT_PORTABLE
+#define ECRYPT_PORTABLE
+
+#include "ecrypt-config.h"
+
+/* ------------------------------------------------------------------------- */
+
+/*
+ * The following types are defined (if available):
+ *
+ * u8:  unsigned integer type, at least 8 bits
+ * u16: unsigned integer type, at least 16 bits
+ * u32: unsigned integer type, at least 32 bits
+ * u64: unsigned integer type, at least 64 bits
+ *
+ * s8, s16, s32, s64 -> signed counterparts of u8, u16, u32, u64
+ *
+ * The selection of minimum-width integer types is taken care of by
+ * 'ecrypt-config.h'. Note: to enable 64-bit types on 32-bit
+ * compilers, it might be necessary to switch from ISO C90 mode to ISO
+ * C99 mode (e.g., gcc -std=c99).
+ */
+...
+typedef unsigned I32T u32;
+...
+/*
+ * The following macros are used to obtain exact-width results.
+ */
+...
+#define U32V(v) ((u32)(v) & U32C(0xFFFFFFFF))
+...
+/*
+ * The following macros return words with their bits rotated over n
+ * positions to the left/right.
+ */
+
+#define ECRYPT_DEFAULT_ROT
+...
+#define ROTL32(v, n) \
+  (U32V((v) << (n)) | ((v) >> (32 - (n))))
+$ grep *.h -n -e "#define U32C"
+$ cat ecrypt-config.h | head -n 241
+/* ecrypt-config.h */
+
+/* *** Normally, it should not be necessary to edit this file. *** */
+
+#ifndef ECRYPT_CONFIG
+#define ECRYPT_CONFIG
+...
+/* ------------------------------------------------------------------------- */
+
+/*
+ * Find minimal-width types to store 8-bit, 16-bit, 32-bit, and 64-bit
+ * integers.
+ *
+ * Note: to enable 64-bit types on 32-bit compilers, it might be
+ * necessary to switch from ISO C90 mode to ISO C99 mode (e.g., gcc
+ * -std=c99).
+ */
+
+#include <limits.h>
+
+/* --- check char --- */
+...
+#if (UCHAR_MAX / 0xFFFFU > 0xFFFFU)
+...
+#define U32C(v) (v##U)
+#endif
+...
+/* --- check short --- */
+...
+#if (USHRT_MAX / 0xFFFFU > 0xFFFFU)
+...
+#define U32C(v) (v##U)
+#endif
+...
+/* --- check int --- */
+...
+#if (UINT_MAX / 0xFFFFU > 0xFFFFU)
+...
+#define U32C(v) (v##U)
+#endif
+/* --- check long --- */
+...
+#if (ULONG_MAX / 0xFFFFUL > 0xFFFFUL)
+...
+#define U32C(v) (v##UL)
+#endif
+/* --- check long long --- */
+...
+#if (ULLONG_MAX / 0xFFFFULL > 0xFFFFULL)
+...
+#define U32C(v) (v##ULL)
+#endif
+```
+
+OK, we might need these later. For now, we'll proceed until we see the
+first function to specify...
+
+
+### `salsa20_wordtobyte` (Reference Implementation)
+
+```C
+// (src/salsa20.c:14-56)
+static void salsa20_wordtobyte(u8 output[64],const u32 input[16])
+{
+  u32 x[16];
+  int i;
+
+  for (i = 0;i < 16;++i) x[i] = input[i];
+  for (i = 20;i > 0;i -= 2) {
+    x[ 4] = XOR(x[ 4],ROTATE(PLUS(x[ 0],x[12]), 7));
+    // ...
+    x[15] = XOR(x[15],ROTATE(PLUS(x[14],x[13]),18));
+  }
+  for (i = 0;i < 16;++i) x[i] = PLUS(x[i],input[i]);
+  for (i = 0;i < 16;++i) U32TO8_LITTLE(output + 4 * i,x[i]);
+}
+```
+
+There is no reference to `wordtobyte` in the Cryptol or written specs.
+At first glance, it might not be clear how this function relates to our
+Cryptol spec (or the original written one). However, we get a strong
+clue in that the second for-loop iterates 20 times writing to `x`, and
+the next loop adds the original input to `x`.
+
+**EXERCISE**: Try to find a function in `spec/Salsa20.cry` with similar
+behavior, iterating a squence some number of times and then adding it
+to something else.
+
+If you came up with the `Salsa20` function, congratulations! Annotating
+the source, we can see roughly the same structure:
+
+```Cryptol
+Salsa20 : [64][8] -> [64][8]
+Salsa20 xs = join ar
+  where
+    ar = [ littleendian_inverse words | words <- xw + zs@10 ]
+    xw = [ littleendian xi | xi <- split xs ]
+    zs = [xw] # [ doubleround zi | zi <- zs ]
+```
+
+```C
+static void salsa20_wordtobyte(u8 output[64] /* join ar */,const u32 input[16] /* xs */)
+{
+  u32 x[16];
+  int i;
+
+  for (i = 0;i < 16;++i) x[i] = input[i];  // xw
+  for (i = 20;i > 0;i -= 2) {
+    x[ 4] = XOR(x[ 4],ROTATE(PLUS(x[ 0],x[12]), 7));
+    // ...
+    x[15] = XOR(x[15],ROTATE(PLUS(x[14],x[13]),18));
+  } // zs @ 10
+  for (i = 0;i < 16;++i) x[i] = PLUS(x[i],input[i]);  // ar
+  for (i = 0;i < 16;++i) U32TO8_LITTLE(output + 4 * i,x[i]);  // rejiggering
+}
+```
+
+Let's get a closer look at that `U32TO8_LITTLE` macro...
+
+```
+salsa20-ref$ grep src/*.h -n -e "#define U32TO8_LITTLE"
+src/ecrypt-portable.h:170:#define U32TO8_LITTLE(p, v) (((u32*)(p))[0] = U32TO32_LITTLE(v))
+src/ecrypt-portable.h:235:#define U32TO8_LITTLE(p, v) \
+```
+
+```C
+// (from crypt-portable.h)
+
+#if (!defined(ECRYPT_UNKNOWN) && defined(ECRYPT_I8T_IS_BYTE))
+#define U32TO8_LITTLE(p, v) (((u32*)(p))[0] = U32TO32_LITTLE(v))
+#else
+#define U32TO8_LITTLE(p, v) \
+  do { \
+    (p)[0] = U8V((v)      ); \
+    (p)[1] = U8V((v) >>  8); \
+    (p)[2] = U8V((v) >> 16); \
+    (p)[3] = U8V((v) >> 24); \
+  } while (0)
+#endif
+...
+```
+
+**EXERCISE**: Look familiar? What function from our Salsa20 spec does
+this implement?
+
+That's right, `littleendian_inverse`! Further analysis of the source
+shows that `U32TO32_LITTLE` has different implementations reflecting
+the target's endianness (directly copying on little-endian and swapping
+bytes on big-endian systems), but each of these should have the same
+behavior. 
+
+
+## Multi-Target Testing
+
+However, now that endianness is on our radar, we should generate big-
+and little-endian bitcode to test portability of our specifications and
+the bitcode. With any luck, the bitcode will be portable and we won't
+have to account for endianness in our specifications...
+
+**EXERCISE**: Generate big- and little-endian bitcode by using
+`clang`'s `-target` option:
+
+```
+$ for t in $(echo "mips64 mips64le"); do clang -c -g -emit-llvm -o build/salsa20-ref-$t.bc; done
+```
+
+**EXERCISE**: Refactor the SAW script to verify each of these modules.
+Rename the `main` method to `verify_salsa20_ref` and add a
+`(bc : String)` parameter to pass to `llvm_load_module`. Add a new main
+method that loops through each of the generated bitcode paths. Test
+that the refactored script loads each of the bitcode modules:
+
+```SAW
+let verify_salsa20_ref (bc : String) : TopLevel () = do {
+    m <- llvm_load_module bc;
+    // ...
+    print (str_concat (str_concat "TODO: Verify `" bc) "`...");
+};
+
+let main : TopLevel () = do {
+    for [ "../build/salsa20-ref-mips64.bc"
+        , "../build/salsa20-ref-mips64le.bc" ] verify_salsa20_ref;
+    print "Done!";
+};
+```
+
+```
+$ saw proof/salsa20-ref.saw
+[12:34:56.789] Loading file "/home/mwbenke/workspace/cryptol-course/labs/Demos/SAW/salsa20-ref/proof/salsa20-ref.saw"
+
+[12:34:56.789] TODO: Verify `../build/salsa20-ref-mips64.bc`...
+[12:34:56.789] TODO: Verify `../build/salsa20-ref-mips64le.bc`...
+[12:34:56.789] Done!
+```
+
+**EXERCISE**: Is Galois's `salsa20.c` implementation portable w.r.t.
+endianness? Try compiling it with `-target` `mips64` and `mips64le` and
+see if its verification script still succeeds.
+
+A small win for encapsulation! Let's return to the verification effort.
+
+**EXERCISE**: Feel free to try specifing `salsa20_wordtobyte_setup` at
+this point. Or not; it's a free country...
+
+Because this will be relatively difficult and we're about to be very
+disappointed, let's just hammer this out:
+
+```SAW
+
+```SAW
+let salsa20_wordtobyte_setup : LLVMSetup () = do {
+    
+};
+```
+
+
+```Cryptol
+// #define U32V(v) ((u32)(v) & U32C(0xFFFFFFFF))
+/**
+ * least-significant 32 bits of (possibly padded) unsigned integer `v`
+ */
+U32V : {w} fin w => [w] -> [32]
+U32V v = drop (zext v : [max w 32])
+
+/*
+ * #define ROTL32(v, n) \
+ *   (U32V((v) << (n)) | ((v) >> (32 - (n))))
+ */
+/**
+ * left-rotate least signficant 32-bits of (possibly padded) `v` by
+ * `c` bits
+ */
+ROTL32 : {w} fin w => ([w], [32]) -> [32]
+ROTL32 (v, n) =
+  if (0 < n) && (n < 32) then
+    U32V v <<< n
+  else
+    error "`c` must satisfy `0 < c < 32`"
+
+// #define ROTATE(v,c) (ROTL32(v,c))
+ROTATE = ROTL32
+
+// #define XOR(v,w) ((v) ^ (w))
+/** 
+ * exclusive-or of unsigned ints `v` and `w` (padded to maximum width)
+ */
+XOR : {m,n} (fin m, fin n) => ([m], [n]) -> [max m n]
+XOR (v, w) = ((zext v) ^ (zext w))
+
+// #define PLUS(v,w) (U32V((v) + (w)))
+/**
+ * least-significant 32 bits of sum of (possibly padded) unsigned ints
+ * `v` and `w`
+ */
+PLUS : {m, n} (fin m, fin n) => ([m], [n]) -> [32]
+PLUS (v, w) = U32V ((zext v) + (zext w) : [max m n])
+
+// #define PLUSONE(v) (PLUS((v),1))
+/**
+ * least-significant 32 bits of successor of (possibly padded) unsigned
+ * int `v`
+ */
+PLUSONE : {w} fin w => [w] -> [32]
+PLUSONE v = PLUS (v, 1:[32])
+```
+
+
+### `salsa20_wordtobyte` (Reference Implementation)
+
+```C
+static void salsa20_wordtobyte(u8 output[64],const u32 input[16])
+{
+  u32 x[16];
+  int i;
+
+  for (i = 0;i < 16;++i) x[i] = input[i];
+  for (i = 20;i > 0;i -= 2) {
+    x[ 4] = XOR(x[ 4],ROTATE(PLUS(x[ 0],x[12]), 7));
+    x[ 8] = XOR(x[ 8],ROTATE(PLUS(x[ 4],x[ 0]), 9));
+    x[12] = XOR(x[12],ROTATE(PLUS(x[ 8],x[ 4]),13));
+    x[ 0] = XOR(x[ 0],ROTATE(PLUS(x[12],x[ 8]),18));
+    x[ 9] = XOR(x[ 9],ROTATE(PLUS(x[ 5],x[ 1]), 7));
+    x[13] = XOR(x[13],ROTATE(PLUS(x[ 9],x[ 5]), 9));
+    x[ 1] = XOR(x[ 1],ROTATE(PLUS(x[13],x[ 9]),13));
+    x[ 5] = XOR(x[ 5],ROTATE(PLUS(x[ 1],x[13]),18));
+    x[14] = XOR(x[14],ROTATE(PLUS(x[10],x[ 6]), 7));
+    x[ 2] = XOR(x[ 2],ROTATE(PLUS(x[14],x[10]), 9));
+    x[ 6] = XOR(x[ 6],ROTATE(PLUS(x[ 2],x[14]),13));
+    x[10] = XOR(x[10],ROTATE(PLUS(x[ 6],x[ 2]),18));
+    x[ 3] = XOR(x[ 3],ROTATE(PLUS(x[15],x[11]), 7));
+    x[ 7] = XOR(x[ 7],ROTATE(PLUS(x[ 3],x[15]), 9));
+    x[11] = XOR(x[11],ROTATE(PLUS(x[ 7],x[ 3]),13));
+    x[15] = XOR(x[15],ROTATE(PLUS(x[11],x[ 7]),18));
+    x[ 1] = XOR(x[ 1],ROTATE(PLUS(x[ 0],x[ 3]), 7));
+    x[ 2] = XOR(x[ 2],ROTATE(PLUS(x[ 1],x[ 0]), 9));
+    x[ 3] = XOR(x[ 3],ROTATE(PLUS(x[ 2],x[ 1]),13));
+    x[ 0] = XOR(x[ 0],ROTATE(PLUS(x[ 3],x[ 2]),18));
+    x[ 6] = XOR(x[ 6],ROTATE(PLUS(x[ 5],x[ 4]), 7));
+    x[ 7] = XOR(x[ 7],ROTATE(PLUS(x[ 6],x[ 5]), 9));
+    x[ 4] = XOR(x[ 4],ROTATE(PLUS(x[ 7],x[ 6]),13));
+    x[ 5] = XOR(x[ 5],ROTATE(PLUS(x[ 4],x[ 7]),18));
+    x[11] = XOR(x[11],ROTATE(PLUS(x[10],x[ 9]), 7));
+    x[ 8] = XOR(x[ 8],ROTATE(PLUS(x[11],x[10]), 9));
+    x[ 9] = XOR(x[ 9],ROTATE(PLUS(x[ 8],x[11]),13));
+    x[10] = XOR(x[10],ROTATE(PLUS(x[ 9],x[ 8]),18));
+    x[12] = XOR(x[12],ROTATE(PLUS(x[15],x[14]), 7));
+    x[13] = XOR(x[13],ROTATE(PLUS(x[12],x[15]), 9));
+    x[14] = XOR(x[14],ROTATE(PLUS(x[13],x[12]),13));
+    x[15] = XOR(x[15],ROTATE(PLUS(x[14],x[13]),18));
+  }
+  for (i = 0;i < 16;++i) x[i] = PLUS(x[i],input[i]);
+  for (i = 0;i < 16;++i) U32TO8_LITTLE(output + 4 * i,x[i]);
+}
+```
+
+There is no reference to `wordtobyte` in the Cryptol or written specs,
+but this is just an alias with a slightly different argument signature.
+
+Before proceeding with the exercise, let's define `U32TO8_LITTLE`:
+
+```
+$ grep *.h -e "#define U32TO8_LITTLE"
+
+```
+
+```Cryptol
+```
+
+**EXERCISE**: Which function from the Cryptol/written spec does
+`salsa20_wordtobyte` implement? Insert the following template into
+`salsa20-ref.saw` before
+`// TODO: Define remaining function specifications`, uncomment
+`salsa20_wordtobyte_result <- ...`, and run `saw salsa20-ref.saw` to
+verify `salsa20_wordtobyte`:
+
+```SAW
+// C: static void salsa20_wordtobyte(u8 output[64],const u32 input[16])
+// LLVM: internal void @salsa20_wordtobyte(i8* %0, i32* %1)
+let salsa20_wordtobyte_setup : LLVMSetup () = do {
+    (output, output_p) <- pointer_to_fresh (array 64 i8) "output";
+    (input, input_p) <- pointer_to_fresh_readonly (array 16 i32) "input";
+    
+    execute [output_p, input_p];
+    
+    // points_to output_p (from_cryptol {{ Salsa20::{def} ({rejigger} input) }});
+};
+```
+
+You will need to specify `{def}` (a Cryptol definition in
+`Salsa20.cry`) and `{rejigger}` (a function that rearranges a perhaps
+nested sequence of bits into a differently nested sequences of the same
+number of bits).
+
+(Hint: Examine the `input` and `output` types (`[16][32]` and `[64][8]`
+respectively), and in broad terms decribe what the `for` loops do.
+Which functions operate over the same number of (perhaps
+rearranged) bits? Of these, which has a sequence of loop-like seqeuence
+comprehensions consistent with this implementation?)
+
+
+### `ECRYPT_init` (State Initialization)
+
+Moving on...
+
+```C
+void ECRYPT_init(void)
+{
+  return;
+}
+```
+
+For stateful eSTREAM implementations, this would initialize state.
+Salsa20 is stateless, so this doesn't apply. No harm in verifying it.
+
+**EXERCISE**: Insert the following into `salsa20-ref.saw` before
+`// TODO: Define remaining function specifications`, uncomment
+`ECRYPT_init_result <- ...`, and run `saw salsa20-ref.saw` to
+verify `ECRYPT_init` and previous functions:
+
+```SAW
+// C: void ECRYPT_init(void)
+// LLVM: void @ECRYPT_init()
+let ECRYPT_init_setup : LLVMSetup () = do {
+    execute [];
+};
+```
+
+Note: It seems tedious to re-run previous verifications for an
+implementation that hasn't changed. Perhaps one could soundly persist
+previous results...?
+
+
+### `sigma` and `tau` (Constants for Key Expansion)
+
+```C
+static const char sigma[16] = "expand 32-byte k";
+static const char tau[16] = "expand 16-byte k";
+```
+
+These constants are only used in the function about to be defined, and
+not exported.  Perhaps this is meant to save a bit of time in the event
+that the upcoming function is run more than once?
+
+
+### `ECRYPT_keysetup`
+
+```C
+void ECRYPT_keysetup(ECRYPT_ctx *x,const u8 *k,u32 kbits,u32 ivbits)
+{
+  const char *constants;
+
+  x->input[1] = U8TO32_LITTLE(k + 0);
+  x->input[2] = U8TO32_LITTLE(k + 4);
+  x->input[3] = U8TO32_LITTLE(k + 8);
+  x->input[4] = U8TO32_LITTLE(k + 12);
+  if (kbits == 256) { /* recommended */
+    k += 16;
+    constants = sigma;
+  } else { /* kbits == 128 */
+    constants = tau;
+  }
+  x->input[11] = U8TO32_LITTLE(k + 0);
+  x->input[12] = U8TO32_LITTLE(k + 4);
+  x->input[13] = U8TO32_LITTLE(k + 8);
+  x->input[14] = U8TO32_LITTLE(k + 12);
+  x->input[0] = U8TO32_LITTLE(constants + 0);
+  x->input[5] = U8TO32_LITTLE(constants + 4);
+  x->input[10] = U8TO32_LITTLE(constants + 8);
+  x->input[15] = U8TO32_LITTLE(constants + 12);
+}
+```
+
+At first glance, this looks like it might be expanding the key, per
+`Salsa20::Salsa20_expansion`. However, unlike in the specification,
+this function does not run the core function (`Salsa20::Salsa20`) on
+the key. It becomes clear that this reference implementation is really
+serving other purposes: conform to eSTREAM for interoperability with
+other stream ciphers in that suite, and optimize. This is common, but
+muddies its "reference" value and complicates our verification effort.
+We will need to abandon our initial approach of trying to express SAW
+function specifications directly in terms of our existing Cryptol spec.
+
+But not all is lost! Remember that in
+[`CryptoProofs.md`](../../../CryptoProofs.md), we learned how to verify
+equivalence of two Cryptol functions. Indeed, this is so important that
+Cryptol defines the symbol `(===)` to check the equivalence of two
+functions. To claim this is Cryptol's main purpose would not be wrong.
+Indeed, we will overcome our current dilemma by proving that a Cryptol
+representation of the reference implementation is equivalent to an
+appropriate expression based on our Cryptol spec. This is also common.
+Such a representation of an implementation is called a _low-level
+specification_, our Cryptol spec of Salsa20 is an example of a
+_high-level specification_, and this concept of proving the two to be
+equivalent is called _refinement_.
+
+For another example of using Cryptol and SAW in this way, see
+[Part 2](https://galois.com/blog/2016/09/specifying-hmac-in-cryptol/)
+of a three-part
+[series](https://galois.com/blog/2016/09/verifying-s2n-hmac-with-saw/)
+by Galois, Inc.'s Joey Dodds describing their verification of HMAC for
+[s2n](https://aws.amazon.com/blogs/security/introducing-s2n-a-new-open-source-tls-implementation/).
+
+
+## Low-Level Specification: `salsa20_ref.cry`
+
+Let's start by creating a new Cryptol module called `salsa20_ref.cry`
+to capture our low-level specification of `salsa20-ref.bc`:
+
+```Cryptol
+module salsa20_ref where
+
+import Salsa20 as Salsa20
+```
+
+There isn't really a standard methodology for low-level specifications
+in Cryptol, but we can estalish our own concentions. For a stateless
+function, we can express its type as:
+
+```Cryptol
+type f_args_t = (arg1_t, arg2_t, ...)
+
+f: {f_preconditions} => f_args_t -> (f_return_t, f_args_t)
+f (arg1, arg2, ...) = (r', (arg1', arg2', ...))
+  where
+    ...
+```
+
+Uninitialized inputs can be replaced with `undefined`, and unused
+outputs with `_`. Pointers, allocations, and other memory handling
+concepts are deferred to SAW.
+
+
+### `salsa20_wordtobyte`
+
+For `salsa20_wordtobyte`, this could look something like:
+
+```Cryptol
+// C: static void salsa20_wordtobyte(u8 output[64],const u32 input[16])
+// LLVM: internal void @salsa20_wordtobyte(i8* %0, i32* %1)
+type salsa20_wordtobyte_args_t = ([64][8], [16][32])
+salsa20_wordtobyte: ([64][8], [16][32]) -> ((), ([64][8], [16][32]))
+salsa20_wordtobyte (_, input) = ((), (output', input))
+  where
+    def = Salsa20::...
+    rejigger x = ...
+    output' = def (rejigger input)
+```
+
+(You didn't we'd spoil the earlier exercise, did you?)
+
+`salsa20-ref.saw` now needs to import `salsa20_ref.cry` (alongside
+prior imports):
+
+```SAW
+import "salsa20_ref.cry" as salsa20_ref;
+```
+
+Our function specification for `salsa20_wordtobyte` becomes:
+
+```SAW
+// C: static void salsa20_wordtobyte(u8 output[64],const u32 input[16])
+// LLVM: internal void @salsa20_wordtobyte(i8* %0, i32* %1)
+let salsa20_wordtobyte_setup : LLVMSetup () = do {
+    (output, output_p) <- pointer_to_fresh (array 64 i8) "output";
+    (input, input_p) <- pointer_to_fresh_readonly (array 16 i32) "input";
+    
+    execute [output_p, input_p];
+    
+    let {{ (_, (output', _)) = salsa20_ref::salsa20_wordtobyte (undefined, input) }};
+
+    points_to output_p (from_cryptol {{ output' }});
+};
+```
+
+**EXERCISE**: Rerun `saw salsa20-ref.saw` to verify this low-level
+specification.
+
+So `salsa20_wordtobyte` satisfies its function specification, which the
+earlier exercise expresses  directly in terms of our high-level Salsa20
+specification, completing our proof obligations for
+`salsa20_wordtobyte`.
+
+
+### `ECRYPT_init`
+
+```Cryptol
+// C: void ECRYPT_init(void)
+// LLVM: void @ECRYPT_init()
+ECRYPT_init: () -> ((), ())
+ECRYPT_init _ = ((), ())
+```
+
+```SAW
+// C: void ECRYPT_init(void)
+// LLVM: void @ECRYPT_init()
+let ECRYPT_init_setup : LLVMSetup () = do {
+    execute [];
+}
+```
+
+Silly, but explicit.
+
+
+### `ECRYPT_keystream`
+
+Recalling the source code, we observe that `k` is a `u8 *`, and the
+`U8TO32_LITTLE` macro is called on values from `k` to `k + 16`.
+`U8TO32_LITTLE` depends on definitions from various headers:
+
+```C
+// ecrypt-config.h
+#if defined(__ultrix)           /* Older MIPS */
+#define ECRYPT_LITTLE_ENDIAN
+// ...
+#elif defined(sun)              /* Newer Sparc's */
+#define ECRYPT_BIG_ENDIAN
+// ...
+
+// ecrypt-portable.h
+
+#ifdef ECRYPT_LITTLE_ENDIAN
+#define U32TO32_LITTLE(v) (v)
+#endif
+// ...
+#ifdef ECRYPT_BIG_ENDIAN
+#define U32TO32_LITTLE(v) SWAP32(v)
+#endif
+
+#define U8TO32_LITTLE(p) U32TO32_LITTLE(((u32*)(p))[0])
+```
+
+So our spec will depend on the target's _endiannness_, another
+common consideration. `U8TO32_LITTLE` takes a `u32*` argument,
+which means that `k` will need to hold at least `12 + 4 = 16` bytes if
+`kbits` is not `256`, and `16 + (12 + 4) = 32` bytes otherwise.
+
+To determine endianness, we can run
+[`llvm-dis`](https://llvm.org/docs/CommandGuide/llvm-dis.html), a
+disassembler that translates LLVM bitcode to human-readable
+assembly. The information we need is captured in the first character of
+the `target datalayout = "{endianness}:..."` string. `e` denotes
+little-endianness, whereas `E` denotes big-endinanness, as specified in
+the
+[LLVM _Data Layout_ reference](https://llvm.org/docs/LangRef.html#data-layout).
+
+```sh
+# endianness.sh
+
+llvm-dis-12 salsa20-ref.bc -o - | grep -e "target datalayout =" | head -c 22 | tail -c 1
+```
+
+SAW is supposed to support interpolation of `String` values from SAW
+into Cryptol, e.g.
+
+```
+sawscript> let name = "Bobbert"
+sawscript> print {{ name == "Bobbert" }}
+[12:34:56.789] True
+```
+
+Unfortunately, as of SAW 0.9, assignments from `exec` calls
+[are not interpolated](https://github.com/GaloisInc/saw-script/issues/1678):
+
+```
+$ chmod +x endianness.sh
+$ saw
+sawscript> let endianness = exec "./endianness.sh" [] "";
+sawscript> print {{ endianness == "e" }}
+
+Cryptol error:
+[error] at <stdin>:1:10--1:20
+    Value not in scope: endianness
+```
+
+However, we can pass command line arguments to SAW, which can be
+processed. We will pass the one-character string returns by the above
+script to SAW, and use that to adapt our specification for the target
+endianness. Perhaps this is for the best.
+
+**EXERCISE**: Create a new Cryptol file `DataLayout.cry` containing the
+following, and test it in SAW:
+
+```Cryptol
+module DataLayout where
+
+/** Does String `x` indicate a little-endian architecture? */
+is_little_endian : {m} fin m => String m -> Bool
+is_little_endian x = `m == 1 /\ take x == take`{min m 1} "e"
+
+/** Does String `x` indicate a big-endian architecture? */
+is_big_endian : {m} fin m => String m -> Bool
+is_big_endian x = `m == 1 /\ take x == take`{min m 1} "E"
+
+/** Does String `x` indicate a architecture of unknown endianness? */
+is_unknown_endian : {m} fin m => String m -> Bool
+is_unknown_endian x = ~ (is_little_endian x \/ is_big_endian x)
+```
+
+```
+$ saw -I $(. endianness.sh)
+sawscript> import "DataLayout.cry"
+sawscript> let endianness = get_opt 2
+sawscript> eval_bool {{ is_little_endian endianness }}
+[12:34:56.789] true
+```
+
+This (ab)uses `-I` to instruct SAW to run interactively rather than try
+to process the first (positional) command line argument as a SAW file,
+and passes one of "e" or "E" (depending on the endianness of
+`salsa20-ref.bc`) as the second argument, readable via `get_opt 2`.
+
+
+
+**EXERCISE**: From here, specify `U8TO32_LITTLE` and its submacros
+based on the endianness of `salsa20-ref.bc`:
+
+```Cryptol
+// salsa20-ref.cry
+
+module salsa20_ref where
+
+import DataLayout
+
+parameter
+  endianness: String 1
+
+// (from `ecrypt-config.h`)
+/* #if defined(__ultrix)           /* Older MIPS */
+ * #define ECRYPT_LITTLE_ENDIAN
+ * // ...
+ * #elif defined(sun)              /* Newer Sparc's */
+ * #define ECRYPT_BIG_ENDIAN
+ * // ...
+ * #elif defined (_AIX)            /* RS6000 */
+ * #define ECRYPT_UNKNOWN
+ * // ...
+ * #else                           /* Any other processor */
+ * #define ECRYPT_UNKNOWN
+ * #endif
+ */
+
+// Only one of these is defined.
+
+ECRYPT_LITTLE_ENDIAN = is_little_endian endianness
+ECRYPT_BIG_ENDIAN = is_big_endian endianness
+ECRYPT_UNKNOWN = is_unknown_endian endianness
+
+// (from `ecrypt-config.h`)
+/*
+ * #if (UCHAR_MAX / 0xFFFFU > 0xFFFFU)
+ * #define U32C(v) (v##U)
+ * #endif
+ * #if (USHRT_MAX / 0xFFFFU > 0xFFFFU)
+ * #define U32C(v) (v##U)
+ * #endif
+ * #if (UINT_MAX / 0xFFFFU > 0xFFFFU)
+ * #define U32C(v) (v##U)
+ * #endif
+ * #if (ULONG_MAX / 0xFFFFUL > 0xFFFFUL
+ * #define U32C(v) (v##UL)
+ * #endif
+ * #if (ULLONG_MAX / 0xFFFFULL > 0xFFFFULL)
+ * #define U32C(v) (v##ULL)
+ * #endif
+ */
+// (`U32C` portably casts an arbitrary-width unsigned int to 32 bits.)
+
+// (from `ecrypt-portable.h`)
+// #define U32V(v) ((u32)(v) & U32C(0xFFFFFFFF))
+/** least significant 32 bits of possibly zero-prepended `v` */
+U32V : fin w => [w] -> [32]
+U32V v = take (zext v)
+
+/*
+ * #define ROTL32(v, n) \
+ *  (U32V((v) << (n)) | ((v) >> (32 - (n))))
+ */
+/** rotate least significant bits of `v` left by `n` bits */
+ROTL32 : fin w => ([w], [32]) -> [32]
+ROTL32 (v, n) = if ((0 < n) /\ (n < 32)) then (U32V v) <<< n else undefined
+
+/*
+ * #define SWAP32(v) \
+ *   ((ROTL32(v,  8) & U32C(0x00FF00FF)) | \
+ *    (ROTL32(v, 24) & U32C(0xFF00FF00)))
+ */
+/** swap endianness of least significant 32 bits of `v` */
+SWAP32 : fin w => [w] -> [32]
+SWAP32 v = (ROTL32 (v, 8) && 0x00FF00FF) || (ROTL32 (v, 24) && 0xFF00FF00)
+
+/*
+ * #ifdef ECRYPT_LITTLE_ENDIAN
+ * #define U32TO32_LITTLE(v) (v)
+ * #endif
+ * #ifdef ECRYPT_BIG_ENDIAN
+ * #define U32TO32_LITTLE(v) SWAP32(v)
+ * #endif
+ */
+/** cast `v` to a 32-bit unsigned integer with appropriate endianness */
+U32TO32_LITTLE : fin w => [w] -> [32]
+U32TO32_LITTLE v =
+  if   ECRYPT_LITTLE_ENDIAN then v
+  |    ECRYPT_BIG_ENDIAN    then SWAP32 v
+                            else error "Unknown endianness?!"
+
+/*
+ * #if (!defined(ECRYPT_UNKNOWN) && defined(ECRYPT_I8T_IS_BYTE))
+ * #define U8TO32_LITTLE(p) U32TO32_LITTLE(((u32*)(p))[0])
+ * #endif
+ */
+/** cast 4-byte word as 32-bit integer with appropriate endianness */
+U8TO32_LITTLE : fin w => [w] -> [32]
+U8TO32_LITTLE p = U32TO32_LITTLE p
+```
+
+After all that, we can define our low-level spec for `ECRYPT_keysetup`:
+
+```Cryptol
+ECRYPT_keysetup : 
+```
+
+```Cryptol
+// C: void ECRYPT_keystream_bytes(ECRYPT_ctx *x,u8 *stream,u32 bytes)
+// LLVM: void @ECRYPT_keystream_bytes(%struct.ECRYPT_ctx* %0, i8* %1, i32 %2)
+ECRYPT_keystream_bytes:
+  {kBytes >= kbits /^ 8} =>
+  (ECRYPT_ctx, [kBytes][8], [32], [32]) -> ((), (ECRYPT_ctx, [kBytes][8], [32], [32]))
+```
+
+
+
+```
+ECRYPT_keystream_bytes (x', bytes') = ((), (x, bytes))
+  where
+    
+    const char *constants;
+
+    x->input[1] = U8TO32_LITTLE(k + 0);
+    x->input[2] = U8TO32_LITTLE(k + 4);
+    x->input[3] = U8TO32_LITTLE(k + 8);
+    x->input[4] = U8TO32_LITTLE(k + 12);
+    if (kbits == 256) { /* recommended */
+        k += 16;
+        constants = sigma;
+    } else { /* kbits == 128 */
+        constants = tau;
+    }
+    x->input[11] = U8TO32_LITTLE(k + 0);
+    x->input[12] = U8TO32_LITTLE(k + 4);
+    x->input[13] = U8TO32_LITTLE(k + 8);
+    x->input[14] = U8TO32_LITTLE(k + 12);
+    x->input[0] = U8TO32_LITTLE(constants + 0);
+    x->input[5] = U8TO32_LITTLE(constants + 4);
+    x->input[10] = U8TO32_LITTLE(constants + 8);
+    x->input[15] = U8TO32_LITTLE(constants + 12);
+
+// C: void ECRYPT_ivsetup(ECRYPT_ctx *x,const u8 *iv)
+// LLVM: void @ECRYPT_ivsetup(%struct.ECRYPT_ctx* %0, i8* %1)
+let ECRYPT_ivsetup_setup : LLVMSetup () = do {
+    (x_input_s, x_input_t) <- symbolic_setup_tuple (array 16 u32) "x->input";
+    x_p <- alloc_init (llvm_alias "struct.ECRYPT_ctx") (llvm_struct_value [ x_input_s ]);
+    (iv, iv_p) <- pointer_to_fresh_readonly (array 8 i8) "iv";
+
+    execute [x_p, iv_p];
+
+    // points_to x_p ...;
+};
+
+// C: void ECRYPT_encrypt_bytes(ECRYPT_ctx *x,const u8 *m,u8 *c,u32 bytes)
+// LLVM: void @ECRYPT_encrypt_bytes(%struct.ECRYPT_ctx* %0, i8* %1, i8* %2, i32 %3)
+let ECRYPT_encrypt_bytes_setup (bytes: Int) : LLVMSetup () = do {
+    (x_input_s, x_input_t) <- symbolic_setup_tuple (array 16 u32) "x->input";
+    x_p <- alloc_init (llvm_alias "struct.ECRYPT_ctx") (llvm_struct_value [ x_input_s ]);
+    (m, m_p) <- pointer_to_fresh (array bytes u8) "m";
+    c_p <- alloc (array bytes u8);
+    let {{ bytes_t = `bytes:u32 }}; let bytes_s = from_cryptol {{ bytes }};
+    
+    execute [x_p, m_p, c_p, bytes_s];
+    
+    // points_to x_p ...;
+    // points_to c_p ...;
+};
+
+// C: void ECRYPT_decrypt_bytes(ECRYPT_ctx *x,const u8 *c,u8 *m,u32 bytes)
+// LLVM: void @ECRYPT_decrypt_bytes(%struct.ECRYPT_ctx* %0, i8* %1, i8* %2, i32 %3)
+let ECRYPT_decrypt_bytes_setup = ECRYPT_decrypt_bytes_setup;
+
+// C: void ECRYPT_keystream_bytes(ECRYPT_ctx *x,u8 *stream,u32 bytes)
+// LLVM: void @ECRYPT_keystream_bytes(%struct.ECRYPT_ctx* %0, i8* %1, i32 %2)
+let ECRYPT_keystream_bytes_setup (bytes: Int) : LLVMSetup () = do {
+    (x_input_s, x_input_t) <- symbolic_setup_tuple (array 16 u32) "x->input";
+    x_p <- alloc_init (llvm_alias "struct.ECRYPT_ctx") (llvm_struct_value [ x_input_s ]);
+    let {{ bytes_t = `bytes:u32 }}; let bytes_s = from_cryptol {{ bytes }};
+    
+    execute [x_p, stream_p, bytes_s];
+
+    // points_to x_p ...;
+};
+```
