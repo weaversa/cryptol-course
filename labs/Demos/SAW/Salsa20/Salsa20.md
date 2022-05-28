@@ -46,13 +46,24 @@ verification conditions.
 
 One might wonder whether similar hints can ease the burden of proof by
 axiomatizing a similarly complex Cryptol specification. Such hints are
-called _uninterpreted functions_, which instruct an interface (
+called
+[_uninterpreted functions_](https://www21.in.tum.de/teaching/sar/SS20/6.pdf),
+which instruct an SMT solver or interface (
 [SBV](http://leventerkok.github.io/sbv/) or
 [What4](https://github.com/GaloisInc/what4)) to an underlying SMT
-solver to axiomatize a Cryptol symbol definition rather than
-recursively expanding its underlying definitions. This is especially
+solver to treat a function (from the specification) as "uninterpreted".
+The solver abstracts away these function definitions as arbitrary
+functions satisfying the corresponding type signature. This removes any
+other constraints on the function, so uninterpretation alone would
+typically break a proof. But in conjunction with overrides (which
+reintroduce the implementation's constraints on the specification),
+this effectively axiomatizes a Cryptol symbol definition, avoiding
+recursively expanding its underlying definitions. This is often
 useful for implementations that are derived from or closely match a
-Cryptol specification, as is the case for Galois's Salsa20 example.
+Cryptol specification, as is the case for Galois's Salsa20 example
+(but there are
+[tradeoffs](https://es-static.fbk.eu/people/griggio/papers/lpar06_ack.pdf)
+for this approach).
 
 For instance, the following verification of `s20_doubleround` uses both
 overrides and uninterpreted functions:
@@ -88,9 +99,9 @@ a _callgraph_:
 ```
 > cd labs/Demos/Salsa20
 > mkdir build
-> clang -c -emit-llvm -Iinclude -o build/salsa20.bc src/salsa20.c
+> clang -c -g -emit-llvm -Iinclude -o build/salsa20.bc src/salsa20.c
 > opt -dot-callgraph -o dev/null build/salsa20.bc
-cryptol-course/labs/Demos/SAW/Salsa20$ opt-12 -dot-callgraph -o /dev/null build/salsa20.bc
+cryptol-course/labs/Demos/SAW/Salsa20$ opt -dot-callgraph -o /dev/null build/salsa20.bc
 Writing 'build/salsa20.bc.callgraph.dot'...
 ```
 
@@ -143,11 +154,12 @@ override graph of a SAW Remote API for Python proof script.
 Informed by these visualizations, perhaps we can fill in some gaps...
 
 **EXERCISE**: Add uninterpreted functions to `llvm_verify` instructions
-(replace `abc` with `w4_unint_yices([<uninterpreted functions>])`) in
+(replace `abc` with `w4_unint_{solver}([{uninterpreted functions}])`) in
 `salsa20.saw` that are straightforwardly implemented by functions in
 `salsa20.bc`. (`s20_quarterround` implements `quarterround`, `s20_hash`
 implements `Salsa20`, etc., as depicted by dashed blue edges in the
-above graph.) How does this affect proof times?
+above graph.) How does this affect proof times? What happens if you
+remove the overrides?
 
 **EXERCISE**: Based on the above `salsa20.saw` diagram, are any
 potential overrides missing from other `llvm_verify` instructions in
