@@ -79,7 +79,7 @@ let main : TopLevel () = do {
 
 ```
 $ saw proof/salsa20-ref.saw
-[12:34:56.789] Loading file "/home/mwbenke/workspace/cryptol-course/labs/Demos/SAW/salsa20-ref/proof/salsa20-ref.saw"
+[12:34:56.789] Loading file ".../cryptol-course/labs/Demos/SAW/salsa20-ref/proof/salsa20-ref.saw"
 
 [12:34:56.789] TODO: Verify `../build/salsa20-ref.bc`...
 [12:34:56.789] Done!
@@ -378,7 +378,7 @@ let main : TopLevel () = do {
 
 ```
 $ saw proof/salsa20-ref.saw
-[12:34:56.789] Loading file "/home/mwbenke/workspace/cryptol-course/labs/Demos/SAW/salsa20-ref/proof/salsa20-ref.saw"
+[12:34:56.789] Loading file ".../cryptol-course/labs/Demos/SAW/salsa20-ref/proof/salsa20-ref.saw"
 
 [12:34:56.789] TODO: Verify `../build/salsa20-ref-mips64.bc`...
 [12:34:56.789] TODO: Verify `../build/salsa20-ref-mips64le.bc`...
