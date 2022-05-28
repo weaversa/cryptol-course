@@ -386,8 +386,8 @@ $ saw proof/salsa20-ref.saw
 ```
 
 **EXERCISE**: Is Galois's `salsa20.c` implementation portable w.r.t.
-endianness? Try compiling it with `-target` `mips64` and `mips64le` and
-see if its verification script still succeeds.
+endianness? Compile it with `-target` `mips64` and `mips64le` and see
+if its verification script still succeeds.
 
 A small win for encapsulation! Let's return to the verification effort.
 
@@ -401,7 +401,12 @@ disappointed, let's just hammer this out:
 
 ```SAW
 let salsa20_wordtobyte_setup : LLVMSetup () = do {
-    
+    p_output <- alloc (array 64 i8);
+    (input, p_input) <- pointer_to_fresh_readonly (array 16 i32) "input";
+
+    execute [p_output, p_input];
+
+    points_to p_output (from_cryptol {{ Salsa20::Salsa20 (join [Salsa20::littleendian_inverse x | x <- input]) }});
 };
 ```
 
