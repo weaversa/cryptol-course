@@ -661,15 +661,23 @@ uint32_t* addRowAlias(uint32_t* a, uint32_t* b, uint32_t length) {
 ```
 
 where the length of the array is not specified. The corresponding
-Cryptol code might be
+Cryptol code might be:
 
 ```cryptol
 addRow : {length} (fin length) => [n][32] -> [n][32] -> [n][32]
 addRow a b = a + b
 ```
 
-SAW does not have inductive reasoning capabilities. One option would be to make a new contract for 
-each `length` that's actually used. Instead we can make a single contract with a length input:
+SAW currently does not have inductive reasoning capabilities and so
+can only reason about concrete types. However, SAWCore terms can be
+[formalized in Coq](https://github.com/GaloisInc/saw-script/tree/master/saw-core-coq),
+a much more powerful theorem prover that has inductive reasoning (and
+many more) capabilities. This is obviously well beyond the scope of
+the course, but worth mentioning.
+
+One option here is to make a new contract for each `length` that's
+actually used. Instead we can make a single contract with a length
+input:
 
 ```python
 def addRowAlias_Contract(Contract):
