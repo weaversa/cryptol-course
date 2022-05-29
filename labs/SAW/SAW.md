@@ -298,7 +298,7 @@ We can now run the proof script.
 ```
 $ cd labs/SAW/proof
 $ python3 rcs.py
-ifying RCS ...
+[03:08:29.986] Verifying RCS ...
 [03:08:29.987] Simulating RCS ...
 [03:08:29.988] Checking proof obligations RCS ...
 [03:08:30.007] Subgoal failed: RCS safety assertion:
@@ -353,7 +353,7 @@ SAW also provides a handy counterexample, namely, when `shift =
 
 One remedy to this is the following:
 
-```
+```C
 uint32_t RCS(uint32_t bits, uint32_t shift) {
   shift %= sizeof(bits) * 8;
   return (bits << (sizeof(bits) * 8 - shift)) | (bits >> shift);
@@ -362,10 +362,8 @@ uint32_t RCS(uint32_t bits, uint32_t shift) {
 
 Recompiling and running SAW gives:
 
-```
-rcs.py:30):
-error: Proof failed.
-    stdout:
+```sh
+$ clang ../src/rcs2.c -o ../src/rcs.bc -c -emit-llvm && python3 rcs.py
 [03:11:54.334] Verifying RCS ...
 [03:11:54.334] Simulating RCS ...
 [03:11:54.335] Checking proof obligations RCS ...
@@ -416,7 +414,7 @@ Finally, SAW is happy. More importantly, the C is correct and free of
 undefined behavior.
 
 ```
-$ clang ../src/rcs.c -o ../src/rcs.bc -c -emit-llvm && python3 rcs.py
+$ clang ../src/rcs3.c -o ../src/rcs.bc -c -emit-llvm && python3 rcs.py
 [03:14:09.561] Verifying RCS ...
 [03:14:09.562] Simulating RCS ...
 [03:14:09.563] Checking proof obligations RCS ...
