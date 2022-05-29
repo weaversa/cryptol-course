@@ -8,8 +8,8 @@ SPECS=specs
 ARTIFACTS=artifacts
 
 all: artifacts
-	clang -c -emit-llvm -o $(ARTIFACTS)/Player.bc $(SRC)/Player.c
-	python3 $(PROOF)/Player.py
+	clang -c -emit-llvm -o $(ARTIFACTS)/Game.bc $(SRC)/Game.c
+	python3 $(PROOF)/Game.py
 
 artifacts:
 	mkdir $(ARTIFACTS)

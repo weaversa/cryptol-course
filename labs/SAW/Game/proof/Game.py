@@ -155,8 +155,8 @@ class PlayerTests(unittest.TestCase):
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
 
     pwd = os.getcwd()
-    bitcode_name = pwd + "/artifacts/Player.bc"
-    cryptol_name = pwd + "/specs/Player.cry"
+    bitcode_name = pwd + "/artifacts/Game.bc"
+    cryptol_name = pwd + "/specs/Game.cry"
 
     cryptol_load_file(cryptol_name)
     module = llvm_load_module(bitcode_name)

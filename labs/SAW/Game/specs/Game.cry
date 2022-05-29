@@ -1,4 +1,4 @@
-module Player where
+module Game where
 
 levelUp : [32] -> [32]
 levelUp level = level + 1
