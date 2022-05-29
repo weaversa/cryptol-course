@@ -256,7 +256,7 @@ using `self.assertIs(RCS_result.is_success(), True)`.
 
 The full code is:
 
-```python3
+```python
 import os
 import unittest
 from saw_client             import *
@@ -402,7 +402,7 @@ exhibit undefined behavior.
 
 Let's try again with
 
-```
+```C
 uint32_t RCS(uint32_t bits, uint32_t shift) {
   shift %= sizeof(bits)*8;
   if(shift == 0) return bits;
@@ -413,7 +413,7 @@ uint32_t RCS(uint32_t bits, uint32_t shift) {
 Finally, SAW is happy. More importantly, the C is correct and free of
 undefined behavior.
 
-```
+```sh
 $ clang ../src/rcs3.c -o ../src/rcs.bc -c -emit-llvm && python3 rcs.py
 [03:14:09.561] Verifying RCS ...
 [03:14:09.562] Simulating RCS ...
@@ -579,7 +579,7 @@ def addRow5NewVar_Contract(Contract):
 
 Running a unit test yields the following error message:
 
-```
+```sh
 SAW error message
 ```
 
@@ -626,7 +626,7 @@ def addRow5NewVar_Contract(Contract):
 
 Consider another implementation of the previous contract
 
-```python    
+```python
 def addRow5NewVar_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a", read_only=True)
