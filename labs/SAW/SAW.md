@@ -82,14 +82,14 @@ uint32_t RCS(uint32_t bits, uint32_t shift) {
 SAW doesn't actually verify C source, but rather C compiled down to
 LLVM intermediate representation (IR), or bitcode. This can be
 accomplished via the `clang` compiler. In this instance, we can create
-the bitcode by entering the follwing command in a terminal:
+the bitcode by entering the following command in a terminal:
 
 ```sh
 $ clang -emit-llvm labs/SAW/src/rcs.c -c -o labs/SAW/src/rcs.bc
 ```
 
 We can inspect the bitcode using SAW by loading the module and
-printing some metadata.
+printing some meta-data.
 
 ```Xsaw-session
 $ saw
@@ -234,7 +234,7 @@ Let's break down the first few lines of this function:
   messages, then just use `if __name__ == "__main__":
   view(LogResults())`
 - The line `bcname = "/some/path/to/your/file.bc"` declares which
-  bitcode file we're analyzing. If you have multiple bitcodes files,
+  bitcode file we're analyzing. If you have multiple bitcode files,
   then make a variable for each file.
 - The line `mod = llvm_load_module(bcname)` creates the object we will
   pass to verification that represents the bitcode.
@@ -399,7 +399,7 @@ Traceback (most recent call last):
 
 Aha! The counter example shows that we forgot about the case when
 `shift` is zero! This causes `(sizeof(bits) * 8 - 0)` to be `32`,
-which is equal to the wordsize of `bits`, and hence causes `<<` to
+which is equal to the word-size of `bits`, and hence causes `<<` to
 exhibit undefined behavior.
 
 Let's try again with
@@ -512,7 +512,7 @@ def addRow5Mutate_Contract(Contract):
 Since arrays are passed as pointers in C, when we call `execute_func`
 we supply `a_p` and `b_p` rather than `a` and `b`.
 
-To verify correctness, we assert that after function exectution `a_p`
+To verify correctness, we assert that after function execution `a_p`
 points to what the Cryptol specification claims it should using
 `self.points_to(a_p, cry_f("rowAdd {a} {b}"))`.
 
@@ -552,7 +552,7 @@ def addRow5Mutate_Contract(Contract):
     self.returns(void)
 ```
 
-### Auxilary Variables
+### Auxiliary Variables
 
 A SAW contract is strictly divided into three parts: 
 1. Preconditions
@@ -870,7 +870,7 @@ typedef struct {
 
 ## Assumptions and Lemmas
 
-Sometimes one might want to blackbox certain parts of the verification
+Sometimes one might want to black-box certain parts of the verification
 such as functions coming from libraries, especially if they have
 already been formally verified. For example, the height of
 [height-balanced binary
