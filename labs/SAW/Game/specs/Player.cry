@@ -2,3 +2,8 @@ module Player where
 
 levelUp : [32] -> [32]
 levelUp level = level + 1
+
+resolveAttack : [32] -> [32] -> [32] -> [32]
+resolveAttack hp def atk = hp'
+  where
+    hp' = hp - (atk - def)

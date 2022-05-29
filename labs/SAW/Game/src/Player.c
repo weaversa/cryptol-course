@@ -32,3 +32,23 @@ uint32_t initializeDefaultPlayer(player_t* player)
 
   return SUCCESS;
 }
+
+void resolveAttack(character_t* target, uint32_t atk)
+{
+  if ( target->def >= atk)
+  {
+    // The target's defense mitigates the attack
+    target->hp = target->hp;
+  }
+  else if ( target->hp <= (atk - target->def) )
+  {
+    // The attack will knock out the target
+    target->hp = 0;
+  }
+
+  else
+  {
+    // Calculate damage as normal
+    target->hp = target->hp - (atk - target->def);
+  }
+}
