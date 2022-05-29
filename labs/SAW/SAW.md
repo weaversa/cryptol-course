@@ -935,13 +935,22 @@ what is specified in the `log2Contract()`.
 
 ## Uninterpreting Functions
 
-An alternative to passing in lemmas is uninterpreting a funciton. This
-is useful when you don't care about the specifics of the values
-produced by a total function, but rather, the types of the value
-produced. For example, hashing algorithms are often total
-functions. We often don't care about the particular bits of a hash
-function, but rather, that the hash function returned some 32-bit
-integer.
+Another way to simplify proofs is to uninterpret a function. This is
+useful when you don't care about the specifics of the values produced
+by a total function, but rather, the types of the value produced. For
+example, hashing algorithms are often total functions. We often don't
+care about the particular bits of a hash function, but rather, that
+the hash function returned some 32-bit integer.
+
+This is also useful _in conjunction with lemmas_, reducing proof
+complexity by decomposing a complex _specification_ into manageable
+logical steps (constrained by the lemmas), much as verifying
+function implementations and using results as lemmas does for the
+corresponding _implementation_.
+
+See [SMT: Equality Logic With Uninterpreted Functions](https://www21.in.tum.de/teaching/sar/SS20/6.pdf), which describes
+how uninterpreted functions and constraints are applied to
+Satisfiability Modulo Theories.
 
 //add in use when function complicated
 //add uninterpreting may cause failure (logic needed sometimes). This can be avoided sometimes by making sure for every function you are uninterpreting you are also passing in a corresponding lemma
