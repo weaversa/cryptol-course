@@ -171,16 +171,21 @@ can use `self.returns(void)`.
 ### Terms from Cryptol
 
 The command `cry(string)` converts a Python string into a
-`CryptolTerm` that can be used in SAW. The `cry_f(string)` command is similar to `cry`,
-but the `_f` indicates one can pass Python local variables into the strings. To do this, surround the variable
-with braces as we did in `returns_f("{bits} >>> {shift}")`. In fact, `returns_f` is
-just syntactic sugar for `returns(cry_f(string))`.
+`CryptolTerm` that can be used in SAW. The `cry_f(string)` command is
+similar to `cry`, but the `_f` indicates one can pass Python local
+variables into the strings. To do this, surround the variable with
+braces as we did in `returns_f("{bits} >>> {shift}")`. In fact,
+`returns_f` is just syntactic sugar for `returns(cry_f(string))`. In
+general, `cry_f` and friends are mostly a wrapper around [formatted string literals](https://docs.python.org/3/tutorial/inputoutput.html#formatted-string-literals)
+called "f-strings".
 
 The `CryptolTerm` class is a subclass of `SetupVal`. This allows using
 `CryptolTerm` as a `SetupVal`.
 
-Braces are sometimes used in Cryptol to assign type parameters or declare records. 
-The symbols `{{` and `}}` are used to denote literal braces for these cases when parsing Python strings.  For example, let's think how to parse the following line:
+Braces are sometimes used in Cryptol to assign type parameters or
+declare records.  The symbols `{{` and `}}` are used to denote literal
+braces for these cases when parsing Python strings.  For example,
+let's think how to parse the following line:
 
 ```python
   self.returns_f("{{a = take`{{5}} {blah}, b = take`{{{N}}} {blah} }} == foo `")
