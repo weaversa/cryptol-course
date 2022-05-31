@@ -564,7 +564,7 @@ labs::Language::Basics> uncurry add (20, 28)
 48
 ```
 
-Hopefull you can see that these two styles are equivalent at some
+Hopefully you can see that these two styles are equivalent at some
 level. Curried functions are preferred as they afford [partial
 application](https://en.wikipedia.org/wiki/Partial_application), but
 uncurried can be useful for explicating the correspondence to
