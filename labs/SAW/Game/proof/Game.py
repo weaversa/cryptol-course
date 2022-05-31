@@ -8,11 +8,13 @@
 # - Field name (extra debug info)
 # - Make a worksheet & solution for the SAW examples
 
+
 # Done
 # - Nested defines example (handled here...)
 #   --> Mention in some SAW configs (i.e. llvm), this may be an issue
 # - Aliasing / Memory Region disjoint example (selfDamage)
 #   --> Mention in some SAW configs (i.e. llvm), this may be an issue
+# - Expand on the error cases associated with inventory_t's item_t pointer
 
 #######################################
 # Imporant Imports
@@ -115,6 +117,45 @@ class initDefaultPlayer_Contract(Contract):
     self.returns(cry_f("`({SUCCESS}) : [32]"))
 
 
+# checkStats Contract
+# uint32_t checkStats(character_t* character)
+# Note: This contract only considers the case where all of the stats are below
+#       the MAX_STAT cap. We could prove the FAILURE result as long as we have
+#       at least one field violate the MAX_STAT cap
+class checkStats_Contract(Contract):
+  def __init__(self, shouldPass : bool):
+    super().__init__()
+    self.shouldPass = shouldPass
+    # There are 3 possible cases for resolveAttack
+  def specification (self):
+    # Declare variables
+    (character, character_p) = ptr_to_fresh(self, alias_ty("struct.character_t"), name="character")
+
+    # Assert preconditions
+    if (self.shouldPass):
+      # Set up the preconditions to assure all stats are below the MAX_STAT cap
+      self.precondition_f("{character}.2 <= `{MAX_STAT}")
+      self.precondition_f("{character}.3 <= `{MAX_STAT}")
+      self.precondition_f("{character}.4 <= `{MAX_STAT}")
+      self.precondition_f("{character}.5 <= `{MAX_STAT}")
+    else:
+      # Note: Must meet at least one of the following preconditions to result
+      #       in a failure (feel free to comment out as many as you want)
+      self.precondition_f("{character}.2 > `{MAX_STAT}")
+      self.precondition_f("{character}.3 > `{MAX_STAT}")
+      self.precondition_f("{character}.4 > `{MAX_STAT}")
+      self.precondition_f("{character}.5 > `{MAX_STAT}")
+
+    # Symbolically execute the function
+    self.execute_func(character_p)
+
+    # Assert the postcondition behavior
+    if (self.shouldPass):
+      self.returns(cry_f("`({SUCCESS}) : [32]"))
+    else:
+      self.returns(cry_f("`({FAILURE}) : [32]"))
+
+
 # resolveAttack Contract
 # void resolveAttack(character_t* target, uint32_t atk)
 class resolveAttack_Contract(Contract):
@@ -183,8 +224,46 @@ class resetInventoryItems_Contract(Contract):
 
   def specification (self):
     # Declare variables
+    # Note: The setup here does not use item_p for the proof. However, item_p
+    #       is included to show errors that can be encountered with the
+    #       inventory_t struct.
     (item, item_p) = ptr_to_fresh(self, array_ty(self.numItems, alias_ty("struct.item_t")), name="item")
     inventory_p = self.alloc(alias_ty("struct.inventory_t"), points_to = struct(item, cry_f("{self.numItems} : [32]")))
+    """
+    If inventory_t is defined as:
+      typedef struct {
+        item_t* item;
+        uint32_t numItems;
+      } inventory_t;
+
+    Attempt 1:
+    ==========
+    Passing item as so:
+      inventory_p = self.alloc(alias_ty("struct.inventory_t"), points_to = struct(item, cry_f("{self.numItems} : [32]")))
+
+    yields the following error:
+      ⚠️  Failed to verify: lemma_resetInventoryItems_Contract (defined at proof/Game.py:190):
+      error: types not memory-compatible:
+      { %struct.item_t*, i32 }
+      { [5 x { i32, i32 }], i32 }
+
+
+              stdout:
+
+    Attempt 2:
+    ==========
+    Passing item_p as so:
+      inventory_p = self.alloc(alias_ty("struct.inventory_t"), points_to = struct(item_p, cry_f("{self.numItems} : [32]")))
+  
+    yields the following error:
+      ⚠️  Failed to verify: lemma_resetInventoryItems_Contract (defined at proof/Game.py:190):
+      error: typeOfSetupValue: llvm_elem requires pointer to struct or array, found %struct.item_t**
+              stdout:
+
+    Considering both of these verification setup attempts, we can see that
+    defining inventory_t with an item_t pointer is tough for SAW to setup and.
+    prove. Consequently, it is better to use fixed array lengths for structs!
+    """
 
     # Symbolically execute the function
     self.execute_func(inventory_p)
@@ -327,6 +406,8 @@ class GameTests(unittest.TestCase):
 
     levelUp_result             = llvm_verify(module, 'levelUp', levelUp_Contract())
     initDefaultPlayer_result   = llvm_verify(module, 'initDefaultPlayer', initDefaultPlayer_Contract())
+    checkStats_pass_result     = llvm_verify(module, 'checkStats', checkStats_Contract(True))
+    checkStats_fail_result     = llvm_verify(module, 'checkStats', checkStats_Contract(False))
     resolveAttack_case1_result = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(1))
     resolveAttack_case2_result = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(2))
     resolveAttack_case3_result = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(3))
@@ -339,6 +420,8 @@ class GameTests(unittest.TestCase):
 
     self.assertIs(levelUp_result.is_success(), True)
     self.assertIs(initDefaultPlayer_result.is_success(), True)
+    self.assertIs(checkStats_pass_result.is_success(), True)
+    self.assertIs(checkStats_fail_result.is_success(), True)
     self.assertIs(resolveAttack_case1_result.is_success(), True)
     self.assertIs(resolveAttack_case2_result.is_success(), True)
     self.assertIs(resolveAttack_case3_result.is_success(), True)

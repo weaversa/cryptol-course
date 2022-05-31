@@ -51,6 +51,7 @@ typedef struct {
 // Function prototypes
 uint32_t levelUp(uint32_t level);
 uint32_t initDefaultPlayer(player_t* player);
+uint32_t checkStats(character_t* character);
 void resolveAttack(character_t* target, uint32_t atk);
 void resetInventoryItems(inventory_t* inventory);
 uint32_t initScreen(screen_t* screen, uint8_t assetID);

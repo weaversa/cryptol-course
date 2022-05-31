@@ -33,6 +33,27 @@ uint32_t initDefaultPlayer(player_t* player)
   return SUCCESS;
 }
 
+
+// Checks that the character stats are below MAX_STAT
+// Note: MUST be called before running any function that uses character stats!
+uint32_t checkStats(character_t* character)
+{
+  // Assume failure by default
+  uint32_t result = FAILURE;
+
+  // Check the stats
+  if (character->hp  <= MAX_STAT &&
+      character->atk <= MAX_STAT &&
+      character->def <= MAX_STAT &&
+      character->spd <= MAX_STAT )
+  {
+    result = SUCCESS;
+  }
+
+  return result;
+}
+
+
 void resolveAttack(character_t* target, uint32_t atk)
 {
   if ( target->def >= atk)
