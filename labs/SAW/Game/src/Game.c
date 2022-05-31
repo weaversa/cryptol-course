@@ -52,6 +52,32 @@ void resolveAttack(character_t* target, uint32_t atk)
   }
 }
 
+uint32_t selfDamage(player_t* player)
+{
+  enum battleResult result = NEUTRAL;
+
+  // Player attacks itself (perhaps due to status condition)
+  resolveAttack(player, player->atk);
+  // Note: If SAW ever gives a "Memory not disjoint" error, then what SAW
+  //       actually means is that inputs to an overridden function cannot
+  //       overlap in memory. Given that player->atk is a field within player,
+  //       the inputs overlap.
+  // Also consider the following way to have the player damage itself:
+  //   quickBattle(player, player);
+  // This also contains inputs that overlap in memory (i.e. not disjoint).
+  // Bear in mind that both function calls in this example will not result in
+  // the Memory Disjoint error for the Python API. However, they will likely
+  // yield the same error if not using the Python API (i.e. llvm.saw).
+
+  if (player->hp <= 0)
+  {
+    // Player's self damage results in a knockout
+    result = DEFEAT_PLAYER;
+  }
+
+  return result;
+}
+
 
 void resetInventoryItems(inventory_t* inventory)
 {

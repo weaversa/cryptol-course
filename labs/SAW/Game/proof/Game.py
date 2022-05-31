@@ -1,9 +1,18 @@
 # TODO
-# - Aliasing / Memory region disjoint example (resolveAttack)
+# - Add a function that would check stats prior to callees
+#   --> Mention in the markdown file that this is referenced for preconditions
+#   --> Relevant example: resolveAttack (integer overflow/underflow)
 # - Try the alloc_pointsto_buffer example & see its limitations
+# - Global variable
+# - Extern
+# - Field name (extra debug info)
+# - Make a worksheet & solution for the SAW examples
 
 # Done
-# - Nested defines example (handled here...) (Mention in some SAW configs, this may be an issue)
+# - Nested defines example (handled here...)
+#   --> Mention in some SAW configs (i.e. llvm), this may be an issue
+# - Aliasing / Memory Region disjoint example (selfDamage)
+#   --> Mention in some SAW configs (i.e. llvm), this may be an issue
 
 #######################################
 # Imporant Imports
@@ -23,12 +32,15 @@ from saw_client.llvm_type   import *
 #######################################
 
 MAX_NAME_LENGTH = 12
-SUCCESS = 170
-FAILURE = 85
-MAX_STAT = 100
-SCREEN_ROWS = 15
-SCREEN_COLS = 10
-SCREEN_TILES = SCREEN_ROWS * SCREEN_COLS
+SUCCESS         = 170
+FAILURE         = 85
+MAX_STAT        = 100
+SCREEN_ROWS     = 15
+SCREEN_COLS     = 10
+SCREEN_TILES    = SCREEN_ROWS * SCREEN_COLS
+NEUTRAL         = 0
+DEFEAT_PLAYER   = 1
+DEFEAT_OPPONENT = 2
 
 
 #######################################
@@ -124,32 +136,33 @@ class resolveAttack_Contract(Contract):
     atk = self.fresh_var(i32, "atk")
 
     # Assert the precondition that the stats are below the max stat cap
+    # Pop Quiz: Why do we need these preconditions?
     self.precondition_f("{atk} <= `{MAX_STAT}")
-    self.precondition_f("({target}).2 <= `{MAX_STAT}")
-    self.precondition_f("({target}).4 <= `{MAX_STAT}")
+    self.precondition_f("{target}.2 <= `{MAX_STAT}")
+    self.precondition_f("{target}.4 <= `{MAX_STAT}")
 
     # Determine the preconditions based on the case parameter
     if (self.case == 1):
       # target->def >= atk
-      self.precondition_f("({target}).4 >= {atk}")
+      self.precondition_f("{target}.4 >= {atk}")
     elif (self.case == 2):
       # target->hp <= (atk - target->def)
-      self.precondition_f("(({target}).2 + ({target}).4) <= {atk}")
+      self.precondition_f("({target}.2 + {target}.4) <= {atk}")
     else:
       # Assume any other case follows the formal attack calculation
-      self.precondition_f("({target}).4 < {atk}")
-      self.precondition_f("(({target}).2 + ({target}).4) > {atk}")
+      self.precondition_f("{target}.4 < {atk}")
+      self.precondition_f("({target}.2 + {target}.4) > {atk}")
     
     # Symbolically execute the function
     self.execute_func(target_p, atk)
 
     # Determine the postcondition based on the case parameter
     if (self.case == 1):
-      self.points_to(target_p[2], cry_f("({target}).2 : [32]"))
+      self.points_to(target_p[2], cry_f("{target}.2 : [32]"))
     elif (self.case == 2):
       self.points_to(target_p[2], cry_f("0 : [32]"))
     else:
-      self.points_to(target_p[2], cry_f("resolveAttack (({target}).2) (({target}).4) {atk}"))
+      self.points_to(target_p[2], cry_f("resolveAttack ({target}.2) ({target}.4) {atk}"))
 
     self.returns(void)
 
@@ -207,30 +220,91 @@ class quickBattle_Contract(Contract):
     # Declare variables
     (player, player_p)     = ptr_to_fresh(self, alias_ty("struct.character_t"), name="player")
     (opponent, opponent_p) = ptr_to_fresh(self, alias_ty("struct.character_t"), name="opponent")
+    # Pop Quiz: Why does allocating the pointers in the following way yield an
+    #           error?
     #player = self.alloc(alias_ty("struct.character_t"))
     #opponent = self.alloc(alias_ty("struct.character_t"))
 
     # Assert the precondition that both HPs are greater than 0
-    self.precondition_f("({player}).2   > 0")
-    self.precondition_f("({opponent}).2 > 0")
+    self.precondition_f("{player}.2   > 0")
+    self.precondition_f("{opponent}.2 > 0")
 
     # Assert the precondition that character stats are below the max stat cap
-    # Question: Explain why the proof fails when the following preconditions
+    # Pop Quiz: Explain why the proof fails when the following preconditions
     #           are commented out.
-    self.precondition_f("({player}).2   <= `{MAX_STAT}")
-    self.precondition_f("({player}).3   <= `{MAX_STAT}")
-    self.precondition_f("({player}).4   <= `{MAX_STAT}")
-    self.precondition_f("({player}).5   <= `{MAX_STAT}")
-    self.precondition_f("({opponent}).2 <= `{MAX_STAT}")
-    self.precondition_f("({opponent}).3 <= `{MAX_STAT}")
-    self.precondition_f("({opponent}).4 <= `{MAX_STAT}")
-    self.precondition_f("({opponent}).5 <= `{MAX_STAT}")
+    self.precondition_f("{player}.2   <= `{MAX_STAT}")
+    self.precondition_f("{player}.3   <= `{MAX_STAT}")
+    self.precondition_f("{player}.4   <= `{MAX_STAT}")
+    self.precondition_f("{player}.5   <= `{MAX_STAT}")
+    self.precondition_f("{opponent}.2 <= `{MAX_STAT}")
+    self.precondition_f("{opponent}.3 <= `{MAX_STAT}")
+    self.precondition_f("{opponent}.4 <= `{MAX_STAT}")
+    self.precondition_f("{opponent}.5 <= `{MAX_STAT}")
 
     # Symbolically execute the function
     self.execute_func(player_p, opponent_p)
 
     # Assert the postcondition
     self.returns(void)
+
+
+# selfDamage Contract
+# uint32_t selfDamage(player_t* player)
+class selfDamage_Contract(Contract):
+  def __init__(self, case : int):
+    super().__init__()
+    self.case = case
+    # There are 3 possible cases for resolveAttack
+    #   Case 1: Attack mitigated
+    #   Case 2: Immediate KO
+    #   Case 3: Regular attack
+    # Each case results in a different function behavior for calculating the
+    # player's remaining HP. While we could make 3 separate contracts to handle
+    # all of the possible cases, we can pass a parameter to the contract, which
+    # identifies what preconditions and postconditions to set.
+
+  def specification (self):
+    # Declare variables
+    (player, player_p) = ptr_to_fresh(self, alias_ty("struct.character_t"), name="player")
+
+    # Assert the preconditions
+    self.precondition_f("{player}.2 > 5")
+    self.precondition_f("{player}.3 == 5")
+    self.precondition_f("{player}.4 == 0")
+
+    # Assert the precondition that character stats are below the max stat cap
+    # Pop Quiz: Explain why the proof fails when the following preconditions
+    #           are commented out.
+    self.precondition_f("{player}.2   <= `{MAX_STAT}")
+    self.precondition_f("{player}.3   <= `{MAX_STAT}")
+    self.precondition_f("{player}.4   <= `{MAX_STAT}")
+    self.precondition_f("{player}.5   <= `{MAX_STAT}")
+
+    # Determine the preconditions based on the case parameter
+    if (self.case == 1):
+      # player->def >= player->atk
+      self.precondition_f("{player}.4 >= {player}.3")
+    elif (self.case == 2):
+      # player->hp <= (player->atk - player->def)
+      self.precondition_f("({player}.2 + {player}.4) <= {player}.3")
+    else:
+      # Assume any other case follows the formal attack calculation
+      self.precondition_f("{player}.4 < {player}.3")
+      self.precondition_f("({player}.2 + {player}.4) > {player}.3")
+
+    # Symbolically execute the function
+    self.execute_func(player_p, player_p)
+
+    # Assert the postcondition
+    if (self.case == 1):
+      self.points_to(player_p[2], cry_f("{player}.2 : [32]"))
+      self.returns(cry_f("`({NEUTRAL}) : [32]"))
+    elif (self.case == 2):
+      self.points_to(player_p[2], cry_f("0 : [32]"))
+      self.returns(cry_f("`({DEFEAT_PLAYER}) : [32]"))
+    else:
+      self.points_to(player_p[2], cry_f("resolveAttack ({player}.2) ({player}.4) {player}.3"))
+      self.returns(cry_f("`({NEUTRAL}) : [32]"))
 
 #######################################
 
@@ -259,6 +333,10 @@ class GameTests(unittest.TestCase):
     resetInventoryItems_result = llvm_verify(module, 'resetInventoryItems', resetInventoryItems_Contract(5))
     initScreen_result          = llvm_verify(module, 'initScreen', initScreen_Contract())
     quickBattle_result         = llvm_verify(module, 'quickBattle', quickBattle_Contract(), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
+    selfDamage_case1_result    = llvm_verify(module, 'selfDamage', selfDamage_Contract(1), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
+    selfDamage_case2_result    = llvm_verify(module, 'selfDamage', selfDamage_Contract(2), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
+    selfDamage_case3_result    = llvm_verify(module, 'selfDamage', selfDamage_Contract(3), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
+
     self.assertIs(levelUp_result.is_success(), True)
     self.assertIs(initDefaultPlayer_result.is_success(), True)
     self.assertIs(resolveAttack_case1_result.is_success(), True)
@@ -267,6 +345,9 @@ class GameTests(unittest.TestCase):
     self.assertIs(resetInventoryItems_result.is_success(), True)
     self.assertIs(initScreen_result.is_success(), True)
     self.assertIs(quickBattle_result.is_success(), True)
+    self.assertIs(selfDamage_case1_result.is_success(), True)
+    self.assertIs(selfDamage_case2_result.is_success(), True)
+    self.assertIs(selfDamage_case3_result.is_success(), True)
 
 if __name__ == "__main__":
   unittest.main()
