@@ -7,7 +7,7 @@ uint32_t levelUp(uint32_t level)
 }
 
 
-uint32_t initializeDefaultPlayer(player_t* player)
+uint32_t initDefaultPlayer(player_t* player)
 {
   // Variables
   uint8_t i = 0;
@@ -45,7 +45,6 @@ void resolveAttack(character_t* target, uint32_t atk)
     // The attack will knock out the target
     target->hp = 0;
   }
-
   else
   {
     // Calculate damage as normal
@@ -61,4 +60,88 @@ void resetInventoryItems(inventory_t* inventory)
   {
     inventory->item[i].quantity = 0;
   }
+}
+
+
+uint32_t initScreen(screen_t* screen, uint8_t assetID)
+{
+  // Iterate through the screen tiles and set their asset ID
+  for (int i = 0; i < SCREEN_TILES; i++)
+  {
+    screen->tiles[i] = assetID;
+  }
+
+  return SUCCESS;
+}
+
+
+// Simulates a simple battle where only the faster character attacks.
+void quickBattle(player_t* player, character_t* opponent)
+{
+  if (player->spd >= opponent->spd)
+  {
+    resolveAttack(opponent, player->atk);
+  }
+  else
+  {
+    resolveAttack(player, opponent->atk);
+  }
+}
+
+
+// Simulates a complex battle where characters can counterattack as long as
+// they survive to do so.
+uint32_t counterBattle(player_t* player, character_t* opponent)
+{
+  enum battleResult result = NEUTRAL;
+
+  // Check spd to determine who goes first
+  if (player->spd >= opponent->spd)
+  {
+    // Player attacks first
+    resolveAttack(opponent, player->atk);
+
+    // Check if there is a counterattack
+    if (opponent->hp > 0)
+    {
+      // Opponent counterattacks
+      resolveAttack(player, opponent->atk);
+
+      if (player->hp == 0)
+      {
+        result = DEFEAT_PLAYER;
+      }
+    }
+    else
+    {
+      // Opponent defeated
+      player->level = player->level + 1;
+      result = DEFEAT_OPPONENT;
+    }
+  }
+  else
+  {
+    // Opponent attacks first
+    resolveAttack(player, opponent->atk);
+
+    // Check if there is a counterattack
+    if (player->hp > 0)
+    {
+      // Player counterattacks
+      resolveAttack(opponent, player->atk);
+
+      if (opponent->hp == 0)
+      {
+        result = DEFEAT_OPPONENT;
+        player->level = player->level + 1;
+      }
+    }
+    else
+    {
+      // Player defeated
+      result = DEFEAT_PLAYER;
+    }
+  }
+
+  return result;
 }

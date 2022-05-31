@@ -1,3 +1,10 @@
+# TODO
+# - Aliasing / Memory region disjoint example (resolveAttack)
+# - Try the alloc_pointsto_buffer example & see its limitations
+
+# Done
+# - Nested defines example (handled here...) (Mention in some SAW configs, this may be an issue)
+
 #######################################
 # Imporant Imports
 #######################################
@@ -19,6 +26,9 @@ MAX_NAME_LENGTH = 12
 SUCCESS = 170
 FAILURE = 85
 MAX_STAT = 100
+SCREEN_ROWS = 15
+SCREEN_COLS = 10
+SCREEN_TILES = SCREEN_ROWS * SCREEN_COLS
 
 
 #######################################
@@ -50,9 +60,9 @@ class levelUp_Contract(Contract):
     self.returns_f("levelUp {level}")
 
 
-# initializeDefaultPlayer Contract
-# uint32_t initializeDefaultPlayer(player_t* player)
-class initializeDefaultPlayer_Contract(Contract):
+# initDefaultPlayer Contract
+# uint32_t initDefaultPlayer(player_t* player)
+class initDefaultPlayer_Contract(Contract):
   def specification (self):
     # Pull the struct from the bitcode
     # Although the function uses player_t, pass character_t to SAW since
@@ -172,6 +182,56 @@ class resetInventoryItems_Contract(Contract):
 
     self.returns(void)
 
+
+# initScreen Contract
+# uint32_t initScreen(screen_t* screen, uint8_t assetID)
+class initScreen_Contract(Contract):
+  def specification (self):
+    # Declare variables
+    screen = self.alloc(alias_ty("struct.screen_t"))
+    assetID = self.fresh_var(i8, "assetID")
+
+    # Symbolically execute the function
+    self.execute_func(screen, assetID)
+
+    # Assert the postcondition
+    self.points_to(screen[0], cry_f("[(i*0 + {assetID}) | i <- [1..{SCREEN_TILES}]]"))
+
+    self.returns(cry_f("`({SUCCESS}) : [32]"))
+
+
+# quickBattle Contract
+# void quickBattle(player_t* player, character_t* opponent)
+class quickBattle_Contract(Contract):
+  def specification (self):
+    # Declare variables
+    (player, player_p)     = ptr_to_fresh(self, alias_ty("struct.character_t"), name="player")
+    (opponent, opponent_p) = ptr_to_fresh(self, alias_ty("struct.character_t"), name="opponent")
+    #player = self.alloc(alias_ty("struct.character_t"))
+    #opponent = self.alloc(alias_ty("struct.character_t"))
+
+    # Assert the precondition that both HPs are greater than 0
+    self.precondition_f("({player}).2   > 0")
+    self.precondition_f("({opponent}).2 > 0")
+
+    # Assert the precondition that character stats are below the max stat cap
+    # Question: Explain why the proof fails when the following preconditions
+    #           are commented out.
+    self.precondition_f("({player}).2   <= `{MAX_STAT}")
+    self.precondition_f("({player}).3   <= `{MAX_STAT}")
+    self.precondition_f("({player}).4   <= `{MAX_STAT}")
+    self.precondition_f("({player}).5   <= `{MAX_STAT}")
+    self.precondition_f("({opponent}).2 <= `{MAX_STAT}")
+    self.precondition_f("({opponent}).3 <= `{MAX_STAT}")
+    self.precondition_f("({opponent}).4 <= `{MAX_STAT}")
+    self.precondition_f("({opponent}).5 <= `{MAX_STAT}")
+
+    # Symbolically execute the function
+    self.execute_func(player_p, opponent_p)
+
+    # Assert the postcondition
+    self.returns(void)
+
 #######################################
 
 
@@ -191,18 +251,22 @@ class GameTests(unittest.TestCase):
     cryptol_load_file(cryptol_name)
     module = llvm_load_module(bitcode_name)
 
-    levelUp_result                 = llvm_verify(module, 'levelUp', levelUp_Contract())
-    initializeDefaultPlayer_result = llvm_verify(module, 'initializeDefaultPlayer', initializeDefaultPlayer_Contract())
-    resolveAttack_case1_result     = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(1))
-    resolveAttack_case2_result     = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(2))
-    resolveAttack_case3_result     = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(3))
-    resetInventoryItems_result     = llvm_verify(module, 'resetInventoryItems', resetInventoryItems_Contract(5))
+    levelUp_result             = llvm_verify(module, 'levelUp', levelUp_Contract())
+    initDefaultPlayer_result   = llvm_verify(module, 'initDefaultPlayer', initDefaultPlayer_Contract())
+    resolveAttack_case1_result = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(1))
+    resolveAttack_case2_result = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(2))
+    resolveAttack_case3_result = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(3))
+    resetInventoryItems_result = llvm_verify(module, 'resetInventoryItems', resetInventoryItems_Contract(5))
+    initScreen_result          = llvm_verify(module, 'initScreen', initScreen_Contract())
+    quickBattle_result         = llvm_verify(module, 'quickBattle', quickBattle_Contract(), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
     self.assertIs(levelUp_result.is_success(), True)
-    self.assertIs(initializeDefaultPlayer_result.is_success(), True)
+    self.assertIs(initDefaultPlayer_result.is_success(), True)
     self.assertIs(resolveAttack_case1_result.is_success(), True)
     self.assertIs(resolveAttack_case2_result.is_success(), True)
     self.assertIs(resolveAttack_case3_result.is_success(), True)
     self.assertIs(resetInventoryItems_result.is_success(), True)
+    self.assertIs(initScreen_result.is_success(), True)
+    self.assertIs(quickBattle_result.is_success(), True)
 
 if __name__ == "__main__":
   unittest.main()
