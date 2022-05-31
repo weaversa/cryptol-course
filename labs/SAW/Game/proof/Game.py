@@ -1,4 +1,5 @@
 # TODO
+# - Move the fancy Cryptol array init of a given size to Game.cry (initSequence)
 # - Add a function that would check stats prior to callees
 #   --> Mention in the markdown file that this is referenced for preconditions
 #   --> Relevant example: resolveAttack (integer overflow/underflow)
@@ -90,22 +91,34 @@ class initDefaultPlayer_Contract(Contract):
     #       to assert struct field contents.
     # Index 0 = "name" field
     # Recall that 0x41 is ASCII for 'A'
-    self.points_to(player[0], cry_f("[(i*0 + 0x41) | i <- [1..{MAX_NAME_LENGTH}]]"))
+    self.points_to(player['name'], cry_f("[(i*0 + 0x41) | i <- [1..{MAX_NAME_LENGTH}]]"))
+    # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
+    # self.points_to(player[0], cry_f("[(i*0 + 0x41) | i <- [1..{MAX_NAME_LENGTH}]]"))
 
     # Index 1 is the "level" field
-    self.points_to(player[1], cry_f("1 : [32]"))
+    self.points_to(player['level'], cry_f("1 : [32]"))
+    # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
+    # self.points_to(player[1], cry_f("1 : [32]"))
 
     # Index 2 is the "hp" field
-    self.points_to(player[2], cry_f("10 : [32]"))
+    self.points_to(player['hp'], cry_f("10 : [32]"))
+    # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
+    # self.points_to(player[2], cry_f("10 : [32]"))
 
     # Index 3 is the "atk" field
-    self.points_to(player[3], cry_f("5 : [32]"))
+    self.points_to(player['atk'], cry_f("5 : [32]"))
+    # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
+    # self.points_to(player[3], cry_f("5 : [32]"))
 
     # Index 4 is the "def" field
-    self.points_to(player[4], cry_f("4 : [32]"))
+    self.points_to(player['def'], cry_f("4 : [32]"))
+    # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
+    # self.points_to(player[4], cry_f("4 : [32]"))
 
     # Index 5 is the "spd" field
-    self.points_to(player[5], cry_f("3 : [32]"))
+    self.points_to(player['spd'], cry_f("3 : [32]"))
+    # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
+    # self.points_to(player[5], cry_f("3 : [32]"))
 
     # Incorrect Alternative 1: Invalid label in record update.
     #self.points_to(player, cry_f("{{ [(i*0 + 0x41) | i <- [1..{MAX_NAME_LENGTH}]], 1 : [32], 10 : [32], 5 : [32], 4 : [32], 3 : [32] }}"))
@@ -199,11 +212,17 @@ class resolveAttack_Contract(Contract):
 
     # Determine the postcondition based on the case parameter
     if (self.case == 1):
-      self.points_to(target_p[2], cry_f("{target}.2 : [32]"))
+      self.points_to(target_p['hp'], cry_f("{target}.2 : [32]"))
+      # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
+      # self.points_to(target_p[2], cry_f("{target}.2 : [32]"))
     elif (self.case == 2):
-      self.points_to(target_p[2], cry_f("0 : [32]"))
+      self.points_to(target_p['hp'], cry_f("0 : [32]"))
+      # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
+      # self.points_to(target_p[2], cry_f("0 : [32]"))
     else:
-      self.points_to(target_p[2], cry_f("resolveAttack ({target}.2) ({target}.4) {atk}"))
+      self.points_to(target_p['hp'], cry_f("resolveAttack ({target}.2) ({target}.4) {atk}"))
+      # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
+      # self.points_to(target_p[2], cry_f("resolveAttack ({target}.2) ({target}.4) {atk}"))
 
     self.returns(void)
 
@@ -270,7 +289,11 @@ class resetInventoryItems_Contract(Contract):
 
     # Assert the postconditions
     for i in range(self.numItems):
-      self.points_to(inventory_p[0][i][1], cry_f("0 : [32]"))
+      self.points_to(inventory_p['item'][i][1], cry_f("0 : [32]"))
+      # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
+      # self.points_to(inventory_p[0][i][1], cry_f("0 : [32]"))
+      # Note: Even though debug symbols is enabled, SAW cannot resolve the
+      #       "quantity" field, which is why we still use a 1 above.
 
     self.returns(void)
 
@@ -287,7 +310,9 @@ class initScreen_Contract(Contract):
     self.execute_func(screen, assetID)
 
     # Assert the postcondition
-    self.points_to(screen[0], cry_f("[(i*0 + {assetID}) | i <- [1..{SCREEN_TILES}]]"))
+    self.points_to(screen['tiles'], cry_f("[(i*0 + {assetID}) | i <- [1..{SCREEN_TILES}]]"))
+    # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
+    # self.points_to(screen[0], cry_f("[(i*0 + {assetID}) | i <- [1..{SCREEN_TILES}]]"))
 
     self.returns(cry_f("`({SUCCESS}) : [32]"))
 
@@ -376,13 +401,19 @@ class selfDamage_Contract(Contract):
 
     # Assert the postcondition
     if (self.case == 1):
-      self.points_to(player_p[2], cry_f("{player}.2 : [32]"))
+      self.points_to(player_p['hp'], cry_f("{player}.2 : [32]"))
+      # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
+      # self.points_to(player_p[2], cry_f("{player}.2 : [32]"))
       self.returns(cry_f("`({NEUTRAL}) : [32]"))
     elif (self.case == 2):
-      self.points_to(player_p[2], cry_f("0 : [32]"))
+      self.points_to(player_p['hp'], cry_f("0 : [32]"))
+      # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
+      # self.points_to(player_p[2], cry_f("0 : [32]"))
       self.returns(cry_f("`({DEFEAT_PLAYER}) : [32]"))
     else:
-      self.points_to(player_p[2], cry_f("resolveAttack ({player}.2) ({player}.4) {player}.3"))
+      self.points_to(player_p['hp'], cry_f("resolveAttack ({player}.2) ({player}.4) {player}.3"))
+      # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
+      # self.points_to(player_p[2], cry_f("resolveAttack ({player}.2) ({player}.4) {player}.3"))
       self.returns(cry_f("`({NEUTRAL}) : [32]"))
 
 #######################################
