@@ -52,3 +52,13 @@ void resolveAttack(character_t* target, uint32_t atk)
     target->hp = target->hp - (atk - target->def);
   }
 }
+
+
+void resetInventoryItems(inventory_t* inventory)
+{
+  // Iterate through the inventory and set the quantity field to 0
+  for (int i = 0; i < inventory->numItems; i++)
+  {
+    inventory->item->quantity = 0;
+  }
+}

@@ -35,7 +35,7 @@ uint32_t levelUp(uint32_t level);
 uint32_t initializeDefaultPlayer(player_t* player);
 void resolveAttack(character_t* target, uint32_t atk);
 void battle(player_t* player, character_t* enemy);
-
+void resetInventoryItems(inventory_t* inventory);
 
 
 #endif

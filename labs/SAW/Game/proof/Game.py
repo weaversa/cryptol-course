@@ -31,13 +31,6 @@ def ptr_to_fresh(spec: Contract, ty: LLVMType,
   ptr = spec.alloc(ty, points_to = var)
   return (var, ptr)
 
-# Function that uses an existing SetupVal pointer
-# Used for situations where pointer fields change during a function call
-def ptr_to_existing(spec: Contract, ty: LLVMType,
-                    name: str, ptr: SetupVal) -> Tuple[FreshVar, SetupVal]:
-  var = spec.fresh_var(ty, name)
-  spec.points_to(ptr, var)
-  return (var, ptr)
 
 #######################################
 # SAW Contracts
@@ -47,10 +40,13 @@ def ptr_to_existing(spec: Contract, ty: LLVMType,
 # uint32_t levelUp(uint32_t level)
 class levelUp_Contract(Contract):
   def specification (self):
+    # Declare level variable
     level = self.fresh_var(i32, "level")
 
+    # Symbolically execute the function
     self.execute_func(level)
 
+    # Assert the function's return behavior
     self.returns_f("levelUp {level}")
 
 
@@ -105,10 +101,7 @@ class resolveAttack_Contract(Contract):
     # identifies what preconditions and postconditions to set.
 
   def specification (self):
-    #name = array
-    #hp = self.fresh_var(i32, "hp")
-    #defense = self.fresh_var(i32, "def")
-    #target = self.alloc(struct_ty(alias_ty("struct.character_t")), points_to = struct(hp))
+    # Declare variables
     (target, target_p) = ptr_to_fresh(self, alias_ty("struct.character_t"), name="target")
     atk = self.fresh_var(i32, "atk")
 
@@ -142,6 +135,35 @@ class resolveAttack_Contract(Contract):
 
     self.returns(void)
 
+
+# resetInventoryItems Contract
+# void resetInventoryItems(inventory_t* inventory)
+class resetInventoryItems_Contract(Contract):
+  def __init__(self, numItems : int):
+    super().__init__()
+    self.numItems = numItems
+    # Note: The inventory_t struct defines its item field as a item_t pointer.
+    #       Instead of declaring a fixed array size, the pointer enables for a
+    #       variable size depending on the memory allocation configured by its
+    #       caller.
+    #       While this is valid C syntax, SAW and Cryptol require the known
+    #       size ahead of time. Here, our contract takes the numItems parameter
+    #       to declare a fixed array size.
+
+  def specification (self):
+    # Declare variables
+    (item, item_p) = ptr_to_fresh(self, array_ty(self.numItems, alias_ty("struct.item_t")), name="item")
+    inventory_p = self.alloc(alias_ty("struct.inventory_t"), points_to = struct(item, cry_f("{self.numItems} : [32]")))
+
+    # Symbolically execute the function
+    self.execute_func(inventory_p)
+
+    # Assert the postconditions
+    for i in range(self.numItems):
+      self.points_to(inventory_p[0][1], cry_f("0 : [32]"))
+
+    self.returns(void)
+
 #######################################
 
 
@@ -149,8 +171,8 @@ class resolveAttack_Contract(Contract):
 # Unit Tests
 #######################################
 
-class PlayerTests(unittest.TestCase):
-  def test_Player(self):
+class GameTests(unittest.TestCase):
+  def test_Game(self):
     connect(reset_server=True)
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
 
@@ -166,11 +188,13 @@ class PlayerTests(unittest.TestCase):
     resolveAttack_case1_result     = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(1))
     resolveAttack_case2_result     = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(2))
     resolveAttack_case3_result     = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(3))
+    resetInventoryItems_result     = llvm_verify(module, 'resetInventoryItems', resetInventoryItems_Contract(5))
     self.assertIs(levelUp_result.is_success(), True)
     self.assertIs(initializeDefaultPlayer_result.is_success(), True)
     self.assertIs(resolveAttack_case1_result.is_success(), True)
     self.assertIs(resolveAttack_case2_result.is_success(), True)
     self.assertIs(resolveAttack_case3_result.is_success(), True)
+    self.assertIs(resetInventoryItems_result.is_success(), True)
 
 if __name__ == "__main__":
   unittest.main()
