@@ -1,21 +1,18 @@
 # TODO
 # - Move the fancy Cryptol array init of a given size to Game.cry (initSequence)
-# - Add a function that would check stats prior to callees
-#   --> Mention in the markdown file that this is referenced for preconditions
-#   --> Relevant example: resolveAttack (integer overflow/underflow)
 # - Try the alloc_pointsto_buffer example & see its limitations
 # - Global variable
 # - Extern
-# - Field name (extra debug info)
 # - Make a worksheet & solution for the SAW examples
+# - Update SAW.md to discuss the topics covered in this SAW script
+#   --> Mention importance of "-g" flag for debug symbols
+#   --> Mention reason for preconditions (i.e. checkStats caller vs callee)
+#       Removing the preconditons in resolveAttack leads to integer overflow
+#   --> Mention in some SAW configs (i.e. llvm), nested defines may be an issue (i.e. initScreen)
+#   --> Mention in some SAW configs (i.e. llvm), aliasing/non-disjoint memory regions may be an issue (i.e. selfDamage)
+#   --> Discuss the issues associated with inventory_t's item_t pointer
+# - Reorder the functions to match the topic discussion
 
-
-# Done
-# - Nested defines example (handled here...)
-#   --> Mention in some SAW configs (i.e. llvm), this may be an issue
-# - Aliasing / Memory Region disjoint example (selfDamage)
-#   --> Mention in some SAW configs (i.e. llvm), this may be an issue
-# - Expand on the error cases associated with inventory_t's item_t pointer
 
 #######################################
 # Imporant Imports
