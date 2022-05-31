@@ -320,7 +320,7 @@ Things to note:
     * `[n]` --- `0` through `2^^n - 1`
 
   * There are 2<sup>_n_</sup> values of type `[n]`. There are
-    2<sup>_mn_</sup> values of type `[m][n]`, etc.
+    2<sup>_m+n_</sup> values of type `[m][n]`, etc.
   * 1-d sequences of bits are treated as numbers by arithmetic and
     comparison operators. So for instance, `[False, True] == (1 :
     [2])` and `[True, False, True] > 4` both hold.
