@@ -733,8 +733,9 @@ n, t2, k, and t3 should be concatenated together to make a sequence of
 64-bytes.
 
 As well, you'll need to access the type variable `a`. Here we quote
-from Section 1.19.2 from [Programming
-Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf)
+from
+[Programming Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf),
+(_A Crash Course in Cryptol_, _Type context vs. variable context_):
 
 > You have seen, in the discussion of type variables above, that
 > Cryptol has two kinds of variables --- type variables and value
@@ -742,7 +743,9 @@ Cryptol](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCrypto
 > value variables normally show up in function definitions. Sometimes
 > you may want to use a type variable in a context where value
 > variables would normally be used. To do this, use the backtick
-> character `` ` ``. The definition of the built-in length function is
+> character `` ` ``.
+> 
+> The definition of the built-in `length` function is
 > a good example of the use of backtick:
 
 ```comment
