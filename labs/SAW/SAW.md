@@ -653,7 +653,7 @@ While Cryptol has arrays as primitives, it does not have any notion of pointer, 
 Suppose our C code was written as 
 
 ```C
-uint32_t* addRowAlias(uint32_t* a, uint32_t* b, uint32_t length) {
+uint32_t* addRowAlias(uint32_t* a, uint32_t* b, uint8_t length) {
   for(int i  = 0 ; i < length; i++) {
     a[i] += b[i];
   }
@@ -727,6 +727,11 @@ from saw_client.llvm        import *
 from saw_client.proofscript import *
 from saw_client.llvm_type   import * 
 
+def ptr_to_fresh(c : Contract, ty : LLVMType, name : Optional[str] = None, read_only : Optional[bool] = False) -> Tuple[FreshVar, SetupVal]:
+    var = c.fresh_var(ty, name)
+    ptr = c.alloc(ty, points_to = var, read_only=read_only)
+    return (var, ptr)
+    
 def addRow5Mutate_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
@@ -758,10 +763,13 @@ def addRowAlias_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
+    length   = fresh_var(i8, "length")
     
-    self.execute_func(a_p, b_p)
+    self.precondition_f("{self.length} == {length}")
     
-    self.points_to(a_p, cry_f("rowAdd`{{{self.length}}} {a} {b}"))
+    self.execute_func(a_p, b_p, length)
+    
+    self.points_to(a_p, cry_f("rowAdd`{{{length}}} {a} {b}"))
     
     self.returns(a_p)
 
@@ -770,28 +778,23 @@ class ArrayTests(unittest.TestCase):
     connect(reset_server=True)
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
     
-    bcname1 = "/some/path/to/your/file.bc"
-    bcname2 = "/some/path/to/your/file.bc"
-    cryname = "/some/path/to/your/file.cry"
+    bcname = "../src/addRow.bc"
+    cryname = "spec/addRow.cry"
     
     cryptol_load_file(cryname)
-    mod1 = llvm_load_module(bcname)
-    mod2 = llvm_load_module(bcname)
+    mod = llvm_load_module(bcname)
     
-    addRow5Mutate_result = llvm_verify(mod1, 'addRowMutate', addRowMutate_Contract())
+    addRow5Mutate_result = llvm_verify(mod, 'addRowMutate', addRowMutate_Contract())
     self.assertIs(addRow5Mutate_result.is_success(), True)
     
-    addRow5NewVar_result = llvm_verify(mod1, 'addRowNewVar', addRowNewVar_Contract())
+    addRow5NewVar_result = llvm_verify(mod, 'addRowNewVar', addRowNewVar_Contract())
     self.assertIs(addRow5NewVar_result.is_success(), True)
     
-    addRowAlias05_result = llvm_verify(mod2, 'addRowAlias', addRowAlias_Contract(5))
-    addAddAlias10_result = llvm_verify(mod2, 'addRowAlias', addRowAlias_Contract(10))
+    addRowAlias05_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(5))
+    addAddAlias10_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(10))
     self.assertIs(addRowAlias05_result.is_success(), True)
     self.assertIs(addRowAlias10_result.is_success(), True)
 ```
-
-If we try to run this Python we get:
-
 
 ## Explicit Arrays
 
