@@ -23,8 +23,6 @@ $ saw-remote-api http --host 0.0.0.0 --port 36691 &
 Congrats! You now have a server version of SAW running in the
 background ready to accept commands on port `36691`.
 
-- directory layout //maybe here put something about where to find these files in the directory structure and how to run them?
-
 # Python Contracts Introduction
 
 Here's the general layout for SAW in Python:
@@ -517,7 +515,7 @@ points to what the Cryptol specification claims it should:
 
 Finally, `specification` must contain `self.returns` or `self.returns_f`, so we use `self.returns(void)`.
 
-### Helper Functions
+### Python Helper Functions
 
 To limit code reuse we can define helper functions in Python. For
 example, the following construct is often used:
@@ -709,7 +707,7 @@ class ArrayTests(unittest.TestCase):
     self.assertIs(addRowAlias10_result.is_success(), True)
 ```
 
-### Array Example Full Code
+## Array Example Full Code and Debugging SAW
 
 ```python
 import unittest
@@ -782,14 +780,10 @@ class ArrayTests(unittest.TestCase):
     self.assertIs(addRowAlias10_result.is_success(), True)
 ```
 
-### Preconditions and Indices
+If we try to run this Python we get:
 
-//SHOW SOMETHING FAILING BECAUSE LACK OF PRECONDITION. For this could have a function that takes in an arbitrary sized array, but the function that uses it only has an array of size 5. Then explain how the SAW, when analyzing the first function in isolation, has no way of knowing the input in use cases actually has fixed size 5 so you need a precondition
 
-A common situation where one might use `precondition_f` is when an
-integer is passed into a function and is used to index into an array:
- 
-### Explicit Arrays
+## Explicit Arrays
 
 Another way to initialize arrays is through the `array` command. For
 example, suppose I have the following C function (taken from
@@ -829,6 +823,76 @@ for large arrays. Ideally, one would just have to declare the array
 implicitly as before and then pass this array to a Cryptol
 specification for postconditions as was done in the previous examples.
 
+## Null Pointers and Symbolic Pointers
+
+Consider the following C code that checks if a pointer is null:
+
+```C
+int f(int *x) {
+    return (x == (int*)0);
+}
+```
+
+What do you think is the behavior of running the following contract? Keep in mind that booleans in C are encoded as `0` for false and `1` for true.
+
+```Python
+import unittest
+from saw_client          import *
+from saw_client.crucible import *
+from saw_client.llvm     import *
+
+
+class FContract(Contract):
+    def specification(self):
+        p = self.alloc(i32)
+
+        self.execute_func(p)
+
+        self.returns(cry("1 : [32]"))
+
+class LLVMAssertNullTest(unittest.TestCase):
+    def test_llvm_assert_null(self):
+        connect(reset_server=True)
+        if __name__ == "__main__": view(LogResults(verbose_failure=True))
+        bcname = '../src/null.bc'
+        mod    = llvm_load_module(bcname)
+
+        result = llvm_verify(mod, 'f', FContract())
+        self.assertIs(result.is_success(), True)
+
+
+if __name__ == "__main__":
+    unittest.main()
+```
+
+<details>
+  <summary>Click here to see if your guess is correct!</summary>
+  
+  It turns out the contract above will fail!
+  
+  ```
+  saw failure
+  ```
+  
+  An initialized symbolic pointer that hasn't been assigned a symbolic variable to point to is **NOT** equivalent to a symbolic null pointer. We can use `null()` in situations where we want a null pointer. For example, if we change the contract above to 
+  
+  ```
+  class FContract(Contract):
+    def specification(self):
+        self.execute_func(null())
+
+        self.returns(cry("1 : [32]"))
+  ```
+  
+  then SAW is a happy:
+  
+  ```
+  saw error message
+  ```
+</details>
+
+This example is from [here]()
+
 
 # Structs 
 
@@ -851,9 +915,9 @@ typedef struct {
 
 ## Assumptions and Lemmas
 
-Sometimes one might want to black-box certain parts of the verification
-such as functions coming from libraries, especially if they have
-already been formally verified. For example, the height of
+Only functions with implementations in the bitcode can be verified. If one imports a function from a library, then that implementation will not be present in the bitcode generated as above. Instead of verifying these library functions we can use contracts to assume their behavior.
+
+For example, the height of
 [height-balanced binary
 trees](https://en.wikipedia.org/wiki/Self-balancing_binary_search_tree)
 on n nodes is given by the ceiling of `log(n)`. In C we might use the
