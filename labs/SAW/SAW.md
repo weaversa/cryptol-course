@@ -689,8 +689,11 @@ def addRowAlias_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
+    length   = fresh_var(i8, "length")
     
-    self.execute_func(a_p, b_p)
+    self.precondition_f("{length} == {self.length}")
+    
+    self.execute_func(a_p, b_p, length)
     
     self.points_to(a_p, cry_f("rowAdd`{{{self.length}}} {a} {b}"))
     
@@ -718,6 +721,8 @@ class ArrayTests(unittest.TestCase):
 ```
 
 ## Array Example Full Code and Debugging SAW
+
+//remove precondition in previous example and detect an issue here?
 
 ```python
 import unittest
