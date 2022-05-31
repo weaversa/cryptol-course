@@ -696,14 +696,14 @@ Nothing of consequence
 
 This is our first
 [polymorphic](https://en.wikipedia.org/wiki/Polymorphism_(computer_science))
-function. In case you need a refresher, a polymorphic function is one
-that can take more than one type of input. In this case, we have to
-take two different types of `k` --- one that is a 32-byte sequence and
-one that is a 16-byte sequence. Here we create a _type variable_ `a`
-such that when `a` is one, the function expects a 16-byte `k` and when
-it's two, the function expects a 32-byte `k`. We also constrain `k`
-(using _type constraints_) to only be able to take on the value one or
-two.
+function (well, the first one of consequence). A polymorphic function
+is one that can take more than one type of input. In this case, we
+have to take two different types of `k` --- one that is a 32-byte
+sequence and one that is a 16-byte sequence. Here we create a _type
+variable_ `a` such that when `a` is `1`, the function expects a
+16-byte `k` and when it's `2`, the function expects a 32-byte `k`. We
+also constrain `k` (using _type constraints_) to only be able to take
+on the value `1` or `2`.
 
 ```cryptol
 Salsa20Expansion :
@@ -716,10 +716,10 @@ Salsa20Expansion :
 ### Definition
 
 This definition is even trickier than the last because we have to
-account for the two different sizes of `k`. If `a` is two then we have
+account for the two different sizes of `k`. If `a` is `2` then we have
 to call Salsa20Core(s0, k0, s1, n, s2, k1, s3) where k0 are the low 16
 bytes of k and k1 are the high 16 bytes of k. In the case where `a` is
-one then we have to call Salsa20Core(t0, k0, t1, n, t2, k0, t3), and
+`1` then we have to call Salsa20Core(t0, k0, t1, n, t2, k0, t3), and
 k1 is undefined. There are a few different ways to define k0 and
 k1. This is, admittedly, often the most frustrating part of
 specifying `Salsa20Expansion`. If you're up for figuring it out,
@@ -728,7 +728,7 @@ checking the answer key (3 different definitions are provided there).
 
 The notation the author used here is also a little strange --- you'll
 notice that Salsa20Core doesn't actually take 7 different values as
-input. The author means, for example, when `a` is one that t0, k, t1,
+input. The author means, for example, when `a` is `1` that t0, k, t1,
 n, t2, k, and t3 should be concatenated together to make a sequence of
 64-bytes.
 
