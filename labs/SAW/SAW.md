@@ -88,6 +88,8 @@ the bitcode by entering the following command in a terminal:
 $ clang -emit-llvm labs/SAW/src/rcs.c -c -o labs/SAW/src/rcs.bc
 ```
 
+(you may need to adjust the path name). 
+
 We can inspect the bitcode using SAW by loading the module and
 printing some meta-data.
 
@@ -428,15 +430,11 @@ OK
 ✅  The goal was verified!
 ```
 
-# Pointers, Arrays, and Structs
+# Pointers and Arrays
 
-// There are many subsections to this section... does it seem cluttered or unorganized?
-
-## Pointers and Arrays
-
-We'll begin by writing a function that given two arrays adds the
-second to the first. One way to write this is to write a function that
-just mutates the first array and returns nothing:
+We'll begin by writing a function that given two arrays of a common fixed size, say five, adds the
+second to the first. One way to accomplish this is to pass in the two arrays, mutate the first
+and return nothing:
 
 ```C
 void addRow5Mutate(uint32_t a[5], uint32_t b[5]) {
@@ -474,14 +472,14 @@ uint32_t* addRow5Alias(uint32_t a[5], uint32_t b[5]) {
 The corresponding Cryptol specification is:
 
 ```cryptol
-addRow5 : [4][32] -> [4][32] -> [4][32]
+addRow5 : [5][32] -> [5][32] -> [5][32]
 addRow5 a b = a + b
 ```
 
 ### Initializing Arrays and Pointers
 
 To initialize the arrays and pointers we'll use the `alloc` command
-and `array_ty` type:
+and `array_ty` type constructor:
 
 ```python
 def addRow5Mutate_Contract(Contract):
@@ -510,12 +508,14 @@ def addRow5Mutate_Contract(Contract):
 Since arrays are passed as pointers in C, when we call `execute_func`
 we supply `a_p` and `b_p` rather than `a` and `b`.
 
-To verify correctness, we assert that after function execution `a_p`
-points to what the Cryptol specification claims it should using
-`self.points_to(a_p, cry_f("rowAdd {a} {b}"))`.
+To verify correctness, we assert after execution `a_p`
+points to what the Cryptol specification claims it should:
 
-A specification must contain a `self.returns` or `self.returns_f`
-line. Since our function returns nothing, we use `self.returns(void)`.
+| `self.points_to(` | `a_p,` | `cry_f( "rowAdd {a} {b}"` | `))` |
+|-------------------|--------|---------------------------|------|
+| Assert in the current contract that the pointer | with this name | points to this Cryptol term | . | 
+
+Finally, `specification` must contain `self.returns` or `self.returns_f`, so we use `self.returns(void)`.
 
 ### Helper Functions
 
@@ -532,7 +532,7 @@ def ptr_to_fresh(c : Contract, ty : LLVMType, name : Optional[str] = None, read_
 Given a contract and a type this function outputs a tuple `(var, ptr)`
 where `var` is a fresh symbolic variable of the given type and `ptr`
 is a pointer pointing to this variable. We give optional arguments to
-name the fresh symbolic variable and to force read only pointer
+name the fresh symbolic variable and to assert read-only pointer
 constraints.
 
 To see this in action, let's rewrite our previous contract:
@@ -561,7 +561,7 @@ SAW will complain if you place a precondition after `execute_func` and
 similarly for postcondition. If a function returns a value that was
 not passed through `execute_func`, then you will have to initialize
 new fresh symbolic variables. For example, consider the proposed
-contract for the next C function:
+contract for `addRow5NewVar`:
 
 ```python
 def addRow5NewVar_Contract(Contract):
@@ -604,9 +604,7 @@ def addRow5NewVar_Contract(Contract):
     self.returns(c_p)
 ```
 
-#### Python Wildcards
-
-Python supports wildcards, denoted by `_`, like Cryptol. Wildcards are placeholders for values we don't use. For example, we could rewrite the `Array5AddNewVar_Contract` as follows: 
+Python supports wildcards, denoted by `_`, like Cryptol. Wildcards are placeholders for values we don't use. For example, we could rewrite the `addRow5NewVar_Contract` as follows: 
 
 ```python
 def addRow5NewVar_Contract(Contract):
@@ -624,7 +622,7 @@ def addRow5NewVar_Contract(Contract):
 
 ### Postconditions and `points_to`
 
-Consider another implementation of the previous contract
+One could replace the `points_to` line with a `postcondition_f` line to get an equivalent contract:
 
 ```python
 def addRow5NewVar_Contract(Contract):
@@ -640,10 +638,7 @@ def addRow5NewVar_Contract(Contract):
     self.returns(c_p)
 ```
 
-One could replace `self.postcondition_f("{aPost} == rowAdd {a} {b}")`
-with `self.points_to(c_p, cry_f("rowAdd {a} {b}"))`. A SAW
-symbolic array translates into a Cryptol array and a Cryptol array
-translates into a SAW symbolic array.
+While Cryptol has arrays as primitives, it does not have any notion of pointer, so we can not pass a symbolic pointer into `cry_f` (or any function with `_f`). For example, if we wanted to assert `a_p` points to `b_p` then we can use `self.points_to(a_p, b_p)` but **NOT** `self.postcondition_f(a_p, "{b_p}")`.
 
 ### Parameterized Contracts
 
@@ -691,7 +686,7 @@ def addRowAlias_Contract(Contract):
     
     self.points_to(a_p, cry_f("rowAdd`{{{self.length}}} {a} {b}"))
     
-    self.returns(void)
+    self.returns(a_p)
 ```
 
 However, we still need to make a test for each length encountered:
@@ -716,8 +711,6 @@ class ArrayTests(unittest.TestCase):
 
 ### Array Example Full Code
 
-//Fix this
-
 ```python
 import unittest
 from saw_client             import *
@@ -726,7 +719,7 @@ from saw_client.llvm        import *
 from saw_client.proofscript import *
 from saw_client.llvm_type   import * 
 
-def array5AddMutate_Contract(Contract):
+def addRow5Mutate_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -737,7 +730,7 @@ def array5AddMutate_Contract(Contract):
     
     self.returns(void)
 
-def array5AddNewVar_Contract(Contract):
+def addRow5NewVar_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -749,30 +742,18 @@ def array5AddNewVar_Contract(Contract):
     
     self.returns(c_p)
 
-def arrayAddNewVar_Contract(Contract):
+def addRowAlias_Contract(Contract):
   def __init__(self, length : int):
     super().__init__()
     self.length = length
 
   def specification(self):
-    (a, a_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="a", read_only=True)
+    (a, a_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
     
     self.execute_func(a_p, b_p)
     
-    (_, c_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="c")
-    self.points_to(c_p, cry_f("rowAdd`{{{self.length}}} {a} {b}"))
-    
-    self.returns(c_p)
-
-def array5AddAlias_Contract(Contract):
-  def specification(self):
-    (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
-    (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
-    
-    self.execute_func(a_p, b_p)
-    
-    self.points_to(a_p, cry_f("addRow5 {a} {b}"))
+    self.points_to(a_p, cry_f("rowAdd`{{{self.length}}} {a} {b}"))
     
     self.returns(a_p)
 
@@ -781,22 +762,24 @@ class ArrayTests(unittest.TestCase):
     connect(reset_server=True)
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
     
-    bcname  = "/some/path/to/your/file.bc"
+    bcname1 = "/some/path/to/your/file.bc"
+    bcname2 = "/some/path/to/your/file.bc"
     cryname = "/some/path/to/your/file.cry"
     
     cryptol_load_file(cryname)
-    mod = llvm_load_module(bcname)
+    mod1 = llvm_load_module(bcname)
+    mod2 = llvm_load_module(bcname)
     
-    arrayAddNewMutate_result = llvm_verify(mod, 'arrayAddMutate', array5AddMutate_Contract())
-    arrayAddNewVar5_result   = llvm_verify(mod, 'arrayAddNewVar', array5AddNewVar_Contract())
-    arrayAddNewVar05_result  = llvm_verify(mod, 'arrayAddNewVar', arrayAddNewVar_Contract(5))
-    arrayAddNewVar10_result  = llvm_verify(mod, 'arrayAddNewVar', arrayAddNewVar_Contract(10))
-    array5AddAlias_result    = llvm_verify(mod,  'arrayAddAlias', array5AddAlias_Contract())
-    self.assertIs(arrayAddNewMutate_result.is_success(), True)
-    self.assertIs(  arrayAddNewVar5_result.is_success(), True)
-    self.assertIs( arrayAddNewVar05_result.is_success(), True)
-    self.assertIs( arrayAddNewVar10_result.is_success(), True)
-    self.assertIs(   array5AddAlias_result.is_success(), True)
+    addRow5Mutate_result = llvm_verify(mod1, 'addRowMutate', addRowMutate_Contract())
+    self.assertIs(addRow5Mutate_result.is_success(), True)
+    
+    addRow5NewVar_result = llvm_verify(mod1, 'addRowNewVar', addRowNewVar_Contract())
+    self.assertIs(addRow5NewVar_result.is_success(), True)
+    
+    addRowAlias05_result = llvm_verify(mod2, 'addRowAlias', addRowAlias_Contract(5))
+    addAddAlias10_result = llvm_verify(mod2, 'addRowAlias', addRowAlias_Contract(10))
+    self.assertIs(addRowAlias05_result.is_success(), True)
+    self.assertIs(addRowAlias10_result.is_success(), True)
 ```
 
 ### Preconditions and Indices
@@ -841,7 +824,7 @@ class ArraySwapContract(Contract):
 
 Explicit arrays can be useful when you want to assert a condition on a
 particular element of the array. Of course, a drawback is you have to
-initialize every member of the array. However, this can be problematic
+initialize every member of the array. This can be problematic
 for large arrays. Ideally, one would just have to declare the array
 implicitly as before and then pass this array to a Cryptol
 specification for postconditions as was done in the previous examples.
