@@ -696,14 +696,14 @@ Nothing of consequence
 
 This is our first
 [polymorphic](https://en.wikipedia.org/wiki/Polymorphism_(computer_science))
-function. In case you need a refresher, a polymorphic function is one
-that can take more than one type of input. In this case, we have to
-take two different types of `k` --- one that is a 32-byte sequence and
-one that is a 16-byte sequence. Here we create a _type variable_ `a`
-such that when `a` is one, the function expects a 16-byte `k` and when
-it's two, the function expects a 32-byte `k`. We also constrain `k`
-(using _type constraints_) to only be able to take on the value one or
-two.
+function (well, the first one of consequence). A polymorphic function
+is one that can take more than one type of input. In this case, we
+have to take two different types of `k` --- one that is a 32-byte
+sequence and one that is a 16-byte sequence. Here we create a _type
+variable_ `a` such that when `a` is one, the function expects a
+16-byte `k` and when it's two, the function expects a 32-byte `k`. We
+also constrain `k` (using _type constraints_) to only be able to take
+on the value one or two.
 
 ```cryptol
 Salsa20Expansion :
