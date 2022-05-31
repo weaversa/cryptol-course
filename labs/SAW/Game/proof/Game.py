@@ -160,7 +160,7 @@ class resetInventoryItems_Contract(Contract):
 
     # Assert the postconditions
     for i in range(self.numItems):
-      self.points_to(inventory_p[0][1], cry_f("0 : [32]"))
+      self.points_to(inventory_p[0][i][1], cry_f("0 : [32]"))
 
     self.returns(void)
 

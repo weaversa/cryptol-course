@@ -26,7 +26,8 @@ typedef struct {
 } item_t;
 
 typedef struct {
-  item_t* item;
+  //item_t* item;
+  item_t item[5];
   uint32_t numItems;
 } inventory_t;
 

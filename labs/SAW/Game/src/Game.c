@@ -59,6 +59,6 @@ void resetInventoryItems(inventory_t* inventory)
   // Iterate through the inventory and set the quantity field to 0
   for (int i = 0; i < inventory->numItems; i++)
   {
-    inventory->item->quantity = 0;
+    inventory->item[i].quantity = 0;
   }
 }
