@@ -252,7 +252,8 @@ using `self.assertIs(RCS_result.is_success(), True)`.
 
 ## Debugging C with SAW
 
-The full code is:
+<details>
+  <summary>Click here for the full code</summary>
 
 ```python
 import os
@@ -290,6 +291,17 @@ class RCSTest(unittest.TestCase):
 if __name__ == "__main__":
     unittest.main()
 ```
+
+Remember to always include 
+
+```python
+if __name__ == "__main__":
+    unittest.main()
+```
+
+or else the python script won't do anything!
+  
+</details>
 
 We can now run the proof script.
 
