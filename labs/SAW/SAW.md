@@ -80,13 +80,11 @@ uint32_t RCS(uint32_t bits, uint32_t shift) {
 SAW doesn't actually verify C source, but rather C compiled down to
 LLVM intermediate representation (IR), or bitcode. This can be
 accomplished via the `clang` compiler. In this instance, we can create
-the bitcode by entering the following command in a terminal:
+the bitcode by entering the following command in a terminal.
 
 ```sh
 $ clang -emit-llvm labs/SAW/src/rcs.c -c -o labs/SAW/src/rcs.bc
 ```
-
-(you may need to adjust the path name). 
 
 We can inspect the bitcode using SAW by loading the module and
 printing some meta-data.
@@ -655,7 +653,7 @@ where the length of the array is not specified. The corresponding
 Cryptol code might be:
 
 ```cryptol
-addRow : {length} (fin length) => [n][32] -> [n][32] -> [n][32]
+addRow : {length} (fin length) => [length][32] -> [length][32] -> [length][32]
 addRow a b = a + b
 ```
 
@@ -823,7 +821,7 @@ for large arrays. Ideally, one would just have to declare the array
 implicitly as before and then pass this array to a Cryptol
 specification for postconditions as was done in the previous examples.
 
-## Null Pointers and Symbolic Pointers
+## Null Pointers
 
 Consider the following C code that checks if a pointer is null:
 
