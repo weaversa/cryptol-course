@@ -460,7 +460,7 @@ addRow5 : [5][32] -> [5][32] -> [5][32]
 addRow5 a b = a + b
 ```
 
-### Initializing Arrays and Pointers
+## Initializing Arrays and Pointers
 
 To initialize the arrays and pointers we'll use the `alloc` command
 and `array_ty` type constructor:
@@ -534,7 +534,7 @@ def addRow5Mutate_Contract(Contract):
     self.returns(void)
 ```
 
-### Auxiliary Variables
+## Auxiliary Variables
 
 In this section we discuss an alternative way add two rows by using an auxillary variable. For example, consider the function
 
@@ -646,7 +646,7 @@ def addRow5NewVar_Contract(Contract):
 
 While Cryptol has arrays, it doesn't have a notion of pointer, so we can't pass a symbolic pointer into `cry_f`. For example, if we wanted to assert `a_p` points to `b_p` then we can use `self.points_to(a_p, b_p)` but **NOT** `self.postcondition_f("{a_p} == {b_p}")`.
 
-### Parameterized Contracts
+## Parameterized Contracts
 
 Now let's consider a third possible way to write the same function. Here we are given two arrays of arbitrary size and a length.
 
@@ -714,7 +714,7 @@ class ArrayTests(unittest.TestCase):
     self.assertIs(addRowAlias10_result.is_success(), True)
 ```
 
-## Array Example Full Code and Debugging SAW
+## Full Code Example and Debugging SAW
 
 ```python
 import unittest
