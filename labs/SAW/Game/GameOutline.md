@@ -162,14 +162,16 @@ void resolveAttack(character_t* target, uint32_t atk)
 ```
   - Spoiler alert: Logical error in the source code where the first condition already covers the second condition
 
+
 ## selfDamage(player_t* player);
 **Goal:** To provide a case study where SAW should have complained about its memory disjoint assertion being violated. Note that SAW's Python API silently resolves this issue. **Consider dropping from the SAW.md discussion**. Can still keep as a bonus example though!
+
 
 ## resetInventoryItems(inventory_t* inventory);
 **Goal:** To show the problems SAW faces when verifying structs with pointer fields.
 
 **Lessons Learned:**
--
+- Consider rewriting the source code to avoid unallocated pointers as it makes SAW happy and reduces assumptions code makes (improves security)
 
 **Errors to Explore:**
 - Assuming the inventory_t struct is defined as:
@@ -251,12 +253,68 @@ class resetInventoryItems_Contract(Contract):
 
 
 ## initScreen(screen_t* screen, uint8_t assetID);
+**Goal:** To provide a case study where SAW should have complained about not knowing what nested defines resolve to. Note that SAW's Python API silently resolves this issue. **Consider dropping from the SAW.md discussion**. Can still keep as a bonus example though!
 
 
 ## setScreenTile(screen_t* screen, uint32_t screenIdx, uint32_t tableIdx);
+**Goal:** Demonstrate how to initialize an extern global array.
+
+**Lessons Learned:**
+- How to handle extern global variables when they aren't linked into the generated bitcode
+  - Copy extern definition to Cryptol spec file
+  - Could be possible to ignore the initialization if the bitcode links the file that implements the extern global (testing required)
+- Understand when `ptr_to_fresh` vs `self.alloc` is needed
+- Repointing a pointer to a SAW variable (`screen_post`) in order to use that variable for postconditions
+
+**Errors to Explore:**
+- Why can't we just declare and pass the screen pointer, `screen_p`?
+```python
+class setScreenTile_Contract(Contract):
+  def __init__(self, shouldPass : bool):
+    super().__init__()
+    self.shouldPass = shouldPass
+
+  def specification (self):
+    # Declare variables
+    screen_p = self.alloc(alias_ty("struct.screen_t"))
+    screenIdx = self.fresh_var(i32, "screenIdx")
+    tableIdx  = self.fresh_var(i32, "tableIdx")
+
+    # Initialize Game.h's assetTable according to Assets.c
+    self.points_to(global_var("assetTable"), cry_f("assetTable"))
+
+    # Assert preconditions depending on the Contract parameter
+    if (self.shouldPass):
+      self.precondition_f("{screenIdx} < {SCREEN_TILES}")
+      self.precondition_f("{tableIdx}  < {ASSET_TABLE_SIZE}")
+    else:
+      # Note: Only one of the following preconditions is needed
+      self.precondition_f("{screenIdx} >= {SCREEN_TILES}")
+      self.precondition_f("{tableIdx}  >= {ASSET_TABLE_SIZE}")
+    
+    # Symbolically execute the function
+    self.execute_func(screen_p, screenIdx, tableIdx)
+
+    # Since we just want to check one index, let's have our screen pointer
+    # point to a new screen_t variable.
+    screen_post = self.fresh_var(alias_ty("struct.screen_t"), "screen_post")
+
+    # Assert that the original screen pointer now points to the new screen_t
+    # variable. This will allow us to reference screen_post in Cryptol for our
+    # later postconditions.
+    self.points_to(screen_p, screen_post)
+
+    # Assert postconditions depending on the Contract parameter
+    if (self.shouldPass):
+      self.postcondition_f("({screen_post}@{screenIdx}) == assetTable@{tableIdx}")
+      self.returns_f("`({SUCCESS}) : [32]")
+    else:
+      self.returns_f("`({FAILURE}) : [32]")
+```
 
 
 ## quickBattle(player_t* player, character_t* opponent);
+
 
 
 ## counterBattle(player_t* player, character_t* opponent);
@@ -264,13 +322,15 @@ Note: No Contract for this one. Considering dropping due to how complex the Cont
 
 
 # TODO
+- Polish comments in all Game/ files
+  - Remove unused code when appropriate
 - Define the background of the library (structs, functions, etc)
 - Cryptol record/tuples ('(') for initDefaultPlayer
 - Add `selfDamage` prototype to `Game.h`
 - Remove the first 3 preconditions in `selfDamage_Contract` given that they were used for debugging and are no longer needed
 - Move `quickBattle` to come right after `selfDamage`, which is after `resolveAttack` given that it makes sense in the lesson plan
 - Consider moving `resetInventoryItems`, `initScreen`, and `setScreenTile` earlier in the lesson plan
-  - Recall that `setScreenTile` shows extern global variables
+  - Recall that `setScreenTile` shows extern global variables --> move after `getDefaultLevel` to continue the global variable discussion
 - Confirm the error cases yield the expected error results
   - Necessary because some of these errors were encountered and resolved already.
   - Want to properly recreate them for learning purposes.
@@ -280,3 +340,5 @@ Note: No Contract for this one. Considering dropping due to how complex the Cont
     - It has so many SAW behaviors to consider (so fairly complicated), and I have not written a SAW contract for it
   - Just from SAW.md: `selfDamage`
     - Intended to be an example of field aliasing and show SAW complaining about "Memory not disjoint", but the Python API resolves it
+  - Just from SAW.md: `initScreen`
+    - Intended to be an example of where SAW cannot resolve nested defines, but the Python API resolves it
