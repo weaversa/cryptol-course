@@ -7,5 +7,5 @@ tasks:
 vscode:
   extensions:
     # Add PDF viewing support to VSCode
-    - tomoki1207.pdf
+    - anwar.papyrus-pdf
     - jldodds.cryptol
