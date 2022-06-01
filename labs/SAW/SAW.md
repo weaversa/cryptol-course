@@ -466,17 +466,6 @@ uint32_t* addRow5NewVar(uint32_t a[5], uint32_t b[5]) {
 }
 ```
 
-Finally, we could mutate the first input and return it:
-
-```C
-uint32_t* addRow5Alias(uint32_t a[5], uint32_t b[5]) {
-  for(int i  = 0 ; i < 5; i++) {
-    a[i] += b[i];
-  }
-  return a;
-}
-```
-
 The corresponding Cryptol specification is:
 
 ```cryptol
@@ -646,7 +635,7 @@ def addRow5NewVar_Contract(Contract):
     self.returns(c_p)
 ```
 
-While Cryptol has arrays as primitives, it does not have any notion of pointer, so we can not pass a symbolic pointer into `cry_f` (or any function with `_f`). For example, if we wanted to assert `a_p` points to `b_p` then we can use `self.points_to(a_p, b_p)` but **NOT** `self.postcondition_f(a_p, "{b_p}")`.
+While Cryptol has arrays, it doesn't have a notion of pointer, so we can't pass a symbolic pointer into `cry_f`. For example, if we wanted to assert `a_p` points to `b_p` then we can use `self.points_to(a_p, b_p)` but **NOT** `self.postcondition_f("{a_p} == {b_p}")`.
 
 ### Parameterized Contracts
 
@@ -677,8 +666,8 @@ many more) capabilities. This is obviously well beyond the scope of
 the course, but worth mentioning.
 
 One option here is to make a new contract for each `length` that's
-actually used. Instead we can make a single contract with a length
-input:
+actually used. Instead we can make a single contract with a `length`
+parameter:
 
 ```python
 def addRowAlias_Contract(Contract):
@@ -690,8 +679,6 @@ def addRowAlias_Contract(Contract):
     (a, a_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
     length   = fresh_var(i8, "length")
-    
-    self.precondition_f("{length} == {self.length}")
     
     self.execute_func(a_p, b_p, length)
     
@@ -721,8 +708,6 @@ class ArrayTests(unittest.TestCase):
 ```
 
 ## Array Example Full Code and Debugging SAW
-
-//remove precondition in previous example and detect an issue here?
 
 ```python
 import unittest
@@ -770,8 +755,6 @@ def addRowAlias_Contract(Contract):
     (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
     length   = fresh_var(i8, "length")
     
-    self.precondition_f("{self.length} == {length}")
-    
     self.execute_func(a_p, b_p, length)
     
     self.points_to(a_p, cry_f("rowAdd`{{{length}}} {a} {b}"))
@@ -800,6 +783,117 @@ class ArrayTests(unittest.TestCase):
     self.assertIs(addRowAlias05_result.is_success(), True)
     self.assertIs(addRowAlias10_result.is_success(), True)
 ```
+
+What do you think will happen if we run this code?
+
+<details>
+  <summary>Click here to find out!</summary>
+  Running the code, SAW verifies the first two contracts
+  
+  ```
+  $ python3 addRow.py
+  [15:40:51.330] Verifying addRow5Mutate ...
+  [15:40:51.330] Simulating addRow5Mutate ...
+  [15:40:51.335] Checking proof obligations addRow5Mutate ...
+  [15:40:51.362] Proof succeeded! addRow5Mutate
+  ✅  Verified: lemma_addRow5Mutate_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:64)
+  [15:40:51.430] Verifying addRow5NewVar ...
+  [15:40:51.430] Simulating addRow5NewVar ...
+  [15:40:51.435] Checking proof obligations addRow5NewVar ...
+  [15:40:51.462] Proof succeeded! addRow5NewVar
+  ✅  Verified: lemma_addRow5NewVar_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:67)
+  ```
+  
+  ...but fails to verify the third contract. It alerts us there is a memory error
+  
+  ```
+  [15:40:51.527] Verifying addRowAlias ...
+  [15:40:51.528] Simulating addRowAlias ...
+  [15:40:51.532] Symbolic simulation completed with side conditions.
+  [15:40:51.535] Checking proof obligations addRowAlias ...
+  [15:40:51.575] Subgoal failed: addRowAlias safety assertion:
+  internal: error: in addRowAlias
+  Error during memory load
+  ```
+  
+  and even produces the following counterexample:
+
+  ```
+  [15:40:51.575] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 331}
+  [15:40:51.575] ----------Counterexample----------
+  [15:40:51.575]   length0: 6
+  [15:40:51.575]   : False
+  [15:40:51.575] ----------------------------------
+  ⚠️  Failed to verify: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:37):
+  error: Proof failed.
+        stdout:
+                [15:40:51.527] Verifying addRowAlias ...
+                [15:40:51.528] Simulating addRowAlias ...
+                [15:40:51.532] Symbolic simulation completed with side conditions.
+                [15:40:51.535] Checking proof obligations addRowAlias ...
+                [15:40:51.575] Subgoal failed: addRowAlias safety assertion:
+                internal: error: in addRowAlias
+                Error during memory load
+
+                [15:40:51.575] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 331}
+                [15:40:51.575] ----------Counterexample----------
+                [15:40:51.575]   length0: 6
+                [15:40:51.575]   : False
+                [15:40:51.575] ----------------------------------
+  F
+  ======================================================================
+  FAIL: test_rowAdds (__main__.ArrayTests)
+  ----------------------------------------------------------------------
+  Traceback (most recent call last):
+  File "/home/cryptol/cryptol-course/labs/SAW/proof/addRow.py", line 71, in test_rowAdds
+    self.assertIs(addRowAlias05_result.is_success(), True)
+  AssertionError: False is not True
+
+  ----------------------------------------------------------------------
+  Ran 1 test in 1.735s
+
+  FAILED (failures=1)
+  🛑  1 out of 3 goals failed to verify.
+  ```
+  
+  SAW is telling us we forgot to add a precondition to assert our symbolic `length` agrees with our Python parameter `self.length`. This is an easy fix:
+
+  ```
+  def addRowAlias_Contract(Contract):
+  def __init__(self, length : int):
+    super().__init__()
+    self.length = length
+
+  def specification(self):
+    (a, a_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="a")
+    (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
+    length   = fresh_var(i8, "length")
+    
+    self.precondition_f("{self.length} == {length}")
+    
+    self.execute_func(a_p, b_p, length)
+    
+    self.points_to(a_p, cry_f("rowAdd`{{{length}}} {a} {b}"))
+    
+    self.returns(a_p)
+  ```
+
+And now SAW happily verifies the third contract!
+  
+  ```
+  $ python3 addRow.py
+  ✅  Verified: lemma_addRow5Mutate_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:64)
+  ✅  Verified: lemma_addRow5NewVar_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:67)
+  ✅  Verified: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:37)
+  .
+  ----------------------------------------------------------------------
+  Ran 1 test in 1.985s
+
+  OK
+  ✅  All 3 goals verified!
+  ```
+
+</details>
 
 ## Explicit Arrays
 
@@ -843,7 +937,7 @@ specification for postconditions as was done in the previous examples.
 
 ## Null Pointers
 
-Consider the following C code that checks if a pointer is null:
+Consider the following C code to check if a pointer is null:
 
 ```C
 int f(int *x) {
@@ -851,7 +945,7 @@ int f(int *x) {
 }
 ```
 
-What do you think is the behavior of running the following contract? Keep in mind that booleans in C are encoded as `0` for false and `1` for true.
+The following contract has possibly unexpected behavior (in C booleans are encoded as `0` for false and `1` for true).
 
 ```Python
 import unittest
