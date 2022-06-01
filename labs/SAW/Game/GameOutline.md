@@ -68,13 +68,101 @@ self.points_to(player, cry_f("{{ name=(repeat 0x41 : [{MAX_NAME_LENGTH}][8]), le
   - Note that SAW's Python API takes advantage of if-statements, which reduces the number of SAW contracts/specs that we need to write
 - Understand that `ptr_to_fresh` is useful for setting preconditions for a struct's fields
 - How to use contract parameters to assert two possible postconditions
+- How to represent multiple Unit Tests on the same contract with different input parameters
 
 **DJ's Notes:**
 - Note that the `checkStats` function would be used in the Game library to check character stats every instance before such stats would be referenced/used for gameplay.
 - In terms of the example, `checkStats` provides gameplay balancing by limiting how well characters can perform.
 - Given this policy, all other functions included in the library assume that `checkStats` is called before them.
+  - This means we will use the preconditions from `checkStats_Contract` in their contracts
+  - We will show an example in `resolveAttack` about what happens when the preconditions aren't used
+- Discuss the coding & security tradeoffs between checks made in callers vs callees
 
 ## resolveAttack(character_t* target, uint32_t atk);
+**Goal:** Expand upon the lessons learned with `checkStats` to get a contract ready for overrides/lemmas.
+
+**Lessons Learned:**
+- All of the points referenced in `checkStats` **Lessons Learned**
+- Understand how to write cases for a function with more than 2 possible behaviors
+- Understand when it is appropriate to include preconditions for functions that lack input checks
+  - Goes back to the caller vs callee tradeoffs mentioned in `checkStats` **DJ's Notes**
+
+**Errors to Explore:**
+- Explain why the verification fails when the preconditions for `resolveAttack` are commented out.
+  - Spoiler alert, integer overflow/underflow/wrap-around
+- Explain why SAW produces a counterexample when...
+  - the contract looks like:
+```python
+# Contract
+class resolveAttack_Contract(Contract):
+  def __init__(self, case : int):
+    super().__init__()
+    self.case = case
+    # There are 3 possible cases for resolveAttack
+    #   Case 2: Immediate KO
+    #   Case 1: Attack mitigated
+    #   Case 3: Regular attack
+
+  def specification (self):
+    # Declare variables
+    (target, target_p) = ptr_to_fresh(self, alias_ty("struct.character_t"), name="target")
+    atk = self.fresh_var(i32, "atk")
+
+    # Assert the precondition that the stats are below the max stat cap
+    self.precondition_f("{atk} <= `{MAX_STAT}")
+    self.precondition_f("{target}.2 <= `{MAX_STAT}")
+    self.precondition_f("{target}.4 <= `{MAX_STAT}")
+
+    # Determine the preconditions based on the case parameter
+    if (self.case == 1):
+       # target->hp <= (atk - target->def)
+      self.precondition_f("({target}.2 + {target}.4) <= {atk}")
+    elif (self.case == 2):
+      # target->def >= atk
+      self.precondition_f("{target}.4 >= {atk}")
+    else:
+      # Assume any other case follows the formal attack calculation
+      self.precondition_f("{target}.4 < {atk}")
+      self.precondition_f("({target}.2 + {target}.4) > {atk}")
+    
+    # Symbolically execute the function
+    self.execute_func(target_p, atk)
+
+    # Determine the postcondition based on the case parameter
+    if (self.case == 1):
+      self.points_to(target_p['hp'], cry_f("0 : [32]"))
+    elif (self.case == 2):
+      self.points_to(target_p['hp'], cry_f("{target}.2 : [32]"))
+    else:
+      self.points_to(target_p['hp'], cry_f("resolveAttack ({target}.2) ({target}.4) {atk}"))
+
+    self.returns(void)
+```
+  - and the source code looks like:
+```c
+// Source code
+void resolveAttack(character_t* target, uint32_t atk)
+{
+  if ( target->hp <= (atk - target->def) )
+  {
+    // The attack will knock out the target
+    target->hp = 0;
+  }
+  else if ( target->def >= atk)
+  {
+    // The target's defense mitigates the attack
+    target->hp = target->hp;
+  }
+  else
+  {
+    // Calculate damage as normal
+    target->hp = target->hp - (atk - target->def);
+  }
+}
+```
+  - Spoiler alert: Logical error in the source code where the first condition already covers the second condition
+
+## selfDamage(player_t* player);
 
 
 ## resetInventoryItems(inventory_t* inventory);
@@ -93,5 +181,14 @@ self.points_to(player, cry_f("{{ name=(repeat 0x41 : [{MAX_NAME_LENGTH}][8]), le
 Note: No Contract for this one. Considering dropping due to how complex the Contract needs to be (multiple possible outcomes depending on the inputs - requires specific preconditions and postconditions)
 
 
-SAW finds something not true, counterexample.
-- Logical error in the functions
+# TODO
+- Add `selfDamage` prototype to `Game.h`
+- Move `quickBattle` to come right after `selfDamage`, which is after `resolveAttack` given that it makes sense in the lesson plan
+- Consider moving `resetInventoryItems`, `initScreen`, and `setScreenTile` earlier in the lesson plan
+  - Recall that `setScreenTile` shows extern global variables
+- Confirm the error cases yield the expected error results
+  - Necessary because some of these errors were encountered and resolved already.
+  - Want to properly recreate them for learning purposes.
+- Determine if the resolveAttack logical error should be kept
+- Determine if counterBattle should be kept
+  - Current thoughts are no given how many behavior states must be considered
