@@ -1,9 +1,6 @@
 # TODO
 # - Try the alloc_pointsto_buffer example & see its limitations
 #   --> See if possible to keep pointer field
-# - Global variable
-#   --> Pulling values directly from source code...
-# - Extern
 # - Aligned
 # - Make a worksheet & solution for the SAW examples
 # - Update SAW.md to discuss the topics covered in this SAW script
@@ -358,13 +355,12 @@ class setScreenTile_Contract(Contract):
     # Pop Quiz: Why can't we just declare and pass the screen pointer?
     # screen_p = self.alloc(alias_ty("struct.screen_t"))
 
-    # Note: The following global initialization is not needed because
-    #       - SAW already understands what values to use
-    #       - We made a local copy in Game.cry to express the expected behavior
-    # However, in the event that SAW complains that it does not know what
-    # assetTable is, include the lines!
-    # assetTable_init = global_initializer("assetTable")
-    # self.points_to(global_var("assetTable"), assetTable_init)
+    # Initialize Game.h's assetTable according to Assets.c
+    #   Note: The contents of assetTable from Assets.c was copied into Game.cry
+    # Required because the global variable in Game.h is declared as an extern,
+    # and the current way Game.bc is compiled does not include Assets.c in the
+    # Makefile.
+    self.points_to(global_var("assetTable"), cry_f("assetTable"))
 
     # Assert preconditions depending on the Contract parameter
     if (self.shouldPass):

@@ -13,14 +13,9 @@
 #define ASSET_TABLE_SIZE 16
 
 
-const uint8_t assetTable[ASSET_TABLE_SIZE] = {0x01, 0x12, 0x23, 0x34,
-                                              0x45, 0x56, 0x67, 0x78,
-                                              0x89, 0x9A, 0xAB, 0xBC,
-                                              0xCD, 0xDE, 0xEF, 0xF0};
-
 const uint32_t defaultLevel = 1;
 
-extern const uint8_t secretAssetTable[ASSET_TABLE_SIZE];
+extern const uint8_t assetTable[ASSET_TABLE_SIZE];
 
 // Struct containing character information
 typedef struct {
