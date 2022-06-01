@@ -166,6 +166,88 @@ void resolveAttack(character_t* target, uint32_t atk)
 **Goal:** To provide a case study where SAW should have complained about its memory disjoint assertion being violated. Note that SAW's Python API silently resolves this issue. **Consider dropping from the SAW.md discussion**. Can still keep as a bonus example though!
 
 ## resetInventoryItems(inventory_t* inventory);
+**Goal:** To show the problems SAW faces when verifying structs with pointer fields.
+
+**Lessons Learned:**
+-
+
+**Errors to Explore:**
+- Assuming the inventory_t struct is defined as:
+```c
+typedef struct {
+  item_t* item;
+  uint32_t numItems;
+} inventory_t;
+```
+understand why the following contract setups fail:
+
+Setup Attempt #1
+```python
+class resetInventoryItems_Contract(Contract):
+  def __init__(self, numItems : int):
+    super().__init__()
+    self.numItems = numItems
+
+  def specification (self):
+    # Declare variables
+    # Note: The setup here does not use item_p for the proof. However, item_p
+    #       is included to show errors that can be encountered with the
+    #       inventory_t struct.
+    (item, item_p) = ptr_to_fresh(self, array_ty(self.numItems, alias_ty("struct.item_t")), name="item")
+    inventory_p = self.alloc(alias_ty("struct.inventory_t"), points_to = struct(item, cry_f("{self.numItems} : [32]")))
+
+    # Symbolically execute the function
+    self.execute_func(inventory_p)
+
+    # Assert the postconditions
+    for i in range(self.numItems):
+      self.points_to(inventory_p['item'][i][1], cry_f("0 : [32]"))
+
+    self.returns(void)
+```
+
+```bash
+...
+      ⚠️  Failed to verify: lemma_resetInventoryItems_Contract (defined at proof/Game.py:190):
+      error: types not memory-compatible:
+      { %struct.item_t*, i32 }
+      { [5 x { i32, i32 }], i32 }
+              stdout:
+```
+
+Setup Attempt #2
+```python
+class resetInventoryItems_Contract(Contract):
+  def __init__(self, numItems : int):
+    super().__init__()
+    self.numItems = numItems
+
+  def specification (self):
+    # Declare variables
+    # Note: The setup here does not use item_p for the proof. However, item_p
+    #       is included to show errors that can be encountered with the
+    #       inventory_t struct.
+    (item, item_p) = ptr_to_fresh(self, array_ty(self.numItems, alias_ty("struct.item_t")), name="item")
+    inventory_p = self.alloc(alias_ty("struct.inventory_t"), points_to = struct(item_p, cry_f("{self.numItems} : [32]")))
+
+    # Symbolically execute the function
+    self.execute_func(inventory_p)
+
+    # Assert the postconditions
+    for i in range(self.numItems):
+      self.points_to(inventory_p['item'][i][1], cry_f("0 : [32]"))
+
+    self.returns(void)
+```
+
+```bash
+      ⚠️  Failed to verify: lemma_resetInventoryItems_Contract (defined at proof/Game.py:190):
+      error: typeOfSetupValue: llvm_elem requires pointer to struct or array, found %struct.item_t**
+              stdout:
+    Considering both of these verification setup attempts, we can see that
+    defining inventory_t with an item_t pointer is tough for SAW to setup and.
+    prove. Consequently, it is better to use fixed array lengths for structs!
+```
 
 
 ## initScreen(screen_t* screen, uint8_t assetID);
@@ -182,6 +264,8 @@ Note: No Contract for this one. Considering dropping due to how complex the Cont
 
 
 # TODO
+- Define the background of the library (structs, functions, etc)
+- Cryptol record/tuples ('(') for initDefaultPlayer
 - Add `selfDamage` prototype to `Game.h`
 - Remove the first 3 preconditions in `selfDamage_Contract` given that they were used for debugging and are no longer needed
 - Move `quickBattle` to come right after `selfDamage`, which is after `resolveAttack` given that it makes sense in the lesson plan
