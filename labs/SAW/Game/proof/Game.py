@@ -1,15 +1,25 @@
 # TODO
+# - Replace the silly initByteSequence function with repeat
 # - Try the alloc_pointsto_buffer example & see its limitations
+#   --> See if possible to keep pointer field
 # - Global variable
+#   --> Pulling values directly from source code...
 # - Extern
+# - Aligned
 # - Make a worksheet & solution for the SAW examples
 # - Update SAW.md to discuss the topics covered in this SAW script
+#   --> Link to the GaloicInc/saw-script and GaloisInc/saw-demos examples for more Python references
+#       https://github.com/GaloisInc/saw-script/tree/master/saw-remote-api/python/tests/saw
+#       https://github.com/GaloisInc/saw-demos/tree/master/demos/signal-protocol
 #   --> Mention importance of "-g" flag for debug symbols
+#   --> Discuss reasons between self.alloc (only want pointer) and
+#       ptr_to_fresh (want to set initial contents or reference in postcondition)
 #   --> Mention reason for preconditions (i.e. checkStats caller vs callee)
 #       Removing the preconditons in resolveAttack leads to integer overflow
 #   --> Mention in some SAW configs (i.e. llvm), nested defines may be an issue (i.e. initScreen)
 #   --> Mention in some SAW configs (i.e. llvm), aliasing/non-disjoint memory regions may be an issue (i.e. selfDamage)
 #   --> Discuss the issues associated with inventory_t's item_t pointer
+#   --> Include a "Troubleshooting/What SAW Says & Means" section
 # - Reorder the functions to match the topic discussion
 
 
@@ -40,6 +50,7 @@ SCREEN_TILES    = SCREEN_ROWS * SCREEN_COLS
 NEUTRAL         = 0
 DEFEAT_PLAYER   = 1
 DEFEAT_OPPONENT = 2
+ASSET_TABLE_SIZE = 16
 
 
 #######################################
@@ -69,6 +80,21 @@ class levelUp_Contract(Contract):
 
     # Assert the function's return behavior
     self.returns_f("levelUp {level}")
+
+
+# getDefaultLevel Contract
+# uint32_t getDefaultLevel()
+class getDefaultLevel_Contract(Contract):
+  def specification (self):
+    # Initialize the defaultLevel global variable
+    defaultLevel_init = global_initializer("defaultLevel")
+    self.points_to(global_var("defaultLevel"), defaultLevel_init)
+
+    # Symbolically execute the function
+    self.execute_func()
+
+    # Assert the function's return behavior
+    self.returns(defaultLevel_init)
 
 
 # initDefaultPlayer Contract
@@ -117,25 +143,25 @@ class initDefaultPlayer_Contract(Contract):
     # self.points_to(player[5], cry_f("3 : [32]"))
 
     # Incorrect Alternative 1: Invalid label in record update.
-    #self.points_to(player, cry_f("{{ [(i*0 + 0x41) | i <- [1..{MAX_NAME_LENGTH}]], 1 : [32], 10 : [32], 5 : [32], 4 : [32], 3 : [32] }}"))
+    # self.points_to(player, cry_f("{{ [(i*0 + 0x41) | i <- [1..{MAX_NAME_LENGTH}]], 1 : [32], 10 : [32], 5 : [32], 4 : [32], 3 : [32] }}"))
 
     # Incorrect Alternative 2: SAW doesn't yet support translating Cryptol's
     #                          record type(s) into crucible-llvm's type system.
-    #self.points_to(player, cry_f("{{ name=[(i*0 + 0x41) | i <- [1..{MAX_NAME_LENGTH}]], level=1 : [32], hp=10 : [32], atk=5 : [32], def=4 : [32], spd=3 : [32] }}"))
+    # self.points_to(player, cry_f("{{ name=[(i*0 + 0x41) | i <- [1..{MAX_NAME_LENGTH}]], level=1 : [32], hp=10 : [32], atk=5 : [32], def=4 : [32], spd=3 : [32] }}"))
 
     self.returns(cry_f("`({SUCCESS}) : [32]"))
 
 
 # checkStats Contract
 # uint32_t checkStats(character_t* character)
-# Note: This contract only considers the case where all of the stats are below
-#       the MAX_STAT cap. We could prove the FAILURE result as long as we have
-#       at least one field violate the MAX_STAT cap
 class checkStats_Contract(Contract):
   def __init__(self, shouldPass : bool):
     super().__init__()
     self.shouldPass = shouldPass
-    # There are 3 possible cases for resolveAttack
+    # There are 2 possible cases for checkStats
+    # Case 1 (shouldPass == True): All of the stats are below the MAX_STAT cap
+    # Case 2 (shouldPass == False): At least one stat exceeds the MAX_STAT cap
+
   def specification (self):
     # Declare variables
     (character, character_p) = ptr_to_fresh(self, alias_ty("struct.character_t"), name="character")
@@ -313,6 +339,64 @@ class initScreen_Contract(Contract):
     self.returns(cry_f("`({SUCCESS}) : [32]"))
 
 
+# setScreenTile
+# uint32_t setScreenTile(screen_t* screen, uint32_t screenIdx, uint32_t tableIdx)
+class setScreenTile_Contract(Contract):
+  def __init__(self, shouldPass : bool):
+    super().__init__()
+    self.shouldPass = shouldPass
+    # There are 2 possible cases for setScreenTile
+    # Case 1 (shouldPass == True): Both screenIdx and tableIdx are below their
+    #                              limits, SCREEN_TILES and ASSET_TABLE_SIZE,
+    #                              respectively.
+    # Case 2 (shouldPass == False): At least one index exceeds its limits.
+
+  def specification (self):
+    # Declare variables
+    (screen, screen_p) = ptr_to_fresh(self, alias_ty("struct.screen_t"), name="screen")
+    screenIdx = self.fresh_var(i32, "screenIdx")
+    tableIdx  = self.fresh_var(i32, "tableIdx")
+    # Pop Quiz: Why can't we just declare and pass the screen pointer?
+    # screen_p = self.alloc(alias_ty("struct.screen_t"))
+
+    # Note: The following global initialization is not needed because
+    #       - SAW already understands what values to use
+    #       - We made a local copy in Game.cry to express the expected behavior
+    # However, in the event that SAW complains that it does not know what
+    # assetTable is, include the lines!
+    # assetTable_init = global_initializer("assetTable")
+    # self.points_to(global_var("assetTable"), assetTable_init)
+
+    # Assert preconditions depending on the Contract parameter
+    if (self.shouldPass):
+      self.precondition_f("{screenIdx} < {SCREEN_TILES}")
+      self.precondition_f("{tableIdx}  < {ASSET_TABLE_SIZE}")
+    else:
+      # Note: Only one of the following preconditions is needed
+      self.precondition_f("{screenIdx} >= {SCREEN_TILES}")
+      self.precondition_f("{tableIdx}  >= {ASSET_TABLE_SIZE}")
+    
+    # Symbolically execute the function
+    self.execute_func(screen_p, screenIdx, tableIdx)
+
+    # Since we just want to check one index, let's have our screen pointer
+    # point to a new screen_t variable.
+    screen_post = self.fresh_var(alias_ty("struct.screen_t"), "screen_post")
+
+    # Assert that the original screen pointer now points to the new screen_t
+    # variable. This will allow us to reference screen_post in Cryptol for our
+    # later postconditions.
+    self.points_to(screen_p, screen_post)
+
+    # Assert postconditions depending on the Contract parameter
+    if (self.shouldPass):
+      self.postcondition_f("({screen_post}@{screenIdx}) == assetTable@{tableIdx}")
+      #self.points_to(screen['tiles'][cry_f("{screenIdx}")], cry_f("assetTable@{tableIdx}"))
+      self.returns_f("`({SUCCESS}) : [32]")
+    else:
+      self.returns_f("`({FAILURE}) : [32]")
+
+
 # quickBattle Contract
 # void quickBattle(player_t* player, character_t* opponent)
 class quickBattle_Contract(Contract):
@@ -432,6 +516,7 @@ class GameTests(unittest.TestCase):
     module = llvm_load_module(bitcode_name)
 
     levelUp_result             = llvm_verify(module, 'levelUp', levelUp_Contract())
+    getDefaultLevel_result     = llvm_verify(module, 'getDefaultLevel', getDefaultLevel_Contract())
     initDefaultPlayer_result   = llvm_verify(module, 'initDefaultPlayer', initDefaultPlayer_Contract())
     checkStats_pass_result     = llvm_verify(module, 'checkStats', checkStats_Contract(True))
     checkStats_fail_result     = llvm_verify(module, 'checkStats', checkStats_Contract(False))
@@ -440,12 +525,15 @@ class GameTests(unittest.TestCase):
     resolveAttack_case3_result = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(3))
     resetInventoryItems_result = llvm_verify(module, 'resetInventoryItems', resetInventoryItems_Contract(5))
     initScreen_result          = llvm_verify(module, 'initScreen', initScreen_Contract())
+    setScreenTile_pass_result  = llvm_verify(module, 'setScreenTile', setScreenTile_Contract(True))
+    setScreenTile_fail_result  = llvm_verify(module, 'setScreenTile', setScreenTile_Contract(False))
     quickBattle_result         = llvm_verify(module, 'quickBattle', quickBattle_Contract(), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
     selfDamage_case1_result    = llvm_verify(module, 'selfDamage', selfDamage_Contract(1), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
     selfDamage_case2_result    = llvm_verify(module, 'selfDamage', selfDamage_Contract(2), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
     selfDamage_case3_result    = llvm_verify(module, 'selfDamage', selfDamage_Contract(3), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
 
     self.assertIs(levelUp_result.is_success(), True)
+    self.assertIs(getDefaultLevel_result.is_success(), True)
     self.assertIs(initDefaultPlayer_result.is_success(), True)
     self.assertIs(checkStats_pass_result.is_success(), True)
     self.assertIs(checkStats_fail_result.is_success(), True)
@@ -454,6 +542,8 @@ class GameTests(unittest.TestCase):
     self.assertIs(resolveAttack_case3_result.is_success(), True)
     self.assertIs(resetInventoryItems_result.is_success(), True)
     self.assertIs(initScreen_result.is_success(), True)
+    self.assertIs(setScreenTile_pass_result.is_success(), True)
+    self.assertIs(setScreenTile_fail_result.is_success(), True)
     self.assertIs(quickBattle_result.is_success(), True)
     self.assertIs(selfDamage_case1_result.is_success(), True)
     self.assertIs(selfDamage_case2_result.is_success(), True)

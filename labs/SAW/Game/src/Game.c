@@ -7,6 +7,12 @@ uint32_t levelUp(uint32_t level)
 }
 
 
+uint32_t getDefaultLevel()
+{
+  return defaultLevel;
+}
+
+
 uint32_t initDefaultPlayer(player_t* player)
 {
   // Variables
@@ -119,6 +125,24 @@ uint32_t initScreen(screen_t* screen, uint8_t assetID)
   }
 
   return SUCCESS;
+}
+
+
+// Sets a tile displayed on the screen to an particular assetID held in the
+// global assetTable
+uint32_t setScreenTile(screen_t* screen, uint32_t screenIdx, uint32_t tableIdx)
+{
+  // Initialize return status to FAILURE
+  uint32_t result = FAILURE;
+
+  // Check for valid bounds
+  if (screenIdx < SCREEN_TILES && tableIdx < ASSET_TABLE_SIZE)
+  {
+    screen->tiles[screenIdx] = assetTable[tableIdx];
+    result = SUCCESS;
+  }
+
+  return result;
 }
 
 

@@ -10,6 +10,17 @@
 #define SCREEN_ROWS 15
 #define SCREEN_COLS 10
 #define SCREEN_TILES SCREEN_ROWS*SCREEN_COLS
+#define ASSET_TABLE_SIZE 16
+
+
+const uint8_t assetTable[ASSET_TABLE_SIZE] = {0x01, 0x12, 0x23, 0x34,
+                                              0x45, 0x56, 0x67, 0x78,
+                                              0x89, 0x9A, 0xAB, 0xBC,
+                                              0xCD, 0xDE, 0xEF, 0xF0};
+
+const uint32_t defaultLevel = 1;
+
+extern const uint8_t secretAssetTable[ASSET_TABLE_SIZE];
 
 // Struct containing character information
 typedef struct {
@@ -50,11 +61,13 @@ typedef struct {
 
 // Function prototypes
 uint32_t levelUp(uint32_t level);
+uint32_t getDefaultLevel();
 uint32_t initDefaultPlayer(player_t* player);
 uint32_t checkStats(character_t* character);
 void resolveAttack(character_t* target, uint32_t atk);
 void resetInventoryItems(inventory_t* inventory);
 uint32_t initScreen(screen_t* screen, uint8_t assetID);
+uint32_t setScreenTile(screen_t* screen, uint32_t screenIdx, uint32_t tableIdx);
 void quickBattle(player_t* player, character_t* opponent);
 uint32_t counterBattle(player_t* player, character_t* opponent);
 
