@@ -139,11 +139,11 @@ class initDefaultPlayer_Contract(Contract):
     # self.points_to(player[5], cry_f("3 : [32]"))
 
     # Incorrect Alternative 1: Invalid label in record update.
-    # self.points_to(player, cry_f("{{ [(i*0 + 0x41) | i <- [1..{MAX_NAME_LENGTH}]], 1 : [32], 10 : [32], 5 : [32], 4 : [32], 3 : [32] }}"))
+    # self.points_to(player, cry_f("{{ [repeat 0x41 : [{MAX_NAME_LENGTH}][8], 1 : [32], 10 : [32], 5 : [32], 4 : [32], 3 : [32] }}"))
 
     # Incorrect Alternative 2: SAW doesn't yet support translating Cryptol's
     #                          record type(s) into crucible-llvm's type system.
-    # self.points_to(player, cry_f("{{ name=[(i*0 + 0x41) | i <- [1..{MAX_NAME_LENGTH}]], level=1 : [32], hp=10 : [32], atk=5 : [32], def=4 : [32], spd=3 : [32] }}"))
+    # self.points_to(player, cry_f("{{ name=[repeat 0x41 : [{MAX_NAME_LENGTH}][8], level=1 : [32], hp=10 : [32], atk=5 : [32], def=4 : [32], spd=3 : [32] }}"))
 
     self.returns(cry_f("`({SUCCESS}) : [32]"))
 
