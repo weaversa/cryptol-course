@@ -554,7 +554,7 @@ A SAW contract is strictly divided into three parts:
 2. Execution
 3. Postconditions
 
-SAW will complain if you place a precondition after `execute_func` and
+SAW complains if you place a precondition after `execute_func` and
 similarly for postcondition. If a function returns a value that was
 not passed through `execute_func`, then you will have to initialize
 new fresh symbolic variables. For example, consider the proposed
@@ -576,8 +576,18 @@ def addRow5NewVar_Contract(Contract):
 
 Running a unit test yields the following error message:
 
-```sh
-SAW error message
+```
+[16:42:51.066] Subgoal failed: addRow5NewVar safety assertion:
+internal: error: in _SAW_verify_prestate SAWServer
+The following pointers had to alias, but they didn't:
+  (12, 0x0:[64])
+  (7, 0x0:[64])
+
+
+[16:42:51.067] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 29}
+[16:42:51.067] ----------Counterexample----------
+[16:42:51.067] <<All settings of the symbolic variables constitute a counterexample>>
+[16:42:51.067] ----------------------------------
 ```
 
 Think about the precondition block, the part before `execute_func`, as
