@@ -325,7 +325,6 @@ Things to note:
     `2*8 == 16` bits, and hence 2<sup>_16_</sup> possible values.
 ```Xcryptol-session
     labs::Language::Basics>> :exhaust \(x : [2][8]) -> True
-    :exhaust \(x : [2][8]) -> True
     Using exhaustive testing.
     Passed 65536 tests.
     Q.E.D.
