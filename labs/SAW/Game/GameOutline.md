@@ -163,7 +163,7 @@ void resolveAttack(character_t* target, uint32_t atk)
   - Spoiler alert: Logical error in the source code where the first condition already covers the second condition
 
 ## selfDamage(player_t* player);
-
+**Goal:** To provide a case study where SAW should have complained about its memory disjoint assertion being violated. Note that SAW's Python API silently resolves this issue. **Consider dropping from the SAW.md discussion**. Can still keep as a bonus example though!
 
 ## resetInventoryItems(inventory_t* inventory);
 
@@ -183,6 +183,7 @@ Note: No Contract for this one. Considering dropping due to how complex the Cont
 
 # TODO
 - Add `selfDamage` prototype to `Game.h`
+- Remove the first 3 preconditions in `selfDamage_Contract` given that they were used for debugging and are no longer needed
 - Move `quickBattle` to come right after `selfDamage`, which is after `resolveAttack` given that it makes sense in the lesson plan
 - Consider moving `resetInventoryItems`, `initScreen`, and `setScreenTile` earlier in the lesson plan
   - Recall that `setScreenTile` shows extern global variables
@@ -190,5 +191,8 @@ Note: No Contract for this one. Considering dropping due to how complex the Cont
   - Necessary because some of these errors were encountered and resolved already.
   - Want to properly recreate them for learning purposes.
 - Determine if the resolveAttack logical error should be kept
-- Determine if counterBattle should be kept
-  - Current thoughts are no given how many behavior states must be considered
+- Determine if some functions should be dropped...
+  - Entirely: `counterBattle`
+    - It has so many SAW behaviors to consider (so fairly complicated), and I have not written a SAW contract for it
+  - Just from SAW.md: `selfDamage`
+    - Intended to be an example of field aliasing and show SAW complaining about "Memory not disjoint", but the Python API resolves it
