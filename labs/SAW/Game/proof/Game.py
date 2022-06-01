@@ -1,5 +1,4 @@
 # TODO
-# - Replace the silly initByteSequence function with repeat
 # - Try the alloc_pointsto_buffer example & see its limitations
 #   --> See if possible to keep pointer field
 # - Global variable
@@ -113,9 +112,9 @@ class initDefaultPlayer_Contract(Contract):
     #       to assert struct field contents.
     # Index 0 = "name" field
     # Recall that 0x41 is ASCII for 'A'
-    self.points_to(player['name'], cry_f("initByteSequence`{{ {MAX_NAME_LENGTH} }} 0x41"))
+    self.points_to(player['name'], cry_f("repeat 0x41 : [{MAX_NAME_LENGTH}][8]"))
     # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
-    # self.points_to(player[0], cry_f("initByteSequence`{{ {MAX_NAME_LENGTH} }} 0x41"))
+    # self.points_to(player[0], cry_f("repeat 0x41 : [{MAX_NAME_LENGTH}][8]"))
 
     # Index 1 is the "level" field
     self.points_to(player['level'], cry_f("1 : [32]"))
@@ -332,9 +331,9 @@ class initScreen_Contract(Contract):
     self.execute_func(screen, assetID)
 
     # Assert the postcondition
-    self.points_to(screen['tiles'], cry_f("initByteSequence`{{ {SCREEN_TILES} }} {assetID}"))
+    self.points_to(screen['tiles'], cry_f("repeat {assetID} : [{SCREEN_TILES}][8]"))
     # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
-    # self.points_to(screen[0], cry_f("initByteSequence`{{ {SCREEN_TILES} }} {assetID}"))
+    # self.points_to(screen[0], cry_f("repeat {assetID} : [{SCREEN_TILES}][8]"))
 
     self.returns(cry_f("`({SUCCESS}) : [32]"))
 
