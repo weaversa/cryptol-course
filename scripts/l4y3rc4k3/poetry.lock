@@ -126,7 +126,7 @@ pyparsing = ">=2.0.2"
 
 [[package]]
 name = "pillow"
-version = "8.0.1"
+version = "9.1.1"
 description = "Python Imaging Library (Fork)"
 category = "main"
 optional = false
