@@ -314,7 +314,18 @@ class setScreenTile_Contract(Contract):
 
 
 ## quickBattle(player_t* player, character_t* opponent);
+**Goal:** To show how to pass overrides (lemmas) to a Unit test.
 
+**Lessons Learned:**
+- Must pass preconditions that match the preconditions included in the passed overrides (tied to **Errors to Explore**)
+
+**Errors to Explore:**
+- Explain why `ptr_to_fresh` must be used over `self.alloc`
+- Explain why the proof fails when the `MAX_STAT` preconditions are commented out (refer to the first point in **Lessons Learned**)
+
+**DJ's Notes:**
+- The function assumes that both the player and opponent have non-zero HP values, otherwise there wouldn't be a battle!
+  - Explains why the `> 0` preconditions exist
 
 
 ## counterBattle(player_t* player, character_t* opponent);
