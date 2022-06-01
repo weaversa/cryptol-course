@@ -1042,20 +1042,128 @@ This example is from [here]()
 
 # Structs 
 
-//Dj help
+In this section we learn how to verify code involving structs and global variables by analyzing a game. The code for the game can be found 
 
-Consider the following struct:
+```
+HERE.
+```
+
+### Struct Initialization
+
+The game defines the following player type:
 
 ```C
 typedef struct {
-  uint32_t *vector;
-  uint32_t size;
-} 
+  uint8_t name[MAX_NAME_LENGTH];
+  uint32_t level;
+  uint32_t hp;
+  uint32_t atk;
+  uint32_t def;
+  uint32_t spd;
+} character_t;
+
+typedef character_t player_t;
 ```
 
-### Struct Initialization and Explicit Structs
+The following function will initialize a player.
 
-### Structs in Cryptol
+```C
+uint32_t initDefaultPlayer(player_t* player)
+{
+  uint8_t  i = 0;
+  uint32_t hp_default  = 10;
+  uint32_t atk_default = 5;
+  uint32_t def_default = 4;
+  uint32_t spd_default = 3;
+
+  for (i = 0; i < MAX_NAME_LENGTH; i++)
+  {
+    player->name[i] = 'A';
+  }
+  player->level = 1;
+  player->hp  = hp_default;
+  player->atk = atk_default;
+  player->def = def_default;
+  player->spd = spd_default;
+
+  return SUCCESS;
+}
+```
+
+where `SUCCESS` and `MAX_NAME_LENGTH` are C constants
+
+```C
+#define MAX_NAME_LENGTH 12
+#define SUCCESS 170
+#define FAILURE 85
+```
+
+## Struct Initialization and Explicit Structs
+
+The following constract will verify our initialization:
+
+```python
+class initDefaultPlayer_Contract(Contract):
+  def specification (self):
+    player = self.alloc(alias_ty("struct.character_t"))
+
+    self.execute_func(player)
+
+    self.points_to(player['name'], cry_f("repeat 0x41 : [{MAX_NAME_LENGTH}][8]"))
+    self.points_to(player['level'], cry_f("1 : [32]"))
+    self.points_to(player['hp'], cry_f("10 : [32]"))
+    self.points_to(player['atk'], cry_f("5 : [32]"))
+    self.points_to(player['def'], cry_f("4 : [32]"))
+    self.points_to(player['spd'], cry_f("3 : [32]"))
+    
+    self.returns(cry_f("`({SUCCESS}) : [32]"))
+```
+
+The command `alias_ty("struct.<typedef name>")` creates a type corresponding to the structure, so `player = self.alloc(alias_ty("struct.character_t"))` just creates a symbolic pointer variable `player` pointing to a structure of type `character_t`.
+
+Let's breakdown a `points_to` command:
+
+
+If the bitcode is made using the debug flag `-g` then the field names of structs are present in the bitcode. This allows us to use strings instead of remembering the index of every field:
+
+```python
+//place constants here
+
+class initDefaultPlayer_Contract(Contract):
+  def specification (self):
+    player = self.alloc(alias_ty("struct.character_t"))
+
+    self.execute_func(player)
+
+    self.points_to(player['name'], cry_f("repeat 0x41 : [{MAX_NAME_LENGTH}][8]"))
+    self.points_to(player['level'], cry_f("1 : [32]"))
+    self.points_to(player['hp'], cry_f("10 : [32]"))
+    self.points_to(player['atk'], cry_f("5 : [32]"))
+    self.points_to(player['def'], cry_f("4 : [32]"))
+    self.points_to(player['spd'], cry_f("3 : [32]"))
+    
+    self.returns(cry_f("`({SUCCESS}) : [32]"))
+```
+
+Alternatively, we coud use post conditions
+
+```
+above with postcoditions
+```
+
+## Structs in Cryptol
+
+We can also explicitly define a structure:
+
+```
+example
+```
+
+//Cryptol interprets structs as tuples
+//But what if a struct has a pointer as a field...?
+
+## Exercise: Resolving an Attack!
+
 
 # Using Gained Knowledge
 
