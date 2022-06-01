@@ -1,5 +1,4 @@
 # TODO
-# - Move the fancy Cryptol array init of a given size to Game.cry (initSequence)
 # - Try the alloc_pointsto_buffer example & see its limitations
 # - Global variable
 # - Extern
@@ -88,9 +87,9 @@ class initDefaultPlayer_Contract(Contract):
     #       to assert struct field contents.
     # Index 0 = "name" field
     # Recall that 0x41 is ASCII for 'A'
-    self.points_to(player['name'], cry_f("[(i*0 + 0x41) | i <- [1..{MAX_NAME_LENGTH}]]"))
+    self.points_to(player['name'], cry_f("initByteSequence`{{ {MAX_NAME_LENGTH} }} 0x41"))
     # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
-    # self.points_to(player[0], cry_f("[(i*0 + 0x41) | i <- [1..{MAX_NAME_LENGTH}]]"))
+    # self.points_to(player[0], cry_f("initByteSequence`{{ {MAX_NAME_LENGTH} }} 0x41"))
 
     # Index 1 is the "level" field
     self.points_to(player['level'], cry_f("1 : [32]"))
@@ -307,9 +306,9 @@ class initScreen_Contract(Contract):
     self.execute_func(screen, assetID)
 
     # Assert the postcondition
-    self.points_to(screen['tiles'], cry_f("[(i*0 + {assetID}) | i <- [1..{SCREEN_TILES}]]"))
+    self.points_to(screen['tiles'], cry_f("initByteSequence`{{ {SCREEN_TILES} }} {assetID}"))
     # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
-    # self.points_to(screen[0], cry_f("[(i*0 + {assetID}) | i <- [1..{SCREEN_TILES}]]"))
+    # self.points_to(screen[0], cry_f("initByteSequence`{{ {SCREEN_TILES} }} {assetID}"))
 
     self.returns(cry_f("`({SUCCESS}) : [32]"))
 

@@ -1,5 +1,10 @@
 module Game where
 
+initByteSequence : {numBytes}
+                   (fin numBytes, numBytes >= 1, 8 >= width numBytes)
+                   => [8] -> [numBytes][8]
+initByteSequence val = [(i*0 + val) | i <- [1..numBytes]]
+
 levelUp : [32] -> [32]
 levelUp level = level + 1
 
