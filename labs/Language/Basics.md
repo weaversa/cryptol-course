@@ -320,7 +320,16 @@ Things to note:
     * `[n]` --- `0` through `2^^n - 1`
 
   * There are 2<sup>_n_</sup> values of type `[n]`. There are
-    2<sup>_m+n_</sup> values of type `[m][n]`, etc.
+    2<sup>_mn_</sup> values of type `[m][n]`, etc. For example, type
+    `[2][8]` means there are `2` `8`-bit sequences, for a total of
+    `2*8 == 16` bits, and hence 2<sup>_16_</sup> possible values.
+```Xcryptol-session
+    labs::Language::Basics>> :exhaust \(x : [2][8]) -> True
+    :exhaust \(x : [2][8]) -> True
+    Using exhaustive testing.
+    Passed 65536 tests.
+    Q.E.D.
+```
   * 1-d sequences of bits are treated as numbers by arithmetic and
     comparison operators. So for instance, `[False, True] == (1 :
     [2])` and `[True, False, True] > 4` both hold.
