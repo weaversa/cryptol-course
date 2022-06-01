@@ -186,17 +186,17 @@ braces for these cases when parsing Python strings.  For example,
 let's think how to parse the following line:
 
 ```python
-  self.returns_f("{{a = take`{{5}} {blah}, b = take`{{{N}}} {blah} }} == foo `")
+  self.returns_f("{{a = take`{{5}} {blah}, b = take`{{{N}}} {blah} }} == foo `eel")
 ```
 
 If `blah` is a local Python variable equal to `23` and `N` is a
 local Python variable equal to `2`, then the string parses in Cryptol as
 
 ```cryptol
-{a = take`{5} 23, b = take`{2} 23} == foo `blah
+{a = take`{5} 23, b = take`{2} 23} == foo `eel
 ```
 
-where `foo` is some Cryptol function returning a record and `blah` is
+where `foo` is some Cryptol function returning a record and `eel` is
 some Cryptol type in the specification loaded.
 
 ## Unit Testing
@@ -453,19 +453,6 @@ void addRow5Mutate(uint32_t a[5], uint32_t b[5]) {
 }
 ```
 
-An alternative way to do this would be to create a new array storing
-the result and return it:
-
-```C
-uint32_t* addRow5NewVar(uint32_t a[5], uint32_t b[5]) {
-  uint32_t* c = (uint32_t*) malloc(5*sizeof(uint32_t));
-  for(int i  = 0 ; i < 5; i++) {
-    c[i] = a[i] + b[i];
-  }
-  return c;
-}
-```
-
 The corresponding Cryptol specification is:
 
 ```cryptol
@@ -549,7 +536,19 @@ def addRow5Mutate_Contract(Contract):
 
 ### Auxiliary Variables
 
-A SAW contract is strictly divided into three parts: 
+In this section we discuss an alternative way add two rows by using an auxillary variable. For example, consider the function
+
+```C
+uint32_t* addRow5NewVar(uint32_t a[5], uint32_t b[5]) {
+  uint32_t* c = (uint32_t*) malloc(5*sizeof(uint32_t));
+  for(int i  = 0 ; i < 5; i++) {
+    c[i] = a[i] + b[i];
+  }
+  return c;
+}
+```
+
+Recall that a SAW contract is strictly divided into three parts: 
 1. Preconditions
 2. Execution
 3. Postconditions
@@ -649,7 +648,7 @@ While Cryptol has arrays, it doesn't have a notion of pointer, so we can't pass 
 
 ### Parameterized Contracts
 
-Suppose our C code was written as 
+Now let's consider a third possible way to write the same function. Here we are given two arrays of arbitrary size and a length.
 
 ```C
 uint32_t* addRowAlias(uint32_t* a, uint32_t* b, uint8_t length) {
@@ -660,8 +659,7 @@ uint32_t* addRowAlias(uint32_t* a, uint32_t* b, uint8_t length) {
 }
 ```
 
-where the length of the array is not specified. The corresponding
-Cryptol code might be:
+A corresponding Cryptol specification might is
 
 ```cryptol
 addRow : {length} (fin length) => [length][32] -> [length][32] -> [length][32]
@@ -675,8 +673,7 @@ a much more powerful theorem prover that has inductive reasoning (and
 many more) capabilities. This is obviously well beyond the scope of
 the course, but worth mentioning.
 
-One option here is to make a new contract for each `length` that's
-actually used. Instead we can make a single contract with a `length`
+We could make a new contract for each value of `length` used in the C code. Instead we make a single contract with a `length`
 parameter:
 
 ```python
@@ -993,10 +990,26 @@ if __name__ == "__main__":
   It turns out the contract above will fail!
   
   ```
-  saw failure
+  $ python3 null.py
+  [17:21:44.701] Verifying isNull ...
+  [17:21:44.701] Simulating isNull ...
+  [17:21:44.703] Checking proof obligations isNull ...
+  [17:21:44.724] Subgoal failed: isNull safety assertion:
+  internal: error: in _SAW_verify_prestate SAWServer
+  Literal equality postcondition
+  [more error message]
+  FAILED (failures=1)
+  🛑  The goal failed to verify.
   ```
   
-  An initialized symbolic pointer that hasn't been assigned a symbolic variable to point to is **NOT** equivalent to a symbolic null pointer. We can use `null()` in situations where we want a null pointer. For example, if we change the contract above to 
+  The counterexample produced may seem mystical.
+  ```
+  [17:21:44.725] ----------Counterexample----------
+  [17:21:44.725] <<All settings of the symbolic variables constitute a counterexample>>
+  [17:21:44.725] ----------------------------------
+  ```
+  
+  However, if **every** setting is a counterexample, then this is telling us the pointer must have been the null pointer! An initialized symbolic pointer that hasn't been assigned a symbolic variable to point to is **NOT** equivalent to a null pointer in SAW. We can use `null()` in situations where we want a null pointer. For example, if we change the contract above to 
   
   ```
   class FContract(Contract):
@@ -1006,10 +1019,21 @@ if __name__ == "__main__":
         self.returns(cry("1 : [32]"))
   ```
   
-  then SAW is a happy:
+  then SAW is a happy.
   
   ```
-  saw error message
+  $ python3 null.py
+  [17:33:50.802] Verifying isNull ...
+  [17:33:50.802] Simulating isNull ...
+  [17:33:50.804] Checking proof obligations isNull ...
+  [17:33:50.804] Proof succeeded! isNull
+  ✅  Verified: lemma_isNull_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/null.py:22)
+  .
+  ----------------------------------------------------------------------
+  Ran 1 test in 1.301s
+
+  OK
+  ✅  The goal was verified!
   ```
 </details>
 
