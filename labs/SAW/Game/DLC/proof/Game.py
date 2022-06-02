@@ -104,7 +104,7 @@ class initDefaultPlayer_Contract(Contract):
 
 
 # initDefaultSprite Contract
-# uint32_t initDefaultSprite(sprite_t* sprite)
+# uint32_t initDefaultSprite(character_t* character, sprite_t* sprite)
 class initDefaultSprite_Contract(Contract):
   def specification (self):
     # Declare variables

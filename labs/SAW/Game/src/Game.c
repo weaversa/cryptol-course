@@ -1,20 +1,6 @@
 #include "Game.h"
 
 
-///////////////////////////////////////
-// Function(s) with basic SAW setup
-///////////////////////////////////////
-
-uint32_t levelUp(uint32_t level)
-{
-  return (level + 1);
-}
-
-
-///////////////////////////////////////
-// Function(s) with basic struct initialization
-///////////////////////////////////////
-
 uint32_t initDefaultPlayer(player_t* player)
 {
   // Variables
@@ -67,11 +53,6 @@ uint32_t initDefaultSprite(character_t* character, sprite_t* sprite)
 }
 
 
-///////////////////////////////////////
-// Function(s) with preconditions and postconditions that must
-// be considered in SAW contracts & unit test overrides
-///////////////////////////////////////
-
 // Checks that the character stats are below MAX_STAT
 // Note: MUST be called before running any function that uses character stats!
 uint32_t checkStats(character_t* character)
@@ -108,101 +89,5 @@ void resolveAttack(character_t* target, uint32_t atk)
   {
     // Calculate damage as normal
     target->hp = target->hp - (atk - target->def);
-  }
-}
-
-
-uint32_t selfDamage(player_t* player)
-{
-  enum battleResult result = NEUTRAL;
-
-  // Player attacks itself (perhaps due to status condition)
-  resolveAttack(player, player->atk);
-  // Note: If SAW ever gives a "Memory not disjoint" error, then what SAW
-  //       actually means is that inputs to an overridden function cannot
-  //       overlap in memory. Given that player->atk is a field within player,
-  //       the inputs overlap.
-  // Also consider the following way to have the player damage itself:
-  //   quickBattle(player, player);
-  // This also contains inputs that overlap in memory (i.e. not disjoint).
-  // Bear in mind that both function calls in this example will not result in
-  // the Memory Disjoint error for the Python API. However, they will likely
-  // yield the same error if not using the Python API (i.e. llvm.saw).
-
-  if (player->hp <= 0)
-  {
-    // Player's self damage results in a knockout
-    result = DEFEAT_PLAYER;
-  }
-
-  return result;
-}
-
-
-// Simulates a simple battle where only the faster character attacks.
-void quickBattle(player_t* player, character_t* opponent)
-{
-  if (player->spd >= opponent->spd)
-  {
-    resolveAttack(opponent, player->atk);
-  }
-  else
-  {
-    resolveAttack(player, opponent->atk);
-  }
-}
-
-
-///////////////////////////////////////
-// Function(s) with global variable handling
-///////////////////////////////////////
-
-uint32_t getDefaultLevel()
-{
-  return defaultLevel;
-}
-
-
-uint32_t initScreen(screen_t* screen, uint8_t assetID)
-{
-  // Iterate through the screen tiles and set their asset ID
-  for (int i = 0; i < SCREEN_TILES; i++)
-  {
-    screen->tiles[i] = assetID;
-  }
-
-  return SUCCESS;
-}
-
-
-// Sets a tile displayed on the screen to an particular assetID held in the
-// global assetTable
-uint32_t setScreenTile(screen_t* screen, uint32_t screenIdx, uint32_t tableIdx)
-{
-  // Initialize return status to FAILURE
-  uint32_t result = FAILURE;
-
-  // Check for valid bounds
-  if (screenIdx < SCREEN_TILES && tableIdx < ASSET_TABLE_SIZE)
-  {
-    screen->tiles[screenIdx] = assetTable[tableIdx];
-    result = SUCCESS;
-  }
-
-  return result;
-}
-
-
-
-///////////////////////////////////////
-// Function(s) showing limitations with struct pointer fields
-///////////////////////////////////////
-
-void resetInventoryItems(inventory_t* inventory)
-{
-  // Iterate through the inventory and set the quantity field to 0
-  for (int i = 0; i < inventory->numItems; i++)
-  {
-    inventory->item[i].quantity = 0;
   }
 }
