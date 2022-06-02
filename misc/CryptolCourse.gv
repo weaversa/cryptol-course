@@ -31,6 +31,7 @@ digraph  {
   Salsa20Properties          [URL="../labs/Salsa20/Salsa20Props.html"];
   TranspositionCiphers       [URL="../labs/Transposition/Contents.html"];
   ProjectEuler               [URL="../labs/ProjectEuler/ProjectEuler.html"];
+  ContinuousReasoning        [URL="../labs/SAW/SAW.html"];
   ParameterizedModules       [URL="../labs/SimonSpeck/SimonSpeck.html"];
 
   // newline/space labels
@@ -44,6 +45,7 @@ digraph  {
   TranspositionCiphers       [label = "Transposition\nCiphers"]
   ParameterizedModules       [label = "Parameterized\nModules"]
   Salsa20Properties          [label = "Salsa20\nProperties"]
+  ContinuousReasoning        [label = "SAW\nContinuous Reasoning"];
   StyleGuide                 [label = "Style Guide"]
   ProjectEuler               [label = "Project Euler"]
 
@@ -69,6 +71,7 @@ digraph  {
   CryptographicProperties -> Salsa20Properties;
   CryptographicProperties -> TranspositionCiphers;
   CryptographicProperties -> ProjectEuler;
+  CryptographicProperties -> ContinuousReasoning
   KeyWrapping -> ParameterizedModules;
 
   // ranks
@@ -99,6 +102,7 @@ digraph  {
     Salsa20Properties;
     TranspositionCiphers;
     ProjectEuler;
+    ContinuousReasoning;
   }
 
   {
