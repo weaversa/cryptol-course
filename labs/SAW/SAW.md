@@ -1843,13 +1843,12 @@ Only functions with implementations in the bitcode can be verified. If one impor
 For example, the height of
 [height-balanced binary
 trees](https://en.wikipedia.org/wiki/Self-balancing_binary_search_tree)
-on n nodes is given by the ceiling of `log(n)`. In C we might use the
-`math` library to write the helper function.
+on n nodes is given by the ceiling of `log(n)`. In C we might try to implement this using 
 
 ```C
 #include <math.h>
 
-uint64_t log2i(uint64_t i) {
+uint64_t ceilLog2(uint64_t i) {
   return ceil(log2(i));
 }
 
@@ -1864,7 +1863,7 @@ To accomplish these goals we make a contract outlining what the
 behavior of this function:
 
 ```python
-class log2iContract(Contract):
+class ceilLog2Contract(Contract):
     def specification(self):
         i = self.fresh_var(i64, "i")
         
@@ -1874,18 +1873,18 @@ class log2iContract(Contract):
 ```
 
 
-In the unit test we would assume the `log2Contract`:
+In the unit test we would assume the `ceilLog2Contract`:
 
 ```
-log2i_assume = llvm_assume(mod, 'log2i', log2iContract())
+log2i_assume = llvm_assume(mod, 'ceilLog2', ceilLog2Contract())
 
 ```
 
-If a C function ever used `log2i`, then we could pass in the
+If a C function ever used `ceilLog2`, then we could pass in the
 assumption as an optional argument to verification:
 
 ```
-getHeight_result = llvm_verify(mod, 'getHeight', getHeightContract(), lemmas=[log2i_assume])
+getHeight_result = llvm_verify(mod, 'getHeight', getHeightContract(), lemmas=[ceilLog2_assume])
 ```
 
 The optional argument is a list because we can supply multiple
@@ -1898,8 +1897,10 @@ addOneRemoveTwo_result = llvm_verify(mod, 'addOneRemoveTwo', addOneRemoveTwo(), 
 ```
 
 One can think of lemmas as rewrite rules under the hood. Whenever SAW
-encounters log2 function in the C it will interpret its behavior as
-what is specified in the `log2Contract()`.
+encounters ceilLog2 function in the C it will interpret its behavior as
+what is specified in the `ceilLog2Contract()`.
+
+**Exercise**: Does the `C` function `ceilLog2` as defined above always yield the behavior outlined in `ceilLog2Contract`? That is, was our assumption a fair one to make? If not, change the `C` code (possibly using different library functions) to match `lg2` in Cryptol.
 
 ## Uninterpreting Functions
 
