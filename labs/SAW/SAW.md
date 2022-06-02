@@ -1,3 +1,21 @@
+# Introduction
+
+This is a tutorial aimed at training developers how to leverage the
+[Software Analysis Workbench (SAW)](https://saw.galois.com) and
+Cryptol to develop and verify cryptographic implementations in a
+[Continuous Reasoning](https://dl.acm.org/doi/abs/10.1145/3209108.3209109)
+paradigm. Continuous Reasoning is, roughly,
+
+> formal reasoning about a (changing) codebase ... done in a fashion
+> which mirrors the iterative, continuous model of software
+> development that is increasingly practiced in industry.
+
+SAW and Cryptol can be used by a Continuous Integration (CI) system to
+enforce invariants (safety, security, and functional) that software
+must have at certain stages in a software development pipeline. Some
+industrial examples include [AWS's s2n](https://link.springer.com/chapter/10.1007/978-3-319-96142-2_26)
+and [Supranational's BLST](https://github.com/GaloisInc/BLST-Verification).
+
 # Setting Everything Up
 
 To run any of the examples in this lab, you need to first start the
@@ -22,6 +40,14 @@ $ saw-remote-api http --host 0.0.0.0 --port 36691 &
 
 Congrats! You now have a server version of SAW running in the
 background ready to accept commands on port `36691`.
+
+# SAW and Python
+
+If you followed the instructions above, you now have SAW running in
+the background, waiting for a connection on port `36691`. Galois
+provides a [Python client package](https://pypi.org/project/saw-client/)
+that allows you to write formal/logical contracts to enforce
+invariants on some given software.
 
 # Python Contracts Introduction
 
@@ -77,10 +103,11 @@ uint32_t RCS(uint32_t bits, uint32_t shift) {
 }
 ```
 
-SAW doesn't actually verify C source, but rather C compiled down to
-LLVM intermediate representation (IR), or bitcode. This can be
-accomplished via the `clang` compiler. In this instance, we can create
-the bitcode by entering the following command in a terminal.
+In this example, SAW won't actually verify C source, but rather C
+compiled down to LLVM intermediate representation (IR), or
+bitcode. This can be accomplished via the `clang` compiler. In this
+instance, we can create the bitcode by entering the following command
+in a terminal.
 
 ```sh
 $ clang -emit-llvm labs/SAW/src/rcs.c -c -o labs/SAW/src/rcs.bc
@@ -138,31 +165,32 @@ Let's break down `specification` piece by piece.
 The command `self.fresh_var(type, name)` creates a new symbolic
 variable of type `type` and name `name`, where `name` is a
 string. Names for fresh symbolic variables are not optional inputs,
-and they mostly serve for error messages. The string can be anything,
-but it makes sense to give it the name of the variable being defined.
+though they mostly serve displaying names in counter-examples and
+error messages. The string can be anything, but it makes sense to give
+it the name of the variable being defined.
 
 ### Execute Functions
 
 The command `self.execute_func(input1, input2, ...)` will symbolically
-execute the function. There should be exactly as many comma separated
-inputs as there are in the C function. One can only place
-preconditions before this command and postconditions after this
-command.
+execute the function we're writing a contract for. There should be
+exactly as many comma separated inputs as there are in the C
+function. One can only place preconditions before this command and
+postconditions after this command.
 
 ### Return Statements
 
-The command `self.returns_f(string)` asserts the current function
-returns the Cryptol term parsed from a Python string. To use Python
-variables in scope within the string use `{variable_name}`. For
-example,
+The command `self.returns_f(string)` is a postcondition that asserts
+the function returns a given Cryptol term (parsed from a Python
+string). To use Python variables in scope within the string use
+`{variable_name}`. For example,
 
 |`self.`|`returns_f(`|`"RCS {bits} {shift}"`|)|
 |-------|-----------|---------------------|----|
 |In this contract| assert the current function returns the Cryptol term | right circular shift `bits` by `shift` |.|
 
-Sometimes we don't want to return a Cryptol term. In this case we can
-just use `returns(someSetupValue)`. The specification function of a
-Contract must **always** have a `self.returns(someSetupValue)` or
+Sometimes we don't want to return a Cryptol term. In those cases we
+can just use `returns(someSetupValue)`. The specification function of
+a Contract must **always** have a `self.returns(someSetupValue)` or
 `self.returns_f(string)` statement. If the function returns `void` one
 can use `self.returns(void)`.
 
@@ -183,13 +211,13 @@ The `CryptolTerm` class is a subclass of `SetupVal`. This allows using
 Braces are sometimes used in Cryptol to assign type parameters or
 declare records.  The symbols `{{` and `}}` are used to denote literal
 braces for these cases when parsing Python strings.  For example,
-let's think how to parse the following line:
+let's think about how to parse the following line:
 
 ```python
-  self.returns_f("{{a = take`{{5}} {blah}, b = take`{{{N}}} {blah} }} == foo `eel")
+  self.returns_f("{{a = take`{{5}} {var}, b = take`{{{N}}} {var} }} == foo `eel")
 ```
 
-If `blah` is a local Python variable equal to `23` and `N` is a
+If `var` is a local Python variable equal to `23` and `N` is a
 local Python variable equal to `2`, then the string parses in Cryptol as
 
 ```cryptol
@@ -197,7 +225,7 @@ local Python variable equal to `2`, then the string parses in Cryptol as
 ```
 
 where `foo` is some Cryptol function returning a record and `eel` is
-some Cryptol type in the specification loaded.
+some Cryptol type in the currently loaded specification.
 
 ## Unit Testing
 
@@ -217,30 +245,30 @@ class RCSTest(unittest.TestCase):
     self.assertIs(RCS_result.is_success(), True)
 ```
 
-For a contract the specification function should be called
+For a contract, the specification function should be called
 `specification`. For tests, it doesn't matter what you name your
-tests. Here we named it `test_RCS`. These tests will be ran when you
-try running the Python.
+tests. Here we named it `test_RCS`. These tests will be run when you
+run the Python program.
 
 Let's break down the first few lines of this function:
 
 - The command `connect(reset_server=True)` connects to the server so
-  we can use the SAW Python API
+  we can use the SAW Python API.
 - The line `if __name__ == "__main__":
   view(LogResults(verbose_failure=True))` allows us to view the output
   with verbose error messages. If you don't want verbose error
   messages, then just use `if __name__ == "__main__":
-  view(LogResults())`
-- The line `bcname = "/some/path/to/your/file.bc"` declares which
-  bitcode file we're analyzing. If you have multiple bitcode files,
-  then make a variable for each file.
-- The line `mod = llvm_load_module(bcname)` creates the object we will
+  view(LogResults())`.
+- The line `bcname = "/some/path/to/your/file.bc"` declares the
+  bitcode file to analyze. If there are multiple bitcode files,
+  make a variable for each file.
+- The line `mod = llvm_load_module(bcname)` creates the object to
   pass to verification that represents the bitcode.
 - The line `cryname = "/some/path/to/your/file.cry"` specifies the
-  path to the Cryptol specification.
-- The line `cryptol_load_file(cryname)` loads the Cryptol specification.
+  path to a Cryptol specification.
+- The line `cryptol_load_file(cryname)` loads a Cryptol specification.
 
-Now that we've set up our environment, let's actually verify our
+Now that the environment is set up, let's actually verify our
 contract! This is done at the line
 
 |`RCS_result =` | `llvm_verify(` | `mod,` | `'RCS',` | `RCS_Contract()`| `)`|
@@ -347,7 +375,7 @@ has the following to say about bit shifts:
 > equal to the width of the promoted left operand, the behavior is
 > undefined.
 
-As expected, this alerts us of a bug:
+As expected, this alerts us to a bug:
 
 ```
         The second operand of `shl` was equal to or greater than the number of bits in the first operand
@@ -406,7 +434,7 @@ Traceback (most recent call last):
 ```
 
 Aha! The counter example shows that we forgot about the case when
-`shift` is zero! This causes `(sizeof(bits) * 8 - 0)` to be `32`,
+`shift = 0`! This causes `(sizeof(bits) * 8 - 0)` to be `32`,
 which is equal to the word-size of `bits`, and hence causes `<<` to
 exhibit undefined behavior.
 
@@ -419,9 +447,6 @@ uint32_t RCS(uint32_t bits, uint32_t shift) {
   return (bits << (sizeof(bits) * 8 - shift)) | (bits >> shift);
 }
 ```
-
-Finally, SAW is happy. More importantly, the C is correct and free of
-undefined behavior.
 
 ```sh
 $ clang ../src/rcs3.c -o ../src/rcs.bc -c -emit-llvm && python3 rcs.py
@@ -438,11 +463,15 @@ OK
 ✅  The goal was verified!
 ```
 
+Finally, SAW is happy. More importantly, the C is correct and free of
+undefined behavior.
+
 # Pointers and Arrays
 
-We'll begin by writing a function that given two arrays of a common fixed size, say five, adds the
-second to the first. One way to accomplish this is to pass in the two arrays, mutate the first
-and return nothing:
+We'll begin by writing a function that given two arrays of a common
+fixed size, say five, adds the second to the first. One way to
+accomplish this is to pass in the two arrays, mutate the first and
+return nothing:
 
 ```C
 void addRow5Mutate(uint32_t a[5], uint32_t b[5]) {

@@ -21,7 +21,7 @@ class RCSTest(unittest.TestCase):
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
 
     pwd = os.getcwd()
-    bcname  = pwd + "/../src/rcs3.bc"
+    bcname  = pwd + "/../src/rcs.bc"
     cryname = pwd + "/spec/rcs.cry"
 
     cryptol_load_file(cryname)
