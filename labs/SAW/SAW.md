@@ -1734,7 +1734,7 @@ class resolveAttack_Contract(Contract):
 
 Would this contract pass verification? Absolutely. Given that the `MAX_STAT` preconditions limits our input values, we would never see SAW's counterexample of an integer overflow/underflow from case 2.
 
-
+## Using Structs in Specifications
 
 # Using Gained Knowledge
 
@@ -1821,41 +1821,6 @@ corresponding _implementation_.
 See [SMT: Equality Logic With Uninterpreted Functions](https://www21.in.tum.de/teaching/sar/SS20/6.pdf), which describes
 how uninterpreted functions and constraints are applied to
 Satisfiability Modulo Theories.
-
-//add in use when function complicated
-//add uninterpreting may cause failure (logic needed sometimes). This can be avoided sometimes by making sure for every function you are uninterpreting you are also passing in a corresponding lemma
-
-
-# Advanced Topics and Exercises
-
-//Dj add stuff
-
-## Global Variables
-
-//DJ add stuff
-
-//maybe something with `extern`
-
-### Nested DEFINE Statements
-
-// SAWs limitations
-// Worse case: edit the source code
-
-## Aliasing
-
-// Talk about in general what aliasing is
-// DJ add stuff (specifically with aliases)
-// Talk about SAW limitations and lemmas
-
-### Wrapper Functions
-
-// Worse case scenario: editing the source code
-
-## Large Data
-
-// Dj add the stuff about inputting in a big array
-
-## Capstone
 
 # Solicitation
 
