@@ -11,6 +11,10 @@
 #define SCREEN_COLS 10
 #define SCREEN_TILES SCREEN_ROWS*SCREEN_COLS
 #define ASSET_TABLE_SIZE 16
+#define GAITS 2            // Possible gaits to animate: walk and run
+#define DIRECTIONS 4       // 2D game, 4 directions (up, down, left, right)
+#define ANIMATION_STEPS 3  // 3 frames per direction (stand, left leg forward, right leg forward)
+
 
 ///////////////////////////////////////
 // Globals
@@ -56,7 +60,7 @@ typedef struct {
 
 // Struct containing inventory information
 typedef struct {
-  //item_t* item;
+  //item_t* item;  // Assume this points to an item_t array of unknown length
   item_t item[5];
   uint32_t numItems;
 } inventory_t;
@@ -65,6 +69,13 @@ typedef struct {
 typedef struct {
   uint8_t tiles[SCREEN_TILES];  // Holds asset ID for each screen tile
 } screen_t;
+
+// Struct containing information on a character sprite
+typedef struct {
+  uint8_t frames[GAITS][DIRECTIONS][ANIMATION_STEPS];
+  uint32_t xPos;  // x position relative to the screen
+  uint32_t yPos;  // y position relative to the screen
+} sprite_t;
 
 
 ///////////////////////////////////////
@@ -76,6 +87,7 @@ uint32_t levelUp(uint32_t level);
 
 // Function(s) with basic struct initialization
 uint32_t initDefaultPlayer(player_t* player);
+uint32_t initDefaultSprite(sprite_t* sprite);
 
 // Function(s) with preconditions and postconditions that must
 // be considered in SAW contracts & unit test overrides

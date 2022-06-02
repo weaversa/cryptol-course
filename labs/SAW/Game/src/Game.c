@@ -42,6 +42,28 @@ uint32_t initDefaultPlayer(player_t* player)
 }
 
 
+uint32_t initDefaultSprite(sprite_t* sprite)
+{
+  // Initialize the sprite frames to the default asset
+  for (uint8_t i = 0; i < GAITS; i++)
+  {
+    for (uint8_t j = 0; j < DIRECTIONS; j++)
+    {
+      for (uint8_t k = 0; k < ANIMATION_STEPS; k++)
+      {
+        sprite->frames[i][j][k] = 0x00;
+      }
+    }
+  }
+
+  // Initialize sprite's default position
+  sprite->xPos = 1;
+  sprite->yPos = 2;
+
+  return SUCCESS;
+}
+
+
 ///////////////////////////////////////
 // Function(s) with preconditions and postconditions that must
 // be considered in SAW contracts & unit test overrides

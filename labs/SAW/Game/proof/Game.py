@@ -36,18 +36,20 @@ from saw_client.llvm_type   import *
 # Defines and Constants
 #######################################
 
-MAX_NAME_LENGTH = 12
-SUCCESS         = 170
-FAILURE         = 85
-MAX_STAT        = 100
-SCREEN_ROWS     = 15
-SCREEN_COLS     = 10
-SCREEN_TILES    = SCREEN_ROWS * SCREEN_COLS
-NEUTRAL         = 0
-DEFEAT_PLAYER   = 1
-DEFEAT_OPPONENT = 2
+MAX_NAME_LENGTH  = 12
+SUCCESS          = 170
+FAILURE          = 85
+MAX_STAT         = 100
+SCREEN_ROWS      = 15
+SCREEN_COLS      = 10
+SCREEN_TILES     = SCREEN_ROWS * SCREEN_COLS
+NEUTRAL          = 0
+DEFEAT_PLAYER    = 1
+DEFEAT_OPPONENT  = 2
 ASSET_TABLE_SIZE = 16
-
+GAITS            = 2
+DIRECTIONS       = 4
+ANIMATION_STEPS  = 3
 
 #######################################
 # SAW Helper Functions
@@ -131,6 +133,27 @@ class initDefaultPlayer_Contract(Contract):
     # self.points_to(player, cry_f("{{ name=(repeat 0x41 : [{MAX_NAME_LENGTH}][8]), level=1 : [32], hp=10 : [32], atk=5 : [32], def=4 : [32], spd=3 : [32] }}"))
 
     self.returns(cry_f("`({SUCCESS}) : [32]"))
+
+
+# initDefaultSprite Contract
+# uint32_t initDefaultSprite(sprite_t* sprite)
+class initDefaultSprite_Contract(Contract):
+  def specification (self):
+    # Declare variables
+    ty = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
+    frames = self.fresh_var(ty, "sprite.frames")
+    xPos = self.fresh_var(i32, "sprite.xPos")
+    yPos = self.fresh_var(i32, "sprite.yPos")
+    sprite_p = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(frames, xPos, yPos))
+
+    # Symbolically execute the function
+    self.execute_func(sprite_p)
+
+    # Assert postconditions
+    self.points_to(sprite_p, struct(cry_f("""(zero, 1 , 2)
+      : ([{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8], [32], [32])""")))                              
+                                           
+    self.returns_f("`({SUCCESS}) : [32]")
 
 
 # checkStats Contract
@@ -519,6 +542,7 @@ class GameTests(unittest.TestCase):
 
     # Override(s) associated with basic struct initialization
     initDefaultPlayer_result   = llvm_verify(module, 'initDefaultPlayer', initDefaultPlayer_Contract())
+    initDefaultSprite_result   = llvm_verify(module, 'initDefaultSprite', initDefaultSprite_Contract())
 
     # Overrides(s) associated with preconditions and postconditions that must
     # be considered in SAW contracts & unit test overrides
@@ -544,6 +568,7 @@ class GameTests(unittest.TestCase):
     # Assert the overrides are successful
     self.assertIs(levelUp_result.is_success(), True)
     self.assertIs(initDefaultPlayer_result.is_success(), True)
+    self.assertIs(initDefaultSprite_result.is_success(), True)
     self.assertIs(checkStats_pass_result.is_success(), True)
     self.assertIs(checkStats_fail_result.is_success(), True)
     self.assertIs(resolveAttack_case1_result.is_success(), True)
