@@ -333,7 +333,7 @@ or else the python script won't do anything!
 
 We can now run the proof script.
 
-```
+```sh
 $ cd labs/SAW/proof
 $ python3 rotl.py
 [03:08:29.986] Verifying rotl ...
@@ -826,8 +826,8 @@ What do you think will happen if we run this code?
   <summary>Click here to find out!</summary>
   Running the code, SAW verifies the first two contracts
   
-  ```
-  $ python3 addRow.py
+  ```sh
+  $ clang ../src/addRow.c -o ../src/addRow.bc -c -emit-llvm && python3 addRow.py
   [15:40:51.330] Verifying addRow5Mutate ...
   [15:40:51.330] Simulating addRow5Mutate ...
   [15:40:51.335] Checking proof obligations addRow5Mutate ...
@@ -916,7 +916,7 @@ What do you think will happen if we run this code?
 
 And now SAW happily verifies the third contract!
   
-  ```
+  ```sh
   $ python3 addRow.py
   ✅  Verified: lemma_addRow5Mutate_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:64)
   ✅  Verified: lemma_addRow5NewVar_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:67)
@@ -1018,8 +1018,8 @@ if __name__ == "__main__":
   
   It turns out the contract above will fail!
   
-  ```
-  $ python3 null.py
+  ```sh
+  $ clang ../src/null.c -o ../src/null.bc -c -emit-llvm && python3 null.py
   [17:21:44.701] Verifying isNull ...
   [17:21:44.701] Simulating isNull ...
   [17:21:44.703] Checking proof obligations isNull ...
@@ -1040,7 +1040,7 @@ if __name__ == "__main__":
   
   However, if **every** setting is a counterexample, then this is telling us the pointer must have been the null pointer! An initialized symbolic pointer that hasn't been assigned a symbolic variable to point to is **NOT** equivalent to a null pointer in SAW. We can use `null()` in situations where we want a null pointer. For example, if we change the contract above to 
   
-  ```
+  ```python
   class FContract(Contract):
     def specification(self):
         self.execute_func(null())
@@ -1050,7 +1050,7 @@ if __name__ == "__main__":
   
   then SAW is a happy.
   
-  ```
+  ```sh
   $ python3 null.py
   [17:33:50.802] Verifying isNull ...
   [17:33:50.802] Simulating isNull ...
@@ -1157,9 +1157,11 @@ Here, we assert that the `name` field of the player pointer points to a value sp
 
 If we didn't have the debug symbols in the bitcode, SAW would throw us an error like so:
 
-```
-clang -c -emit-llvm -o artifacts/Game.bc src/Game.c
-python3 proof/Game.py
+```sh
+$ cd labs/SAW/Game
+$ mkdir artifacts
+$ clang -c -emit-llvm -o artifacts/Game.bc src/Game.c
+$ python3 proof/Game.py
 ⚠️  Failed to verify: lemma_initDefaultPlayer_Contract (defined at proof/Game.py:513):
 error: Unable to resolve struct field name: '"name"'
 Could not resolve setup value debug information into a struct type.
@@ -1362,9 +1364,9 @@ if __name__ == "__main__":
 
 Excellent, now for the moment of truth!
 
-```
-clang -c -g -emit-llvm -o artifacts/Game.bc src/Game.c
-python3 proof/Game.py
+```sh
+$ clang -c -emit-llvm -o artifacts/Game.bc src/Game.c
+$ python3 proof/Game.py
 [01:59:53.576] Verifying resolveAttack ...
 [01:59:53.577] Simulating resolveAttack ...
 [01:59:53.580] Checking proof obligations resolveAttack ...
@@ -1477,9 +1479,9 @@ Fine, let's toss out our fancy math skills and write our contact's precondition 
       self.precondition_f("{target}.2 <= ({atk} - {target}.4)")
 ```
 
-```
-clang -c -g -emit-llvm -o artifacts/Game.bc src/Game.c
-python3 proof/Game.py
+```sh
+$ clang -c -emit-llvm -o artifacts/Game.bc src/Game.c
+$ python3 proof/Game.py
 [02:34:39.387] Verifying resolveAttack ...
 [02:34:39.388] Simulating resolveAttack ...
 [02:34:39.391] Checking proof obligations resolveAttack ...
@@ -1569,9 +1571,9 @@ This means our precondition for case 2 is lacking something. Let's adjust it in 
       self.precondition_f("{target}.2 <= ({atk} - {target}.4)")
 ```
 
-```
-clang -c -g -emit-llvm -o artifacts/Game.bc src/Game.c
-python3 proof/Game.py
+```sh
+$ clang -c -emit-llvm -o artifacts/Game.bc src/Game.c
+$ python3 proof/Game.py
 [02:55:30.437] Verifying resolveAttack ...
 [02:55:30.437] Simulating resolveAttack ...
 [02:55:30.440] Checking proof obligations resolveAttack ...
