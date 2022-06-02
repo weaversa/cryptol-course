@@ -1334,8 +1334,7 @@ class initDefaultSprite_Contract(Contract):
 
     # Assert postconditions
     self.points_to(sprite_p, struct( character_p,
-                                     cry_f("""zero 
-                                       : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8]"""),
+                                     cry_f("zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8]"),
                                      cry_f("1 : [32]"),
                                      cry_f("2 : [32]") ))
                                            
@@ -1353,7 +1352,7 @@ Like `array`, the `struct` keyword declares a symbolic struct given a variable f
 ```python
 sprite_p = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(tempCharacter_p, frames, xPos, yPos))
 ```
-since we don't use `sprite` later in the code. If we wanted, we could assert other preconditions on `tempCharacter_p`, `frames`, `xPos`, and `yPos` using `precondition_f`. We don't in this example, but it's still a feature to consider!
+since we don't use `sprite` later in the code. If we wanted, we could assert other preconditions on `tempCharacter_p`, `frames`, `xPos`, and `yPos``. We don't in this example, but it's still a feature to consider!
 
 In the postcondition, we assert `sprite_p` points to some concrete structure. The benefit of using explicit structs is that it allows us to represent pointer fields that may be present in a struct.
 
