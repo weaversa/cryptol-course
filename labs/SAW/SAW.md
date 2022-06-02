@@ -1124,8 +1124,6 @@ where `SUCCESS` and `MAX_NAME_LENGTH` are C constants
 #define FAILURE 85
 ```
 
-## Struct Initialization and Explicit Structs
-
 The following constract will verify our initialization:
 
 ```python
@@ -1209,9 +1207,9 @@ Alternatively, we could use post conditions
 above with postcoditions
 ```
 
-## Structs in Cryptol
+### Explicit Structs
 
-We can also explicitly define a structure in SAW. Let's consider another struct:
+We can also explicitly define a struct in SAW. Let's consider another struct:
 
 ```c
 #define GAITS 2
@@ -1283,6 +1281,8 @@ class initDefaultSprite_Contract(Contract):
 Notice that for explicit structs, we declare variables that represent the types for each struct field. We then connect them to our allocated `sprite_t` pointer, `sprite_p`, using `points_to = struct(...)`. This input to `alloc` asserts the precondition that `sprite_p` points to these SAW-defined variables. If we wanted to, we could then assert other preconditions on `frames`, `xPos`, and `yPos` using `precondition_f` if desired. We don't do so in this example contract, but it's still a feature to consider!
 
 Also notice how we assert the `points_to` postcondition for `sprite_p`. We use `struct` again, but this time to assert that `sprite_p` points to a Cryptol-defined tuple. Relating this back to our `initDefaultPlayer_Contract` example, we can see that this one assertion simplifies our postcondition compared to checking each field at a time. As a side note, we use 3 double quotes (""") for our `cry_f` call. This technique is handy when we want to separate our expected Cryptol-defined behaviors over multiple lines so to improve code readability. Python considers the 3 double quotes as a multiline string. While multiline strings may be used as block comments in Python, it is perfect for us to use here given that `cry_f ` accepts an input string.
+
+### Structs in Cryptol
 
 //Cryptol interprets structs as tuples
 //But what if a struct has a pointer as a field...?
