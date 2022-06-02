@@ -42,8 +42,11 @@ uint32_t initDefaultPlayer(player_t* player)
 }
 
 
-uint32_t initDefaultSprite(sprite_t* sprite)
+uint32_t initDefaultSprite(character_t* character, sprite_t* sprite)
 {
+  // Initialize the character to the passed pointer
+  sprite->character = character;
+
   // Initialize the sprite frames to the default asset
   for (uint8_t i = 0; i < GAITS; i++)
   {

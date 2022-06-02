@@ -72,6 +72,7 @@ typedef struct {
 
 // Struct containing information on a character sprite
 typedef struct {
+  character_t* character;
   uint8_t frames[GAITS][DIRECTIONS][ANIMATION_STEPS];
   uint32_t xPos;  // x position relative to the screen
   uint32_t yPos;  // y position relative to the screen
@@ -87,7 +88,7 @@ uint32_t levelUp(uint32_t level);
 
 // Function(s) with basic struct initialization
 uint32_t initDefaultPlayer(player_t* player);
-uint32_t initDefaultSprite(sprite_t* sprite);
+uint32_t initDefaultSprite(character_t* character, sprite_t* sprite);
 
 // Function(s) with preconditions and postconditions that must
 // be considered in SAW contracts & unit test overrides

@@ -121,23 +121,22 @@ class initDefaultPlayer_Contract(Contract):
 class initDefaultSprite_Contract(Contract):
   def specification (self):
     # Declare variables
+    character_p = self.alloc(alias_ty("struct.character_t"))
+    tempCharacter_p = self.alloc(alias_ty("struct.character_t"))
     ty = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
     frames = self.fresh_var(ty, "sprite.frames")
     xPos = self.fresh_var(i32, "sprite.xPos")
     yPos = self.fresh_var(i32, "sprite.yPos")
-    sprite_p = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(frames, xPos, yPos))
+    sprite_p = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(tempCharacter_p, frames, xPos, yPos))
 
     # Symbolically execute the function
-    self.execute_func(sprite_p)
+    self.execute_func(character_p, sprite_p)
 
     # Assert postconditions
-    self.points_to(sprite_p, struct(cry_f("""(zero, 1, 2)
-      : ([{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8], [32], [32])""")))                              
-    # Pop Quiz: Why does this assertion fail?
-    # self.points_to(sprite_p, struct(cry_f("""
-    #   {{ frames = zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8],
-    #      xPos = 1 : [32],
-    #      yPos = 2 : [32]}}""")))                              
+    self.points_to(sprite_p, struct( character_p,
+                                     cry_f("zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8]"),
+                                     cry_f("1 : [32]"),
+                                     cry_f("2 : [32]") ))
                                            
     self.returns_f("`({SUCCESS}) : [32]")
 
