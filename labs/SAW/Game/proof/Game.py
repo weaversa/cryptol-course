@@ -78,21 +78,6 @@ class levelUp_Contract(Contract):
     self.returns_f("levelUp {level}")
 
 
-# getDefaultLevel Contract
-# uint32_t getDefaultLevel()
-class getDefaultLevel_Contract(Contract):
-  def specification (self):
-    # Initialize the defaultLevel global variable
-    defaultLevel_init = global_initializer("defaultLevel")
-    self.points_to(global_var("defaultLevel"), defaultLevel_init)
-
-    # Symbolically execute the function
-    self.execute_func()
-
-    # Assert the function's return behavior
-    self.returns(defaultLevel_init)
-
-
 # initDefaultPlayer Contract
 # uint32_t initDefaultPlayer(player_t* player)
 class initDefaultPlayer_Contract(Contract):
@@ -245,75 +230,119 @@ class resolveAttack_Contract(Contract):
     self.returns(void)
 
 
-# resetInventoryItems Contract
-# void resetInventoryItems(inventory_t* inventory)
-class resetInventoryItems_Contract(Contract):
-  def __init__(self, numItems : int):
+# selfDamage Contract
+# uint32_t selfDamage(player_t* player)
+class selfDamage_Contract(Contract):
+  def __init__(self, case : int):
     super().__init__()
-    self.numItems = numItems
-    # Note: The inventory_t struct defines its item field as a item_t pointer.
-    #       Instead of declaring a fixed array size, the pointer enables for a
-    #       variable size depending on the memory allocation configured by its
-    #       caller.
-    #       While this is valid C syntax, SAW and Cryptol require the known
-    #       size ahead of time. Here, our contract takes the numItems parameter
-    #       to declare a fixed array size.
+    self.case = case
+    # There are 3 possible cases for resolveAttack
+    #   Case 1: Attack mitigated
+    #   Case 2: Immediate KO
+    #   Case 3: Regular attack
+    # Each case results in a different function behavior for calculating the
+    # player's remaining HP. While we could make 3 separate contracts to handle
+    # all of the possible cases, we can pass a parameter to the contract, which
+    # identifies what preconditions and postconditions to set.
 
   def specification (self):
     # Declare variables
-    # Note: The setup here does not use item_p for the proof. However, item_p
-    #       is included to show errors that can be encountered with the
-    #       inventory_t struct.
-    (item, item_p) = ptr_to_fresh(self, array_ty(self.numItems, alias_ty("struct.item_t")), name="item")
-    inventory_p = self.alloc(alias_ty("struct.inventory_t"), points_to = struct(item, cry_f("{self.numItems} : [32]")))
-    """
-    If inventory_t is defined as:
-      typedef struct {
-        item_t* item;
-        uint32_t numItems;
-      } inventory_t;
+    (player, player_p) = ptr_to_fresh(self, alias_ty("struct.character_t"), name="player")
 
-    Attempt 1:
-    ==========
-    Passing item as so:
-      inventory_p = self.alloc(alias_ty("struct.inventory_t"), points_to = struct(item, cry_f("{self.numItems} : [32]")))
+    # Assert the precondition that the player's HP is positive
+    # Why? Game logic assumes you can't damage yourself if you're already KO'd!
+    self.precondition_f("{player}.2 > 0")
 
-    yields the following error:
-      ⚠️  Failed to verify: lemma_resetInventoryItems_Contract (defined at proof/Game.py:190):
-      error: types not memory-compatible:
-      { %struct.item_t*, i32 }
-      { [5 x { i32, i32 }], i32 }
+    # Assert the precondition that character stats are below the max stat cap
+    # Pop Quiz: Explain why the proof fails when the following preconditions
+    #           are commented out.
+    self.precondition_f("{player}.2   <= `{MAX_STAT}")
+    self.precondition_f("{player}.3   <= `{MAX_STAT}")
+    self.precondition_f("{player}.4   <= `{MAX_STAT}")
+    self.precondition_f("{player}.5   <= `{MAX_STAT}")
 
-
-              stdout:
-
-    Attempt 2:
-    ==========
-    Passing item_p as so:
-      inventory_p = self.alloc(alias_ty("struct.inventory_t"), points_to = struct(item_p, cry_f("{self.numItems} : [32]")))
-  
-    yields the following error:
-      ⚠️  Failed to verify: lemma_resetInventoryItems_Contract (defined at proof/Game.py:190):
-      error: typeOfSetupValue: llvm_elem requires pointer to struct or array, found %struct.item_t**
-              stdout:
-
-    Considering both of these verification setup attempts, we can see that
-    defining inventory_t with an item_t pointer is tough for SAW to setup and.
-    prove. Consequently, it is better to use fixed array lengths for structs!
-    """
+    # Determine the preconditions based on the case parameter
+    if (self.case == 1):
+      # player->def >= player->atk
+      self.precondition_f("{player}.4 >= {player}.3")
+    elif (self.case == 2):
+      # player->hp <= (player->atk - player->def)
+      self.precondition_f("({player}.2 + {player}.4) <= {player}.3")
+    else:
+      # Assume any other case follows the formal attack calculation
+      self.precondition_f("{player}.4 < {player}.3")
+      self.precondition_f("({player}.2 + {player}.4) > {player}.3")
 
     # Symbolically execute the function
-    self.execute_func(inventory_p)
+    self.execute_func(player_p, player_p)
 
-    # Assert the postconditions
-    for i in range(self.numItems):
-      self.points_to(inventory_p['item'][i][1], cry_f("0 : [32]"))
+    # Assert the postcondition
+    if (self.case == 1):
+      self.points_to(player_p['hp'], cry_f("{player}.2 : [32]"))
       # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
-      # self.points_to(inventory_p[0][i][1], cry_f("0 : [32]"))
-      # Note: Even though debug symbols is enabled, SAW cannot resolve the
-      #       "quantity" field, which is why we still use a 1 above.
+      # self.points_to(player_p[2], cry_f("{player}.2 : [32]"))
+      self.returns(cry_f("`({NEUTRAL}) : [32]"))
+    elif (self.case == 2):
+      self.points_to(player_p['hp'], cry_f("0 : [32]"))
+      # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
+      # self.points_to(player_p[2], cry_f("0 : [32]"))
+      self.returns(cry_f("`({DEFEAT_PLAYER}) : [32]"))
+    else:
+      self.points_to(player_p['hp'], cry_f("resolveAttack ({player}.2) ({player}.4) {player}.3"))
+      # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
+      # self.points_to(player_p[2], cry_f("resolveAttack ({player}.2) ({player}.4) {player}.3"))
+      self.returns(cry_f("`({NEUTRAL}) : [32]"))
 
+
+# quickBattle Contract
+# void quickBattle(player_t* player, character_t* opponent)
+class quickBattle_Contract(Contract):
+  def specification (self):
+    # Declare variables
+    (player, player_p)     = ptr_to_fresh(self, alias_ty("struct.character_t"), name="player")
+    (opponent, opponent_p) = ptr_to_fresh(self, alias_ty("struct.character_t"), name="opponent")
+    # Pop Quiz: Why does allocating the pointers in the following way yield an
+    #           error?
+    #player = self.alloc(alias_ty("struct.character_t"))
+    #opponent = self.alloc(alias_ty("struct.character_t"))
+
+    # Assert the precondition that both HPs are greater than 0
+    # Why? Game logic assumes you can't attack if you're already KO'd!
+    self.precondition_f("{player}.2   > 0")
+    self.precondition_f("{opponent}.2 > 0")
+
+    # Assert the precondition that character stats are below the max stat cap
+    # Pop Quiz: Explain why the proof fails when the following preconditions
+    #           are commented out.
+    self.precondition_f("{player}.2   <= `{MAX_STAT}")
+    self.precondition_f("{player}.3   <= `{MAX_STAT}")
+    self.precondition_f("{player}.4   <= `{MAX_STAT}")
+    self.precondition_f("{player}.5   <= `{MAX_STAT}")
+    self.precondition_f("{opponent}.2 <= `{MAX_STAT}")
+    self.precondition_f("{opponent}.3 <= `{MAX_STAT}")
+    self.precondition_f("{opponent}.4 <= `{MAX_STAT}")
+    self.precondition_f("{opponent}.5 <= `{MAX_STAT}")
+
+    # Symbolically execute the function
+    self.execute_func(player_p, opponent_p)
+
+    # Assert the postcondition
     self.returns(void)
+
+
+# getDefaultLevel Contract
+# uint32_t getDefaultLevel()
+class getDefaultLevel_Contract(Contract):
+  def specification (self):
+    # Initialize the defaultLevel global variable
+    defaultLevel_init = global_initializer("defaultLevel")
+    self.points_to(global_var("defaultLevel"), defaultLevel_init)
+
+    # Symbolically execute the function
+    self.execute_func()
+
+    # Assert the function's return behavior
+    self.returns(defaultLevel_init)
 
 
 # initScreen Contract
@@ -392,104 +421,76 @@ class setScreenTile_Contract(Contract):
       self.returns_f("`({FAILURE}) : [32]")
 
 
-# quickBattle Contract
-# void quickBattle(player_t* player, character_t* opponent)
-class quickBattle_Contract(Contract):
+# resetInventoryItems Contract
+# void resetInventoryItems(inventory_t* inventory)
+class resetInventoryItems_Contract(Contract):
+  def __init__(self, numItems : int):
+    super().__init__()
+    self.numItems = numItems
+    # Note: The inventory_t struct defines its item field as a item_t pointer.
+    #       Instead of declaring a fixed array size, the pointer enables for a
+    #       variable size depending on the memory allocation configured by its
+    #       caller.
+    #       While this is valid C syntax, SAW and Cryptol require the known
+    #       size ahead of time. Here, our contract takes the numItems parameter
+    #       to declare a fixed array size.
+
   def specification (self):
     # Declare variables
-    (player, player_p)     = ptr_to_fresh(self, alias_ty("struct.character_t"), name="player")
-    (opponent, opponent_p) = ptr_to_fresh(self, alias_ty("struct.character_t"), name="opponent")
-    # Pop Quiz: Why does allocating the pointers in the following way yield an
-    #           error?
-    #player = self.alloc(alias_ty("struct.character_t"))
-    #opponent = self.alloc(alias_ty("struct.character_t"))
+    # Note: The setup here does not use item_p for the proof. However, item_p
+    #       is included to show errors that can be encountered with the
+    #       inventory_t struct.
+    (item, item_p) = ptr_to_fresh(self, array_ty(self.numItems, alias_ty("struct.item_t")), name="item")
+    inventory_p = self.alloc(alias_ty("struct.inventory_t"), points_to = struct(item, cry_f("{self.numItems} : [32]")))
+    """
+    If inventory_t is defined as:
+      typedef struct {
+        item_t* item;
+        uint32_t numItems;
+      } inventory_t;
 
-    # Assert the precondition that both HPs are greater than 0
-    self.precondition_f("{player}.2   > 0")
-    self.precondition_f("{opponent}.2 > 0")
+    Attempt 1:
+    ==========
+    Passing item as so:
+      inventory_p = self.alloc(alias_ty("struct.inventory_t"), points_to = struct(item, cry_f("{self.numItems} : [32]")))
 
-    # Assert the precondition that character stats are below the max stat cap
-    # Pop Quiz: Explain why the proof fails when the following preconditions
-    #           are commented out.
-    self.precondition_f("{player}.2   <= `{MAX_STAT}")
-    self.precondition_f("{player}.3   <= `{MAX_STAT}")
-    self.precondition_f("{player}.4   <= `{MAX_STAT}")
-    self.precondition_f("{player}.5   <= `{MAX_STAT}")
-    self.precondition_f("{opponent}.2 <= `{MAX_STAT}")
-    self.precondition_f("{opponent}.3 <= `{MAX_STAT}")
-    self.precondition_f("{opponent}.4 <= `{MAX_STAT}")
-    self.precondition_f("{opponent}.5 <= `{MAX_STAT}")
+    yields the following error:
+      ⚠️  Failed to verify: lemma_resetInventoryItems_Contract (defined at proof/Game.py:190):
+      error: types not memory-compatible:
+      { %struct.item_t*, i32 }
+      { [5 x { i32, i32 }], i32 }
+
+
+              stdout:
+
+    Attempt 2:
+    ==========
+    Passing item_p as so:
+      inventory_p = self.alloc(alias_ty("struct.inventory_t"), points_to = struct(item_p, cry_f("{self.numItems} : [32]")))
+  
+    yields the following error:
+      ⚠️  Failed to verify: lemma_resetInventoryItems_Contract (defined at proof/Game.py:190):
+      error: typeOfSetupValue: llvm_elem requires pointer to struct or array, found %struct.item_t**
+              stdout:
+
+    Considering both of these verification setup attempts, we can see that
+    defining inventory_t with an item_t pointer is tough for SAW to setup and.
+    prove. Consequently, it is better to use fixed array lengths for structs!
+    """
 
     # Symbolically execute the function
-    self.execute_func(player_p, opponent_p)
+    self.execute_func(inventory_p)
 
-    # Assert the postcondition
+    # Assert the postconditions
+    for i in range(self.numItems):
+      self.points_to(inventory_p['item'][i][1], cry_f("0 : [32]"))
+      # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
+      # self.points_to(inventory_p[0][i][1], cry_f("0 : [32]"))
+      # Note: Even though debug symbols is enabled, SAW cannot resolve the
+      #       "quantity" field, which is why we still use a 1 above.
+
     self.returns(void)
 
-
-# selfDamage Contract
-# uint32_t selfDamage(player_t* player)
-class selfDamage_Contract(Contract):
-  def __init__(self, case : int):
-    super().__init__()
-    self.case = case
-    # There are 3 possible cases for resolveAttack
-    #   Case 1: Attack mitigated
-    #   Case 2: Immediate KO
-    #   Case 3: Regular attack
-    # Each case results in a different function behavior for calculating the
-    # player's remaining HP. While we could make 3 separate contracts to handle
-    # all of the possible cases, we can pass a parameter to the contract, which
-    # identifies what preconditions and postconditions to set.
-
-  def specification (self):
-    # Declare variables
-    (player, player_p) = ptr_to_fresh(self, alias_ty("struct.character_t"), name="player")
-
-    # Assert the preconditions
-    self.precondition_f("{player}.2 > 5")
-    self.precondition_f("{player}.3 == 5")
-    self.precondition_f("{player}.4 == 0")
-
-    # Assert the precondition that character stats are below the max stat cap
-    # Pop Quiz: Explain why the proof fails when the following preconditions
-    #           are commented out.
-    self.precondition_f("{player}.2   <= `{MAX_STAT}")
-    self.precondition_f("{player}.3   <= `{MAX_STAT}")
-    self.precondition_f("{player}.4   <= `{MAX_STAT}")
-    self.precondition_f("{player}.5   <= `{MAX_STAT}")
-
-    # Determine the preconditions based on the case parameter
-    if (self.case == 1):
-      # player->def >= player->atk
-      self.precondition_f("{player}.4 >= {player}.3")
-    elif (self.case == 2):
-      # player->hp <= (player->atk - player->def)
-      self.precondition_f("({player}.2 + {player}.4) <= {player}.3")
-    else:
-      # Assume any other case follows the formal attack calculation
-      self.precondition_f("{player}.4 < {player}.3")
-      self.precondition_f("({player}.2 + {player}.4) > {player}.3")
-
-    # Symbolically execute the function
-    self.execute_func(player_p, player_p)
-
-    # Assert the postcondition
-    if (self.case == 1):
-      self.points_to(player_p['hp'], cry_f("{player}.2 : [32]"))
-      # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
-      # self.points_to(player_p[2], cry_f("{player}.2 : [32]"))
-      self.returns(cry_f("`({NEUTRAL}) : [32]"))
-    elif (self.case == 2):
-      self.points_to(player_p['hp'], cry_f("0 : [32]"))
-      # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
-      # self.points_to(player_p[2], cry_f("0 : [32]"))
-      self.returns(cry_f("`({DEFEAT_PLAYER}) : [32]"))
-    else:
-      self.points_to(player_p['hp'], cry_f("resolveAttack ({player}.2) ({player}.4) {player}.3"))
-      # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
-      # self.points_to(player_p[2], cry_f("resolveAttack ({player}.2) ({player}.4) {player}.3"))
-      self.returns(cry_f("`({NEUTRAL}) : [32]"))
 
 #######################################
 
@@ -510,39 +511,51 @@ class GameTests(unittest.TestCase):
     cryptol_load_file(cryptol_name)
     module = llvm_load_module(bitcode_name)
 
+    # Override(s) associated with basic SAW setup
     levelUp_result             = llvm_verify(module, 'levelUp', levelUp_Contract())
-    getDefaultLevel_result     = llvm_verify(module, 'getDefaultLevel', getDefaultLevel_Contract())
+
+    # Override(s) associated with basic struct initialization
     initDefaultPlayer_result   = llvm_verify(module, 'initDefaultPlayer', initDefaultPlayer_Contract())
+
+    # Overrides(s) associated with preconditions and postconditions that must
+    # be considered in SAW contracts & unit test overrides
     checkStats_pass_result     = llvm_verify(module, 'checkStats', checkStats_Contract(True))
     checkStats_fail_result     = llvm_verify(module, 'checkStats', checkStats_Contract(False))
     resolveAttack_case1_result = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(1))
     resolveAttack_case2_result = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(2))
     resolveAttack_case3_result = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(3))
-    resetInventoryItems_result = llvm_verify(module, 'resetInventoryItems', resetInventoryItems_Contract(5))
-    initScreen_result          = llvm_verify(module, 'initScreen', initScreen_Contract())
-    setScreenTile_pass_result  = llvm_verify(module, 'setScreenTile', setScreenTile_Contract(True))
-    setScreenTile_fail_result  = llvm_verify(module, 'setScreenTile', setScreenTile_Contract(False))
-    quickBattle_result         = llvm_verify(module, 'quickBattle', quickBattle_Contract(), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
     selfDamage_case1_result    = llvm_verify(module, 'selfDamage', selfDamage_Contract(1), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
     selfDamage_case2_result    = llvm_verify(module, 'selfDamage', selfDamage_Contract(2), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
     selfDamage_case3_result    = llvm_verify(module, 'selfDamage', selfDamage_Contract(3), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
+    quickBattle_result         = llvm_verify(module, 'quickBattle', quickBattle_Contract(), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
 
+    # Override(s) associated with global variable handling
+    getDefaultLevel_result     = llvm_verify(module, 'getDefaultLevel', getDefaultLevel_Contract())
+    initScreen_result          = llvm_verify(module, 'initScreen', initScreen_Contract())
+    setScreenTile_pass_result  = llvm_verify(module, 'setScreenTile', setScreenTile_Contract(True))
+    setScreenTile_fail_result  = llvm_verify(module, 'setScreenTile', setScreenTile_Contract(False))
+
+    # Override(s) showing limitations with struct pointer fields
+    resetInventoryItems_result = llvm_verify(module, 'resetInventoryItems', resetInventoryItems_Contract(5))
+
+    # Assert the overrides are successful
     self.assertIs(levelUp_result.is_success(), True)
-    self.assertIs(getDefaultLevel_result.is_success(), True)
     self.assertIs(initDefaultPlayer_result.is_success(), True)
     self.assertIs(checkStats_pass_result.is_success(), True)
     self.assertIs(checkStats_fail_result.is_success(), True)
     self.assertIs(resolveAttack_case1_result.is_success(), True)
     self.assertIs(resolveAttack_case2_result.is_success(), True)
     self.assertIs(resolveAttack_case3_result.is_success(), True)
-    self.assertIs(resetInventoryItems_result.is_success(), True)
-    self.assertIs(initScreen_result.is_success(), True)
-    self.assertIs(setScreenTile_pass_result.is_success(), True)
-    self.assertIs(setScreenTile_fail_result.is_success(), True)
-    self.assertIs(quickBattle_result.is_success(), True)
     self.assertIs(selfDamage_case1_result.is_success(), True)
     self.assertIs(selfDamage_case2_result.is_success(), True)
     self.assertIs(selfDamage_case3_result.is_success(), True)
+    self.assertIs(quickBattle_result.is_success(), True)
+    self.assertIs(getDefaultLevel_result.is_success(), True)
+    self.assertIs(initScreen_result.is_success(), True)
+    self.assertIs(setScreenTile_pass_result.is_success(), True)
+    self.assertIs(setScreenTile_fail_result.is_success(), True)    
+    self.assertIs(resetInventoryItems_result.is_success(), True)
+
 
 if __name__ == "__main__":
   unittest.main()

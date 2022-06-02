@@ -1,17 +1,19 @@
 #include "Game.h"
 
 
+///////////////////////////////////////
+// Function(s) with basic SAW setup
+///////////////////////////////////////
+
 uint32_t levelUp(uint32_t level)
 {
   return (level + 1);
 }
 
 
-uint32_t getDefaultLevel()
-{
-  return defaultLevel;
-}
-
+///////////////////////////////////////
+// Function(s) with basic struct initialization
+///////////////////////////////////////
 
 uint32_t initDefaultPlayer(player_t* player)
 {
@@ -39,6 +41,11 @@ uint32_t initDefaultPlayer(player_t* player)
   return SUCCESS;
 }
 
+
+///////////////////////////////////////
+// Function(s) with preconditions and postconditions that must
+// be considered in SAW contracts & unit test overrides
+///////////////////////////////////////
 
 // Checks that the character stats are below MAX_STAT
 // Note: MUST be called before running any function that uses character stats!
@@ -79,6 +86,7 @@ void resolveAttack(character_t* target, uint32_t atk)
   }
 }
 
+
 uint32_t selfDamage(player_t* player)
 {
   enum battleResult result = NEUTRAL;
@@ -106,13 +114,27 @@ uint32_t selfDamage(player_t* player)
 }
 
 
-void resetInventoryItems(inventory_t* inventory)
+// Simulates a simple battle where only the faster character attacks.
+void quickBattle(player_t* player, character_t* opponent)
 {
-  // Iterate through the inventory and set the quantity field to 0
-  for (int i = 0; i < inventory->numItems; i++)
+  if (player->spd >= opponent->spd)
   {
-    inventory->item[i].quantity = 0;
+    resolveAttack(opponent, player->atk);
   }
+  else
+  {
+    resolveAttack(player, opponent->atk);
+  }
+}
+
+
+///////////////////////////////////////
+// Function(s) with global variable handling
+///////////////////////////////////////
+
+uint32_t getDefaultLevel()
+{
+  return defaultLevel;
 }
 
 
@@ -146,73 +168,16 @@ uint32_t setScreenTile(screen_t* screen, uint32_t screenIdx, uint32_t tableIdx)
 }
 
 
-// Simulates a simple battle where only the faster character attacks.
-void quickBattle(player_t* player, character_t* opponent)
+
+///////////////////////////////////////
+// Function(s) showing limitations with struct pointer fields
+///////////////////////////////////////
+
+void resetInventoryItems(inventory_t* inventory)
 {
-  if (player->spd >= opponent->spd)
+  // Iterate through the inventory and set the quantity field to 0
+  for (int i = 0; i < inventory->numItems; i++)
   {
-    resolveAttack(opponent, player->atk);
+    inventory->item[i].quantity = 0;
   }
-  else
-  {
-    resolveAttack(player, opponent->atk);
-  }
-}
-
-
-// Simulates a complex battle where characters can counterattack as long as
-// they survive to do so.
-uint32_t counterBattle(player_t* player, character_t* opponent)
-{
-  enum battleResult result = NEUTRAL;
-
-  // Check spd to determine who goes first
-  if (player->spd >= opponent->spd)
-  {
-    // Player attacks first
-    resolveAttack(opponent, player->atk);
-
-    // Check if there is a counterattack
-    if (opponent->hp > 0)
-    {
-      // Opponent counterattacks
-      resolveAttack(player, opponent->atk);
-
-      if (player->hp == 0)
-      {
-        result = DEFEAT_PLAYER;
-      }
-    }
-    else
-    {
-      // Opponent defeated
-      player->level = player->level + 1;
-      result = DEFEAT_OPPONENT;
-    }
-  }
-  else
-  {
-    // Opponent attacks first
-    resolveAttack(player, opponent->atk);
-
-    // Check if there is a counterattack
-    if (player->hp > 0)
-    {
-      // Player counterattacks
-      resolveAttack(opponent, player->atk);
-
-      if (opponent->hp == 0)
-      {
-        result = DEFEAT_OPPONENT;
-        player->level = player->level + 1;
-      }
-    }
-    else
-    {
-      // Player defeated
-      result = DEFEAT_PLAYER;
-    }
-  }
-
-  return result;
 }

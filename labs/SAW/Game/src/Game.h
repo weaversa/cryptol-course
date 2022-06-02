@@ -12,10 +12,29 @@
 #define SCREEN_TILES SCREEN_ROWS*SCREEN_COLS
 #define ASSET_TABLE_SIZE 16
 
+///////////////////////////////////////
+// Globals
+///////////////////////////////////////
 
 const uint32_t defaultLevel = 1;
-
 extern const uint8_t assetTable[ASSET_TABLE_SIZE];
+
+
+///////////////////////////////////////
+// Enums
+///////////////////////////////////////
+
+// Enum containing possible battle outcomes
+enum battleResult{
+  NEUTRAL         = 0,
+  DEFEAT_PLAYER   = 1,
+  DEFEAT_OPPONENT = 2
+};
+
+
+///////////////////////////////////////
+// Structs
+///////////////////////////////////////
 
 // Struct containing character information
 typedef struct {
@@ -28,13 +47,6 @@ typedef struct {
 } character_t;
 
 typedef character_t player_t;
-
-// Enum containing possible battle outcomes
-enum battleResult{
-  NEUTRAL         = 0,
-  DEFEAT_PLAYER   = 1,
-  DEFEAT_OPPONENT = 2
-};
 
 // Struct containing item information
 typedef struct {
@@ -54,17 +66,31 @@ typedef struct {
   uint8_t tiles[SCREEN_TILES];  // Holds asset ID for each screen tile
 } screen_t;
 
+
+///////////////////////////////////////
 // Function prototypes
+///////////////////////////////////////
+
+// Function(s) with basic SAW setup
 uint32_t levelUp(uint32_t level);
-uint32_t getDefaultLevel();
+
+// Function(s) with basic struct initialization
 uint32_t initDefaultPlayer(player_t* player);
+
+// Function(s) with preconditions and postconditions that must
+// be considered in SAW contracts & unit test overrides
 uint32_t checkStats(character_t* character);
 void resolveAttack(character_t* target, uint32_t atk);
-void resetInventoryItems(inventory_t* inventory);
+uint32_t selfDamage(player_t* player);
+void quickBattle(player_t* player, character_t* opponent);
+
+// Function(s) with global variable handling
+uint32_t getDefaultLevel();
 uint32_t initScreen(screen_t* screen, uint8_t assetID);
 uint32_t setScreenTile(screen_t* screen, uint32_t screenIdx, uint32_t tableIdx);
-void quickBattle(player_t* player, character_t* opponent);
-uint32_t counterBattle(player_t* player, character_t* opponent);
+
+// Function(s) showing limitations with struct pointer fields
+void resetInventoryItems(inventory_t* inventory);
 
 
 #endif
