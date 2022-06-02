@@ -320,7 +320,9 @@ Things to note:
     * `[n]` --- `0` through `2^^n - 1`
 
   * There are 2<sup>_n_</sup> values of type `[n]`. There are
-    2<sup>_mn_</sup> values of type `[m][n]`, etc.
+    2<sup>_mn_</sup> values of type `[m][n]`, etc. For example, type
+    `[2][8]` means there are `2` `8`-bit sequences, for a total of
+    `2*8 == 16` bits, and hence 2<sup>_16_</sup> possible values.
   * 1-d sequences of bits are treated as numbers by arithmetic and
     comparison operators. So for instance, `[False, True] == (1 :
     [2])` and `[True, False, True] > 4` both hold.
@@ -564,7 +566,7 @@ labs::Language::Basics> uncurry add (20, 28)
 48
 ```
 
-Hopefull you can see that these two styles are equivalent at some
+Hopefully you can see that these two styles are equivalent at some
 level. Curried functions are preferred as they afford [partial
 application](https://en.wikipedia.org/wiki/Partial_application), but
 uncurried can be useful for explicating the correspondence to
@@ -2047,6 +2049,160 @@ division by 0
 labs::Language::Basics> lazyAbsMin 0 (0/0)
 0x00000000
 ```
+
+# Debugging
+
+Though rare, the intrepid Cryptol user may find the odd Cryptol
+function that does not work correctly on their first try. We've
+learned already how properties can be leveraged to assist in writing
+correct functions. We've also seen (perhaps too much) how Cryptol's
+type system will complain out the wazoo when something isn't quite
+right. However, these tools are not always enough, and so Cryptol
+supports standard debugging capabilites in the form of `trace` and
+(the somewhat simpler) `traceVal`.
+
+```Xcryptol-session
+labs::Language::Basics> :h traceVal
+
+    traceVal : {n, a} (fin n) => String n -> a -> a
+
+Debugging function for tracing values.  The first argument is a string,
+which is prepended to the printed value of the second argument.
+This combined string is then printed when the trace function is
+evaluated.  The return value is equal to the second argument.
+
+The exact timing and number of times the trace message is printed
+depend on the internal details of the Cryptol evaluation order,
+which are unspecified.  Thus, the output produced by this
+operation may be difficult to predict.
+```
+
+These functions provide the ability to print the values of
+intermediate results without having to properly return them from the
+top-level function. Consider the following function that doubles each
+element in a list, and prints the results.
+
+```cryptol
+double xs = [ traceVal "xi * 2 =" (xi * 2) | xi <- xs ]
+```
+
+```Xcryptol-session
+labs::Language::Basics> double [1, 2, 3, 4]
+Showing a specific instance of polymorphic result:
+  * Using 'Integer' for type of sequence member
+xi * 2 = 2
+xi * 2 = 4
+xi * 2 = 6
+xi * 2 = 8
+[2, 4, 6, 8]
+```
+
+Here we see the expected result `[2, 4, 6, 8]`, but we also see 4
+lines that were printed as a direct result of `traceVal`. The lines
+here are printed in the order they were executed, but beware! As
+Cryptol states,
+
+> The exact timing and number of times the trace message is printed
+depend on the internal details of the Cryptol evaluation order, which
+are unspecified.  Thus, the output produced by this operation may be
+difficult to predict.
+
+For example, 
+
+```Xcryptol-session
+labs::Language::Basics> double [1, 2, 3, 4] @@ [3, 3, 3, 0]
+Showing a specific instance of polymorphic result:
+  * Using 'Integer' for type of sequence member
+xi * 2 = 8
+xi * 2 = 2
+[8, 8, 8, 2]
+```
+
+Here we asked for a slice through the result that did not require
+Cryptol to compute the double of `2` or `3`. Hence, Cryptol did not
+print those results. Also, Cryptol decided to print the result for the
+doubling of `4` before printing the result for the doubling of `0`,
+and only printed each a single time. Tracing can be quite useful, but
+be mindful of the dependency-based computation of Cryptol (Haskell
+really) when making use of `trace` and `traceVal`.
+
+# Errors
+
+Sometimes the author of an algorithms wants it to fail in certain
+ases. Say, for example, that we want a function that is only defined
+on strings of bytes which represent numbers in ASCII. We cannot
+specify this precisely in Cryptol's type system. The best we can do is
+alert the user during run-time of any mistake by using `error` or
+`assert`. For example,
+
+```cryptol
+isDigits cs = and [ c >= '0' /\ c <= '9' | c <- cs ]
+
+concatNumbers : {a, b} (fin a, fin b) => [a][8] -> [b][8] -> [a+b][8]
+concatNumbers xs ys =
+    assert (isDigits xs /\ isDigits ys) "The inputs contains invalid characters"
+    xs # ys
+```
+
+```Xcryptol-session
+labs::Language::Basics> :s ascii=on
+labs::Language::Basics> concatNumbers "123" "567"
+concatNumbers "123" "567"
+"123567"
+labs::Language::Basics> concatNumbers "abc" "567"
+concatNumbers "abc" "567"
+
+Run-time error: The inputs contains invalid characters
+labs::Language::Basics> :s ascii=off
+```
+
+The ability to cause run-time errors is also useful when you want to
+ensure that something cannot happen. Consider the following contrived
+functions where we turn two `Integer`'s into ASCII strings and then
+concatenate them. This function (`concatIntegers`) should never fail
+the `assert` in `concatNumbers`, and we can prove this using Cryptol's
+`:safe` command. `:safe` uses a theorem prover to prove (or dis-prove
+with counter example) that a given function does not encounter any
+run-time errors, i.e. is free of undefined behavior.
+
+```cryptol
+numToASCII : {digits} (fin digits) => Integer -> [digits][8]
+numToASCII x = reverse (take`{digits} (tail ds.1))
+  where ds = [(x, 0)] # [ (di / 10, fromInteger (di % 10) + '0') | (di, _) <- ds ]
+  
+concatIntegers : {digits} (fin digits) => Integer -> Integer -> [digits * 2][8]
+concatIntegers x y = concatNumbers x' y'
+  where
+    x' = numToASCII`{digits} x
+    y' = numToASCII`{digits} y
+```
+
+```Xcryptol-session
+labs::Language::Basics> :safe concatIntegers`{10}
+Safe
+(Total Elapsed Time: 0.879s, using "Z3")
+```
+
+A word of caution that, just like as was discussed in the debugging
+section, Cryptol's method of computation means a run-time assertion
+will only fire if it is a dependency of the output. For example, the
+following `assert` will never trigger a run-time error because Cryptol
+does not need to compute the value of the `isValid` variable to
+determine the output of the function.
+
+```cryptol
+concatNumbersWrong : {a, b} (fin a, fin b) => [a][8] -> [b][8] -> [a+b][8]
+concatNumbersWrong xs ys = xs # ys
+  where isValid = assert (isDigits xs /\ isDigits ys) "The inputs contains invalid characters" True
+```
+
+```Xcryptol-session
+labs::Language::Basics> concatNumbersWrong "abc" "def"
+"abcdef"
+```
+
+Bottom-line -- functions with errors (purposeful or not) can be
+handled by Cryptol. Though, best to avoid them when possible.
 
 # Conclusion
 
