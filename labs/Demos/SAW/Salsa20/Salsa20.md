@@ -15,7 +15,7 @@ implementation and specification.
 Before starting this module, we recommend perusing Galois, Inc.'s
 excellent tutorial on
 [_Program Verification with SAW_](https://saw.galois.com/intro/index.html).
-That tutorial
+That tutorial:
   * introduces Cryptol and SAW
     (you can skip its setup instructions as their installation test
 	should work in whichever environment you set up for this course)
@@ -33,9 +33,9 @@ After completing the above tutorial, this module will:
     _callgraph_
   * explain the correspondence between a callgraph and SAW overrides
     (described in Galois's _Program Verification with SAW_)
-  * introduce you to uninterpreted functions, which in conjunction
-    with overrides, decomposes a Cryptol specification to potentially
-    simplify verification for a solver
+  * introduce you to uninterpreted functions; using these in
+    conjunction with overrides decomposes a Cryptol specification,
+    which potentially simplifies verification for a solver
 
 # Uninterpreted Functions
 
@@ -49,6 +49,9 @@ the burden of proof for SAW:
 > Specifically, instead of recursively symbolically executing a
 > verified function, the prior specification is used as an
 > axiomatization of its behavior.
+
+(Note: Those `Crucible` prefixes are now deprecated, e.g.
+`CrucibleMethodSpec` is now `LLVMSpec`.)
 
 The term _override_ comes from SAW's docstring for `llvm_verify`:
 
@@ -72,8 +75,8 @@ One might wonder whether similar hints can ease the burden of proof by
 axiomatizing a similarly complex Cryptol specification. Such hints are
 called
 [_uninterpreted functions_](https://www21.in.tum.de/teaching/sar/SS20/6.pdf),
-which instruct an SMT solver or interface (
-[SBV](http://leventerkok.github.io/sbv/) or
+which instruct an SMT solver or interface
+([SBV](http://leventerkok.github.io/sbv/) or
 [What4](https://github.com/GaloisInc/what4)) to an underlying SMT
 solver to treat a function (from the specification) as "uninterpreted".
 The solver abstracts away these function definitions as arbitrary
@@ -111,7 +114,7 @@ SMT solvers that are beyond the scope of this course.)
 ## Practice with Uninterpreted Functions and Overrides
 
 Now that we have added uninterpreted functions to our repertoire, let's
-apply them to Salsa20...but first, let's more closely examine the
+apply them to Salsa20 --- but first, let's more closely examine the
 Galois tutorial's implementation and progress toward verifying it...
 
 Clang/LLVM includes a command line tool called
@@ -130,7 +133,8 @@ Writing 'build/salsa20.bc.callgraph.dot'...
 ```
 
 (Our Salsa20 source and script are a reorganized copy of Galois's
-example. Feel free to work from the copy in your tutorial instead.)
+example. Feel free to work from the copy in your Galois tutorial
+workspace instead.)
 
 This produces a [dot](https://graphviz.org/doc/info/lang.html) graph,
 which can be converted to an image viewable in a web browser:
@@ -180,13 +184,15 @@ override graph of a SAW Remote API for Python proof script.
 
 Informed by these visualizations, perhaps we can fill in some gaps...
 
-**EXERCISE**: Add uninterpreted functions to `llvm_verify` instructions
-(replace `abc` with `w4_unint_{solver}([{uninterpreted functions}])`) in
-`salsa20.saw` that are straightforwardly implemented by functions in
-`salsa20.bc`. (`s20_quarterround` implements `quarterround`, `s20_hash`
-implements `Salsa20`, etc., as depicted by dashed blue edges in the
-above graph.) How does this affect proof times? What happens if you
-remove the overrides?
+**EXERCISE**: Add uninterpreted functions to `llvm_verify`
+instructions (replace `abc` with
+`{solver}([{uninterpreted functions}])`) (selecting any solver whose
+type is `[String] -> ProofScript ()`) in `salsa20.saw` that are
+straightforwardly implemented by functions in `salsa20.bc`.
+(`s20_quarterround` implements `quarterround`, `s20_hash` implements
+`Salsa20`, etc., as depicted by dashed blue edges in the above graph.)
+How does this affect proof times? What happens if you remove
+overrides?
 
 **EXERCISE**: Based on the above `salsa20.saw` diagram, are any
 potential overrides missing from other `llvm_verify` instructions in
