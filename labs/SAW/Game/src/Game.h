@@ -63,19 +63,19 @@ uint32_t initDefaultPlayer(player_t* player);
 uint32_t initDefaultSprite(character_t* character, sprite_t* sprite);
 
 /**
-  Checks whether the referenced character's stats are at or below the MAX_STAT.
-  \param character_t* character - Pointer to the character in question.
-  \return SUCCESS when all stats are <= MAX_STAT, or FAILURE otherwise.
-**/
-uint32_t checkStats(character_t* character);
-
-/**
   Resolves a target's hp stat after an attack.
   \param character_t* target - Defender during the attack.
   \param uint32_t atk - Attacker's atk stat.
   \return None.
 **/
 void resolveAttack(character_t* target, uint32_t atk);
+
+/**
+  Checks whether the referenced character's stats are at or below the MAX_STAT.
+  \param character_t* character - Pointer to the character in question.
+  \return SUCCESS when all stats are <= MAX_STAT, or FAILURE otherwise.
+**/
+uint32_t checkStats(character_t* character);
 
 
 #endif

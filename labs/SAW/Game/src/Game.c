@@ -53,26 +53,6 @@ uint32_t initDefaultSprite(character_t* character, sprite_t* sprite)
 }
 
 
-// Checks that the character stats are below MAX_STAT
-// Note: MUST be called before running any function that uses character stats!
-uint32_t checkStats(character_t* character)
-{
-  // Assume failure by default
-  uint32_t result = FAILURE;
-
-  // Check the stats
-  if (character->hp  <= MAX_STAT &&
-      character->atk <= MAX_STAT &&
-      character->def <= MAX_STAT &&
-      character->spd <= MAX_STAT )
-  {
-    result = SUCCESS;
-  }
-
-  return result;
-}
-
-
 void resolveAttack(character_t* target, uint32_t atk)
 {
   if ( target->def >= atk)
@@ -90,4 +70,22 @@ void resolveAttack(character_t* target, uint32_t atk)
     // Calculate damage as normal
     target->hp = target->hp - (atk - target->def);
   }
+}
+
+
+uint32_t checkStats(character_t* character)
+{
+  // Assume failure by default
+  uint32_t result = FAILURE;
+
+  // Check the stats
+  if (character->hp  <= MAX_STAT &&
+      character->atk <= MAX_STAT &&
+      character->def <= MAX_STAT &&
+      character->spd <= MAX_STAT )
+  {
+    result = SUCCESS;
+  }
+
+  return result;
 }
