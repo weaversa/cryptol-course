@@ -37,11 +37,10 @@ jobs:
       - name: Download bc-files
         uses: actions/download-artifact@v3
         with:
-          name: salsa20-bc
-          path: labs/Demos/SAW/Salsa20/
-      # Start saw-remote-api server
-      - run: start-saw-remote-api-read-only
-      # Run Salsa20 Python SAW Script
+          name: bc-files
+          path: labs/Demos/SAW/
+      - name: Start saw-remote-api server
+        run: start-saw-remote-api-read-only
       - name: Run Python SAW Script
         run: |
           python3 labs/Demos/SAW/xxHash/xxhash32-ref.py
