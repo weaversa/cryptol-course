@@ -1,7 +1,19 @@
-# Background
+# Introduction
 
-Before starting this module, we recommend perusing Galois's excellent
-tutorial on
+This demo adapts Galois, Inc.'s existing [SAW script](https://github.com/GaloisInc/saw-script/blob/v0.9/examples/salsa20/salsa.saw)
+that verifies their own
+[Salsa20 implementation](https://github.com/GaloisInc/saw-script/blob/v0.9/examples/salsa20/salsa20.c).
+This example implementation is straightforwardly derived from their
+Cryptol spec, which in turn closely matches Dr. Daniel J. Bernstein's
+[original Salsa20 specification](http://cr.yp.to/snuffle/spec.pdf),
+lending itself nicely to a _compositional_ verification with
+_overrides_ and _uninterpreted functions_ that reflects the
+implementation and specification.
+
+## Prerequisites
+
+Before starting this module, we recommend perusing Galois, Inc.'s
+excellent tutorial on
 [_Program Verification with SAW_](https://saw.galois.com/intro/index.html).
 That tutorial
   * introduces Cryptol and SAW
@@ -12,6 +24,18 @@ That tutorial
   * describes and motivates a _compositional_ verification of Salsa20
     (feel free to return to our module and revisit the next part later)
   * offers an extended exercise on proof maintenance for HMAC
+
+## Skills You'll Learn
+
+After completing the above tutorial, this module will:
+  * demonstrate use of the Clang/LLVM command line tool
+    `opt` and the `dot` language and tool to generate and analyze a
+    _callgraph_
+  * explain the correspondence between a callgraph and SAW overrides
+    (described in Galois's _Program Verification with SAW_)
+  * introduce you to uninterpreted functions, which in conjunction
+    with overrides, decomposes a Cryptol specification to potentially
+    simplify verification for a solver
 
 # Uninterpreted Functions
 
@@ -105,6 +129,9 @@ cryptol-course/labs/Demos/SAW/Salsa20$ opt -dot-callgraph -o /dev/null build/sal
 Writing 'build/salsa20.bc.callgraph.dot'...
 ```
 
+(Our Salsa20 source and script are a reorganized copy of Galois's
+example. Feel free to work from the copy in your tutorial instead.)
+
 This produces a [dot](https://graphviz.org/doc/info/lang.html) graph,
 which can be converted to an image viewable in a web browser:
 
@@ -169,3 +196,33 @@ unspecified or unused in the compositional verification? (Dashed red
 edges to nodes without an entry for a SAW method specification.) How
 does specifying, verifying, and adding corresponding overrides and
 uninterpreted functions affect proof times?
+
+**EXERCISE**: This implementation does not work with 128-bit keys as
+described in the specs. Add or redefine functions in `salsa20.c` and
+verify them accordingly, remembering to add overrides and
+uninterpreted functions to your adapted SAW script to reflect your
+modified implementation.
+
+# Conclusion
+
+In this demo, you learned about compositional verification and how to
+leverage various tools to analyze an implementation and specification,
+and produce a "complete" verification script to increase confidence in
+not only an implementation, but your understanding of it. You saw how
+an implementation based closely on a specification potentially
+simplifies and boosts confidence in its verification. How might this
+compare to an optimized or third-party implementation that agrees with
+a specification but differs substantially in its composition...?
+
+# Solicitation
+
+How was your experience with this lab? Suggestions are welcome in the
+form of a ticket on the course GitHub page:
+https://github.com/weaversa/cryptol-course/issues
+
+# From here, you can go somewhere!
+
+||||
+|-:|:-:|-|
+|| [ ^ SAW Demos](../Demos.md) ||
+| [< Bit Twiddling](../Bittwiddling/Bittwiddling.md) | **Salsa20 (Galois)** ||
