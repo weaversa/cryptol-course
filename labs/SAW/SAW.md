@@ -1222,7 +1222,119 @@ example
 
 ## Exercise: Resolving an Attack!
 
-Feeling pretty confident with our little `player_t` and `character_t` structs? How about we go for a full on attack then? Well, an attack in our game of course between two characters ;)
+Feeling pretty confident with our little `player_t` and `character_t` structs? How about we go for a full on attack then? Well, in our game of course ;)
+
+Consider the following function:
+
+```c
+void resolveAttack(character_t* target, uint32_t atk)
+{
+  if ( target->def >= atk)
+  {
+    // The target's defense mitigates the attack
+    target->hp = target->hp;
+  }
+  else if ( target->hp <= (atk - target->def) )
+  {
+    // The attack will knock out the target
+    target->hp = 0;
+  }
+  else
+  {
+    // Calculate damage as normal
+    target->hp = target->hp - (atk - target->def);
+  }
+}
+```
+
+Our function, `resolveAttack`, takes two inputs:
+- `character_t* target`: Our defending character
+- `uint32_t atk`: The attack stat of our attacker
+
+Think about how you would set up a SAW contract for this function. Go ahead and try it you would like! We'll wait for you :)
+
+Got an idea, great! Let's go over the steps we need to go through...
+
+First, let's set up our basic format for the contract:
+
+```python
+class resolveAttack_Contract(Contract):
+  def specification (self):
+    # Declare variables
+    (target, target_p) = ptr_to_fresh(self, alias_ty("struct.character_t"), name="target")
+    atk = self.fresh_var(i32, "atk")
+
+    # Assert preconditions
+
+    # Sybolically execute the function
+    self.execute_func(target_p, atk)
+
+    # Assert postconditions
+
+    self.returns(void)
+```
+
+Alright, we got our basic setup! But wait a second, there are 3 possible assignments for the target's hp... Each of these behaviors are determined by the stat ranges for the defender and attacker. How are we going to represent these different behaviors?
+
+First, let's consider the 3 possible cases for `resolveAttack`:
+- Case 1: Attack mitigated
+  - Precondition: `target->def >= atk`
+  - Postcondition: `target->hp = target->hp`
+- Case 2: Immediate KO
+  - Precondition: `target->hp <= (atk - target-> def)`
+  - Postcondition: `target->hp = 0`
+- Case 3: Regular attack calculation
+  - Precondition: Anything other than Cases 1 and 2
+  - Postcondition: `target->hp = target->hp - (atk - target->def)`
+
+With those 3 cases laid out, we now have a battle plan to represent the preconditions and postconditions needed for our proof. Now one option to account for all of these cases is to create 3 different contracts where each one specifies the appropriate precondition and postcondition pair for our case. Do we really want to copy and paste the bulk of our proof across 3 contracts though? Probably not. How about we bring our knowledge of parameterized contracts to battle! Tactics!
+
+```python
+class resolveAttack_Contract(Contract):
+  def __init__(self, case : int):
+    super().__init__()
+    self.case = case
+    # There are 3 possible cases for resolveAttack
+    #   Case 1: Attack mitigated
+    #   Case 2: Immediate KO
+    #   Case 3: Regular attack
+
+  def specification (self):
+    # Declare variables
+    (target, target_p) = ptr_to_fresh(self, alias_ty("struct.character_t"), name="target")
+    atk = self.fresh_var(i32, "atk")
+
+    # Assert preconditions
+    # Determine the preconditions based on the case parameter
+    if (self.case == 1):
+      # target->def >= atk
+      self.precondition_f("{target}.4 >= {atk}")
+    elif (self.case == 2):
+      # target->hp <= (atk - target->def)
+      self.precondition_f("({target}.2 + {target}.4) <= {atk}")
+    else:
+      # Assume any other case follows the formal attack calculation
+      self.precondition_f("{target}.4 < {atk}")
+      self.precondition_f("({target}.2 + {target}.4) > {atk}")
+    
+    # Symbolically execute the function
+    self.execute_func(target_p, atk)
+
+    # Assert postconditions
+    # Determine the postcondition based on the case parameter
+    if (self.case == 1):
+      self.points_to(target_p['hp'], cry_f("{target}.2 : [32]"))
+    elif (self.case == 2):
+      self.points_to(target_p['hp'], cry_f("0 : [32]"))
+    else:
+      self.points_to(target_p['hp'], cry_f("resolveAttack ({target}.2) ({target}.4) {atk}"))
+
+    self.returns(void)
+```
+
+Our contract is looking pretty good now! Let's go ahead and test it out with the following unit test:
+
+
 
 
 # Using Gained Knowledge
