@@ -92,14 +92,14 @@ they could refer to this table for some common imports:
 |`saw_client.llvm`    | `Contract`, `CryptolTerm`, `SetupVal`, `FreshVar`, `i8`, `i32`, `i64`, `void`, `null`, `array_ty`, `field`, `struct`, `alias_ty` |
 |`saw_client.llvm_type` | `LLVMType`, `LLVMArrayType` |
 
-## Right Circular Shift Example
+## Left Circular Shift Example
 
 To see contracts in action we need an example. Here's some C code for
-right circular shift we want to verify:
+left circular shift we want to verify:
 
 ```C
-uint32_t RCS(uint32_t bits, uint32_t shift) {
-  return (bits << (sizeof(bits) * 8 - shift)) | (bits >> shift);
+uint32_t rotl(uint32_t bits, uint32_t shift) {
+  return (bits << shift) | (bits >> (sizeof(bits) * 8 - shift));
 }
 ```
 
@@ -110,7 +110,7 @@ instance, we can create the bitcode by entering the following command
 in a terminal.
 
 ```sh
-$ clang -emit-llvm labs/SAW/src/rcs.c -c -o labs/SAW/src/rcs.bc
+$ clang -emit-llvm labs/SAW/src/rotl.c -c -o labs/SAW/src/rotl.bc
 ```
 
 We can inspect the bitcode using SAW by loading the module and
@@ -123,9 +123,9 @@ $ saw
  ┣━━ ┃ ╻ ┃┓ ╻ ┏┛
  ┗━━━┛━┛━┛┗━┛━┛ version 0.9.0.99 (<non-dev-build>)
 
-sawscript> r <- llvm_load_module "labs/SAW/src/rcs.bc"
+sawscript> r <- llvm_load_module "labs/SAW/src/rotl.bc"
 sawscript> print r
-Module: rcs.bc
+Module: rotl.bc
 Types:
 
 Globals:
@@ -133,29 +133,29 @@ Globals:
 External references:
 
 Definitions:
-  i32 @RCS(i32 %0, i32 %1)
+  i32 @rotl(i32 %0, i32 %1)
 
 ```
 
-The corresponding Cryptol specification for right circular shift is:
+The corresponding Cryptol specification for left circular shift is:
 
 ```cryptol
-RCS : [32] -> [32] -> [32]
-RCS xs shift = xs >>> shift
+rotl : [32] -> [32] -> [32]
+rotl xs shift = xs <<< shift
 ```
 
 For the SAW Python API we make a `Contract` object with the required
 `specification` function:
 
 ```python
-class RCS_Contract(Contract):
+class rotl_Contract(Contract):
   def specification(self):
     bits  = self.fresh_var(i32, "bits") 
     shift = self.fresh_var(i32, "shift")
     
     self.execute_func(bits, shift)
 
-    self.returns_f("RCS {bits} {shift}")
+    self.returns_f("rotl {bits} {shift}")
 ```
 
 Let's break down `specification` piece by piece.
@@ -184,9 +184,9 @@ the function returns a given Cryptol term (parsed from a Python
 string). To use Python variables in scope within the string use
 `{variable_name}`. For example,
 
-|`self.`|`returns_f(`|`"RCS {bits} {shift}"`|)|
+|`self.`|`returns_f(`|`"rotl {bits} {shift}"`|)|
 |-------|-----------|---------------------|----|
-|In this contract| assert the current function returns the Cryptol term | right circular shift `bits` by `shift` |.|
+|In this contract| assert the current function returns the Cryptol term | left circular shift `bits` by `shift` |.|
 
 Sometimes we don't want to return a Cryptol term. In those cases we
 can just use `returns(someSetupValue)`. The specification function of
@@ -230,8 +230,8 @@ some Cryptol type in the currently loaded specification.
 ## Unit Testing
 
 ```python
-class RCSTest(unittest.TestCase):
-  def test_RCS(self):
+class rotlTest(unittest.TestCase):
+  def test_rotl(self):
     connect(reset_server=True)
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
     
@@ -241,13 +241,13 @@ class RCSTest(unittest.TestCase):
     cryname = "/some/path/to/your/file.cry"
     cryptol_load_file(cryname)
     
-    RCS_result = llvm_verify(mod, 'RCS', RCS_Contract())
-    self.assertIs(RCS_result.is_success(), True)
+    rotl_result = llvm_verify(mod, 'rotl', rotl_Contract())
+    self.assertIs(rotl_result.is_success(), True)
 ```
 
 For a contract, the specification function should be called
 `specification`. For tests, it doesn't matter what you name your
-tests. Here we named it `test_RCS`. These tests will be run when you
+tests. Here we named it `test_rotl`. These tests will be run when you
 run the Python program.
 
 Let's break down the first few lines of this function:
@@ -271,12 +271,12 @@ Let's break down the first few lines of this function:
 Now that the environment is set up, let's actually verify our
 contract! This is done at the line
 
-|`RCS_result =` | `llvm_verify(` | `mod,` | `'RCS',` | `RCS_Contract()`| `)`|
+|`rotl_result =` | `llvm_verify(` | `mod,` | `'rotl',` | `rotl_Contract()`| `)`|
 |----------|-----------|----|------|---------------|----|
 |Assign this variable| to the result of trying to verify| the bitcode| function with this name| using this contract|.|
 
 Now that we have the result, we want to assert this result succeeded
-using `self.assertIs(RCS_result.is_success(), True)`.
+using `self.assertIs(rotl_result.is_success(), True)`.
 
 ## Debugging C with SAW
 
@@ -292,29 +292,29 @@ from saw_client.llvm        import *
 from saw_client.proofscript import *
 from saw_client.llvm_type   import * 
 
-class RCS_Contract(Contract):
+class rotl_Contract(Contract):
   def specification(self):
     xs    = self.fresh_var(i32, "xs") 
     shift = self.fresh_var(i32, "shift")
     
     self.execute_func(xs, shift)
 
-    self.returns_f("RCS {xs} {shift}")
+    self.returns_f("rotl {xs} {shift}")
 
-class RCSTest(unittest.TestCase):
-  def test_RCS(self):
+class rotlTest(unittest.TestCase):
+  def test_rotl(self):
     connect(reset_server=True)
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
     
     pwd = os.getcwd()
-    bcname  = pwd + "/../src/rcs.bc"
-    cryname = pwd + "/spec/rcs.cry"
+    bcname  = pwd + "/../src/rotl.bc"
+    cryname = pwd + "/spec/rotl.cry"
     
     cryptol_load_file(cryname)
     mod = llvm_load_module(bcname)
     
-    RCS_result = llvm_verify(mod, 'RCS', RCS_Contract())
-    self.assertIs(RCS_result.is_success(), True)
+    rotl_result = llvm_verify(mod, 'rotl', rotl_Contract())
+    self.assertIs(rotl_result.is_success(), True)
 
 if __name__ == "__main__":
     unittest.main()
@@ -335,12 +335,12 @@ We can now run the proof script.
 
 ```
 $ cd labs/SAW/proof
-$ python3 rcs.py
-[03:08:29.986] Verifying RCS ...
-[03:08:29.987] Simulating RCS ...
-[03:08:29.988] Checking proof obligations RCS ...
-[03:08:30.007] Subgoal failed: RCS safety assertion:
-internal: error: in RCS
+$ python3 rotl.py
+[03:08:29.986] Verifying rotl ...
+[03:08:29.987] Simulating rotl ...
+[03:08:29.988] Checking proof obligations rotl ...
+[03:08:30.007] Subgoal failed: rotl safety assertion:
+internal: error: in rotl
 Undefined behavior encountered
 Details:
   Poison value created
@@ -348,16 +348,16 @@ Details:
         
 [03:08:30.007] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 382}
 [03:08:30.007] ----------Counterexample----------
-[03:08:30.007]   shift0: 134217728
+[03:08:30.007]   shift0: 2147483648
 [03:08:30.007] ----------------------------------
 
 F
 ======================================================================
-FAIL: test_RCS (__main__.RCSTest)
+FAIL: test_rotl (__main__.rotlTest)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "cryptol-course/labs/SAW/proof/rcs.py", line 31, in test_RCS
-      self.assertIs(RCS_result.is_success(), True)
+  File "cryptol-course/labs/SAW/proof/rotl.py", line 31, in test_rotl
+      self.assertIs(rotl_result.is_success(), True)
       AssertionError: False is not True
       
       ----------------------------------------------------------------------
@@ -382,31 +382,31 @@ As expected, this alerts us to a bug:
         
 [03:08:30.007] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 382}
 [03:08:30.007] ----------Counterexample----------
-[03:08:30.007]   shift0: 134217728
+[03:08:30.007]   shift0: 2147483648
 [03:08:30.007] ----------------------------------
 ```
 
 SAW also provides a handy counterexample, namely, when `shift =
-134217728` (clearly larger than 31), we encounter undefined behavior.
+2147483648` (clearly larger than 31), we encounter undefined behavior.
 
 One remedy to this is the following:
 
 ```C
-uint32_t RCS(uint32_t bits, uint32_t shift) {
+uint32_t rotl(uint32_t bits, uint32_t shift) {
   shift %= sizeof(bits) * 8;
-  return (bits << (sizeof(bits) * 8 - shift)) | (bits >> shift);
+  return (bits << shift) | (bits >> (sizeof(bits) * 8 - shift));
 }
 ```
 
 Recompiling and running SAW gives:
 
 ```sh
-$ clang ../src/rcs2.c -o ../src/rcs.bc -c -emit-llvm && python3 rcs.py
-[03:11:54.334] Verifying RCS ...
-[03:11:54.334] Simulating RCS ...
-[03:11:54.335] Checking proof obligations RCS ...
-[03:11:54.351] Subgoal failed: RCS safety assertion:
-internal: error: in RCS
+$ clang ../src/rotl2.c -o ../src/rotl.bc -c -emit-llvm && python3 rotl.py
+[03:11:54.334] Verifying rotl ...
+[03:11:54.334] Simulating rotl ...
+[03:11:54.335] Checking proof obligations rotl ...
+[03:11:54.351] Subgoal failed: rotl safety assertion:
+internal: error: in rotl
 Undefined behavior encountered
 Details:
   Poison value created
@@ -419,11 +419,11 @@ Details:
 
 F
 ======================================================================
-FAIL: test_RCS (__main__.RCSTest)
+FAIL: test_rotl (__main__.rotlTest)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "cryptol-course/labs/SAW/proof/rcs.py", line 31, in test_RCS
-      self.assertIs(RCS_result.is_success(), True)
+  File "cryptol-course/labs/SAW/proof/rotl.py", line 31, in test_rotl
+      self.assertIs(rotl_result.is_success(), True)
       AssertionError: False is not True
       
       ----------------------------------------------------------------------
@@ -441,20 +441,20 @@ exhibit undefined behavior.
 Let's try again with
 
 ```C
-uint32_t RCS(uint32_t bits, uint32_t shift) {
+uint32_t rotl(uint32_t bits, uint32_t shift) {
   shift %= sizeof(bits)*8;
   if(shift == 0) return bits;
-  return (bits << (sizeof(bits) * 8 - shift)) | (bits >> shift);
+  return (bits << shift) | (bits >> (sizeof(bits) * 8 - shift));
 }
 ```
 
 ```sh
-$ clang ../src/rcs3.c -o ../src/rcs.bc -c -emit-llvm && python3 rcs.py
-[03:14:09.561] Verifying RCS ...
-[03:14:09.562] Simulating RCS ...
-[03:14:09.563] Checking proof obligations RCS ...
-[03:14:09.614] Proof succeeded! RCS
-✅  Verified: lemma_RCS_Contract (defined at cryptol-course/labs/SAW/proof/rcs.py:30)
+$ clang ../src/rotl3.c -o ../src/rotl.bc -c -emit-llvm && python3 rotl.py
+[03:14:09.561] Verifying rotl ...
+[03:14:09.562] Simulating rotl ...
+[03:14:09.563] Checking proof obligations rotl ...
+[03:14:09.614] Proof succeeded! rotl
+✅  Verified: lemma_rotl_Contract (defined at cryptol-course/labs/SAW/proof/rotl.py:30)
 .
 ----------------------------------------------------------------------
 Ran 1 test in 0.780s

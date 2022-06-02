@@ -1,4 +1,0 @@
-module rcs where
-
-RCS : [32] -> [32] -> [32]
-RCS xs shift = xs >>> shift
