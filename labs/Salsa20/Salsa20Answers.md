@@ -761,13 +761,13 @@ a `where` clause as well.
 ```cryptol
 Salsa20Expansion k n = z
   where
-    x = if (`a : [2]) == 1
-        then t0 # k0 # t1 # n # t2 # k0 # t3
-        else s0 # k0 # s1 # n # s2 # k1 # s3
+    [c0, c1, c2, c3] =
+        if (`a : [2]) == 2
+        then [s0, s1, s2, s3]
+        else [t0, t1, t2, t3]
+    [k0, k1] = split (join (repeat`{2/a} k))
+    x = c0 # k0 # c1 # n # c2 # k1 # c3
     z = Salsa20Core x
-    (k0 # k1) = k # undefined
-    //[k0, k1] = split (k # undefined)
-    //(k0, k1) = (take k, drop k)
 ```
 
 This last definition for `k0` and `k1` isn't as nice because `k1 ==

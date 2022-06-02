@@ -47,7 +47,7 @@ anyway...
 ```SAW
 // proof/salsa20-ref.saw
 
-// qualified import of Salsa20 from `cryptol-specs`
+// qualified import of Salsa20 (copied from `GaloisInc/cryptol-specs`)
 import "../spec/Salsa20.cry" as Salsa20;
 
 // based on "helpers.saw" from _Program Verification with SAW_:
@@ -64,16 +64,10 @@ include "helpers.saw";
  */
 let main : TopLevel () = do {
     m <- llvm_load_module "../build/salsa20-ref.bc";
-	
-    // salsa20_wordtobyte_result <- verify m "salsa20_wordtobyte" [] salsa20_wordtobyte_setup;
-    // ECRYPT_init_result <- verify m "ECRYPT_init" [] ECRYPT_init_setup;
-    // ECRYPT_keysetup_result <- verify m "ECRYPT_keysetup" [] ECRYPT_keysetup_setup;
-    // ECRYPT_ivsetup_result <- verify m "ECRYPT_ivsetup" [] ECRYPT_ivsetup_setup;
-    // ECRYPT_encrypt_bytes_result <- unint_verify m "ECRYPT_encrypt_bytes" [ salsa20_wordtobyte_result ] ECRYPT_encrypt_bytes_setup [...];
-    // ECRYPT_decrypt_bytes_result <- unint_verify m "ECRYPT_decrypt_bytes" [ ECRYPT_encrypt_bytes_result ] ECRYPT_decrypt_bytes_setup [...];
-    // ECRYPT_keystream_bytes_result <- unint_verify m "ECRYPT_keystream_bytes" [ ECRYPT_encrypt_bytes_result ] ECRYPT_keystream_bytes_setup [...];
-    
-    print "TODO: Verify `build/salsa20-ref.bc`...";
+
+    // TODO: Collect verification results for each function
+
+    print "TODO: Verify `../build/salsa20-ref.bc`...";
 };
 ```
 
@@ -95,7 +89,8 @@ Let's examine `src/salsa20.c` and start specifying functions...
 ```
 
 A header file specifying an eSTREAM interface for "synchronous stream
-ciphers without authentication mechanism". Probably matters later...
+ciphers without authentication mechanism". Includes other
+`"ecrypt-*.h"` headers. Probably matters later...
 
 ```C
 #define ROTATE(v,c) (ROTL32(v,c))
@@ -105,8 +100,9 @@ ciphers without authentication mechanism". Probably matters later...
 ```
 
 Macros enable developers to consistently repeat simple statements
-without overhead from function calls. This improves perfomance but does
-not yield a symbol for Clang/LLVM, and thus SAW, to reference. In other
+without overhead from function calls. This improves perfomance by
+reducing overhead from corresponding function calls, but does not
+yield symbols for Clang/LLVM, and thus SAW, to reference. In other
 words, we cannot straightforwardly decompose a function down into its
 macro invocations.
 
@@ -114,10 +110,10 @@ Symbols `ROTL32` and `U32V` must be defined in `ecrypt-portable.h` or a
 dependency:
 
 ```
-$ grep *.h -n -e "#define ROTL32"
-ecrypt-machine.h:25:#define ROTL32(v, n) _lrotl(v, n)
-ecrypt-portable.h:87:#define ROTL32(v, n) \
-$ cat ecrypt-machine.h | head -n 25
+salsa20-ref$ grep src/*.h -n -e "#define ROTL32"
+src/ecrypt-machine.h:25:#define ROTL32(v, n) _lrotl(v, n)
+src/ecrypt-portable.h:87:#define ROTL32(v, n) \
+$ cat src/ecrypt-machine.h | head -n 25
 /* ecrypt-machine.h */
 
 /*
@@ -138,7 +134,7 @@ $ cat ecrypt-machine.h | head -n 25
 #undef ROTL32
 ...
 #define ROTL32(v, n) _lrotl(v, n)
-$ cat ecrypt-portable.h | head -n 89
+$ cat src/ecrypt-portable.h | head -n 89
 /* ecrypt-portable.h */
 ...
 /*
@@ -188,8 +184,8 @@ typedef unsigned I32T u32;
 ...
 #define ROTL32(v, n) \
   (U32V((v) << (n)) | ((v) >> (32 - (n))))
-$ grep *.h -n -e "#define U32C"
-$ cat ecrypt-config.h | head -n 241
+salsa20-ref$ grep src/*.h -n -e "#define U32C"
+$ cat src/ecrypt-config.h | head -n 241
 /* ecrypt-config.h */
 
 /* *** Normally, it should not be necessary to edit this file. *** */
@@ -244,8 +240,10 @@ $ cat ecrypt-config.h | head -n 241
 #endif
 ```
 
-OK, we might need these later. For now, we'll proceed until we see the
-first function to specify...
+OK, `ROTL32` rotates a 32-bit value left by a specified shift as
+expected, and `U32V` converts its argument to an unsigned 32-bit
+integer. We might need these later. For now, we'll proceed until we
+see the first function to specify...
 
 
 ### `salsa20_wordtobyte` (Reference Implementation)
@@ -275,11 +273,11 @@ clue in that the second for-loop iterates 20 times writing to `x`, and
 the next loop adds the original input to `x`.
 
 **EXERCISE**: Try to find a function in `spec/Salsa20.cry` with similar
-behavior, iterating a squence some number of times and then adding it
+behavior, iterating a sequence some number of times and then adding it
 to something else.
 
-If you came up with the `Salsa20` function, congratulations! Annotating
-the source, we can see roughly the same structure:
+If you came up with the `Salsa20` core function, congratulations!
+Annotating the source, we can see roughly the same structure:
 
 ```Cryptol
 Salsa20 : [64][8] -> [64][8]
@@ -291,18 +289,18 @@ Salsa20 xs = join ar
 ```
 
 ```C
-static void salsa20_wordtobyte(u8 output[64] /* join ar */,const u32 input[16] /* xs */)
+static void salsa20_wordtobyte(u8 output[64] /* join ar */, const u32 input[16] /* xs */)
 {
   u32 x[16];
   int i;
 
-  for (i = 0;i < 16;++i) x[i] = input[i];  // xw
+  for (i = 0;i < 16;++i) x[i] = input[i];                     // xw
   for (i = 20;i > 0;i -= 2) {
     x[ 4] = XOR(x[ 4],ROTATE(PLUS(x[ 0],x[12]), 7));
     // ...
     x[15] = XOR(x[15],ROTATE(PLUS(x[14],x[13]),18));
-  } // zs @ 10
-  for (i = 0;i < 16;++i) x[i] = PLUS(x[i],input[i]);  // ar
+  }                                                           // zs @ 10
+  for (i = 0;i < 16;++i) x[i] = PLUS(x[i],input[i]);          // ar
   for (i = 0;i < 16;++i) U32TO8_LITTLE(output + 4 * i,x[i]);  // rejiggering
 }
 ```
@@ -337,24 +335,28 @@ this implement?
 
 That's right, `littleendian_inverse`! Further analysis of the source
 shows that `U32TO32_LITTLE` has different implementations reflecting
-the target's endianness (directly copying on little-endian and swapping
-bytes on big-endian systems), but each of these should have the same
-behavior. 
+the target's endianness (directly copying on little-endian and
+swapping bytes on big-endian systems), but each of these should have
+the same behavior.
 
 
 ## Multi-Target Testing
 
 However, now that endianness is on our radar, we should generate big-
-and little-endian bitcode to test portability of our specifications and
-the bitcode. With any luck, the bitcode will be portable and we won't
-have to account for endianness in our specifications...
+and little-endian bitcode to test portability of our specifications
+and the bitcode. With any luck, the bitcode will be portable and we
+won't have to account for endianness in our specifications...
 
 **EXERCISE**: Generate big- and little-endian bitcode by using
 `clang`'s `-target` option:
 
 ```
-$ for t in $(echo "mips64 mips64le"); do clang -c -g -emit-llvm -o build/salsa20-ref-$t.bc; done
+salsa20-ref$ for t in $(echo "mips64 mips64el"); do clang -c -g -emit-llvm -o build/salsa20-ref-$t.bc; done
 ```
+
+(Note: Supported targets vary by workspace. `llc --version` should
+list supported targets. You may need to install the `gcc-multilib`
+package for `clang` (or `gcc`) to compile to these targets.)
 
 **EXERCISE**: Refactor the SAW script to verify each of these modules.
 Rename the `main` method to `verify_salsa20_ref` and add a
@@ -365,7 +367,9 @@ that the refactored script loads each of the bitcode modules:
 ```SAW
 let verify_salsa20_ref (bc : String) : TopLevel () = do {
     m <- llvm_load_module bc;
-    // ...
+
+    // TODO: Collect verification results for each function
+
     print (str_concat (str_concat "TODO: Verify `" bc) "`...");
 };
 
@@ -385,21 +389,21 @@ $ saw proof/salsa20-ref.saw
 [12:34:56.789] Done!
 ```
 
+A small win for encapsulation!
+
 **EXERCISE**: Is Galois's `salsa20.c` implementation portable w.r.t.
 endianness? Compile it with `-target` `mips64` and `mips64le` and see
 if its verification script still succeeds.
 
-A small win for encapsulation! Let's return to the verification effort.
+Let's return to Dr. Bernstein's reference implementation.
 
-**EXERCISE**: Feel free to try specifing `salsa20_wordtobyte_setup` at
-this point. Or not; it's a free country...
-
-Because this will be relatively difficult and we're about to be very
-disappointed, let's just hammer this out:
+**EXERCISE**: Feel free to try specifying and verifying
+`salsa20_wordtobyte_setup` at this point. Or just copy and paste the
+following into the right spots in `proof/salsa20-ref.saw`...
 
 ```SAW
-
-```SAW
+// C: static void salsa20_wordtobyte(u8 output[64],const u32 input[16])
+// LLVM: internal void @salsa20_wordtobyte(i8* %0, i32* %1)
 let salsa20_wordtobyte_setup : LLVMSetup () = do {
     p_output <- alloc (array 64 i8);
     (input, p_input) <- pointer_to_fresh_readonly (array 16 i32) "input";
@@ -410,4 +414,553 @@ let salsa20_wordtobyte_setup : LLVMSetup () = do {
 };
 ```
 
-TODO: ...
+```SAW
+let main : TopLevel () = do {
+    m <- llvm_load_module "../build/salsa20-ref.bc";
+
+    salsa20_wordtobyte_result <- verify m "salsa20_wordtobyte" [] salsa20_wordtobyte_setup;
+    // TODO: Collect verification results for each function
+
+    print "TODO: Verify `../build/salsa20-ref.bc`...";
+}
+
+
+### `ECRYPT_init` (State Initialization)
+
+Moving on...
+
+```C
+void ECRYPT_init(void)
+{
+  return;
+}
+```
+
+For stateful eSTREAM implementations, this would initialize any state
+that complements keys or initialization vectors. This doesn't apply to
+Salsa20, but no harm in verifying this.
+
+**EXERCISE**: Insert the following into `salsa20-ref.saw` before
+`// TODO: Define remaining function specifications`, add
+`ECRYPT_init_result <- ...` to `verify_salsa20_ref`, and run
+`saw salsa20-ref.saw` to verify `ECRYPT_init` and previous functions:
+
+```SAW
+// C: void ECRYPT_init(void)
+// LLVM: void @ECRYPT_init()
+let ECRYPT_init_setup : LLVMSetup () = do {
+    execute [];
+};
+```
+
+Note: It seems tedious to re-run previous verifications for an
+implementation that hasn't changed. Perhaps one could soundly persist
+previous results...?
+
+
+### `sigma` and `tau` (Constants for Key Expansion)
+
+```C
+static const char sigma[16] = "expand 32-byte k";
+static const char tau[16] = "expand 16-byte k";
+```
+
+These constants are only used in the function about to be defined, and
+not exported.  Perhaps this is meant to save a bit of time in the event
+that the upcoming function is run more than once?
+
+
+## `ECRYPT_keysetup`
+
+```C
+void ECRYPT_keysetup(ECRYPT_ctx *x,const u8 *k,u32 kbits,u32 ivbits)
+{
+  const char *constants;
+  x->input[1] = U8TO32_LITTLE(k + 0);
+  x->input[2] = U8TO32_LITTLE(k + 4);
+  x->input[3] = U8TO32_LITTLE(k + 8);
+  x->input[4] = U8TO32_LITTLE(k + 12);
+  if (kbits == 256) { /* recommended */
+    k += 16;
+    constants = sigma;
+  } else { /* kbits == 128 */
+    constants = tau;
+  }
+  x->input[11] = U8TO32_LITTLE(k + 0);
+  x->input[12] = U8TO32_LITTLE(k + 4);
+  x->input[13] = U8TO32_LITTLE(k + 8);
+  x->input[14] = U8TO32_LITTLE(k + 12);
+  x->input[0] = U8TO32_LITTLE(constants + 0);
+  x->input[5] = U8TO32_LITTLE(constants + 4);
+  x->input[10] = U8TO32_LITTLE(constants + 8);
+  x->input[15] = U8TO32_LITTLE(constants + 12);
+}
+```
+
+At first glance, this looks like it might be expanding the key, per
+`Salsa20::Salsa20_expansion`. However, unlike in the specification,
+this function does not run the core function (`Salsa20::Salsa20`) on
+the key. Instead, judging from `x` being an `ECRYPT_ctx`, this
+function is just setting up a _context_. This is also true of
+`ECRYPT_ivsetup`:
+
+```C
+void ECRYPT_ivsetup(ECRYPT_ctx *x,const u8 *iv)
+{
+  x->input[6] = U8TO32_LITTLE(iv + 0);
+  x->input[7] = U8TO32_LITTLE(iv + 4);
+  x->input[8] = 0;
+  x->input[9] = 0;
+}
+```
+
+It becomes clear that this reference implementation mostly serves
+other purposes: conform to eSTREAM for interoperability with other
+stream ciphers in that suite, and optimize. It serves as a "reference"
+for developers to test encryption results, but this difference in
+how the implementation is laid out complicates our verification effort.
+We will need to abandon our initial approach of trying to express SAW
+function specifications directly in terms of our existing Cryptol spec.
+
+But not all is lost! Remember that in
+[`CryptoProofs.md`](../../../CryptoProofs.md), we learned how to verify
+equivalence of two Cryptol functions. Indeed, this is so important that
+Cryptol defines the symbol `(===)` to check the equivalence of two
+functions. To claim this is Cryptol's main purpose would not be wrong.
+Indeed, we will overcome our current dilemma by proving that a Cryptol
+representation of the reference implementation is equivalent to an
+appropriate expression based on our Cryptol spec. Such a
+representation of an implementation is called a _low-level
+specification_, our existing Cryptol spec of Salsa20 is a _high-level
+specification_, and this concept of proving the two to be equivalent
+is called _refinement_.
+
+For another example of using Cryptol and SAW in this way, see
+[Part 2](https://galois.com/blog/2016/09/specifying-hmac-in-cryptol/)
+of a three-part
+[series](https://galois.com/blog/2016/09/verifying-s2n-hmac-with-saw/)
+by Galois, Inc.'s Joey Dodds describing their verification of HMAC for
+[s2n](https://aws.amazon.com/blogs/security/introducing-s2n-a-new-open-source-tls-implementation/).
+
+When run in succession (in either order), these two functions fill an
+`ECRYPT_ctx` `input` array with a key and an initialization vector. We
+expect this to be relevant to `ECRYPT_encrypt_bytes`, coming up soon.
+
+
+## Low-Level Specification
+
+### A note on `undefined` sequences
+
+For now, we need to define function specifications explaining how
+`ECRYPT_keysetup` and `ECRYPT_ivsetup` contribute to context
+initialization. (Later, we will need to explain how
+`ECRYPT_encrypt_bytes` uses this context, and how its result meets our
+high-level specification.) Each setup function partially updates
+`x->input`, where `x` refers to an `ECRYPT_ctx`:
+
+```
+$ grep src/*.h -n -e "ECRYPT_ctx"
+src/ecrypt-sync.h: * ECRYPT_ctx is the structure containing the representation of the
+src/ecrypt-sync.h:} ECRYPT_ctx;
+...
+$ cat src/ecrypt-sync.h | head -n 63 | tail -n 14
+/*
+ * ECRYPT_ctx is the structure containing the representation of the
+ * internal state of your cipher.
+ */
+
+typedef struct
+{
+  u32 input[16]; /* could be compressed */
+  /*
+   * [edit]
+   *
+   * Put here all state variable needed during the encryption process.
+   */
+} ECRYPT_ctx;
+```
+
+That `input` is in a `struct` is of little relevance; we're primarily
+interested in how `ECRYPT_keysetup` and `ECRYPT_ivsetup` affect
+`input` itself. Minimally, these functions write to `input`, requiring
+it to be allocated, but not necessarily initialized. In Cryptol, we
+can use `undefined` to represent an arbitrary value, and
+`repeat undefined` to represent an arbitrary sequence. (`update`(`s`)
+to an `undefined` sequence is/are inconsistent.)
+
+For example:
+
+```Cryptol
+Cryptol> let u = repeat undefined : [16][32]
+Cryptol> let u' = updates u [6..9] zero
+Cryptol> u' @ 6
+0x00000000
+Cryptol> u' @ 0
+
+Run-time error: undefined
+-- Backtrace --
+Cryptol::error called at Cryptol:1033:13--1033:18
+Cryptol::undefined called at <interactive>:1:16--1:25
+Cryptol::repeat called at <interactive>:1:9--1:15
+Cryptol> u' @@ [6..9]
+[0x00000000, 0x00000000, 0x00000000, 0x00000000]
+```
+
+After combining multiple updates that specify values at all indices,
+Cryptol can evaluate the entire sequence without error:
+
+```Cryptol
+Cryptol> let u'' = updates u' ([0..5] # [10..15]) zero
+Cryptol> u''
+[0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+ 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+ 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+ 0x00000000]
+```
+
+We can leverage this to represent that `ECRYPT_keysetup` and
+`ECRYPT_ivsetup` both need to run to produce a fully initialized input
+for `ECRYPT_encrypt_bytes`. 
+
+`ECRYPT_keysetup` and `ECRYPT_ivsetup` copiously apply the
+`U8TO32_LITTLE` macro to quadruples of bytes in succession; we define
+a Cryptol function to do the same.
+
+**EXERCISE**: Create a Cryptol module for our low-level specification:
+
+```Cryptol
+// spec/salsa20_ref.cry
+
+module salsa20_ref where
+
+/** map `U8TO32_LITTLE` (littleendian_inverse) over quads of bytes */
+map_U8TO32_LITTLE : {n} fin n => [4*n][8] -> [n][32]
+map_U8TO32_LITTLE s = [Salsa20::littleendian i | i <- ((split s):[n][4][8])]
+
+/** global constant for 32-byte keys */
+sigma = map_U8TO32_LITTLE "expand 32-byte k"
+
+/** global constant for 16-byte keys */
+tau = map_U8TO32_LITTLE "expand 16-byte k"
+```
+
+**EXERCISE**: Add a qualified `import` statement to
+`proof/salsa20_ref.saw` for it:
+
+```SAW
+// qualified import of low-level specification
+import "../spec/salsa20_ref.cry" as salsa20_ref;
+```
+
+
+### `ECRYPT_keysetup` and `ECRYPT_ivsetup` (Refinement)
+
+Recalling the implementation of `ECRYPT_keysetup`, it reads from
+higher indices in the key if `kbits` indicates the key `k` is 256
+bits; otherwise, values from `k` are copied twice, per the
+specification for Salsa20 (key) expansion. To convey this in
+Cryptol, we can borrow the same trick used in the high-level spec
+for `Salsa20_expansion`, where we define a constrained type value
+`{a} (2 >= a, a >= 1)`.
+
+**EXERCISE**: Let's split up the work. We'll specify `ECRYPT_keysetup`
+and you can specify the much simpler `ECRYPT_ivsetup`. Fair? Add the
+following definition to `spec/salsa20_ref.cry`:
+
+```Cryptol
+/** low-level Cryptol specification for ECRYPT_keysetup */
+ECRYPT_keysetup : {a} (2 >= a, a >= 1) => [16][32] -> [16*a][8] -> [16][32]
+ECRYPT_keysetup input k = input'
+  where
+    [c0, c1, c2, c3] = if `a == (2:[2]) then sigma else tau
+    n = input @@ [6..9]
+    [k0, k1] = split (join (repeat`{2/a} (map_U8TO32_LITTLE k))) : [2][4][32]
+    input' = [c0] # k0 # [c1] # n # [c2] # k1 # [c3]
+```
+
+**EXERCISE**: Your turn: add a specification for `ECRYPT_ivsetup`:
+
+```Cryptol
+/** low-level Cryptol specification for ECRYPT_ivsetup */
+ECRYPT_ivsetup : [16][32] -> [8][8] -> [16][32]
+ECRYPT_ivsetup input iv = input'
+  where
+    input' = undefined  // replace with your low-level spec
+```
+
+(Hint: Using `updates`, `zero`, and `map_U8TO32_LITTLE` potentially
+reduces the definition to a one-liner.)
+
+In SAW, specifying partial writes to a potentially unallocated array
+is awkward. Plus the actual implementation stashes this array into an
+`ECRYPT_ctx` struct. Asking to work all this out would be unfair, so
+let's just split the work again...
+
+**EXERCISE**: Add the following function specification to
+`proof/salsa20-ref.saw`:
+
+```SAW
+/*
+ * From here, the reference implementation deviates substantially from
+ * the written specification, so our overridable SAW function
+ * specifications will not have "Salsa20::" prefixes referring to the
+ * Salsa20 Cryptol specification -- a useful litmus test indicating
+ * that to maintain validity, we will have to express these SAW function
+ * specifications in terms of low-level Cryptol specifications, and later
+ * verify a relationship between these low-level specifications and the
+ * high-level spec.
+ */
+
+/**
+ * function specification for ECRYPT_keysetup, which initializes the
+ * key component of a "context" for encryption in a manner compatible
+ * with the common interface for eSTREAM ciphers
+ * 
+ * C: void ECRYPT_keysetup(ECRYPT_ctx *x,const u8 *k,u32 kbits,u32 ivbits)
+ * LLVM: void @ECRYPT_keysetup(%struct.ECRYPT_ctx* %0, i8* %1, i32 %2, i32 %3)
+ */
+let ECRYPT_keysetup_setup (a: Int): LLVMSetup () = do {
+    p_x <- alloc (llvm_alias "struct.ECRYPT_ctx");
+    (k, p_k) <- pointer_to_fresh_readonly (array (eval_size {| a * 16 |}) i8) "k";
+
+    let t_kbits = {{ `a * 128 : [32] }};
+    let s_kbits = from_cryptol t_kbits;
+
+    s_ivbits <- symbolic_variable i32 "ivbits"; // ignored (eSTREAM compatibility)
+
+    precond {{ 2 >= `a /\ `a >= 1 }};
+
+    execute [p_x, p_k, s_kbits, s_ivbits];
+
+    let {{ input' = salsa20_ref::ECRYPT_keysetup (repeat undefined) k }};
+    let p_input' = llvm_elem p_x 0;  // x->input
+    let p' (i: Int) : LLVMSetup () = points_to (llvm_elem p_input' i) (from_cryptol {{ input' @ (`i : Integer) }});  // x->input[i] = input' @ i
+    _ <- for [0,1,2,3,4,5,10,11,12,13,14,15] p';
+    return ();
+};
+```
+
+Earlier modules documented how to specify arrays, structs, memory
+allocations, and such in SAW. The `for` loop at the end enumerates the
+indices at which `ECRYPT_keysetup` writes to `x->input` values
+consistently with the low-level spec.
+
+Simple! (That was sarcasm.) Your turn...
+
+**EXERCISE**: Add assignments in `verify_salsa20_ref` to collect
+verification results for `ECRYPT_keysetup_setup a` where `a` is `1` or `2`:
+
+```SAW
+let verify_salsa20_ref (bc: String) : TopLevel () = do {
+    // ...
+    ECRYPT_keysetup_1_result <- verify m "ECRYPT_keysetup" [] (ECRYPT_keysetup_setup 1);
+    ECRYPT_keysetup_2_result <- verify m "ECRYPT_keysetup" [] (ECRYPT_keysetup_setup 2);
+    // TODO: Collect verification results for each function
+    // ...
+};
+```
+
+**EXERCISE**: Specify and collect a verification result for
+`ECRYPT_ivsetup`:
+
+```SAW
+/**
+ * function specification for ECRYPT_ivsetup, which initializes the
+ * initialization vector component of a "context" for encryption in a
+ * manner compatible with the common interface for eSTREAM ciphers
+ * 
+ * C: void ECRYPT_ivsetup(ECRYPT_ctx *x,const u8 *iv)
+ * LLVM: void @ECRYPT_ivsetup(%struct.ECRYPT_ctx* %0, i8* %1)
+ */
+let ECRYPT_ivsetup_setup : LLVMSetup () = do {
+    // ...
+};
+```
+
+```SAW
+let verify_salsa20_ref (bc: String) : TopLevel () = do {
+    // ...
+    ECRYPT_ivsetup_result <- verify m "ECRYPT_ivsetup" [] ECRYPT_ivsetup_setup;
+    // TODO: Collect verification results for each function
+    // ...
+};
+```
+
+
+### `ECRYPT_encrypt_bytes`
+
+Finally, we are ready to consider the encyption function:
+
+```C
+void ECRYPT_encrypt_bytes(ECRYPT_ctx *x,const u8 *m,u8 *c,u32 bytes)
+{
+  u8 output[64];
+  int i;
+
+  if (!bytes) return;
+  for (;;) {
+    salsa20_wordtobyte(output,x->input);
+    x->input[8] = PLUSONE(x->input[8]);
+    if (!x->input[8]) {
+      x->input[9] = PLUSONE(x->input[9]);
+      /* stopping at 2^70 bytes per nonce is user's responsibility */
+    }
+    if (bytes <= 64) {
+      for (i = 0;i < bytes;++i) c[i] = m[i] ^ output[i];
+      return;
+    }
+    for (i = 0;i < 64;++i) c[i] = m[i] ^ output[i];
+    bytes -= 64;
+    c += 64;
+    m += 64;
+  }
+}
+```
+
+This function takes an input message `m`, an output buffer `c`, a
+message bytelength `bytes`, and that `ECRYPT_ctx` `x` initialized by
+`ECRYPT_keysetup` and `ECRYPT_ivsetup`. We intuit that the function
+encrypts `m` to `c`, drawing a key and initialization vector from `x`.
+Also, we discover that `x->input` indices 8-9 represent the counter
+(with `index[8]` being most significant). So if `ECRYPT_keysetup` and
+`ECRYPT_ivsetup` have run at least once (in either order) and
+`x->input` has not since been modified, its counter remains at 0 and
+we expect `c` to point to `Salsa20_encrypt m k v`, where `k` and `v`
+are extracted from `x->input`. But `ECRYPT_encrypt_bytes` is designed
+to work as a cipher update function, resuming from any counter value.
+Examining `ECRYPT_encrypt_bytes` further, we see its call to
+`salsa20_wordtobyte` (which we verified implements the `Salsa20` core
+function), but the key has already been expanded in `x->input`. We can
+deduce what the pre-expanded key must have been based on the values in
+positions for the corresponding key constant (`sigma` for a 32-bit or
+`tau` for a 16-bit key), but because Cryptol does not allow us to
+translate values back into types, we cannot use the key constant to
+specify the corresponding `a` type parameter for
+`Salsa20::Salsa20_encrypt`. Furthermore, this all assumes `x->input`
+includes a valid key expansion, but `ECRYPT_encrypt_bytes` does not
+care about this.
+
+For all these reasons, we cannot specify `ECRYPT_encrypt_bytes` at a
+low level directly in terms of our high-level specification. We must
+find a more general explanation of its behavior, and then understand
+how that relates to our high-level spec.
+
+TODO: Need a bridge...
+
+```Cryptol
+/** low-level Cryptol specification for ECRYPT_encrypt_bytes */
+ECRYPT_encrypt_bytes:
+    {bytes}
+    32 >= width bytes =>
+    [16][32] -> [bytes][8] -> ([16][32], [bytes][8])
+ECRYPT_encrypt_bytes input m = (input', c')
+  where
+    indices = [8..9]
+    ctr = join (reverse (input @@ indices))
+    chunks = `(bytes /^ 64) : [32]
+    ctr' = (reverse ((split (ctr + (zero # chunks))):[2][32]))
+
+    salsa = take (join [ Salsa20::Salsa20 (map_U32TO8_LITTLE (split (join (updates input indices (reverse (split i)))))) | i <- [ctr...] ])
+
+    input' = updates input indices ctr'
+    c' = m ^ salsa
+```
+
+```SAW
+/**
+ * function specification for ECRYPT_encrypt_bytes, which encrypts a
+ * plaintext message `m`, writing ciphertext to a buffer `c`, both of
+ * bytelength `bytes`, given an initial context (`ECRYPT_ctx`) `x`
+ * 
+ * C: void ECRYPT_encrypt_bytes(ECRYPT_ctx *x,const u8 *m,u8 *c,u32 bytes)
+ * LLVM: void @ECRYPT_encrypt_bytes(%struct.ECRYPT_ctx* %0, i8* %1, i8* %2, i32 %3)
+ */
+let ECRYPT_encrypt_bytes_setup (bytes: Int) : CrucibleSetup () = do {
+    input <- symbolic_value (array 16 i32) "x->input";
+    p_x <- alloc_init (llvm_alias "struct.ECRYPT_ctx") (llvm_struct_value [ from_cryptol input ]);
+    (m, p_m) <- pointer_to_fresh_readonly (array bytes i8) "m";
+    p_c <- alloc (array bytes i8);
+    let {{ t_bytes = `bytes : [32] }};
+    let s_bytes = from_cryptol {{ t_bytes }};
+
+    execute [p_x, p_m, p_c, s_bytes];
+
+    let {{ (input', c') = salsa20_ref::ECRYPT_encrypt_bytes input m }};
+
+    points_to p_x (llvm_struct_value [ from_cryptol {{ input' }} ]);
+    points_to p_c (from_cryptol {{ c' }});
+};
+```
+
+```SAW
+    let verify_ECRYPT_encrypt_bytes (bytes: Int) : TopLevel LLVMSpec = unint_verify m "ECRYPT_encrypt_bytes" [ salsa20_wordtobyte_result ] (ECRYPT_encrypt_bytes_setup bytes) [ "Salsa20::Salsa20" ];
+    ECRYPT_encrypt_bytes_results <- for [1,2,4,8,16] verify_ECRYPT_encrypt_bytes;
+```
+
+
+### `ECRYPT_decrypt_bytes`
+
+```C
+void ECRYPT_decrypt_bytes(ECRYPT_ctx *x,const u8 *c,u8 *m,u32 bytes)
+{
+  ECRYPT_encrypt_bytes(x,c,m,bytes);
+}
+```
+
+Finally, some relief. We can specify SAW function and Cryptol
+low-level specifications for `ECRYPT_decrypt_bytes` by assigning them
+directly to `ECRYPT_encrypt_bytes` (sacrificing some accuracy when
+debugging variable names):
+
+```Cryptol
+/** low-level Cryptol specification for ECRYPT_decrypt_bytes */
+ECRYPT_decrypt_bytes = ECRYPT_encrypt_bytes
+```
+
+```SAW
+/**
+ * function specification for ECRYPT_decrypt_bytes, which decrypts a
+ * ciphertext message `c`, writing plaintext to a buffer `m`, both of
+ * bytelength `bytes`, given an initial context (`ECRYPT_ctx`) `x`
+ * 
+ * C: void ECRYPT_decrypt_bytes(ECRYPT_ctx *x,const u8 *c,u8 *m,u32 bytes)
+ * LLVM: void @ECRYPT_encrypt_bytes(%struct.ECRYPT_ctx* %0, i8* %1, i8* %2, i32 %3)
+ */
+let ECRYPT_decrypt_bytes_setup = ECRYPT_encrypt_bytes_setup;
+```
+
+```SAW
+    let bytes_list = [1,2,4,8,16];
+
+    let verify_ECRYPT_encrypt_bytes (bytes: Int) : TopLevel (Int, LLVMSpec) = do {
+        r <- unint_verify m "ECRYPT_encrypt_bytes" [ salsa20_wordtobyte_result ] (ECRYPT_encrypt_bytes_setup bytes) [ "Salsa20::Salsa20" ];
+        return (bytes, r);
+    };
+    ECRYPT_encrypt_bytes_results_by_bytes <- for bytes_list verify_ECRYPT_encrypt_bytes;
+
+    let verify_ECRYPT_decrypt_bytes (bytes: Int, result: LLVMSpec) : TopLevel (Int, LLVMSpec) = do {
+        r <- unint_verify m "ECRYPT_decrypt_bytes" [ result ] (ECRYPT_decrypt_bytes_setup bytes) [ "salsa20_ref::ECRYPT_encrypt_bytes" ];
+        return (bytes, r);
+    };
+    ECRYPT_decrypt_bytes_results <- for ECRYPT_encrypt_bytes_results_by_bytes verify_ECRYPT_decrypt_bytes;
+```
+
+
+### `ECRYPT_keystream_bytes`
+
+```C
+void ECRYPT_keystream_bytes(ECRYPT_ctx *x,u8 *stream,u32 bytes)
+{
+  u32 i;
+  for (i = 0;i < bytes;++i) stream[i] = 0;
+  ECRYPT_encrypt_bytes(x,stream,stream,bytes);
+}
+```
+
+# TODO: Moar exercises...
+
+# TODO:
+# - Finally get to the point about composing low-level specs...
+#   + Show that ECRYPT_keysetup . ECRYPT_ivsetup . ECRYPT_encrypt_bytes is equivalent to Salsa20_encrypt
+#   + Show that ECRYPT_ivsetup . ECRYPT_keysetup . ECRYPT_encrypt_bytes is equivalent to Salsa20_encrypt
+#   + Show that ECRYPT_ivsetup . ECRYPT_keysetup . ECRYPT_encrypt_bytes . ECRYPT_encrypt_bytes ... is equivalent to Salsa20_encrypt

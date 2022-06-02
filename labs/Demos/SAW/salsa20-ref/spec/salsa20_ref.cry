@@ -1,0 +1,53 @@
+module salsa20_ref where
+
+import Salsa20 as Salsa20
+
+/** map `U8TO32_LITTLE` (littleendian_inverse) over quads of bytes */
+map_U8TO32_LITTLE : {n} fin n => [4*n][8] -> [n][32]
+map_U8TO32_LITTLE s = [Salsa20::littleendian i | i <- ((split s):[n][4][8])]
+
+/** map `U32TO8_LITTLE` (littleendian_inverse) over 32-bit words */
+map_U32TO8_LITTLE : {n} (fin n) => [n][32] -> [4*n][8]
+map_U32TO8_LITTLE s = join [Salsa20::littleendian_inverse i | i <- s]
+
+/** global constant for 32-byte keys */
+sigma = map_U8TO32_LITTLE "expand 32-byte k"
+
+/** global constant for 16-byte keys */
+tau = map_U8TO32_LITTLE "expand 16-byte k"
+
+/** low-level Cryptol specification for ECRYPT_keysetup */
+ECRYPT_keysetup : {a} (2 >= a, a >= 1) => [16][32] -> [16*a][8] -> [16][32]
+ECRYPT_keysetup input k = input'
+  where
+    [c0, c1, c2, c3] = if `a == (2:[2]) then sigma else tau
+    n = input @@ [6..9]
+    [k0, k1] = split (join (repeat`{2/a} (map_U8TO32_LITTLE k))) : [2][4][32]
+    input' = [c0] # k0 # [c1] # n # [c2] # k1 # [c3]
+
+/** low-level Cryptol specification for ECRYPT_ivsetup */
+ECRYPT_ivsetup : [16][32] -> [8][8] -> [16][32]
+ECRYPT_ivsetup input iv = input'
+  where
+    _iv = (map_U8TO32_LITTLE iv) # zero
+    input' = updates input [6..9] _iv
+
+/** low-level Cryptol specification for ECRYPT_encrypt_bytes */
+ECRYPT_encrypt_bytes:
+    {bytes}
+    32 >= width bytes =>
+    [16][32] -> [bytes][8] -> ([16][32], [bytes][8])
+ECRYPT_encrypt_bytes input m = (input', c')
+  where
+    indices = [8..9]
+    ctr = join (reverse (input @@ indices))
+    chunks = `(bytes /^ 64) : [32]
+    ctr' = (reverse ((split (ctr + (zero # chunks))):[2][32]))
+
+    salsa = take (join [ Salsa20::Salsa20 (map_U32TO8_LITTLE (split (join (updates input indices (reverse (split i)))))) | i <- [ctr...] ])
+
+    input' = updates input indices ctr'
+    c' = m ^ salsa
+
+/** low-level Cryptol specification for ECRYPT_decrypt_bytes */
+ECRYPT_decrypt_bytes = ECRYPT_encrypt_bytes

@@ -1,20 +1,24 @@
 // proof/salsa20-ref.saw
 
-// qualified import of Salsa20 from `cryptol-specs`
+// qualified import of Salsa20 (copied from `GaloisInc/cryptol-specs`)
 import "../spec/Salsa20.cry" as Salsa20;
+
+// qualified import of low-level specification
+import "../spec/salsa20_ref.cry" as salsa20_ref;
 
 // based on "helpers.saw" from _Program Verification with SAW_:
 // https://saw.galois.com/intro/
 include "helpers.saw";
 
 /**
- * method specification for `salsa20_wordtobyte`, which implements
+ * function specification for `salsa20_wordtobyte`, which implements
  * `Salsa20::Salsa20`, the Salsa20 "hash" (original written spec) or
  * "core" (updated term on website <https://cr.yp.to/salsa20.html>)
- *
- * static void salsa20_wordtobyte(u8 output[64], const i32 input[16])
+ * 
+ * C: static void salsa20_wordtobyte(u8 output[64],const u32 input[16])
+ * LLVM: internal void @salsa20_wordtobyte(i8* %0, i32* %1)
  */
-let salsa20_wordtobyte_setup : CrucibleSetup () = do {
+let salsa20_wordtobyte_setup : LLVMSetup () = do {
     p_output <- alloc (array 64 i8);
     (input, p_input) <- pointer_to_fresh_readonly (array 16 i32) "input";
 
@@ -22,6 +26,112 @@ let salsa20_wordtobyte_setup : CrucibleSetup () = do {
 
     points_to p_output (from_cryptol {{ Salsa20::Salsa20 (join [Salsa20::littleendian_inverse x | x <- input]) }});
 };
+
+/**
+ * function specification for `ECRYPT_init`, which initializes
+ * non-key/IV state for an eSTREAM cipher. Salsa20 has no such state,
+ * so this function does nothing.
+ * 
+ * C: static void ECRYPT_init()
+ * LLVM: void @ECRYPT_init()
+ */
+let ECRYPT_init_setup : LLVMSetup () = do {
+    execute [];
+};
+
+/*
+ * From here, the reference implementation deviates substantially from
+ * the written specification, so our overridable SAW function
+ * specifications will not have "Salsa20::" prefixes referring to the
+ * Salsa20 Cryptol specification -- a useful litmus test indicating
+ * that to maintain validity, we will have to express these SAW function
+ * specifications in terms of low-level Cryptol specifications, and later
+ * verify a relationship between these low-level specifications and the
+ * high-level spec.
+ */
+
+/**
+ * function specification for ECRYPT_keysetup, which initializes the
+ * key component of a "context" for encryption in a manner compatible
+ * with the common interface for eSTREAM ciphers
+ * 
+ * C: void ECRYPT_keysetup(ECRYPT_ctx *x,const u8 *k,u32 kbits,u32 ivbits)
+ * LLVM: void @ECRYPT_keysetup(%struct.ECRYPT_ctx* %0, i8* %1, i32 %2, i32 %3)
+ */
+let ECRYPT_keysetup_setup (a: Int): LLVMSetup () = do {
+    p_x <- alloc (llvm_alias "struct.ECRYPT_ctx");
+    (k, p_k) <- pointer_to_fresh_readonly (array (eval_size {| a * 16 |}) i8) "k";
+
+    let t_kbits = {{ `a * 128 : [32] }};
+    let s_kbits = from_cryptol t_kbits;
+
+    s_ivbits <- symbolic_variable i32 "ivbits"; // ignored (eSTREAM compatibility)
+
+    precond {{ 2 >= `a /\ `a >= 1 }};
+
+    execute [p_x, p_k, s_kbits, s_ivbits];
+
+    let {{ input' = salsa20_ref::ECRYPT_keysetup (repeat undefined) k }};
+    let p_input' = llvm_elem p_x 0;  // x->input
+    let p' (i: Int) : LLVMSetup () = points_to (llvm_elem p_input' i) (from_cryptol {{ input' @ (`i : Integer) }});  // x->input[i] = input' @ i
+    _ <- for [0,1,2,3,4,5,10,11,12,13,14,15] p';
+    return ();
+};
+
+/**
+ * function specification for ECRYPT_ivsetup, which initializes the
+ * initialization vector component of a "context" for encryption in a
+ * manner compatible with the common interface for eSTREAM ciphers
+ * 
+ * C: void ECRYPT_ivsetup(ECRYPT_ctx *x,const u8 *iv)
+ * LLVM: void @ECRYPT_ivsetup(%struct.ECRYPT_ctx* %0, i8* %1)
+ */
+let ECRYPT_ivsetup_setup : LLVMSetup () = do {
+    p_x <- alloc (llvm_alias "struct.ECRYPT_ctx");
+    (iv, p_iv) <- pointer_to_fresh_readonly (array 8 i8) "iv";
+
+    execute [p_x, p_iv];
+
+    let {{ input' = salsa20_ref::ECRYPT_ivsetup (repeat undefined) iv }};
+    let p_input' = llvm_elem p_x 0;
+    let p' (i: Int) : LLVMSetup () = points_to (llvm_elem p_input' i) (from_cryptol {{ input' @ (`i : Integer) }});
+    _ <- for [6,7,8,9] p';
+    return ();
+};
+
+/**
+ * function specification for ECRYPT_encrypt_bytes, which encrypts a
+ * plaintext message `m`, writing ciphertext to a buffer `c`, both of
+ * bytelength `bytes`, given an initial context (`ECRYPT_ctx`) `x`
+ * 
+ * C: void ECRYPT_encrypt_bytes(ECRYPT_ctx *x,const u8 *m,u8 *c,u32 bytes)
+ * LLVM: void @ECRYPT_encrypt_bytes(%struct.ECRYPT_ctx* %0, i8* %1, i8* %2, i32 %3)
+ */
+let ECRYPT_encrypt_bytes_setup (bytes: Int) : CrucibleSetup () = do {
+    input <- symbolic_value (array 16 i32) "x->input";
+    p_x <- alloc_init (llvm_alias "struct.ECRYPT_ctx") (llvm_struct_value [ from_cryptol input ]);
+    (m, p_m) <- pointer_to_fresh_readonly (array bytes i8) "m";
+    p_c <- alloc (array bytes i8);
+    let {{ t_bytes = `bytes : [32] }};
+    let s_bytes = from_cryptol {{ t_bytes }};
+
+    execute [p_x, p_m, p_c, s_bytes];
+
+    let {{ (input', c') = salsa20_ref::ECRYPT_encrypt_bytes input m }};
+
+    points_to p_x (llvm_struct_value [ from_cryptol {{ input' }} ]);
+    points_to p_c (from_cryptol {{ c' }});
+};
+
+/**
+ * function specification for ECRYPT_decrypt_bytes, which decrypts a
+ * ciphertext message `c`, writing plaintext to a buffer `m`, both of
+ * bytelength `bytes`, given an initial context (`ECRYPT_ctx`) `x`
+ * 
+ * C: void ECRYPT_decrypt_bytes(ECRYPT_ctx *x,const u8 *c,u8 *m,u32 bytes)
+ * LLVM: void @ECRYPT_encrypt_bytes(%struct.ECRYPT_ctx* %0, i8* %1, i8* %2, i32 %3)
+ */
+let ECRYPT_decrypt_bytes_setup = ECRYPT_encrypt_bytes_setup;
 
 // TODO: Define remaining function specifications
 
@@ -33,21 +143,39 @@ let salsa20_wordtobyte_setup : CrucibleSetup () = do {
  */
 let verify_salsa20_ref (bc : String) : TopLevel () = do {
     m <- llvm_load_module bc;
-    
+
     salsa20_wordtobyte_result <- verify m "salsa20_wordtobyte" [] salsa20_wordtobyte_setup;
-    // ECRYPT_init_result <- verify m "ECRYPT_init" [] ECRYPT_init_setup;
-    // ECRYPT_keysetup_result <- verify m "ECRYPT_keysetup" [] ECRYPT_keysetup_setup;
-    // ECRYPT_ivsetup_result <- verify m "ECRYPT_ivsetup" [] ECRYPT_ivsetup_setup;
-    // ECRYPT_encrypt_bytes_result <- unint_verify m "ECRYPT_encrypt_bytes" [ salsa20_wordtobyte_result ] ECRYPT_encrypt_bytes_setup [...];
-    // ECRYPT_decrypt_bytes_result <- unint_verify m "ECRYPT_decrypt_bytes" [ ECRYPT_encrypt_bytes_result ] ECRYPT_decrypt_bytes_setup [...];
+    ECRYPT_init_result <- verify m "ECRYPT_init" [] ECRYPT_init_setup;
+    ECRYPT_keysetup_1_result <- verify m "ECRYPT_keysetup" [] (ECRYPT_keysetup_setup 1);
+    ECRYPT_keysetup_2_result <- verify m "ECRYPT_keysetup" [] (ECRYPT_keysetup_setup 2);
+    ECRYPT_ivsetup_result <- verify m "ECRYPT_ivsetup" [] ECRYPT_ivsetup_setup;
+
+    let bytes_list = [1,2,4,8,16];
+
+    let verify_ECRYPT_encrypt_bytes (bytes: Int) : TopLevel (Int, LLVMSpec) = do {
+        r <- unint_verify m "ECRYPT_encrypt_bytes" [ salsa20_wordtobyte_result ] (ECRYPT_encrypt_bytes_setup bytes) [ "Salsa20::Salsa20" ];
+        return (bytes, r);
+    };
+    ECRYPT_encrypt_bytes_results_by_bytes <- for bytes_list verify_ECRYPT_encrypt_bytes;
+
+    let verify_ECRYPT_decrypt_bytes (bytes: Int, result: LLVMSpec) : TopLevel (Int, LLVMSpec) = do {
+        r <- unint_verify m "ECRYPT_decrypt_bytes" [ result ] (ECRYPT_decrypt_bytes_setup bytes) [ "salsa20_ref::ECRYPT_encrypt_bytes" ];
+        return (bytes, r);
+    };
+    ECRYPT_decrypt_bytes_results <- for ECRYPT_encrypt_bytes_results_by_bytes verify_ECRYPT_decrypt_bytes;
+
     // ECRYPT_keystream_bytes_result <- unint_verify m "ECRYPT_keystream_bytes" [ ECRYPT_encrypt_bytes_result ] ECRYPT_keystream_bytes_setup [...];
     
     print (str_concat (str_concat "TODO: Verify `" bc) "`...");
 };
 
+/**
+ * main TopLevel that will run when this script is invoked from the
+ * command line
+ */
 let main : TopLevel () = do {
     for [ "../build/salsa20-ref-mips64.bc"
-        , "../build/salsa20-ref-mips64le.bc" ] verify_salsa20_ref;
+        , "../build/salsa20-ref-mips64el.bc" ] verify_salsa20_ref;
 
     print "Done!";
 };
