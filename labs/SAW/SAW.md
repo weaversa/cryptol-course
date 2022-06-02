@@ -1211,10 +1211,51 @@ above with postcoditions
 
 ## Structs in Cryptol
 
-We can also explicitly define a structure:
+We can also explicitly define a structure in SAW. Let's consider another struct:
 
+```c
+#define GAITS 2
+#define DIRECTIONS 4
+#define ANIMATION_STEPS 3
+
+typedef struct {
+  uint8_t frames[GAITS][DIRECTIONS][ANIMATION_STEPS];
+  uint32_t xPos;
+  uint32_t yPos;
+} sprite_t;
 ```
-example
+
+The idea behind the `sprite_t` struct is to hold all of the sprites associated with a character that we will present in our game. `frames` is a 3D uint8_t array where each element represents an asset identifier from our art collection. Why a 3D array? Well, we want to provide animations for our characters that way it looks like they are moving on the screen (and it's a great excuse to discuss multi-dimensional arrays in SAW). The first dimension refers to the number of gaits we want to represent, that being walking and running. The second dimension refers to the number of directions a character can face. Imagine that we are working with a 2D top down game, so we have 4 directions: up, down, left, and right. The third dimension refers to the number of frames per movement.
+
+Let's think about how we walk forward (feel free to try this at home). If you are walking forward, you first stand up, move one foot in front of the other, place that foot down, lift up your back foot, and move that back foot ahead of your front foot. Rinse and repeat, and you'll be walking 'cross the floor.
+
+Now that's a lot of steps! We can simplify this process by only considering 3 frames: standing up, left foot in front, and right foot in front. We can then reuse the standing up frame as a transition between the left foot forward and the right foot forward frames.
+
+Alright, that's enough of a crash course in animation. Let's get back to our struct. We have two more fields: xPos and yPos. These are simply positional references for where a character is located relative to the screen.
+
+With that understanding, let's consider a function that uses the `sprite_t` struct:
+
+```c
+uint32_t initDefaultSprite(sprite_t* sprite)
+{
+  // Initialize the sprite frames to the default asset
+  for (uint8_t i = 0; i < GAITS; i++)
+  {
+    for (uint8_t j = 0; j < DIRECTIONS; j++)
+    {
+      for (uint8_t k = 0; k < ANIMATION_STEPS; k++)
+      {
+        sprite->frames[i][j][k] = 0x00;
+      }
+    }
+  }
+
+  // Initialize sprite's default position
+  sprite->xPos = 1;
+  sprite->yPos = 2;
+
+  return SUCCESS;
+}
 ```
 
 //Cryptol interprets structs as tuples
