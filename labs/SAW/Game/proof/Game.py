@@ -113,6 +113,14 @@ class initDefaultPlayer_Contract(Contract):
     # Option 2: Assert all of the fields to a tuple
     # self.points_to(player, cry_f("( repeat 0x41 : [{MAX_NAME_LENGTH}][8], 1 : [32], 10 : [32], 5 : [32], 4 : [32], 3 : [32] )"))
 
+    # Pop Quiz: Why doesn't this work?
+    # self.points_to(player, cry_f("""{{ name = repeat 0x41 : [{MAX_NAME_LENGTH}][8],
+    #                                    level = 1 : [32],
+    #                                    hp = 10 : [32],
+    #                                    atk = 5 : [32],
+    #                                    def = 4 : [32],
+    #                                    spd = 3 : [32] }}"""))
+
     self.returns(cry_f("`({SUCCESS}) : [32]"))
 
 
@@ -568,6 +576,7 @@ class GameTests(unittest.TestCase):
     self.assertIs(setScreenTile_pass_result.is_success(), True)
     self.assertIs(setScreenTile_fail_result.is_success(), True)    
     self.assertIs(resetInventoryItems_result.is_success(), True)
+
 
 if __name__ == "__main__":
   unittest.main()

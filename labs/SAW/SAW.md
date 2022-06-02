@@ -1204,6 +1204,62 @@ class initDefaultPlayer_Contract(Contract):
     self.returns(cry_f("`({SUCCESS}) : [32]"))
 ```
 
+
+### Structs as Cryptol Tuples and Records
+
+Let's go back and tidy up `initDefaultPlayer_Contract`'s postconditions. Instead of using one postcondition per field, we can rewrite the `points_to` postcondition to account for the entire struct. We do this by taking advantage of the fact that Cryptol interprets symbolic structs as tuples.
+
+```python
+self.points_to(player, cry_f("""( repeat 0x41 : [{MAX_NAME_LENGTH}][8],
+                                  1  : [32],
+                                  10 : [32],
+                                  5  : [32],
+                                  4  : [32],
+                                  3  : [32] )"""))
+```
+
+We use 3 double quotes `"""` in our `cry_f` call. This technique is handy when we want to separate our expected Cryptol-defined behaviors over multiple lines to improve code readability. Python considers the 3 double quotes as a multiline string. Multiline strings may also be used as block comments in Python.
+
+While Cryptol's record types could also represent structs, SAW does not currently support translating Cryptol's record types into crucible-llvm's type system. If we tried to represent the struct as a Cryptol record like so:
+
+```python
+    self.points_to(player, cry_f("""{{ name = repeat 0x41 : [{MAX_NAME_LENGTH}][8],
+                                       level = 1 : [32],
+                                       hp = 10 : [32],
+                                       atk = 5 : [32],
+                                       def = 4 : [32],
+                                       spd = 3 : [32] }}"""))
+```
+
+SAW would return this error:
+
+```
+clang -c -g -emit-llvm -o artifacts/Game.bc src/Game.c
+python3 proof/Game.py
+⚠️  Failed to verify: lemma_initDefaultPlayer_Contract (defined at proof/Game.py:537):
+error: SAW doesn't yet support translating Cryptol's record type(s) into crucible-llvm's type system.
+        stdout:
+
+F
+======================================================================
+FAIL: test_Game (__main__.GameTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "proof/Game.py", line 563, in test_Game
+    self.assertIs(initDefaultPlayer_result.is_success(), True)
+AssertionError: False is not True
+
+----------------------------------------------------------------------
+Ran 1 test in 0.752s
+
+FAILED (failures=1)
+🛑  The goal failed to verify.
+make: *** [Makefile:14: all] Error 1
+```
+
+If a Cryptol specification uses a record type to represent structs, then we can define a Python helper function for wrapping. 
+
+
 ## Explicit Structs
 
 We can also explicitly define a struct in SAW. Let's consider another struct:
@@ -1299,48 +1355,8 @@ sprite_p = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(tempCharac
 ```
 since we don't use `sprite` later in the code. If we wanted, we could assert other preconditions on `tempCharacter_p`, `frames`, `xPos`, and `yPos` using `precondition_f`. We don't in this example, but it's still a feature to consider!
 
-In the postcondition, we assert `sprite_p` points to some concrete structure. Cryptol interprets symbolic structs as tuples. Contrast this simplistic postcondition to our previous `initDefaultPlayer_Contract` example, where we had to check each field one at a time. 
+In the postcondition, we assert `sprite_p` points to some concrete structure. The benefit of using explicit structs is that it allows us to represent pointer fields that may be present in a struct.
 
-We use 3 double quotes `"""` in one of our `cry_f` calls. This technique is handy when we want to separate our expected Cryptol-defined behaviors over multiple lines to improve code readability. Python considers the 3 double quotes as a multiline string. Multiline strings may also be used as block comments in Python.
-
-### Cryptol Records and Structs
-
-While Cryptol's record types could also represent structs, SAW does not currently support translating Cryptol's record types into crucible-llvm's type system. So if we tried to use the following postcondition with a Cryptol record:
-
-```python
-self.points_to(sprite_p, struct(cry_f("""
-  {{ frame = zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8],
-     xPos  = 1 : [32],
-     yPos  = 2 : [32]}}""")))   
-```
-
-SAW would return this error:
-
-```
-clang -c -g -emit-llvm -o artifacts/Game.bc src/Game.c
-python3 proof/Game.py
-⚠️  Failed to verify: lemma_initDefaultSprite_Contract (defined at proof/Game.py:530):
-error: SAW doesn't yet support translating Cryptol's record type(s) into crucible-llvm's type system.
-        stdout:
-
-F
-======================================================================
-FAIL: test_Game (__main__.GameTests)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "proof/Game.py", line 556, in test_Game
-    self.assertIs(initDefaultSprite_result.is_success(), True)
-AssertionError: False is not True
-
-----------------------------------------------------------------------
-Ran 1 test in 0.878s
-
-FAILED (failures=1)
-🛑  The goal failed to verify.
-make: *** [Makefile:14: all] Error 1
-```
-
-If a Cryptol specification uses a record type to represent structs, then we can define a Python helper function for wrapping. 
 
 ## Exercise: Resolving an Attack!
 
