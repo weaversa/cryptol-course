@@ -1251,7 +1251,7 @@ Our function, `resolveAttack`, takes two inputs:
 - `character_t* target`: Our defending character
 - `uint32_t atk`: The attack stat of our attacker
 
-Think about how you would set up a SAW contract for this function. Go ahead and try it you would like! We'll wait for you :)
+Think about how to make a SAW contract for this function. Go ahead and try it if you'd like! We'll wait for you :)
 
 Got an idea, great! Let's go over the steps we need to go through...
 
@@ -1266,7 +1266,7 @@ class resolveAttack_Contract(Contract):
 
     # Assert preconditions
 
-    # Sybolically execute the function
+    # Symbolically execute the function
     self.execute_func(target_p, atk)
 
     # Assert postconditions
