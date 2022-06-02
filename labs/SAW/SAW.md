@@ -60,6 +60,7 @@ class contractName(Contract):
   def specification(self):
     # Initialization and Preconditions
     # Execute Function
+    # Initialization for output variables (optional)
     # Postconditions and Return
 
 class testName(unittest.TestCase):
@@ -1495,7 +1496,11 @@ class resolveAttack_Contract(Contract):
     self.returns(void)
 ```
 
-Our contract is looking pretty good now! Let's set up our unit test:
+Our contract is looking pretty good now! Notice that we use `{target}.2` and `{target}.4`for our postconditions. This notation lets us access fields within our target type. Specifically, `{target}.2` refers to the `hp` field, and `{target}.4` refers to the `def` field.
+
+It should be noted that using these cases in a parameterized contract is not the only way to set up our contract. We could have designed some fancy Cryptol that considers all of the different stat ranges for our preconditions and postconditions. However, we wanted to show this method of using cases since we can leverage Python's if statements in our proofs.
+
+Let's set up our unit test:
 
 ```python
 class GameTests(unittest.TestCase):
