@@ -191,7 +191,7 @@ string). To use Python variables in scope within the string use
 Sometimes we don't want to return a Cryptol term. In those cases we
 can just use `returns(someSetupValue)`. The specification function of
 a Contract must **always** have a `self.returns(someSetupValue)` or
-`self.returns_f(string)` statement. If the function returns `void` one
+`self.returns_f(string)` statement. If the function returns `void`, one
 can use `self.returns(void)`.
 
 ### Terms from Cryptol

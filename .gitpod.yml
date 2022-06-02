@@ -1,11 +1,11 @@
-image: ghcr.io/weaversa/cryptol-course:2.12
+image: ghcr.io/weaversa/cryptol-course:gitpod
 
 tasks:
-  - init: gp open README.md
-    command: echo 'Welcome to the Cryptol course! The presentation material is formatted in Markdown (.md) files. To view, click the "Open Preview to the Side" icon above and at the far right of the Markdown document. To enter the Cryptol interpreter, type "cryptol" at the terminal window. We will do this automatically for you now.' && cryptol
+  - command: gp open README.md
+  - command: echo 'Welcome to the Cryptol course! The presentation material is formatted in Markdown (.md) files. To view, click the "Open Preview to the Side" icon above and at the far right of the Markdown document. To enter the Cryptol interpreter, type "cryptol" at the terminal window. We will do this automatically for you now.' && cryptol
     
 vscode:
   extensions:
     # Add PDF viewing support to VSCode
-    - https://tomoki1207.gallery.vsassets.io/_apis/public/gallery/publisher/tomoki1207/extension/pdf/1.1.0/assetbyname/Microsoft.VisualStudio.Services.VSIXPackage
+    - tomoki1207.pdf
     - jldodds.cryptol
