@@ -1042,11 +1042,8 @@ This example is from [here]()
 
 # Structs 
 
-In this section we learn how to verify code involving structs and global variables by analyzing a game. The code for the game can be found 
+In this section we learn how to verify code involving structs and global variables by analyzing a game. The code for the game can be found [here](./Game/src/).
 
-```
-HERE.
-```
 
 ### Struct Initialization
 
@@ -1119,12 +1116,46 @@ class initDefaultPlayer_Contract(Contract):
     self.returns(cry_f("`({SUCCESS}) : [32]"))
 ```
 
-The command `alias_ty("struct.<typedef name>")` creates a type corresponding to the structure, so `player = self.alloc(alias_ty("struct.character_t"))` just creates a symbolic pointer variable `player` pointing to a structure of type `character_t`.
+The command `alias_ty("struct.<typedef name>")` creates a type corresponding to the structure, so `player = self.alloc(alias_ty("struct.character_t"))` just creates a symbolic pointer variable `player` pointing to a structure of type `character_t`. Even though the function's input parameter is `player_t`, we need to pass `character_t` to `alias_ty` given that `player_t` is just a typedef for `character_t`.
 
-Let's breakdown a `points_to` command:
+Let's breakdown a `points_to` command seen above:
 
+```python
+self.points_to(player['name'], cry_f("repeat 0x41 : [{MAX_NAME_LENGTH}][8]"))
+```
 
-If the bitcode is made using the debug flag `-g` then the field names of structs are present in the bitcode. This allows us to use strings instead of remembering the index of every field:
+Here, we assert that the `name` field of the player pointer points to a value specified a Cryptol expression. Notice that we use the string associated with the struct field, `name`, to access our target struct index. We are able to use strings instead of remembering the index of every field when debug symbols are included in the generated bitcode. For the full compilation details, check out the [Makefile](./Game/Makefile) associated with the `Game` directory. However, the `-g` clang flag is what tells the compiler to include the field names of the structs in the bitcode.
+
+If we didn't have the debug symbols in the bitcode, SAW would throw us an error like so:
+
+```
+clang -c -emit-llvm -o artifacts/Game.bc src/Game.c
+python3 proof/Game.py
+⚠️  Failed to verify: lemma_initDefaultPlayer_Contract (defined at proof/Game.py:513):
+error: Unable to resolve struct field name: '"name"'
+Could not resolve setup value debug information into a struct type.
+Perhaps you need to compile with debug symbols enabled.
+
+        stdout:
+
+F
+======================================================================
+FAIL: test_Game (__main__.GameTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "proof/Game.py", line 514, in test_Game
+    self.assertIs(initDefaultPlayer_result.is_success(), True)
+AssertionError: False is not True
+
+----------------------------------------------------------------------
+Ran 1 test in 0.865s
+
+FAILED (failures=1)
+🛑  The goal failed to verify.
+make: *** [Makefile:14: all] Error 1
+```
+
+And we would need to use the appropriate indices to represent each field:
 
 ```python
 //place constants here
@@ -1135,17 +1166,17 @@ class initDefaultPlayer_Contract(Contract):
 
     self.execute_func(player)
 
-    self.points_to(player['name'], cry_f("repeat 0x41 : [{MAX_NAME_LENGTH}][8]"))
-    self.points_to(player['level'], cry_f("1 : [32]"))
-    self.points_to(player['hp'], cry_f("10 : [32]"))
-    self.points_to(player['atk'], cry_f("5 : [32]"))
-    self.points_to(player['def'], cry_f("4 : [32]"))
-    self.points_to(player['spd'], cry_f("3 : [32]"))
+    self.points_to(player[0], cry_f("repeat 0x41 : [{MAX_NAME_LENGTH}][8]"))
+    self.points_to(player[1], cry_f("1 : [32]"))
+    self.points_to(player[2], cry_f("10 : [32]"))
+    self.points_to(player[3], cry_f("5 : [32]"))
+    self.points_to(player[4], cry_f("4 : [32]"))
+    self.points_to(player[5], cry_f("3 : [32]"))
     
     self.returns(cry_f("`({SUCCESS}) : [32]"))
 ```
 
-Alternatively, we coud use post conditions
+Alternatively, we could use post conditions
 
 ```
 above with postcoditions
