@@ -1124,8 +1124,6 @@ where `SUCCESS` and `MAX_NAME_LENGTH` are C constants
 #define FAILURE 85
 ```
 
-## Struct Initialization and Explicit Structs
-
 The following constract will verify our initialization:
 
 ```python
@@ -1211,13 +1209,82 @@ Alternatively, we could use post conditions
 above with postcoditions
 ```
 
-## Structs in Cryptol
+### Explicit Structs
 
-We can also explicitly define a structure:
+We can also explicitly define a struct in SAW. Let's consider another struct:
 
+```c
+#define GAITS 2
+#define DIRECTIONS 4
+#define ANIMATION_STEPS 3
+
+typedef struct {
+  uint8_t frames[GAITS][DIRECTIONS][ANIMATION_STEPS];
+  uint32_t xPos;
+  uint32_t yPos;
+} sprite_t;
 ```
-example
+
+The idea behind the `sprite_t` struct is to hold all of the sprites associated with a character that we will present in our game. `frames` is a 3D uint8_t array where each element represents an asset identifier from our art collection. Why a 3D array? Well, we want to provide animations for our characters that way it looks like they are moving on the screen (and it's a great excuse to discuss multi-dimensional arrays in SAW). The first dimension refers to the number of gaits we want to represent, that being walking and running. The second dimension refers to the number of directions a character can face. Imagine that we are working with a 2D top down game, so we have 4 directions: up, down, left, and right. The third dimension refers to the number of frames per movement.
+
+Let's think about how we walk forward (feel free to try this at home). If you are walking forward, you first stand up, move one foot in front of the other, place that foot down, lift up your back foot, and move that back foot ahead of your front foot. Rinse and repeat, and you'll be walking 'cross the floor.
+
+Now that's a lot of steps! We can simplify this process by only considering 3 frames: standing up, left foot in front, and right foot in front. We can then reuse the standing up frame as a transition between the left foot forward and the right foot forward frames.
+
+Alright, that's enough of a crash course in animation. Let's get back to our struct. We have two more fields: xPos and yPos. These are simply positional references for where a character is located relative to the screen.
+
+With that understanding, let's consider a function that uses the `sprite_t` struct:
+
+```c
+uint32_t initDefaultSprite(sprite_t* sprite)
+{
+  // Initialize the sprite frames to the default asset
+  for (uint8_t i = 0; i < GAITS; i++)
+  {
+    for (uint8_t j = 0; j < DIRECTIONS; j++)
+    {
+      for (uint8_t k = 0; k < ANIMATION_STEPS; k++)
+      {
+        sprite->frames[i][j][k] = 0x00;
+      }
+    }
+  }
+
+  // Initialize sprite's default position
+  sprite->xPos = 1;
+  sprite->yPos = 2;
+
+  return SUCCESS;
+}
 ```
+
+Now, let's go ahead and make a contract to represent this function:
+
+```python
+class initDefaultSprite_Contract(Contract):
+  def specification (self):
+    # Declare variables
+    ty = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
+    frames = self.fresh_var(ty, "sprite.frames")
+    xPos = self.fresh_var(i32, "sprite.xPos")
+    yPos = self.fresh_var(i32, "sprite.yPos")
+    sprite_p = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(frames, xPos, yPos))
+
+    # Symbolically execute the function
+    self.execute_func(sprite_p)
+
+    # Assert postconditions
+    self.points_to(sprite_p, struct(cry_f("""(zero, 1 , 2)
+      : ([{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8], [32], [32])""")))                              
+                                           
+    self.returns_f("`({SUCCESS}) : [32]")
+```
+
+Notice that for explicit structs, we declare variables that represent the types for each struct field. We then connect them to our allocated `sprite_t` pointer, `sprite_p`, using `points_to = struct(...)`. This input to `alloc` asserts the precondition that `sprite_p` points to these SAW-defined variables. If we wanted to, we could then assert other preconditions on `frames`, `xPos`, and `yPos` using `precondition_f` if desired. We don't do so in this example contract, but it's still a feature to consider!
+
+Also notice how we assert the `points_to` postcondition for `sprite_p`. We use `struct` again, but this time to assert that `sprite_p` points to a Cryptol-defined tuple. Relating this back to our `initDefaultPlayer_Contract` example, we can see that this one assertion simplifies our postcondition compared to checking each field at a time. As a side note, we use 3 double quotes (""") for our `cry_f` call. This technique is handy when we want to separate our expected Cryptol-defined behaviors over multiple lines so to improve code readability. Python considers the 3 double quotes as a multiline string. While multiline strings may be used as block comments in Python, it is perfect for us to use here given that `cry_f ` accepts an input string.
+
+### Structs in Cryptol
 
 //Cryptol interprets structs as tuples
 //But what if a struct has a pointer as a field...?
@@ -1669,7 +1736,7 @@ class resolveAttack_Contract(Contract):
 
 Would this contract pass verification? Absolutely. Given that the `MAX_STAT` preconditions limits our input values, we would never see SAW's counterexample of an integer overflow/underflow from case 2.
 
-
+## Using Structs in Specifications
 
 # Using Gained Knowledge
 
@@ -1756,41 +1823,6 @@ corresponding _implementation_.
 See [SMT: Equality Logic With Uninterpreted Functions](https://www21.in.tum.de/teaching/sar/SS20/6.pdf), which describes
 how uninterpreted functions and constraints are applied to
 Satisfiability Modulo Theories.
-
-//add in use when function complicated
-//add uninterpreting may cause failure (logic needed sometimes). This can be avoided sometimes by making sure for every function you are uninterpreting you are also passing in a corresponding lemma
-
-
-# Advanced Topics and Exercises
-
-//Dj add stuff
-
-## Global Variables
-
-//DJ add stuff
-
-//maybe something with `extern`
-
-### Nested DEFINE Statements
-
-// SAWs limitations
-// Worse case: edit the source code
-
-## Aliasing
-
-// Talk about in general what aliasing is
-// DJ add stuff (specifically with aliases)
-// Talk about SAW limitations and lemmas
-
-### Wrapper Functions
-
-// Worse case scenario: editing the source code
-
-## Large Data
-
-// Dj add the stuff about inputting in a big array
-
-## Capstone
 
 # Solicitation
 
