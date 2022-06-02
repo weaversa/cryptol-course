@@ -1208,7 +1208,7 @@ class initDefaultPlayer_Contract(Contract):
 
 ### Structs as Cryptol Tuples and Records
 
-Let's go back and tidy up `initDefaultPlayer_Contract`'s postconditions. Instead of using one postcondition per field, we can rewrite the `points_to` postcondition to account for the entire struct. We do this by taking advantage of the fact that Cryptol interprets symbolic structs as tuples.
+We can replace all of the `points_to` postconditions in the previous contract since Cryptol interprets symbolic structs as tuples.
 
 ```python
 self.points_to(player, cry_f("""( repeat 0x41 : [{MAX_NAME_LENGTH}][8],
@@ -1219,7 +1219,7 @@ self.points_to(player, cry_f("""( repeat 0x41 : [{MAX_NAME_LENGTH}][8],
                                   3  : [32] )"""))
 ```
 
-We use 3 double quotes `"""` in our `cry_f` call. This technique is handy when we want to separate our expected Cryptol-defined behaviors over multiple lines to improve code readability. Python considers the 3 double quotes as a multiline string. Multiline strings may also be used as block comments in Python.
+We use 3 double quotes `"""` in our `cry_f` call. This technique is useful when we want to separate our expected Cryptol-defined behaviors over multiple lines to improve code readability. Python considers the 3 double quotes as a multiline string. Multiline strings may also be used as block comments in Python.
 
 While Cryptol's record types could also represent structs, SAW does not currently support translating Cryptol's record types into crucible-llvm's type system. If we tried to represent the struct as a Cryptol record like so:
 
@@ -1320,12 +1320,11 @@ Now, let's go ahead and make a contract to represent this function:
 class initDefaultSprite_Contract(Contract):
   def specification (self):
     # Declare variables
-    character_p = self.alloc(alias_ty("struct.character_t"))
+    character       = self.alloc(alias_ty("struct.character_t"))
     tempCharacter_p = self.alloc(alias_ty("struct.character_t"))
-    ty = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
-    frames = self.fresh_var(ty, "sprite.frames")
-    xPos = self.fresh_var(i32, "sprite.xPos")
-    yPos = self.fresh_var(i32, "sprite.yPos")
+    frames   = self.fresh_var(array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8))), "sprite.frames")
+    xPos     = self.fresh_var(i32, "sprite.xPos")
+    yPos     = self.fresh_var(i32, "sprite.yPos")
     sprite   = struct(tempCharacter_p, frames, xPos, yPos)
     sprite_p = self.alloc(alias_ty("struct.sprite_t"))
     self.points_to(sprite_p, sprite)
