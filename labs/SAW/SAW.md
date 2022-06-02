@@ -1081,7 +1081,7 @@ To complete this lab, navigate to the [Game directory](./Game). In there, you'll
 - `specs/`: Contains our Cryptol specs that our SAW contracts can call. Feel free to add your own Cryptol functions to help you complete this lab!
 - `DLC/`: Contains an extended version of this lab (think Downloadable Content) with even more Game functions for you to play with! While there aren't any lab worksheets configured for you in there, you can reference the contents for how to tackle additional functions. For more information regarding to what each function intends to teach, refer to [GameOutline.md](./Game/DLC/GameOutline.md).
 
-With that knowledge, make sure you have `start-saw-remote-api` running, open up Game.cry, fill out your answers, and test out your work by running `make`. Game on!
+With that knowledge, make sure you have `start-saw-remote-api` running, open up Game.cry, fill out your answers, and test your work by running `make`. Game on!
 
 
 ## Struct Initialization
