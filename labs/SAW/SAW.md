@@ -1214,13 +1214,14 @@ We can also explicitly define a struct in SAW. Let's consider another struct:
 #define ANIMATION_STEPS 3
 
 typedef struct {
+  character_t* character;
   uint8_t frames[GAITS][DIRECTIONS][ANIMATION_STEPS];
   uint32_t xPos;
   uint32_t yPos;
 } sprite_t;
 ```
 
-The idea behind the `sprite_t` struct is to hold all of the sprites associated with a character that we will present in our game. `frames` is a 3D uint8_t array where each element represents an asset identifier from our art collection. Why a 3D array? Well, we want to provide animations for our characters that way it looks like they are moving on the screen (and it's a great excuse to discuss multi-dimensional arrays in SAW). The first dimension refers to the number of gaits we want to represent, that being walking and running. The second dimension refers to the number of directions a character can face. Imagine that we are working with a 2D top down game, so we have 4 directions: up, down, left, and right. The third dimension refers to the number of frames per movement.
+The idea behind the `sprite_t` struct is to hold all of the sprites associated with a character that we will present in our game. `character` is a pointer to a `character_t` type that the sprite is tied to. `frames` is a 3D uint8_t array where each element represents an asset identifier from our art collection. Why a 3D array? Well, we want to provide animations for our characters that way it looks like they are moving on the screen (and it's a great excuse to discuss multi-dimensional arrays in SAW). The first dimension refers to the number of gaits we want to represent, that being walking and running. The second dimension refers to the number of directions a character can face. Imagine that we are working with a 2D top down game, so we have 4 directions: up, down, left, and right. The third dimension refers to the number of frames per movement.
 
 Let's think about how we walk forward (feel free to try this at home). If you are walking forward, you first stand up, move one foot in front of the other, place that foot down, lift up your back foot, and move that back foot ahead of your front foot. Rinse and repeat, and you'll be walking 'cross the floor.
 
@@ -1231,8 +1232,11 @@ Alright, that's enough of a crash course in animation. Let's get back to our str
 With that understanding, let's consider a function that uses the `sprite_t` struct:
 
 ```c
-uint32_t initDefaultSprite(sprite_t* sprite)
+uint32_t initDefaultSprite(character_t* character, sprite_t* sprite)
 {
+  // Initialize the character to the passed pointer
+  sprite->character = character;
+
   // Initialize the sprite frames to the default asset
   for (uint8_t i = 0; i < GAITS; i++)
   {
@@ -1259,20 +1263,25 @@ Now, let's go ahead and make a contract to represent this function:
 class initDefaultSprite_Contract(Contract):
   def specification (self):
     # Declare variables
-    ty       = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
-    frames   = self.fresh_var(ty, "sprite.frames")
-    xPos     = self.fresh_var(i32, "sprite.xPos")
-    yPos     = self.fresh_var(i32, "sprite.yPos")
-    sprite   = struct(frames, xPos, yPos)
+    character_p = self.alloc(alias_ty("struct.character_t"))
+    tempCharacter_p = self.alloc(alias_ty("struct.character_t"))
+    ty = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
+    frames = self.fresh_var(ty, "sprite.frames")
+    xPos = self.fresh_var(i32, "sprite.xPos")
+    yPos = self.fresh_var(i32, "sprite.yPos")
+    sprite   = struct(tempCharacter_p, frames, xPos, yPos)
     sprite_p = self.alloc(alias_ty("struct.sprite_t"))
     self.points_to(sprite_p, sprite)
 
     # Symbolically execute the function
-    self.execute_func(sprite_p)
+    self.execute_func(character_p, sprite_p)
 
     # Assert postconditions
-    self.points_to(sprite_p, cry_f("""(zero, 1, 2)
-      : ([{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8], [32], [32])"""))                              
+    self.points_to(sprite_p, struct( character_p,
+                                     cry_f("""zero 
+                                       : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8]"""),
+                                     cry_f("1 : [32]"),
+                                     cry_f("2 : [32]") ))
                                            
     self.returns_f("`({SUCCESS}) : [32]")
 ```
@@ -1280,19 +1289,19 @@ class initDefaultSprite_Contract(Contract):
 Like `array`, the `struct` keyword declares a symbolic struct given a variable for each struct field. We assert the precondition that our pointer points to this symbolic struct. Alternatively, we could replace
 
 ```python
-    sprite   = struct(frames, xPos, yPos)
+    sprite   = struct(tempCharacter_p, frames, xPos, yPos)
     sprite_p = self.alloc(alias_ty("struct.sprite_t"))
     self.points_to(sprite_p, sprite)
 ```
  with 
 ```python
-sprite_p = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(frames, xPos, yPos))
+sprite_p = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(tempCharacter_p, frames, xPos, yPos))
 ```
-since we don't use `sprite` later in the code. If we wanted, we could assert other preconditions on `frames`, `xPos`, and `yPos` using `precondition_f`. We don't in this example, but it's still a feature to consider!
+since we don't use `sprite` later in the code. If we wanted, we could assert other preconditions on `tempCharacter_p`, `frames`, `xPos`, and `yPos` using `precondition_f`. We don't in this example, but it's still a feature to consider!
 
-In the post condition, we assert `sprite_p` points to some concrete structure. Cryptol interprets symbolic structs as tuples. Contrast this simplistic postcondition to our previous `initDefaultPlayer_Contract` example, where we had to check each field one at a time. 
+In the postcondition, we assert `sprite_p` points to some concrete structure. Cryptol interprets symbolic structs as tuples. Contrast this simplistic postcondition to our previous `initDefaultPlayer_Contract` example, where we had to check each field one at a time. 
 
-We use 3 double quotes `"""` for our `cry_f` call. This technique is handy when we want to separate our expected Cryptol-defined behaviors over multiple lines to improve code readability. Python considers the 3 double quotes as a multiline string. Multiline strings may also be used as block comments in Python.
+We use 3 double quotes `"""` in one of our `cry_f` calls. This technique is handy when we want to separate our expected Cryptol-defined behaviors over multiple lines to improve code readability. Python considers the 3 double quotes as a multiline string. Multiline strings may also be used as block comments in Python.
 
 ### Cryptol Records and Structs
 
@@ -1300,9 +1309,9 @@ While Cryptol's record types could also represent structs, SAW does not currentl
 
 ```python
 self.points_to(sprite_p, struct(cry_f("""
-  {{ framzero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8],
-     xPos = 1 : [32],
-     yPos = 2 : [32]}}""")))   
+  {{ frame = zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8],
+     xPos  = 1 : [32],
+     yPos  = 2 : [32]}}""")))   
 ```
 
 SAW would return this error:
