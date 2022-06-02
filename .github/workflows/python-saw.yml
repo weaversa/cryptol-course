@@ -43,6 +43,6 @@ jobs:
         run: start-saw-remote-api-read-only
       - name: Run Python SAW Script
         run: |
-          python3 labs/Demos/SAW/Salsa20/proof/salsa20.py
           python3 labs/Demos/SAW/xxHash/xxhash32-ref.py
           python3 labs/Demos/SAW/xxHash/xxhash64-ref.py
+          python3 labs/Demos/SAW/Salsa20/proof/salsa20.py
