@@ -1155,11 +1155,9 @@ FAILED (failures=1)
 make: *** [Makefile:14: all] Error 1
 ```
 
-And we would need to use the appropriate indices to represent each field:
+As we already mentioned, adding the `-g` flag will resolve the error. However, what if we didn't want to include debug symbols in the bitcode, but still wanted to verify our contract? Well, we can reference the struct fields by using their corresponding indices like so:
 
 ```python
-//place constants here
-
 class initDefaultPlayer_Contract(Contract):
   def specification (self):
     player = self.alloc(alias_ty("struct.character_t"))
@@ -1194,6 +1192,8 @@ example
 //But what if a struct has a pointer as a field...?
 
 ## Exercise: Resolving an Attack!
+
+Feeling pretty confident with our little `player_t` and `character_t` structs? How about we go for a full on attack then? Well, an attack in our game of course between two characters ;)
 
 
 # Using Gained Knowledge
