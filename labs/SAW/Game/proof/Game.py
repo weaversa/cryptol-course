@@ -129,7 +129,8 @@ class initDefaultPlayer_Contract(Contract):
 class initDefaultSprite_Contract(Contract):
   def specification (self):
     # Declare variables
-    character_p = self.alloc(alias_ty("struct.character_t"))
+    character_p = self.alloc(alias_ty("struct.character_t"))              # For Option 1
+    #character_p = self.fresh_var(ptr_ty(alias_ty("struct.character_t"))) # For Option 2
     tempCharacter_p = self.alloc(alias_ty("struct.character_t"))
     ty = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
     frames = self.fresh_var(ty, "sprite.frames")
@@ -141,11 +142,17 @@ class initDefaultSprite_Contract(Contract):
     self.execute_func(character_p, sprite_p)
 
     # Assert postconditions
+    # Option 1: Struct Strategy
     self.points_to(sprite_p, struct( character_p,
                                      cry_f("zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8]"),
                                      cry_f("1 : [32]"),
                                      cry_f("2 : [32]") ))
-                                           
+    # Option 2: Full Tuple Strategy
+    #self.points_to(sprite_p, cry_f("""( {character_p},
+    #                                 zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8],
+    #                                 1 : [32],
+    #                                 2 : [32]) """))
+                  
     self.returns_f("`({SUCCESS}) : [32]")
 
 
