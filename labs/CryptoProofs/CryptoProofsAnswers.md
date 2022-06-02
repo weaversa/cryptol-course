@@ -228,9 +228,6 @@ matched_pt = join "tootough"
 matched_ct = 0x95d07f8a72707733
 ```
 
-To make this solvable, try it again with the first six bytes of key
-provided: `0x1234567890ab`.
-
 ```Xcryptol-session-ci-none
 labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct
 ```
@@ -241,6 +238,9 @@ algorithm and is therefore designed to resist attacks on the key.
 DES keys have been broken using specialized algorithms
 and large amounts of compute power, but not by a single computer
 running a SAT solver.
+
+To make this solvable, try it again with the first six bytes of key
+provided: `0x1234567890ab`.
 
 ```Xcryptol-session
 labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct /\ take key == 0x1234567890ab
