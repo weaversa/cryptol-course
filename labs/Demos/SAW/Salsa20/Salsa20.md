@@ -134,7 +134,7 @@ method specifications are verified (or not) against which
 implementation functions, using which Cryptol definitions, and which
 potential overrides (based on the implementation's callgraph) and
 function uninterpretations (based on dependencies among Cryptol
-definitions) are used, in `salsa20.sw`:
+definitions) are used, in `salsa20.saw`:
 
 <a href="../../../../salsa20.saw.png">
     <img class="center" src="../../../../misc/salsa20.saw.png" alt="salsa20.saw verification/override graph">
