@@ -1074,9 +1074,9 @@ This example is from [here]()
 In this section we learn how to verify code involving structs and global variables by analyzing a game. The code for the game can be found [here](./Game/src/).
 
 
-### Struct Initialization
+## Struct Initialization
 
-The game defines the following player type:
+The game defines the following player type.
 
 ```C
 typedef struct {
@@ -1091,7 +1091,7 @@ typedef struct {
 typedef character_t player_t;
 ```
 
-The following function will initialize a player.
+A player is initialized with some default values
 
 ```C
 uint32_t initDefaultPlayer(player_t* player)
@@ -1116,7 +1116,7 @@ uint32_t initDefaultPlayer(player_t* player)
 }
 ```
 
-where `SUCCESS` and `MAX_NAME_LENGTH` are C constants
+where `SUCCESS` and `MAX_NAME_LENGTH` are C constants:
 
 ```C
 #define MAX_NAME_LENGTH 12
@@ -1124,12 +1124,16 @@ where `SUCCESS` and `MAX_NAME_LENGTH` are C constants
 #define FAILURE 85
 ```
 
-The following constract will verify our initialization:
+We use the following contract to verify this initialization function:
 
 ```python
+MAX_NAME_LENGTH = 12
+SUCCESS         = 170
+FAILURE         = 85
+
 class initDefaultPlayer_Contract(Contract):
   def specification (self):
-    player = self.alloc(alias_ty("struct.character_t"))
+    player = self.alloc(alias_ty("struct.player_t"))
 
     self.execute_func(player)
 
@@ -1143,17 +1147,32 @@ class initDefaultPlayer_Contract(Contract):
     self.returns(cry_f("`({SUCCESS}) : [32]"))
 ```
 
-The command `alias_ty("struct.<typedef name>")` creates a type corresponding to the structure, so `player = self.alloc(alias_ty("struct.character_t"))` just creates a symbolic pointer variable `player` pointing to a structure of type `character_t`. Even though the function's input parameter is `player_t`, we need to pass `character_t` to `alias_ty` given that `player_t` is just a typedef for `character_t`.
+For every C symbol defined using `#define` we make a corresponding Python global variable.
+
+```
+MAX_NAME_LENGTH = 12
+SUCCESS         = 170
+FAILURE         = 85
+```
+
+The command `alias_ty("struct.<typedef name>")` creates a type corresponding to the structure, e.g., 
+
+```python3 
+player = self.alloc(alias_ty("struct.player_t"))
+```
+creates a symbolic pointer variable `player` pointing to a structure of type `player_t`.
 
 Let's breakdown a `points_to` command seen above:
 
-```python
-self.points_to(player['name'], cry_f("repeat 0x41 : [{MAX_NAME_LENGTH}][8]"))
-```
 
-Here, we assert that the `name` field of the player pointer points to a value specified a Cryptol expression. Notice that we use the string associated with the struct field, `name`, to access our target struct index. We are able to use strings instead of remembering the index of every field when debug symbols are included in the generated bitcode. For the full compilation details, check out the [Makefile](./Game/Makefile) associated with the `Game` directory. However, the `-g` clang flag is what tells the compiler to include the field names of the structs in the bitcode.
+| `self.points_to(` | `player` | `['name']` | `,` | `cry_f("repeat 0x41 : [{MAX_NAME_LENGTH}][8]")` | `)` |
+|-------------------|-----------|----------|------|-------------------------------------------------|-----|
+| Assert in the current contract that the following pointer | with this name | points to a struct with this named field | and the value of that field is | this expression | . |
 
-If we didn't have the debug symbols in the bitcode, SAW would throw us an error like so:
+
+Above we use strings to reference fields of structures. However, we can only do this when strings are present in the bitcode, e.g., when debug symbols are included in the generated bitcode. The `-g` clang flag tells the compiler to include the field names of the structs in the bitcode. For the full compilation details, check out the [Makefile](./Game/Makefile) associated with the `Game` directory. 
+
+If we didn't have the debug symbols in the bitcode, SAW would produce an error:
 
 ```sh
 $ cd labs/SAW/Game
@@ -1164,27 +1183,9 @@ $ python3 proof/Game.py
 error: Unable to resolve struct field name: '"name"'
 Could not resolve setup value debug information into a struct type.
 Perhaps you need to compile with debug symbols enabled.
-
-        stdout:
-
-F
-======================================================================
-FAIL: test_Game (__main__.GameTests)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "proof/Game.py", line 514, in test_Game
-    self.assertIs(initDefaultPlayer_result.is_success(), True)
-AssertionError: False is not True
-
-----------------------------------------------------------------------
-Ran 1 test in 0.865s
-
-FAILED (failures=1)
-🛑  The goal failed to verify.
-make: *** [Makefile:14: all] Error 1
 ```
 
-As we already mentioned, adding the `-g` flag will resolve the error. However, what if we didn't want to include debug symbols in the bitcode, but still wanted to verify our contract? Well, we can reference the struct fields by using their corresponding indices like so:
+If we didn't want to include debug symbols in the bitcode, then we can reference the struct fields by using their corresponding indices:
 
 ```python
 class initDefaultPlayer_Contract(Contract):
@@ -1203,13 +1204,7 @@ class initDefaultPlayer_Contract(Contract):
     self.returns(cry_f("`({SUCCESS}) : [32]"))
 ```
 
-Alternatively, we could use post conditions
-
-```
-above with postcoditions
-```
-
-### Explicit Structs
+## Explicit Structs
 
 We can also explicitly define a struct in SAW. Let's consider another struct:
 
@@ -1264,39 +1259,42 @@ Now, let's go ahead and make a contract to represent this function:
 class initDefaultSprite_Contract(Contract):
   def specification (self):
     # Declare variables
-    ty = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
-    frames = self.fresh_var(ty, "sprite.frames")
-    xPos = self.fresh_var(i32, "sprite.xPos")
-    yPos = self.fresh_var(i32, "sprite.yPos")
-    sprite_p = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(frames, xPos, yPos))
+    ty       = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
+    frames   = self.fresh_var(ty, "sprite.frames")
+    xPos     = self.fresh_var(i32, "sprite.xPos")
+    yPos     = self.fresh_var(i32, "sprite.yPos")
+    sprite   = struct(frames, xPos, yPos)
+    sprite_p = self.alloc(alias_ty("struct.sprite_t"))
+    self.points_to(sprite_p, sprite)
 
     # Symbolically execute the function
     self.execute_func(sprite_p)
 
     # Assert postconditions
-    self.points_to(sprite_p, struct(cry_f("""(zero, 1, 2)
-      : ([{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8], [32], [32])""")))                              
+    self.points_to(sprite_p, cry_f("""(zero, 1, 2)
+      : ([{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8], [32], [32])"""))                              
                                            
     self.returns_f("`({SUCCESS}) : [32]")
 ```
 
-Notice that for explicit structs, we declare variables that represent the types for each struct field. We then connect them to our allocated `sprite_t` pointer, `sprite_p`, using `points_to = struct(...)`. This input to `alloc` asserts the precondition that `sprite_p` points to these SAW-defined variables. If we wanted to, we could then assert other preconditions on `frames`, `xPos`, and `yPos` using `precondition_f` if desired. We don't do so in this example contract, but it's still a feature to consider!
+Like `array`, the `struct` keyword declares a symbolic struct given a variable for each struct field. We assert the precondition that our pointer points to this symbolic struct. Alternatively, we could replace
 
-Also notice how we assert the `points_to` postcondition for `sprite_p`. We use `struct` again, but this time to assert that `sprite_p` points to a Cryptol-defined tuple. Relating this back to our `initDefaultPlayer_Contract` example, we can see that this one assertion simplifies our postcondition compared to checking each field at a time. As a side note, we use 3 double quotes (""") for our `cry_f` call. This technique is handy when we want to separate our expected Cryptol-defined behaviors over multiple lines so to improve code readability. Python considers the 3 double quotes as a multiline string. While multiline strings may be used as block comments in Python, it is perfect for us to use here given that `cry_f ` accepts an input string.
-
-### Structs in Cryptol
-
-Cryptol interprets structs as tuples. In our `initDefaultSprite_Contract` example, we asserted the following Cryptol tuple:
-
+```python
+    sprite   = struct(frames, xPos, yPos)
+    sprite_p = self.alloc(alias_ty("struct.sprite_t"))
+    self.points_to(sprite_p, sprite)
 ```
-(zero, 1, 2) : ([{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8], [32], [32])
+ with 
+```python
+sprite_p = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(frames, xPos, yPos))
 ```
+since we don't use `sprite` later in the code. If we wanted, we could assert other preconditions on `frames`, `xPos`, and `yPos` using `precondition_f`. We don't in this example, but it's still a feature to consider!
 
-which simplifies to:
+In the post condition, we assert `sprite_p` points to some concrete structure. Cryptol interprets symbolic structs as tuples. Contrast this simplistic postcondition to our previous `initDefaultPlayer_Contract` example, where we had to check each field one at a time. 
 
-```
-(zero, 1, 2) : ([2][4][3][8], [32], [32])
-```
+We use 3 double quotes `"""` for our `cry_f` call. This technique is handy when we want to separate our expected Cryptol-defined behaviors over multiple lines to improve code readability. Python considers the 3 double quotes as a multiline string. Multiline strings may also be used as block comments in Python.
+
+### Cryptol Records and Structs
 
 While Cryptol's record types could also represent structs, SAW does not currently support translating Cryptol's record types into crucible-llvm's type system. So if we tried to use the following postcondition with a Cryptol record:
 
@@ -1333,7 +1331,7 @@ FAILED (failures=1)
 make: *** [Makefile:14: all] Error 1
 ```
 
-//But what if a struct has a pointer as a field...?
+If a Cryptol specification uses a record type to represent structs, then we can define a Python helper function for wrapping. 
 
 ## Exercise: Resolving an Attack!
 
@@ -1781,8 +1779,6 @@ class resolveAttack_Contract(Contract):
 ```
 
 Would this contract pass verification? Absolutely. Given that the `MAX_STAT` preconditions limits our input values, we would never see SAW's counterexample of an integer overflow/underflow from case 2.
-
-## Using Structs in Specifications
 
 # Using Gained Knowledge
 
