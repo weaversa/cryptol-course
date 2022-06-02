@@ -1554,6 +1554,118 @@ Plugging those values into our updated case 2 precondition:
  134217728 <= 134217728
 ```
 
+Nice, we got an integer underflow counterexample. Based on these input values, the source code would actually meet the first if condition:
+
+```c
+target->def >= atk
+```
+
+This means our precondition for case 2 is lacking something. Let's adjust it in this way:
+
+```python
+    elif (self.case == 2):
+      # target->hp <= (atk - target->def)
+      self.precondition_f("{target}.4 < {atk}")
+      self.precondition_f("{target}.2 <= ({atk} - {target}.4)")
+```
+
+```
+clang -c -g -emit-llvm -o artifacts/Game.bc src/Game.c
+python3 proof/Game.py
+[02:55:30.437] Verifying resolveAttack ...
+[02:55:30.437] Simulating resolveAttack ...
+[02:55:30.440] Checking proof obligations resolveAttack ...
+[02:55:30.455] Proof succeeded! resolveAttack
+✅  Verified: lemma_resolveAttack_Contract (defined at proof/Game.py:179)
+[02:55:30.551] Verifying resolveAttack ...
+[02:55:30.551] Simulating resolveAttack ...
+[02:55:30.554] Checking proof obligations resolveAttack ...
+[02:55:30.570] Proof succeeded! resolveAttack
+✅  Verified: lemma_resolveAttack_Contract0 (defined at proof/Game.py:179)
+[02:55:30.672] Verifying resolveAttack ...
+[02:55:30.673] Simulating resolveAttack ...
+[02:55:30.675] Checking proof obligations resolveAttack ...
+[02:55:30.789] Proof succeeded! resolveAttack
+✅  Verified: lemma_resolveAttack_Contract1 (defined at proof/Game.py:179)
+.
+----------------------------------------------------------------------
+Ran 1 test in 1.140s
+
+OK
+✅  All 3 goals verified!
+```
+
+Whoo hoo! We finally won the battle! From our exercise, we found that SAW provides us with some pretty useful counterexamples to consider for edge cases that may be lacking in traditional software unit testing.
+
+Now let's imagine that very large character stats is a concern in our game. In order to balance characters in our game and avoid problems with very large values, let's say we decided to add a function (`checkStats`) that checks character stats. Let's also assume that this function is always called before functions that use those stats like what we saw in `resolveAttack`.
+
+```c
+uint32_t checkStats(character_t* character)
+{
+  // Assume failure by default
+  uint32_t result = FAILURE;
+
+  // Check the stats
+  if (character->hp  <= MAX_STAT &&
+      character->atk <= MAX_STAT &&
+      character->def <= MAX_STAT &&
+      character->spd <= MAX_STAT )
+  {
+    result = SUCCESS;
+  }
+
+  return result;
+}
+```
+
+Is this a good idea security-wise? Eh, maybe not. The assumption that `checkStats` is ALWAYS called before functions that use character stats may be missed. So what can we do? Using `resolveAttack` as an example, should we rely on its caller to also call `checkStats` and perform error handling ahead of time? An argument could be made for performance benefits, but at the cost of security. Should we call `checkStats` within `resolveAttack`? That strategy would provide more security, but the repeated `checkStats` may be redundant and could hurt performance depending on the use case. As we can see, the answer for `checkStats`'s best placement follows the classic "it depends".
+
+For the sake of argument, let's go with the assumption that `checkStats` is always called BEFORE the call to `resolveAttack`. While the stat checks aren't performed in `resolveAttack`, we could include them as preconditions in our contract. Let's add the stat checks to our original `resolveAttack_Contract`, problems with case 2's preconditons and all!
+
+```python
+class resolveAttack_Contract(Contract):
+  def __init__(self, case : int):
+    super().__init__()
+    self.case = case
+
+  def specification (self):
+    # Declare variables
+    (target, target_p) = ptr_to_fresh(self, alias_ty("struct.character_t"), name="target")
+    atk = self.fresh_var(i32, "atk")
+
+    # Assert the precondition that the stats are below the max stat cap
+    # Suggests checkStats was called before resolveAttack
+    self.precondition_f("{atk} <= `{MAX_STAT}")
+    self.precondition_f("{target}.2 <= `{MAX_STAT}")
+    self.precondition_f("{target}.4 <= `{MAX_STAT}")
+
+    # Determine the preconditions based on the case parameter
+    if (self.case == 1):
+      # target->def >= atk
+      self.precondition_f("{target}.4 >= {atk}")
+    elif (self.case == 2):
+      # target->hp <= (atk - target->def)
+      self.precondition_f("({target}.2 + {target}.4) <= {atk}")
+    else:
+      # Assume any other case follows the formal attack calculation
+      self.precondition_f("{target}.4 < {atk}")
+      self.precondition_f("({target}.2 + {target}.4) > {atk}")
+    
+    # Symbolically execute the function
+    self.execute_func(target_p, atk)
+
+    # Determine the postcondition based on the case parameter
+    if (self.case == 1):
+      self.points_to(target_p['hp'], cry_f("{target}.2 : [32]"))
+    elif (self.case == 2):
+      self.points_to(target_p['hp'], cry_f("0 : [32]"))
+    else:
+      self.points_to(target_p['hp'], cry_f("resolveAttack ({target}.2) ({target}.4) {atk}"))
+
+    self.returns(void)
+```
+
+Would this contract pass verification? Absolutely. Given that the `MAX_STAT` preconditions limits our input values, we would never see SAW's counterexample of an integer overflow/underflow from case 2.
 
 
 
