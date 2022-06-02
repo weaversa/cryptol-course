@@ -1208,7 +1208,7 @@ class initDefaultPlayer_Contract(Contract):
 
 ### Structs as Cryptol Tuples and Records
 
-Let's go back and tidy up `initDefaultPlayer_Contract`'s postconditions. Instead of using one postcondition per field, we can rewrite the `points_to` postcondition to account for the entire struct. We do this by taking advantage of the fact that Cryptol interprets symbolic structs as tuples.
+We can replace all of the `points_to` postconditions in the previous contract since Cryptol interprets symbolic structs as tuples.
 
 ```python
 self.points_to(player, cry_f("""( repeat 0x41 : [{MAX_NAME_LENGTH}][8],
@@ -1219,7 +1219,7 @@ self.points_to(player, cry_f("""( repeat 0x41 : [{MAX_NAME_LENGTH}][8],
                                   3  : [32] )"""))
 ```
 
-We use 3 double quotes `"""` in our `cry_f` call. This technique is handy when we want to separate our expected Cryptol-defined behaviors over multiple lines to improve code readability. Python considers the 3 double quotes as a multiline string. Multiline strings may also be used as block comments in Python.
+We use 3 double quotes `"""` in our `cry_f` call. This technique is useful when we want to separate our expected Cryptol-defined behaviors over multiple lines to improve code readability. Python considers the 3 double quotes as a multiline string. Multiline strings may also be used as block comments in Python.
 
 While Cryptol's record types could also represent structs, SAW does not currently support translating Cryptol's record types into crucible-llvm's type system. If we tried to represent the struct as a Cryptol record like so:
 
@@ -1320,12 +1320,11 @@ Now, let's go ahead and make a contract to represent this function:
 class initDefaultSprite_Contract(Contract):
   def specification (self):
     # Declare variables
-    character_p = self.alloc(alias_ty("struct.character_t"))
+    character       = self.alloc(alias_ty("struct.character_t"))
     tempCharacter_p = self.alloc(alias_ty("struct.character_t"))
-    ty = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
-    frames = self.fresh_var(ty, "sprite.frames")
-    xPos = self.fresh_var(i32, "sprite.xPos")
-    yPos = self.fresh_var(i32, "sprite.yPos")
+    frames   = self.fresh_var(array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8))), "sprite.frames")
+    xPos     = self.fresh_var(i32, "sprite.xPos")
+    yPos     = self.fresh_var(i32, "sprite.yPos")
     sprite   = struct(tempCharacter_p, frames, xPos, yPos)
     sprite_p = self.alloc(alias_ty("struct.sprite_t"))
     self.points_to(sprite_p, sprite)
@@ -1844,13 +1843,12 @@ Only functions with implementations in the bitcode can be verified. If one impor
 For example, the height of
 [height-balanced binary
 trees](https://en.wikipedia.org/wiki/Self-balancing_binary_search_tree)
-on n nodes is given by the ceiling of `log(n)`. In C we might use the
-`math` library to write the helper function.
+on n nodes is given by the ceiling of `log(n)`. In C we might try to implement this using 
 
 ```C
 #include <math.h>
 
-uint64_t log2i(uint64_t i) {
+uint64_t ceilLog2(uint64_t i) {
   return ceil(log2(i));
 }
 
@@ -1865,7 +1863,7 @@ To accomplish these goals we make a contract outlining what the
 behavior of this function:
 
 ```python
-class log2iContract(Contract):
+class ceilLog2Contract(Contract):
     def specification(self):
         i = self.fresh_var(i64, "i")
         
@@ -1875,18 +1873,18 @@ class log2iContract(Contract):
 ```
 
 
-In the unit test we would assume the `log2Contract`:
+In the unit test we would assume the `ceilLog2Contract`:
 
 ```
-log2i_assume = llvm_assume(mod, 'log2i', log2iContract())
+log2i_assume = llvm_assume(mod, 'ceilLog2', ceilLog2Contract())
 
 ```
 
-If a C function ever used `log2i`, then we could pass in the
+If a C function ever used `ceilLog2`, then we could pass in the
 assumption as an optional argument to verification:
 
 ```
-getHeight_result = llvm_verify(mod, 'getHeight', getHeightContract(), lemmas=[log2i_assume])
+getHeight_result = llvm_verify(mod, 'getHeight', getHeightContract(), lemmas=[ceilLog2_assume])
 ```
 
 The optional argument is a list because we can supply multiple
@@ -1899,8 +1897,10 @@ addOneRemoveTwo_result = llvm_verify(mod, 'addOneRemoveTwo', addOneRemoveTwo(), 
 ```
 
 One can think of lemmas as rewrite rules under the hood. Whenever SAW
-encounters log2 function in the C it will interpret its behavior as
-what is specified in the `log2Contract()`.
+encounters ceilLog2 function in the C it will interpret its behavior as
+what is specified in the `ceilLog2Contract()`.
+
+**Exercise**: Does the `C` function `ceilLog2` as defined above always yield the behavior outlined in `ceilLog2Contract`? That is, was our assumption a fair one to make? If not, change the `C` code (possibly using different library functions) to match `lg2` in Cryptol.
 
 ## Uninterpreting Functions
 
