@@ -1303,7 +1303,227 @@ class resolveAttack_Contract(Contract):
     self.returns(void)
 ```
 
-Our contract is looking pretty good now! Let's go ahead and test it out with the following unit test:
+Our contract is looking pretty good now! Let's set up our unit test:
+
+```python
+class GameTests(unittest.TestCase):
+  def test_Game(self):
+    connect(reset_server=True)
+    if __name__ == "__main__": view(LogResults(verbose_failure=True))
+
+    pwd = os.getcwd()
+    bitcode_name = pwd + "/artifacts/Game.bc"
+    cryptol_name = pwd + "/specs/Game.cry"
+
+    cryptol_load_file(cryptol_name)
+    module = llvm_load_module(bitcode_name)
+
+    resolveAttack_case1_result = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(1))
+    resolveAttack_case2_result = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(2))
+    resolveAttack_case3_result = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(3))
+
+    self.assertIs(resolveAttack_case1_result.is_success(), True)
+    self.assertIs(resolveAttack_case2_result.is_success(), True)
+    self.assertIs(resolveAttack_case3_result.is_success(), True)
+
+
+if __name__ == "__main__":
+  unittest.main()
+```
+
+Excellent, now for the moment of truth!
+
+```
+clang -c -g -emit-llvm -o artifacts/Game.bc src/Game.c
+python3 proof/Game.py
+[01:59:53.576] Verifying resolveAttack ...
+[01:59:53.577] Simulating resolveAttack ...
+[01:59:53.580] Checking proof obligations resolveAttack ...
+[01:59:53.594] Proof succeeded! resolveAttack
+✅  Verified: lemma_resolveAttack_Contract (defined at proof/Game.py:179)
+[01:59:53.658] Verifying resolveAttack ...
+[01:59:53.659] Simulating resolveAttack ...
+[01:59:53.662] Checking proof obligations resolveAttack ...
+[01:59:53.689] Subgoal failed: resolveAttack safety assertion:
+internal: error: in llvm_points_to SAWServer
+Literal equality postcondition
+
+
+[01:59:53.689] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 438}
+[01:59:53.689] ----------Counterexample----------
+[01:59:53.689]   target0: ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0, 4294967293, 0, 3, 0)
+[01:59:53.689]   atk0: 4294967295
+[01:59:53.689] ----------------------------------
+⚠️  Failed to verify: lemma_resolveAttack_Contract0 (defined at proof/Game.py:179):
+error: Proof failed.
+        stdout:
+                [01:59:53.658] Verifying resolveAttack ...
+                [01:59:53.659] Simulating resolveAttack ...
+                [01:59:53.662] Checking proof obligations resolveAttack ...
+                [01:59:53.689] Subgoal failed: resolveAttack safety assertion:
+                internal: error: in llvm_points_to SAWServer
+                Literal equality postcondition
+
+
+                [01:59:53.689] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 438}
+                [01:59:53.689] ----------Counterexample----------
+                [01:59:53.689]   target0: ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0, 4294967293, 0, 3, 0)
+                [01:59:53.689]   atk0: 4294967295
+                [01:59:53.689] ----------------------------------
+
+[01:59:53.789] Verifying resolveAttack ...
+[01:59:53.789] Simulating resolveAttack ...
+[01:59:53.792] Checking proof obligations resolveAttack ...
+[01:59:53.905] Proof succeeded! resolveAttack
+✅  Verified: lemma_resolveAttack_Contract1 (defined at proof/Game.py:179)
+F
+======================================================================
+FAIL: test_Game (__main__.GameTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "proof/Game.py", line 549, in test_Game
+    self.assertIs(resolveAttack_case2_result.is_success(), True)
+AssertionError: False is not True
+
+----------------------------------------------------------------------
+Ran 1 test in 1.132s
+
+FAILED (failures=1)
+🛑  1 out of 3 goals failed to verify.
+make: *** [Makefile:14: all] Error 1
+```
+
+A counterexample?! Let's take a closer look at what SAW provides us and reassess our strategy.
+
+```
+[01:59:53.689] ----------Counterexample----------
+[01:59:53.689]   target0: ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0, 4294967293, 0, 3, 0)
+[01:59:53.689]   atk0: 4294967295
+[01:59:53.689] ----------------------------------
+```
+
+Notice that our unit case failed for case 2, but passed for cases 1 and 3. How about we look at our precondition for case 2 again:
+
+```python
+    elif (self.case == 2):
+      # target->hp <= (atk - target->def)
+      self.precondition_f("({target}.2 + {target}.4) <= {atk}")
+```
+
+and if we plug in the counterexample values SAW provides us...
+
+```
+{target}.2 + {target}.4 <= {atk}
+4294967293 +     3      <= 4294967295
+             4294967296 <= 4294967295
+```
+
+Well that doesn't make sense, now does it? Well actually, it does make some sense when we recognize one BIG detail. And yes, I'm referring to the big values SAW gave us. Doesn't the atk stat look familiar? Like the upper bound for unsigned 32-bit integers?
+
+Taking that into consideration, then our efforts to test out the counterexample was incorrect. We forgot to account for integer overflow!
+
+```
+4294967293 + 3 <= 4294967295
+4294967295 + 1 <= 4294967295
+             0 <= 4294967295
+```
+
+*Audible gasp* Good thing we have SAW on our side! Now, let's determine what we can do to fix this issue. First, let's compare our precondition again to the source code's if condition:
+
+```python
+self.precondition_f("({target}.2 + {target}.4) <= {atk}")
+```
+
+```c
+else if ( target->hp <= (atk - target->def) )
+```
+
+So maybe we tried being *too* fancy showing off our associative property knowledge. While moving the defense term to the left-hand side of the expression does not violate any mathematical rules on paper, it does violate our expectations in practice when accounting for limited bit widths.
+
+Fine, let's toss out our fancy math skills and write our contact's precondition for case 2 exactly as we see it in the source code:
+
+```python
+    elif (self.case == 2):
+      # target->hp <= (atk - target->def)
+      self.precondition_f("{target}.2 <= ({atk} - {target}.4)")
+```
+
+```
+clang -c -g -emit-llvm -o artifacts/Game.bc src/Game.c
+python3 proof/Game.py
+[02:34:39.387] Verifying resolveAttack ...
+[02:34:39.388] Simulating resolveAttack ...
+[02:34:39.391] Checking proof obligations resolveAttack ...
+[02:34:39.409] Proof succeeded! resolveAttack
+✅  Verified: lemma_resolveAttack_Contract (defined at proof/Game.py:179)
+[02:34:39.481] Verifying resolveAttack ...
+[02:34:39.481] Simulating resolveAttack ...
+[02:34:39.483] Checking proof obligations resolveAttack ...
+[02:34:39.508] Subgoal failed: resolveAttack safety assertion:
+internal: error: in llvm_points_to SAWServer
+Literal equality postcondition
+
+
+[02:34:39.508] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 438}
+[02:34:39.509] ----------Counterexample----------
+[02:34:39.509]   target0: ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0, 134217728, 0, 4184634256, 0)
+[02:34:39.509]   atk0: 23884688
+[02:34:39.509] ----------------------------------
+⚠️  Failed to verify: lemma_resolveAttack_Contract0 (defined at proof/Game.py:179):
+error: Proof failed.
+        stdout:
+                [02:34:39.481] Verifying resolveAttack ...
+                [02:34:39.481] Simulating resolveAttack ...
+                [02:34:39.483] Checking proof obligations resolveAttack ...
+                [02:34:39.508] Subgoal failed: resolveAttack safety assertion:
+                internal: error: in llvm_points_to SAWServer
+                Literal equality postcondition
+
+
+                [02:34:39.508] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 438}
+                [02:34:39.509] ----------Counterexample----------
+                [02:34:39.509]   target0: ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0, 134217728, 0, 4184634256, 0)
+                [02:34:39.509]   atk0: 23884688
+                [02:34:39.509] ----------------------------------
+
+[02:34:39.613] Verifying resolveAttack ...
+[02:34:39.613] Simulating resolveAttack ...
+[02:34:39.616] Checking proof obligations resolveAttack ...
+[02:34:39.735] Proof succeeded! resolveAttack
+✅  Verified: lemma_resolveAttack_Contract1 (defined at proof/Game.py:179)
+F
+======================================================================
+FAIL: test_Game (__main__.GameTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "proof/Game.py", line 550, in test_Game
+    self.assertIs(resolveAttack_case2_result.is_success(), True)
+AssertionError: False is not True
+
+----------------------------------------------------------------------
+Ran 1 test in 1.200s
+
+FAILED (failures=1)
+🛑  1 out of 3 goals failed to verify.
+make: *** [Makefile:14: all] Error 1
+```
+
+Nope, that didn't work either. But hey, SAW gave us a different counterexample. Let's look at that one:
+
+```
+[02:34:39.509] ----------Counterexample----------
+[02:34:39.509]   target0: ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0, 134217728, 0, 4184634256, 0)
+[02:34:39.509]   atk0: 23884688
+[02:34:39.509] ----------------------------------
+```
+
+Plugging those values into our updated case 2 precondition:
+
+```
+{target}.2 <= ({atk} - {target}.4)
+ 134217728 <= 23884688 - 4184634256
+ 134217728 <= 134217728
+```
 
 
 

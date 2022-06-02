@@ -194,9 +194,11 @@ class resolveAttack_Contract(Contract):
 
     # Assert the precondition that the stats are below the max stat cap
     # Pop Quiz: Why do we need these preconditions?
+    """
     self.precondition_f("{atk} <= `{MAX_STAT}")
     self.precondition_f("{target}.2 <= `{MAX_STAT}")
     self.precondition_f("{target}.4 <= `{MAX_STAT}")
+    """
 
     # Determine the preconditions based on the case parameter
     if (self.case == 1):
@@ -204,7 +206,8 @@ class resolveAttack_Contract(Contract):
       self.precondition_f("{target}.4 >= {atk}")
     elif (self.case == 2):
       # target->hp <= (atk - target->def)
-      self.precondition_f("({target}.2 + {target}.4) <= {atk}")
+      # self.precondition_f("({target}.2 + {target}.4) <= {atk}")
+      self.precondition_f("{target}.2 <= ({atk} - {target}.4)")
     else:
       # Assume any other case follows the formal attack calculation
       self.precondition_f("{target}.4 < {atk}")
@@ -512,49 +515,49 @@ class GameTests(unittest.TestCase):
     module = llvm_load_module(bitcode_name)
 
     # Override(s) associated with basic SAW setup
-    levelUp_result             = llvm_verify(module, 'levelUp', levelUp_Contract())
+    #levelUp_result             = llvm_verify(module, 'levelUp', levelUp_Contract())
 
     # Override(s) associated with basic struct initialization
-    initDefaultPlayer_result   = llvm_verify(module, 'initDefaultPlayer', initDefaultPlayer_Contract())
+    #initDefaultPlayer_result   = llvm_verify(module, 'initDefaultPlayer', initDefaultPlayer_Contract())
 
     # Overrides(s) associated with preconditions and postconditions that must
     # be considered in SAW contracts & unit test overrides
-    checkStats_pass_result     = llvm_verify(module, 'checkStats', checkStats_Contract(True))
-    checkStats_fail_result     = llvm_verify(module, 'checkStats', checkStats_Contract(False))
+    #checkStats_pass_result     = llvm_verify(module, 'checkStats', checkStats_Contract(True))
+    #checkStats_fail_result     = llvm_verify(module, 'checkStats', checkStats_Contract(False))
     resolveAttack_case1_result = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(1))
     resolveAttack_case2_result = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(2))
     resolveAttack_case3_result = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(3))
-    selfDamage_case1_result    = llvm_verify(module, 'selfDamage', selfDamage_Contract(1), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
-    selfDamage_case2_result    = llvm_verify(module, 'selfDamage', selfDamage_Contract(2), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
-    selfDamage_case3_result    = llvm_verify(module, 'selfDamage', selfDamage_Contract(3), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
-    quickBattle_result         = llvm_verify(module, 'quickBattle', quickBattle_Contract(), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
+    #selfDamage_case1_result    = llvm_verify(module, 'selfDamage', selfDamage_Contract(1), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
+    #selfDamage_case2_result    = llvm_verify(module, 'selfDamage', selfDamage_Contract(2), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
+    #selfDamage_case3_result    = llvm_verify(module, 'selfDamage', selfDamage_Contract(3), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
+    #quickBattle_result         = llvm_verify(module, 'quickBattle', quickBattle_Contract(), lemmas=[resolveAttack_case1_result, resolveAttack_case2_result, resolveAttack_case3_result])
 
     # Override(s) associated with global variable handling
-    getDefaultLevel_result     = llvm_verify(module, 'getDefaultLevel', getDefaultLevel_Contract())
-    initScreen_result          = llvm_verify(module, 'initScreen', initScreen_Contract())
-    setScreenTile_pass_result  = llvm_verify(module, 'setScreenTile', setScreenTile_Contract(True))
-    setScreenTile_fail_result  = llvm_verify(module, 'setScreenTile', setScreenTile_Contract(False))
+    #getDefaultLevel_result     = llvm_verify(module, 'getDefaultLevel', getDefaultLevel_Contract())
+    #initScreen_result          = llvm_verify(module, 'initScreen', initScreen_Contract())
+    #setScreenTile_pass_result  = llvm_verify(module, 'setScreenTile', setScreenTile_Contract(True))
+    #setScreenTile_fail_result  = llvm_verify(module, 'setScreenTile', setScreenTile_Contract(False))
 
     # Override(s) showing limitations with struct pointer fields
-    resetInventoryItems_result = llvm_verify(module, 'resetInventoryItems', resetInventoryItems_Contract(5))
+    #resetInventoryItems_result = llvm_verify(module, 'resetInventoryItems', resetInventoryItems_Contract(5))
 
     # Assert the overrides are successful
-    self.assertIs(levelUp_result.is_success(), True)
-    self.assertIs(initDefaultPlayer_result.is_success(), True)
-    self.assertIs(checkStats_pass_result.is_success(), True)
-    self.assertIs(checkStats_fail_result.is_success(), True)
+    #self.assertIs(levelUp_result.is_success(), True)
+    #self.assertIs(initDefaultPlayer_result.is_success(), True)
+    #self.assertIs(checkStats_pass_result.is_success(), True)
+    #self.assertIs(checkStats_fail_result.is_success(), True)
     self.assertIs(resolveAttack_case1_result.is_success(), True)
     self.assertIs(resolveAttack_case2_result.is_success(), True)
     self.assertIs(resolveAttack_case3_result.is_success(), True)
-    self.assertIs(selfDamage_case1_result.is_success(), True)
-    self.assertIs(selfDamage_case2_result.is_success(), True)
-    self.assertIs(selfDamage_case3_result.is_success(), True)
-    self.assertIs(quickBattle_result.is_success(), True)
-    self.assertIs(getDefaultLevel_result.is_success(), True)
-    self.assertIs(initScreen_result.is_success(), True)
-    self.assertIs(setScreenTile_pass_result.is_success(), True)
-    self.assertIs(setScreenTile_fail_result.is_success(), True)    
-    self.assertIs(resetInventoryItems_result.is_success(), True)
+    #self.assertIs(selfDamage_case1_result.is_success(), True)
+    #self.assertIs(selfDamage_case2_result.is_success(), True)
+    #self.assertIs(selfDamage_case3_result.is_success(), True)
+    #self.assertIs(quickBattle_result.is_success(), True)
+    #self.assertIs(getDefaultLevel_result.is_success(), True)
+    #self.assertIs(initScreen_result.is_success(), True)
+    #self.assertIs(setScreenTile_pass_result.is_success(), True)
+    #self.assertIs(setScreenTile_fail_result.is_success(), True)    
+    #self.assertIs(resetInventoryItems_result.is_success(), True)
 
 
 if __name__ == "__main__":
