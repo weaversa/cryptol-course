@@ -1272,7 +1272,7 @@ class initDefaultSprite_Contract(Contract):
     self.execute_func(sprite_p)
 
     # Assert postconditions
-    self.points_to(sprite_p, struct(cry_f("""(zero, 1 , 2)
+    self.points_to(sprite_p, struct(cry_f("""(zero, 1, 2)
       : ([{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8], [32], [32])""")))                              
                                            
     self.returns_f("`({SUCCESS}) : [32]")
@@ -1284,7 +1284,53 @@ Also notice how we assert the `points_to` postcondition for `sprite_p`. We use `
 
 ### Structs in Cryptol
 
-//Cryptol interprets structs as tuples
+Cryptol interprets structs as tuples. In our `initDefaultSprite_Contract` example, we asserted the following Cryptol tuple:
+
+```
+(zero, 1, 2) : ([{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8], [32], [32])
+```
+
+which simplifies to:
+
+```
+(zero, 1, 2) : ([2][4][3][8], [32], [32])
+```
+
+While Cryptol's record types could also represent structs, SAW does not currently support translating Cryptol's record types into crucible-llvm's type system. So if we tried to use the following postcondition with a Cryptol record:
+
+```python
+self.points_to(sprite_p, struct(cry_f("""
+  {{ framzero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8],
+     xPos = 1 : [32],
+     yPos = 2 : [32]}}""")))   
+```
+
+SAW would return this error:
+
+```
+clang -c -g -emit-llvm -o artifacts/Game.bc src/Game.c
+python3 proof/Game.py
+⚠️  Failed to verify: lemma_initDefaultSprite_Contract (defined at proof/Game.py:530):
+error: SAW doesn't yet support translating Cryptol's record type(s) into crucible-llvm's type system.
+        stdout:
+
+F
+======================================================================
+FAIL: test_Game (__main__.GameTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "proof/Game.py", line 556, in test_Game
+    self.assertIs(initDefaultSprite_result.is_success(), True)
+AssertionError: False is not True
+
+----------------------------------------------------------------------
+Ran 1 test in 0.878s
+
+FAILED (failures=1)
+🛑  The goal failed to verify.
+make: *** [Makefile:14: all] Error 1
+```
+
 //But what if a struct has a pointer as a field...?
 
 ## Exercise: Resolving an Attack!

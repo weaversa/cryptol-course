@@ -131,8 +131,13 @@ class initDefaultSprite_Contract(Contract):
     self.execute_func(sprite_p)
 
     # Assert postconditions
-    self.points_to(sprite_p, struct(cry_f("""(zero, 1 , 2)
+    self.points_to(sprite_p, struct(cry_f("""(zero, 1, 2)
       : ([{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8], [32], [32])""")))                              
+    # Pop Quiz: Why does this assertion fail?
+    # self.points_to(sprite_p, struct(cry_f("""
+    #   {{ frames = zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8],
+    #      xPos = 1 : [32],
+    #      yPos = 2 : [32]}}""")))                              
                                            
     self.returns_f("`({SUCCESS}) : [32]")
 
@@ -564,7 +569,6 @@ class GameTests(unittest.TestCase):
     self.assertIs(setScreenTile_pass_result.is_success(), True)
     self.assertIs(setScreenTile_fail_result.is_success(), True)    
     self.assertIs(resetInventoryItems_result.is_success(), True)
-
 
 if __name__ == "__main__":
   unittest.main()
