@@ -477,3 +477,4 @@ https://github.com/weaversa/cryptol-course/issues
 || [+ Salsa20 Properties](../Salsa20/Salsa20Props.md) ||
 || [+ Transposition Ciphers](../Transposition/Contents.md) ||
 || [+ Project Euler](../ProjectEuler/ProjectEuler.md) ||
+|| [+ Continuous Reasoning with SAW](../SAW/SAW.md) ||
