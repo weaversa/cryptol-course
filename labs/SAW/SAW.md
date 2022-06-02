@@ -1072,7 +1072,16 @@ This example is from [here]()
 
 # Structs 
 
-In this section we learn how to verify code involving structs and global variables by analyzing a game. The code for the game can be found [here](./Game/src/).
+In this section we will learn how to verify code involving structs by analyzing a game. The code for the game can be found [here](./Game/src/).
+
+To complete this lab, navigate to the [Game directory](./Game). In there, you'll notice the following:
+- `Makefile`: Provides the necessary steps to generate our bitcode and run our SAW Python scripts.
+- `src/`: Contains the source code we'll be analyzing
+- `proof/`: Contains our Python scripts to run our SAW contracts. Your job will be to complete the `TODO` sections marked throughout [Game.cry](./Game/proof/Game.py). If you get stuck, you can refer to [Game_answers.cry](./Game/proof/Game_answers.py) or look at the discussions mentioned later in this markdown file!
+- `specs/`: Contains our Cryptol specs that our SAW contracts can call. Feel free to add your own Cryptol functions to help you complete this lab!
+- `DLC/`: Contains an extended version of this lab (think Downloadable Content) with even more Game functions for you to play with! While there aren't any lab worksheets configured for you in there, you can reference the contents for how to tackle additional functions. For more information regarding to what each function intends to teach, refer to [GameOutline.md](./Game/DLC/GameOutline.md).
+
+With that knowledge, make sure you have `start-saw-remote-api` running, open up Game.cry, fill out your answers, and test out your work by running `make`. Game on!
 
 
 ## Struct Initialization
