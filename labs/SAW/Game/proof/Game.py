@@ -89,48 +89,29 @@ class initDefaultPlayer_Contract(Contract):
     # player_t is an alternative typedef name for character_t.
     player = self.alloc(alias_ty("struct.character_t"))
 
+    # Symbolically execute the function
     self.execute_func(player)
 
-    # Assert the post-condition behaviors
-    # Note: The following explicit points_to method is currently the only way
-    #       to assert struct field contents.
-    # Index 0 = "name" field
-    # Recall that 0x41 is ASCII for 'A'
+    # Assert the postcondition behaviors
+
+    # Option 1: Assert one field at a time via points_to
     self.points_to(player['name'], cry_f("repeat 0x41 : [{MAX_NAME_LENGTH}][8]"))
-    # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
-    # self.points_to(player[0], cry_f("repeat 0x41 : [{MAX_NAME_LENGTH}][8]"))
-
-    # Index 1 is the "level" field
     self.points_to(player['level'], cry_f("1 : [32]"))
-    # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
-    # self.points_to(player[1], cry_f("1 : [32]"))
-
-    # Index 2 is the "hp" field
     self.points_to(player['hp'], cry_f("10 : [32]"))
-    # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
-    # self.points_to(player[2], cry_f("10 : [32]"))
-
-    # Index 3 is the "atk" field
     self.points_to(player['atk'], cry_f("5 : [32]"))
-    # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
-    # self.points_to(player[3], cry_f("5 : [32]"))
-
-    # Index 4 is the "def" field
     self.points_to(player['def'], cry_f("4 : [32]"))
-    # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
-    # self.points_to(player[4], cry_f("4 : [32]"))
-
-    # Index 5 is the "spd" field
     self.points_to(player['spd'], cry_f("3 : [32]"))
-    # If bitcode is compiled without debug symbols enabled (no "-g" flag), use:
+    # Note: If bitcode isn't compiled with debug symbols enabled (no "-g" flag)
+    #       then use the field indices instead.
+    # self.points_to(player[0], cry_f("repeat 0x41 : [{MAX_NAME_LENGTH}][8]"))
+    # self.points_to(player[1], cry_f("1 : [32]"))
+    # self.points_to(player[2], cry_f("10 : [32]"))
+    # self.points_to(player[3], cry_f("5 : [32]"))
+    # self.points_to(player[4], cry_f("4 : [32]"))
     # self.points_to(player[5], cry_f("3 : [32]"))
 
-    # Incorrect Alternative 1: Invalid label in record update.
-    # self.points_to(player, cry_f("{{ repeat 0x41 : [{MAX_NAME_LENGTH}][8], 1 : [32], 10 : [32], 5 : [32], 4 : [32], 3 : [32] }}"))
-
-    # Incorrect Alternative 2: SAW doesn't yet support translating Cryptol's
-    #                          record type(s) into crucible-llvm's type system.
-    # self.points_to(player, cry_f("{{ name=(repeat 0x41 : [{MAX_NAME_LENGTH}][8]), level=1 : [32], hp=10 : [32], atk=5 : [32], def=4 : [32], spd=3 : [32] }}"))
+    # Option 2: Assert all of the fields to a tuple
+    # self.points_to(player, cry_f("( repeat 0x41 : [{MAX_NAME_LENGTH}][8], 1 : [32], 10 : [32], 5 : [32], 4 : [32], 3 : [32] )"))
 
     self.returns(cry_f("`({SUCCESS}) : [32]"))
 
