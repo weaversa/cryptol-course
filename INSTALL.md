@@ -4,14 +4,13 @@ Likely, the easiest way to take the course is via
 [Gitpod.io](https://gitpod.io), a development environment hosting
 service that opens the course right in your web-browser. We have
 pre-loaded all of the tools you'll need to complete the main Cryptol
-track of this course (we are currently missing support for
-SAW). Simply click the link below to start. Your personal Gitpod
-instance will need a couple of minutes to initialize the first time
-you click the link. If you close the Gitpod browser window, your work
-will be saved, though every time you return to the link, Gitpod will
-start a fresh workspace. To restart a previous workspace, go to
-https://gitpod.io/workspaces/. You can also pin a workspace to keep it
-from being deleted after 14 days of inactivity.
+track of this course. Simply click the link below to start. Your
+personal Gitpod instance will need a couple of minutes to initialize
+the first time you click the link. If you close the Gitpod browser
+window, your work will be saved, though every time you return to the
+link, Gitpod will start a fresh workspace. To restart a previous
+workspace, go to https://gitpod.io/workspaces/. You can also pin a
+workspace to keep it from being deleted after 14 days of inactivity.
 
 With this method, you can save files on a virtual machine and start
 and stop it at will. There isn't an easy way to transfer files from
