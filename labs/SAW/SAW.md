@@ -60,7 +60,7 @@ your terminal:
 
 ```sh
 $ export SAW_SERVER_URL=http://0.0.0.0:36691
-$ saw-remote-api http --host 0.0.0.0 --port 36691 &
+$ saw-remote-api http --host 0.0.0.0 --port 36691 / &
 ```
 
 Congrats! You now have a server version of SAW running in the
