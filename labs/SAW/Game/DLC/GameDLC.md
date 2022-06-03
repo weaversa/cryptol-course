@@ -2,21 +2,46 @@
 
 This directory contains additional Game functions and SAW contracts for you to reference. You will notice:
 - `Makefile`: Provides the necessary steps to generate our bitcode and run our SAW Python scripts.
-- `src/`: Contains the source code we'll be analyzing
+- `src/`: Contains the source code we'll be analyzing.
 - `proof/`: Contains our Python scripts to run our SAW contracts.
 - `specs/`: Contains our Cryptol specs that our SAW contracts can call.
 
 # DLC Functions
 
-Below is a list of functions included in Game/.
+Below is a list of functions included in src/.
 
-## levelUp(uint32_t level)
-**Goal:** Determine how to set up and verify a very simple function in a SAW contract.
+## `uint32_t levelUp(uint32_t level)`
 
-**Lessons Learned**
-- How to declare a fresh variable in SAW
-- How to call a Cryptol function
-- How to pass SAW types to Cryptol function (curly braces)
+**Goal:** Set up a SAW contract to verify a simple function.
+
+**Lessons Learned:**
+- How to declare a fresh `uint32_t` variable in a contract
+- How to call a Cryptol function in a contract
+- How to pass variables defined in the SAW contract to a Cryptol function (curly braces)
+
+
+## `uint32_t initDefaultPlayer(player_t* player)`
+
+**Goal:** Set up a struct variable in a SAW contract.
+
+**Lessons Learned:**
+- How and when to use `alias_ty`
+- How and when to use `alloc`
+  - Use `alloc` when you only consider the pointer
+  - Use `ptr_to_fresh` when you care about the values being referenced (i.e. for pre/postconditions) and the pointer
+- SAW only recognizes the base struct name (`player_t` vs `character_t`)
+- Passing global variables/parameters/defines defined in SAW to contracts
+  - Values copied from the source code's defines
+  - Examples: `MAX_NAME_LENGTH`, `SUCCESS`
+- How to assert postconditions using `points_to`
+- Compiling clang with the `-g` flag provides debug symbols, so you can reference fields names rather than just indices
+
+
+
+
+
+
+
 
 
 ## getDefaultLevel()
@@ -30,20 +55,7 @@ Below is a list of functions included in Game/.
 - When to pass no inputs to `execute_func`
 
 
-## initDefaultPlayer(player_t* player)
-**Goal:** Determine how to setup a struct variable in a SAW contract.
 
-**Lessons Learned:**
-- How and when to use `alias_ty`
-- How and when to use `alloc`
-  - Use `alloc` when you only consider the pointer
-  - Use `ptr_to_fresh` when you care about the values being referenced (i.e. for pre/postconditions) and the pointer
-- SAW only recognizes the base struct name (`player_t` vs `character_t`)
-- Passing global variables/parameters/defines defined in SAW to contracts
-  - Values copied from the source code's defines
-  - Examples: `MAX_NAME_LENGTH`, `SUCCESS`
-- How to assert postconditions using `points_to`
-- Compiling clang with the `-g` flag provides debug symbols, so you can reference fields names rather than just indices
 
 
 ## checkStats(character_t* character)
