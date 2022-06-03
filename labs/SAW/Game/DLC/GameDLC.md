@@ -15,21 +15,21 @@ Below is a list of functions included in src/.
 **Goal:** Set up a SAW contract to verify a simple function.
 
 **Lessons Learned:**
-- How to declare a fresh `uint32_t` variable in a contract
+- How to use `fresh_var` to represent `uint32_t` variables in a contract
 - How to call a Cryptol function in a contract
 - How to pass variables defined in the SAW contract to a Cryptol function (curly braces)
 
 
 ## `uint32_t initDefaultPlayer(player_t* player)`
 
-**Goal:** Set up a struct variable in a SAW contract.
+**Goal:** Represent and initialize C structs in a SAW contract.
 
 **Lessons Learned:**
-- How and when to use `alias_ty`
+- How to use `alias_ty` to represent structs in a contract
+- Understand that SAW only recognizes the base struct name (`player_t` vs `character_t`)
 - How and when to use `alloc`
   - Use `alloc` when you only consider the pointer
   - Use `ptr_to_fresh` when you care about the values being referenced (i.e. for pre/postconditions) and the pointer
-- SAW only recognizes the base struct name (`player_t` vs `character_t`)
 - Passing global variables/parameters/defines defined in SAW to contracts
   - Values copied from the source code's defines
   - Examples: `MAX_NAME_LENGTH`, `SUCCESS`
@@ -37,25 +37,10 @@ Below is a list of functions included in src/.
 - Compiling clang with the `-g` flag provides debug symbols, so you can reference fields names rather than just indices
 
 
+// TODO: Update this section
+## `uint32_t initDefaultSprite(character_t* character, sprite_t* sprite)`
 
-
-
-
-
-
-
-## getDefaultLevel()
-**Goal:** Determine how to handle global variables in a SAW contract.
-
-**Lessons Learned:**
-- How and when to use `global_initializer`
-  - When the source code already initializes the value and SAW should just use that value
-- How to declare a global variable in SAW (`global_var`)
-- How to set a global variable to an initialized value in a SAW contract (`points_to`)
-- When to pass no inputs to `execute_func`
-
-
-
+**Goal:** Set up a struct
 
 
 ## checkStats(character_t* character)
@@ -91,15 +76,31 @@ Below is a list of functions included in src/.
   - Goes back to the caller vs callee tradeoffs mentioned in `checkStats` **Additional Notes**
 
 
+// TODO: Expand & discuss background with SAWscripts
 ## selfDamage(player_t* player)
 **Goal:** To provide a case study where SAW should have complained about its memory disjoint assertion being violated. Note that SAW's Python API silently resolves this issue.
 
 
-## resetInventoryItems(inventory_t* inventory)
-**Goal:** To show the problems SAW faces when verifying structs with pointer fields.
+## quickBattle(player_t* player, character_t* opponent)
+**Goal:** To show how to pass overrides (lemmas) to a Unit test.
 
 **Lessons Learned:**
-- Consider rewriting the source code to avoid unallocated pointers as it makes SAW happy and reduces assumptions code makes (improves security)
+- Must pass preconditions that match the preconditions included in the passed overrides
+
+**Additional Notes:**
+- The function assumes that both the player and opponent have non-zero HP values, otherwise there wouldn't be a battle!
+  - Explains why the `> 0` preconditions exist
+
+
+## getDefaultLevel()
+**Goal:** Determine how to handle global variables in a SAW contract.
+
+**Lessons Learned:**
+- How and when to use `global_initializer`
+  - When the source code already initializes the value and SAW should just use that value
+- How to declare a global variable in SAW (`global_var`)
+- How to set a global variable to an initialized value in a SAW contract (`points_to`)
+- When to pass no inputs to `execute_func`
 
 
 ## initScreen(screen_t* screen, uint8_t assetID)
@@ -117,13 +118,9 @@ Below is a list of functions included in src/.
 - Repointing a pointer to a SAW variable (`screen_post`) in order to use that variable for postconditions
 
 
-## quickBattle(player_t* player, character_t* opponent)
-**Goal:** To show how to pass overrides (lemmas) to a Unit test.
+// TODO: Reevaluate position based on work done with initDefaultSprite()
+## resetInventoryItems(inventory_t* inventory)
+**Goal:** To show the problems SAW faces when verifying structs with pointer fields.
 
 **Lessons Learned:**
-- Must pass preconditions that match the preconditions included in the passed overrides
-
-**Additional Notes:**
-- The function assumes that both the player and opponent have non-zero HP values, otherwise there wouldn't be a battle!
-  - Explains why the `> 0` preconditions exist
-
+- Consider rewriting the source code to avoid unallocated pointers as it makes SAW happy and reduces assumptions code makes (improves security)
