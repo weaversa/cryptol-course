@@ -16,6 +16,31 @@ must have at certain stages in a software development pipeline. Some
 industrial examples include [AWS's s2n](https://link.springer.com/chapter/10.1007/978-3-319-96142-2_26)
 and [Supranational's BLST](https://github.com/GaloisInc/BLST-Verification).
 
+## Prerequisites
+
+Before working through this lab, you'll need
+  * A recent version of Python, Cryptol, SAW, saw-remote-api, SAW's Python client package, and the clang C compiler to be installed and
+  * an editor for completing the exercises in this file.
+
+You'll also need experience with the following languages
+  * Python
+  * Cryptol
+  * SAW
+  * C
+
+## Skills You'll Learn
+
+By the end of this lab you will be comfortable using SAW's remote API
+to formally verify cryptographic implementations. Since the bulk of
+work with SAW lies in crafting linkages between the source language
+and spec, this lab is filled with examples of different types of data
+structures and how to represent them in SAW. Hence, this lab also
+exists as a kind of reference that you may return to when using these
+tools. As well, there are some examples
+[here](https://github.com/GaloisInc/saw-script/tree/master/saw-remote-api/python/tests)
+and a full-featured tutorial on SAW
+[here](https://saw.galois.com/intro/).
+
 # Setting Everything Up
 
 To run any of the examples in this lab, you need to first start the
