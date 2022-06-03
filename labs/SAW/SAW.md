@@ -1227,6 +1227,29 @@ self.points_to(player, cry_f("""( repeat 0x41 : [{MAX_NAME_LENGTH}][8],
 
 We use 3 double quotes `"""` in our `cry_f` call. This technique is useful when we want to separate our expected Cryptol-defined behaviors over multiple lines to improve code readability. Python considers the 3 double quotes as a multiline string. Multiline strings may also be used as block comments in Python.
 
+Note that the setup we see above results in wide open spaces, which will be noticable when debugging strings passed to the family of `cry` functions. These spaces can be mitigated using `dedent` from the `textwrap` package that comes with Python. For example:
+
+```python
+from textwrap import dedent
+# ...
+
+    self.returns(cry(dedent("""
+      (y, z)
+        where
+          y = "foo"
+          z = "bar"
+    """).strip()))
+```
+
+This renders (without leading/trailing whitespace) as:
+
+```
+(y, z)
+  where
+    y = "foo"
+    z = "bar"
+```
+
 While Cryptol's record types could also represent structs, SAW does not currently support translating Cryptol's record types into crucible-llvm's type system. If we tried to represent the struct as a Cryptol record like so:
 
 ```python
