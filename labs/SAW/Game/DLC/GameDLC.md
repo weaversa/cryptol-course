@@ -1,4 +1,4 @@
-# DLC
+# Game DLC
 
 This directory contains additional Game functions and SAW contracts for you to reference. You will notice:
 - `Makefile`: Provides the necessary steps to generate our bitcode and run our SAW Python scripts.
