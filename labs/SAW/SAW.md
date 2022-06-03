@@ -1279,17 +1279,16 @@ not currently support translating Cryptol's record types into
 crucible-llvm's type system. If we tried to represent the struct as a
 Cryptol record:
 
-{% raw %}
-```cryptol
-{{ name  = repeat 0x41 : [{MAX_NAME_LENGTH}][8]
- , level = 1  : [32]
- , hp    = 10 : [32]
- , atk   = 5  : [32]
- , def   = 4  : [32]
- , spd   = 3  : [32]
-}}
+```python
+self.points_to(player, cry_f("""{{ name  = repeat 0x41 : [{MAX_NAME_LENGTH}][8]
+                                 , level = 1  : [32]
+                                 , hp    = 10 : [32]
+                                 , atk   = 5  : [32]
+                                 , def   = 4  : [32]
+                                 , spd   = 3  : [32]
+                                }}
+                             """))
 ```
-{% endraw %}
 
 SAW would return this error:
 
