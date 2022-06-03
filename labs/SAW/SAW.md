@@ -368,9 +368,8 @@ Traceback (most recent call last):
       🛑  The goal failed to verify.
 ```
 
-SAW alerted us about potentially undefined behavior mentioned in the
-[C specification](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf)
-has the following to say about bit shifts:
+SAW alerted us about potentially undefined behavior; the [C99 standard](https://www.open-std.org/jtc1/sc22/wg14/www/docs/n1256.pdf)
+specifies the following about bit shifts:
 
 > If the value of the right operand is negative or is greater than or
 > equal to the width of the promoted left operand, the behavior is
@@ -533,8 +532,9 @@ Finally, `specification` must contain `self.returns` or `self.returns_f`, so we 
 
 ### Python Helper Functions
 
-To limit code reuse we can define helper functions in Python. For
-example, the following construct is often used:
+To limit code reuse we can define helper functions in Python. Code *reuse* 
+is good. Code *repetition* is bad! For example, the following construct 
+is often used:
 
 ```python
 def ptr_to_fresh(c : Contract, ty : LLVMType, name : Optional[str] = None, read_only : Optional[bool] = False) -> Tuple[FreshVar, SetupVal]:
@@ -904,13 +904,10 @@ What do you think will happen if we run this code?
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
-    length   = fresh_var(i8, "length")
     
-    self.precondition_f("{self.length} == {length}")
+    self.execute_func(a_p, b_p, cry(self.length))
     
-    self.execute_func(a_p, b_p, length)
-    
-    self.points_to(a_p, cry_f("rowAdd`{{{length}}} {a} {b}"))
+    self.points_to(a_p, cry_f("rowAdd`{{{self.length}}} {a} {b}"))
     
     self.returns(a_p)
   ```
