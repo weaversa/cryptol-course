@@ -38,11 +38,18 @@ Below is a list of functions included in src/.
 
 
 ## `initDefaultSprite()`
-// TODO: Update this section
-
-**Goal:** Set up a struct
+**Goal:** Use SAW's explicit structs to represent C structs that have pointer fields.
 
 **Lessons Learned:**
+- How to use `struct` to combine SAW variables into a struct representation
+- How to represent struct pointers either through `alloc` or through `fresh_var` and `ptr_ty`
+- How to represent multidimensional arrays in contracts
+- How to use Cryptol tuples to represent C structs in `points_to` postconditions
+- How to use 3 double quotes `"""` to spread Cryptol behaviors across multiple lines
+
+**Additional Notes:**
+- Notice that the contract includes two ways to assert struct postconditions holistically
+  - Each option has its way to declare `character`
 
 
 ## `checkStats()`
