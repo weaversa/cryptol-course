@@ -1992,7 +1992,13 @@ One can think of lemmas as rewrite rules under the hood. Whenever SAW
 encounters ceilLog2 function in the C it will interpret its behavior as
 what is specified in the `ceilLog2Contract()`.
 
-**Exercise**: Does the `C` function `ceilLog2` as defined above always yield the behavior outlined in `ceilLog2Contract`? That is, was our assumption a fair one to make? If not, change the `C` code (possibly using different library functions) to match `lg2` in Cryptol.
+**Exercise**: Does the `C` function `ceilLog2` as defined above always yield the behavior outlined in `ceilLog2Contract`? That is, was our assumption a fair one to make? If not, change the `C` code (possibly using different library functions) to match `lg2` in Cryptol and verify it!
+
+Hint: consider [CLZ](https://en.wikipedia.org/wiki/Find_first_set#CLZ).
+
+```c
+int __builtin_clzll (unsigned long long)
+```
 
 ## Uninterpreting Functions
 
