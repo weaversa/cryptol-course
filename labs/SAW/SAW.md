@@ -1064,7 +1064,7 @@ if __name__ == "__main__":
   ```
 </details>
 
-This example is from [here]()
+This example is from the [GaloisInc/saw-script repo](https://github.com/GaloisInc/saw-script/blob/master/saw-remote-api/python/tests/saw/test_llvm_assert_null.py).
 
 
 # Structs 
