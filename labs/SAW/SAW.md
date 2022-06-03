@@ -1242,12 +1242,14 @@ class initDefaultPlayer_Contract(Contract):
 We can replace all of the `points_to` postconditions in the previous contract since Cryptol interprets symbolic structs as tuples.
 
 ```python
-self.points_to(player, cry_f("""( repeat 0x41 : [{MAX_NAME_LENGTH}][8],
-                                  1  : [32],
-                                  10 : [32],
-                                  5  : [32],
-                                  4  : [32],
-                                  3  : [32] )"""))
+self.points_to(player, cry_f("""( repeat 0x41 : [{MAX_NAME_LENGTH}][8]
+                                , 1  : [32]
+                                , 10 : [32]
+                                , 5  : [32]
+                                , 4  : [32]
+                                , 3  : [32]
+                                )
+                             """))
 ```
 
 We use 3 double quotes `"""` in our `cry_f` call. This technique is useful when we want to separate our expected Cryptol-defined behaviors over multiple lines to improve code readability. Python considers the 3 double quotes as a multiline string. Multiline strings may also be used as block comments in Python.
@@ -1277,18 +1279,16 @@ This renders (without leading/trailing whitespace) as:
 
 While Cryptol's record types could also represent structs, SAW does not currently support translating Cryptol's record types into crucible-llvm's type system. If we tried to represent the struct as a Cryptol record like so:
 
-{% raw %}
 ```python
-self.points_to(player, cry_f("""{{ name = repeat 0x41 : [{MAX_NAME_LENGTH}][8]
-                                 , level = 1  : [32]
-                                 , hp    = 10 : [32]
-                                 , atk   = 5  : [32]
-                                 , def   = 4  : [32]
-                                 , spd   = 3  : [32]
+self.points_to(player, cry_f(""" {{ name = repeat 0x41 : [{MAX_NAME_LENGTH}][8]
+                                  , level = 1  : [32]
+                                  , hp    = 10 : [32]
+                                  , atk   = 5  : [32]
+                                  , def   = 4  : [32]
+                                  , spd   = 3  : [32]
                                  }}
                              """))
 ```
-{% endraw %}
 
 SAW would return this error:
 
