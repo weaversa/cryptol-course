@@ -63,3 +63,5 @@ jobs:
       - run: cd labs/SAW/proof && clang ../src/addRow.c -o ../src/addRow.bc -c -emit-llvm && python3 addRow.py
       # Run null SAW Script
       - run: cd labs/SAW/proof && clang ../src/null.c -o ../src/null.bc -c -emit-llvm && python3 null.py
+      # Run Game SAW Script
+      - run: labs/SAW/Game/DLC && mkdir artifacts && clang -c -g -emit-llvm -o artifacts/Game.bc src/Game.c && python3 proof/Game.py
