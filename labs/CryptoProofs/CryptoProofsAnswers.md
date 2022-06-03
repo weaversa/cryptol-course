@@ -228,9 +228,6 @@ matched_pt = join "tootough"
 matched_ct = 0x95d07f8a72707733
 ```
 
-To make this solvable, try it again with the first six bytes of key
-provided: `0x1234567890ab`.
-
 ```Xcryptol-session-ci-none
 labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct
 ```
@@ -241,6 +238,9 @@ algorithm and is therefore designed to resist attacks on the key.
 DES keys have been broken using specialized algorithms
 and large amounts of compute power, but not by a single computer
 running a SAT solver.
+
+To make this solvable, try it again with the first six bytes of key
+provided: `0x1234567890ab`.
 
 ```Xcryptol-session
 labs::CryptoProofs::CryptoProofsAnswers> :sat \key -> DES.encrypt key matched_pt == matched_ct /\ take key == 0x1234567890ab
@@ -419,7 +419,7 @@ Q.E.D.
 
 **EXERCISE**: 2.5.2 DES Parity Bits
 
-Having equivalent keys is often considered a weakness in an a
+Having equivalent keys is often considered a weakness in a
 cipher. However, in the case of DES, it turns out that this is a
 result of a design choice. The lowest bit of each byte of a DES key is
 actually a [parity bit](https://en.wikipedia.org/wiki/Parity_bit) that
@@ -477,3 +477,4 @@ https://github.com/weaversa/cryptol-course/issues
 || [+ Salsa20 Properties](../Salsa20/Salsa20Props.md) ||
 || [+ Transposition Ciphers](../Transposition/Contents.md) ||
 || [+ Project Euler](../ProjectEuler/ProjectEuler.md) ||
+|| [+ Continuous Reasoning with SAW](../SAW/SAW.md) ||

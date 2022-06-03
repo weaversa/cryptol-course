@@ -46,3 +46,22 @@ jobs:
           python3 labs/Demos/SAW/xxHash/xxhash32-ref.py
           python3 labs/Demos/SAW/xxHash/xxhash64-ref.py
           python3 labs/Demos/SAW/Salsa20/proof/salsa20.py
+
+  saw-tutorial:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/weaversa/cryptol-course:2.12
+      options: --user root
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      # Start saw-remote-api server
+      - run: start-saw-remote-api-read-only
+      # Run final rotl SAW Script
+      - run: cd labs/SAW/proof && clang ../src/rotl3.c -o ../src/rotl.bc -c -emit-llvm && python3 rotl.py
+      # Run addRow SAW Script
+      - run: cd labs/SAW/proof && clang ../src/addRow.c -o ../src/addRow.bc -c -emit-llvm && python3 addRow.py
+      # Run null SAW Script
+      - run: cd labs/SAW/proof && clang ../src/null.c -o ../src/null.bc -c -emit-llvm && python3 null.py
+      # Run Game SAW Script
+      - run: cd labs/SAW/Game/DLC && mkdir artifacts && clang -c -g -emit-llvm -o artifacts/Game.bc src/Game.c && python3 proof/Game.py

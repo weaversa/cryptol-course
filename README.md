@@ -123,6 +123,9 @@ first lab walks you through [installing and running Cryptol](INSTALL.md).
       enjoyed the last lab, go ahead and try your hand at using
       Cryptol's connection to automated provers (SMT solvers) to solve
       some classic computational puzzles.
+    * [Continuous Reasoning with SAW](./labs/SAW/SAW.md): Learn how to
+      use Python to drive SAW and enforce formal invariants on
+      cryptographic implementations at every check-in to a repository.
 8. [Methods for Key Wrapping](./labs/KeyWrapping/KeyWrapping.md):
    Create a Cryptol specification of NIST's [SP800-38F key wrap
    standard](https://csrc.nist.gov/publications/detail/sp/800-38f/final).

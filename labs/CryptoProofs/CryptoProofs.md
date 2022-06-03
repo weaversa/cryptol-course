@@ -339,7 +339,7 @@ plaintext inputs.
 
 **EXERCISE**: 2.5.2 DES Parity Bits
 
-Having equivalent keys is often considered a weakness in an a
+Having equivalent keys is often considered a weakness in a
 cipher. However, in the case of DES, it turns out that this is a
 result of a design choice. The lowest bit of each byte of a DES key is
 actually a [parity bit](https://en.wikipedia.org/wiki/Parity_bit) that
@@ -383,3 +383,4 @@ https://github.com/weaversa/cryptol-course/issues
 || [+ Salsa20 Properties](../Salsa20/Salsa20Props.md) ||
 || [+ Transposition Ciphers](../Transposition/Contents.md) ||
 || [+ Project Euler](../ProjectEuler/ProjectEuler.md) ||
+|| [+ Continuous Reasoning with SAW](../SAW/SAW.md) ||

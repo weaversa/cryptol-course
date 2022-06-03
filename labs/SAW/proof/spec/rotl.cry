@@ -1,0 +1,4 @@
+module rotl where
+
+rotl : [32] -> [32] -> [32]
+rotl xs shift = xs <<< shift
