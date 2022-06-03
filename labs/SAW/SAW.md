@@ -1925,9 +1925,7 @@ we may not care to verify the function if that library has already been
 formally verified. Even if we have verified this function ourselves, we 
 may want to speed up the verification process by blackboxing its behavior.
 This is particularly important to consider if a function we formally 
-verified took a long time to be verified. If we are designing a Python 
-script with other functions, there is no reason for us to waste additional 
-time by verifying something that we already know to be true!
+verified took a long time to be verified.
 
 To accomplish these goals, we make a contract outlining the behavior of 
 our `ceilLog2` function:
