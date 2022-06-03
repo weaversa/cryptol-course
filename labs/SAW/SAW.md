@@ -1881,6 +1881,62 @@ class ceilLog2Contract(Contract):
         self.returns_f("lg2 {i}")
 ```
 
+We should note that `ceil(log2(i))` in C is NOT equal to Cryptol's `lg2` for values `1 << j + 1 where j >= 49`.
+
+To illustrate this disparity, consider the following:
+
+```
+Cryptol> let j49 = 1 << 49 + 1 : [64]
+Cryptol> j49
+1125899906842624
+Cryptol> lg2 j49
+50
+
+Cryptol> let j50 = 1 << 50 + 1 : [64]
+Cryptol> j50
+2251799813685248
+Cryptol> lg2 j50
+51
+```
+
+```c
+#include <stdio.h>
+#include <math.h>
+#include <stdint.h>
+
+int main()
+{
+  uint64_t j49 = 1125899906842624;  // 1 << j + 1 where j == 49
+  uint64_t j50 = 2251799813685248;  // 1 << j + 1 where j == 50
+
+  printf("ceil(log2(%ld)) = %llu\n", j49, (unsigned long long)ceil(log2(j49)));
+  printf("ceil(log2(%ld)) = %llu\n", j50, (unsigned long long)ceil(log2(j50)));
+
+  return 0;
+}
+```
+
+```
+$ gcc -o log2Test log2Test.c
+$ ./log2Test
+ceil(log2(1125899906842624)) = 50
+ceil(log2(2251799813685248)) = 52
+```
+
+
+To account for this disparity, we could add a precondition to our SAW contract.
+
+```python
+class ceilLog2Contract(Contract):
+    def specification(self):
+        i = self.fresh_var(i64, "i")
+
+        self.precondition_f("{i} < 49")
+        
+        self.execute_func(i)
+
+        self.returns_f("lg2 {i}")
+```
 
 In the unit test we would assume the `ceilLog2Contract`:
 
