@@ -1898,12 +1898,17 @@ Would this contract pass verification? Absolutely. Given that the `MAX_STAT` pre
 
 ## Assumptions and Lemmas
 
-Only functions with implementations in the bitcode can be verified. If one imports a function from a library, then that implementation will not be present in the bitcode generated as above. Instead of verifying these library functions we can use contracts to assume their behavior.
+Only functions with implementations in the bitcode can be verified. 
+If a function is imported from an external library, that function's
+implementation is defined elsewhere. As such, the implementation will
+not be present in the generated bitcode. Instead of verifying these 
+library functions, we can use contracts to assume their behavior.
 
 For example, the height of
 [height-balanced binary
 trees](https://en.wikipedia.org/wiki/Self-balancing_binary_search_tree)
-on n nodes is given by the ceiling of `log(n)`. In C we might try to implement this using 
+on n nodes is given by the ceiling of `log(n)`. In C, we might try to 
+implement this using 
 
 ```C
 #include <math.h>
@@ -1914,13 +1919,18 @@ uint64_t ceilLog2(uint64_t i) {
 
 ```
 
-We may not care to verify this function because it's a library
-function, especially if that library has already been formally
-verified. Also, even if we have verified this function we would like
-to speed up the verification procedure by black boxing its behavior.
+We may not care to verify this function if it's from a well-known library
+that has been widely tested and inspected by the public. Alternatively,
+we may not care to verify the function if that library has already been 
+formally verified. Even if we have verified this function ourselves, we 
+may want to speed up the verification process by blackboxing its behavior.
+This is particularly important to consider if a function we formally 
+verified took a long time to be verified. If we are designing a Python 
+script with other functions, there is no reason for us to waste additional 
+time by verifying something that we already know to be true!
 
-To accomplish these goals we make a contract outlining what the
-behavior of this function:
+To accomplish these goals, we make a contract outlining the behavior of 
+our `ceilLog2` function:
 
 ```python
 class ceilLog2Contract(Contract):
@@ -1932,9 +1942,15 @@ class ceilLog2Contract(Contract):
         self.returns_f("lg2 {i}")
 ```
 
-We should note that `ceil(log2(i))` in C is NOT equal to Cryptol's `lg2` for values `1 << j + 1 where j > 49`.
+As a quick mental exercise, does our `ceilLog2` function defined earlier
+always yield the behavior outlined in `ceilLog2Contract`? In other words,
+is `ceil(log2(i))` in C always equivalent to Cryptol's `lg2 i`?
 
-To illustrate this disparity, consider the following:
+Objection, Your Honor! Leading the witness!
+
+It turns out that `ceil(log2(i))` in C is NOT equal to Cryptol's `lg2 i`
+for values of `i` equal to `1 << j + 1 where j > 49`. Don't believe us?
+We would like to call Cryptol and C to the stand:
 
 ```Xcryptol-session
 Cryptol> let j49 = 1 << 49 + 1 : [64]
@@ -1983,7 +1999,16 @@ ceil(log2(2251799813685248)) = 52
 ceil(log2(2251799813685247)) = 52
 ```
 
-The lesson here, beware of `float`s claiming to mimic `int`s. To account for this disparity, we could add a precondition to our SAW contract.
+The lesson here, beware of `float`s claiming to mimic `int`s. Now instead of using
+`ceilLog2` as our assumption example, we could consider other functions like 
+[CLZ](https://en.wikipedia.org/wiki/Find_first_set#CLZ) instead.
+
+```c
+int __builtin_clzll (unsigned long long)
+```
+
+However, let's keep with our current `ceilLog2` function and add a precondition to
+our SAW contract.
 
 ```python
 class ceilLog2Contract(Contract):
@@ -2023,13 +2048,6 @@ One can think of lemmas as rewrite rules under the hood. Whenever SAW
 encounters ceilLog2 function in the C it will interpret its behavior as
 what is specified in the `ceilLog2Contract()`.
 
-**Exercise**: Does the `C` function `ceilLog2` as defined above always yield the behavior outlined in `ceilLog2Contract`? That is, was our assumption a fair one to make? If not, change the `C` code (possibly using different library functions) to match `lg2` in Cryptol and verify it!
-
-Hint: consider [CLZ](https://en.wikipedia.org/wiki/Find_first_set#CLZ).
-
-```c
-int __builtin_clzll (unsigned long long)
-```
 
 ## Uninterpreting Functions
 
