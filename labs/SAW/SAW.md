@@ -24,7 +24,7 @@ you are using the development container that comes with this course
 (`ghcr.io/weaversa/cryptol-course`), you can enter the following
 command in your terminal:
 
-```
+```sh
 $ start-saw-remote-api
 ```
 
@@ -33,7 +33,7 @@ for SAW found in the [Installation lab](../../INSTALL.md). Once
 installed, to run `saw-remote-api`, enter the following commands into
 your terminal:
 
-```
+```sh
 $ export SAW_SERVER_URL=http://0.0.0.0:36691
 $ saw-remote-api http --host 0.0.0.0 --port 36691 &
 ```
@@ -605,7 +605,7 @@ def addRow5NewVar_Contract(Contract):
 
 Running a unit test yields the following error message:
 
-```
+```sh
 [16:42:51.066] Subgoal failed: addRow5NewVar safety assertion:
 internal: error: in _SAW_verify_prestate SAWServer
 The following pointers had to alias, but they didn't:
@@ -843,7 +843,7 @@ What do you think will happen if we run this code?
   
   ...but fails to verify the third contract. It alerts us there is a memory error
   
-  ```
+  ```sh
   [15:40:51.527] Verifying addRowAlias ...
   [15:40:51.528] Simulating addRowAlias ...
   [15:40:51.532] Symbolic simulation completed with side conditions.
@@ -855,7 +855,7 @@ What do you think will happen if we run this code?
   
   and even produces the following counterexample:
 
-  ```
+  ```sh
   [15:40:51.575] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 331}
   [15:40:51.575] ----------Counterexample----------
   [15:40:51.575]   length0: 6
@@ -895,7 +895,7 @@ What do you think will happen if we run this code?
   
   SAW is telling us we forgot to add a precondition to assert our symbolic `length` agrees with our Python parameter `self.length`. This is an easy fix:
 
-  ```
+  ```sh
   def addRowAlias_Contract(Contract):
   def __init__(self, length : int):
     super().__init__()
@@ -981,7 +981,7 @@ int f(int *x) {
 
 The following contract has possibly unexpected behavior (in C booleans are encoded as `0` for false and `1` for true).
 
-```Python
+```python
 import unittest
 from saw_client          import *
 from saw_client.crucible import *
@@ -1030,7 +1030,7 @@ if __name__ == "__main__":
   ```
   
   The counterexample produced may seem mystical.
-  ```
+  ```sh
   [17:21:44.725] ----------Counterexample----------
   [17:21:44.725] <<All settings of the symbolic variables constitute a counterexample>>
   [17:21:44.725] ----------------------------------
@@ -1156,7 +1156,7 @@ class initDefaultPlayer_Contract(Contract):
 
 For every C symbol defined using `#define` we make a corresponding Python global variable.
 
-```
+```python
 MAX_NAME_LENGTH = 12
 SUCCESS         = 170
 FAILURE         = 85
@@ -1164,7 +1164,7 @@ FAILURE         = 85
 
 The command `alias_ty("struct.<typedef name>")` creates a type corresponding to the structure, e.g., 
 
-```python3 
+```python
 player = self.alloc(alias_ty("struct.player_t"))
 ```
 creates a symbolic pointer variable `player` pointing to a structure of type `player_t`.
@@ -1243,7 +1243,7 @@ from textwrap import dedent
 
 This renders (without leading/trailing whitespace) as:
 
-```
+```python
 (y, z)
   where
     y = "foo"
@@ -1263,9 +1263,9 @@ self.points_to(player, cry_f("""{{ name = repeat 0x41 : [{MAX_NAME_LENGTH}][8],
 
 SAW would return this error:
 
-```
-clang -c -g -emit-llvm -o artifacts/Game.bc src/Game.c
-python3 proof/Game.py
+```sh
+$ clang -c -g -emit-llvm -o artifacts/Game.bc src/Game.c
+$ python3 proof/Game.py
 ⚠️  Failed to verify: lemma_initDefaultPlayer_Contract (defined at proof/Game.py:537):
 error: SAW doesn't yet support translating Cryptol's record type(s) into crucible-llvm's type system.
         stdout:
@@ -1294,7 +1294,7 @@ If a Cryptol specification uses a record type to represent structs, then we can 
 
 We can also explicitly define a struct in SAW. Let's consider another struct:
 
-```c
+```C
 #define GAITS 2
 #define DIRECTIONS 4
 #define ANIMATION_STEPS 3
@@ -1317,7 +1317,7 @@ Alright, that's enough of a crash course in animation. Let's get back to our str
 
 With that understanding, let's consider a function that uses the `sprite_t` struct:
 
-```c
+```C
 uint32_t initDefaultSprite(character_t* character, sprite_t* sprite)
 {
   // Initialize the character to the passed pointer
@@ -1418,7 +1418,7 @@ Feeling pretty confident with our little `player_t` and `character_t` structs? H
 
 Consider the following function:
 
-```c
+```C
 void resolveAttack(character_t* target, uint32_t atk)
 {
   if ( target->def >= atk)
@@ -1620,7 +1620,7 @@ make: *** [Makefile:14: all] Error 1
 
 A counterexample?! Let's take a closer look at what SAW provides us and reassess our strategy.
 
-```
+```sh
 [01:59:53.689] ----------Counterexample----------
 [01:59:53.689]   target0: ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0, 4294967293, 0, 3, 0)
 [01:59:53.689]   atk0: 4294967295
@@ -1637,7 +1637,7 @@ Notice that our unit case failed for case 2, but passed for cases 1 and 3. How a
 
 and if we plug in the counterexample values SAW provides us...
 
-```
+```sh
 {target}.2 + {target}.4 <= {atk}
 4294967293 +     3      <= 4294967295
              4294967296 <= 4294967295
@@ -1647,7 +1647,7 @@ Well that doesn't make sense, now does it? Well actually, it does make some sens
 
 Taking that into consideration, then our efforts to test out the counterexample was incorrect. We forgot to account for integer overflow!
 
-```
+```sh
 4294967293 + 3 <= 4294967295
 4294967295 + 1 <= 4294967295
              0 <= 4294967295
@@ -1659,7 +1659,7 @@ Taking that into consideration, then our efforts to test out the counterexample 
 self.precondition_f("({target}.2 + {target}.4) <= {atk}")
 ```
 
-```c
+```C
 else if ( target->hp <= (atk - target->def) )
 ```
 
@@ -1735,7 +1735,7 @@ make: *** [Makefile:14: all] Error 1
 
 Nope, that didn't work either. But hey, SAW gave us a different counterexample. Let's look at that one:
 
-```
+```sh
 [02:34:39.509] ----------Counterexample----------
 [02:34:39.509]   target0: ([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 0, 134217728, 0, 4184634256, 0)
 [02:34:39.509]   atk0: 23884688
@@ -1744,7 +1744,7 @@ Nope, that didn't work either. But hey, SAW gave us a different counterexample. 
 
 Plugging those values into our updated case 2 precondition:
 
-```
+```sh
 {target}.2 <= ({atk} - {target}.4)
  134217728 <= 23884688 - 4184634256
  134217728 <= 134217728
@@ -1752,7 +1752,7 @@ Plugging those values into our updated case 2 precondition:
 
 Nice, we got an integer underflow counterexample. Based on these input values, the source code would actually meet the first if condition:
 
-```c
+```C
 target->def >= atk
 ```
 
@@ -1795,7 +1795,7 @@ Whoo hoo! We finally won the battle! From our exercise, we found that SAW provid
 
 Now let's imagine that very large character stats is a concern in our game. In order to balance characters in our game and avoid problems with very large values, let's say we decided to add a function (`checkStats`) that checks character stats. Let's also assume that this function is always called before functions that use those stats like what we saw in `resolveAttack`.
 
-```c
+```C
 uint32_t checkStats(character_t* character)
 {
   // Assume failure by default
@@ -1905,7 +1905,7 @@ We should note that `ceil(log2(i))` in C is NOT equal to Cryptol's `lg2` for val
 
 To illustrate this disparity, consider the following:
 
-```
+```Xcryptol-session
 Cryptol> let j49 = 1 << 49 + 1 : [64]
 Cryptol> j49
 1125899906842624
@@ -1925,7 +1925,7 @@ Cryptol> lg2 j50m1
 51
 ```
 
-```c
+```C
 #include <stdio.h>
 #include <math.h>
 #include <stdint.h>
@@ -1944,7 +1944,7 @@ int main()
 }
 ```
 
-```
+```sh
 $ gcc -o log2Test log2Test.c
 $ ./log2Test
 ceil(log2(1125899906842624)) = 50
@@ -1968,22 +1968,21 @@ class ceilLog2Contract(Contract):
 
 In the unit test, we would assume the `ceilLog2Contract`:
 
-```
+```python
 log2i_assume = llvm_assume(mod, 'ceilLog2', ceilLog2Contract())
-
 ```
 
 If a C function ever used `ceilLog2`, then we could pass in the
 assumption as an optional argument to verification:
 
-```
+```python
 getHeight_result = llvm_verify(mod, 'getHeight', getHeightContract(), lemmas=[ceilLog2_assume])
 ```
 
 The optional argument is a list because we can supply multiple
 assumptions or previous verifications. For example, we might have
 
-```
+```python
 addNode_result         = llvm_verify(mod, 'addNode', addNodeContract(), lemmas=[getHeight_result])
 removeNode_result      = llvm_verify(mod, 'removeNode', removeNodeContract(), lemmas=[getHeight_result])
 addOneRemoveTwo_result = llvm_verify(mod, 'addOneRemoveTwo', addOneRemoveTwo(), lemmas=[addNode_result, removeNode_result])
