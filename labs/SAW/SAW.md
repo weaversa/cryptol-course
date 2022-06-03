@@ -1283,7 +1283,7 @@ crucible-llvm's type system. If we tried to represent the struct as a
 Cryptol record:
 
 ```cryptol
-{{ name  = repeat 0x41 : [{MAX_NAME_LENGTH}][8]
+{{ name  = repeat 0x41 : [ {MAX_NAME_LENGTH} ][8]
  , level = 1  : [32]
  , hp    = 10 : [32]
  , atk   = 5  : [32]
