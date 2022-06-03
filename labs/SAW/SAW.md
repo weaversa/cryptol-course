@@ -1359,10 +1359,10 @@ class initDefaultSprite_Contract(Contract):
     self.points_to(sprite_p, sprite)
 
     # Symbolically execute the function
-    self.execute_func(character_p, sprite_p)
+    self.execute_func(character, sprite_p)
 
     # Assert postconditions
-    self.points_to(sprite_p, struct( character_p,
+    self.points_to(sprite_p, struct( character,
                                      cry_f("zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8]"),
                                      cry_f("1 : [32]"),
                                      cry_f("2 : [32]") ))
@@ -1385,13 +1385,13 @@ since we don't use `sprite` later in the code. If we wanted, we could assert oth
 
 In the postcondition, we assert `sprite_p` points to some concrete structure. The benefit of using explicit structs is that it allows us to represent pointer fields that may be present in a struct.
 
-However, explicit structs isn't the only way to represent pointer fields. We could also use a tuple to assert our postcondition. However, we will need to change our definition for `character_p`.
+However, explicit structs isn't the only way to represent pointer fields. We could also use a tuple to assert our postcondition. However, we will need to change our definition for `character`.
 
 ```python
 class initDefaultSprite_Contract(Contract):
   def specification (self):
     # Declare variables
-    character_p = self.fresh_var(ptr_ty(alias_ty("struct.character_t")))
+    character = self.fresh_var(ptr_ty(alias_ty("struct.character_t")))
     tempCharacter_p = self.alloc(alias_ty("struct.character_t"))
     ty = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
     frames = self.fresh_var(ty, "sprite.frames")
@@ -1400,10 +1400,10 @@ class initDefaultSprite_Contract(Contract):
     sprite_p = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(tempCharacter_p, frames, xPos, yPos))
 
     # Symbolically execute the function
-    self.execute_func(character_p, sprite_p)
+    self.execute_func(character, sprite_p)
 
     # Assert postconditions
-    self.points_to(sprite_p, cry_f("""( {character_p},
+    self.points_to(sprite_p, cry_f("""( {character},
                                      zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8],
                                      1 : [32],
                                      2 : [32]) """))

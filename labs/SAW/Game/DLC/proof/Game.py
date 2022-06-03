@@ -108,8 +108,8 @@ class initDefaultPlayer_Contract(Contract):
 class initDefaultSprite_Contract(Contract):
   def specification (self):
     # Declare variables
-    character_p = self.alloc(alias_ty("struct.character_t"))              # For Option 1
-    #character_p = self.fresh_var(ptr_ty(alias_ty("struct.character_t"))) # For Option 2
+    character = self.alloc(alias_ty("struct.character_t"))              # For Option 1
+    #character = self.fresh_var(ptr_ty(alias_ty("struct.character_t"))) # For Option 2
     tempCharacter_p = self.alloc(alias_ty("struct.character_t"))
     ty = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
     frames = self.fresh_var(ty, "sprite.frames")
@@ -118,16 +118,16 @@ class initDefaultSprite_Contract(Contract):
     sprite_p = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(tempCharacter_p, frames, xPos, yPos))
 
     # Symbolically execute the function
-    self.execute_func(character_p, sprite_p)
+    self.execute_func(character, sprite_p)
 
     # Assert postconditions
     # Option 1: Struct Strategy
-    self.points_to(sprite_p, struct( character_p,
+    self.points_to(sprite_p, struct( character,
                                      cry_f("zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8]"),
                                      cry_f("1 : [32]"),
                                      cry_f("2 : [32]") ))
     # Option 2: Full Tuple Strategy
-    #self.points_to(sprite_p, cry_f("""( {character_p},
+    #self.points_to(sprite_p, cry_f("""( {character},
     #                                 zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8],
     #                                 1 : [32],
     #                                 2 : [32]) """))
