@@ -1036,58 +1036,55 @@ if __name__ == "__main__":
     unittest.main()
 ```
 
-<details>
-  <summary>Click here to see if your guess is correct!</summary>
+It turns out the contract above will fail!
   
-  It turns out the contract above will fail!
-  
-  ```sh
-  $ clang ../src/null.c -o ../src/null.bc -c -emit-llvm && python3 null.py
-  [17:21:44.701] Verifying isNull ...
-  [17:21:44.701] Simulating isNull ...
-  [17:21:44.703] Checking proof obligations isNull ...
-  [17:21:44.724] Subgoal failed: isNull safety assertion:
-  internal: error: in _SAW_verify_prestate SAWServer
-  Literal equality postcondition
-  [more error message]
-  FAILED (failures=1)
-  🛑  The goal failed to verify.
-  ```
-  
-  The counterexample produced may seem mystical.
-  ```sh
-  [17:21:44.725] ----------Counterexample----------
-  [17:21:44.725] <<All settings of the symbolic variables constitute a counterexample>>
-  [17:21:44.725] ----------------------------------
-  ```
-  
-  However, if **every** setting is a counterexample, then this is telling us the pointer must have been the null pointer! An initialized symbolic pointer that hasn't been assigned a symbolic variable to point to is **NOT** equivalent to a null pointer in SAW. We can use `null()` in situations where we want a null pointer. For example, if we change the contract above to 
-  
-  ```python
-  class FContract(Contract):
-    def specification(self):
-        self.execute_func(null())
+```sh
+$ clang ../src/null.c -o ../src/null.bc -c -emit-llvm && python3 null.py
+[17:21:44.701] Verifying isNull ...
+[17:21:44.701] Simulating isNull ...
+[17:21:44.703] Checking proof obligations isNull ...
+[17:21:44.724] Subgoal failed: isNull safety assertion:
+internal: error: in _SAW_verify_prestate SAWServer
+Literal equality postcondition
+[more error message]
+FAILED (failures=1)
+🛑  The goal failed to verify.
+```
 
-        self.returns(cry("1 : [32]"))
-  ```
-  
-  then SAW is a happy.
-  
-  ```sh
-  $ python3 null.py
-  [17:33:50.802] Verifying isNull ...
-  [17:33:50.802] Simulating isNull ...
-  [17:33:50.804] Checking proof obligations isNull ...
-  [17:33:50.804] Proof succeeded! isNull
-  ✅  Verified: lemma_isNull_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/null.py:22)
-  .
-  ----------------------------------------------------------------------
-  Ran 1 test in 1.301s
+The counterexample produced may seem mystical.
+```sh
+[17:21:44.725] ----------Counterexample----------
+[17:21:44.725] <<All settings of the symbolic variables constitute a counterexample>>
+[17:21:44.725] ----------------------------------
+```
 
-  OK
-  ✅  The goal was verified!
-  ```
-</details>
+However, if **every** setting is a counterexample, then this is telling us the pointer must have been the null pointer! An initialized symbolic pointer that hasn't been assigned a symbolic variable to point to is **NOT** equivalent to a null pointer in SAW. We can use `null()` in situations where we want a null pointer. For example, if we change the contract above to
+
+```python
+class FContract(Contract):
+  def specification(self):
+  
+      self.execute_func(null())
+
+      self.returns(cry("1 : [32]"))
+```
+
+then SAW is a happy.
+
+```sh
+$ python3 null.py
+[17:33:50.802] Verifying isNull ...
+[17:33:50.802] Simulating isNull ...
+[17:33:50.804] Checking proof obligations isNull ...
+[17:33:50.804] Proof succeeded! isNull
+✅  Verified: lemma_isNull_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/null.py:22)
+.
+----------------------------------------------------------------------
+Ran 1 test in 1.301s
+
+OK
+✅  The goal was verified!
+```
 
 This example is from the [GaloisInc/saw-script repo](https://github.com/GaloisInc/saw-script/blob/master/saw-remote-api/python/tests/saw/test_llvm_assert_null.py).
 
