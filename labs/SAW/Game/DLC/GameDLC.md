@@ -6,12 +6,13 @@ This directory contains additional Game functions and SAW contracts for you to r
 - `proof/`: Contains our Python scripts to run our SAW contracts.
 - `specs/`: Contains our Cryptol specs that our SAW contracts can call.
 
+
 # DLC Functions
 
 Below is a list of functions included in src/.
 
-## `uint32_t levelUp(uint32_t level)`
 
+## `levelUp()`
 **Goal:** Set up a SAW contract to verify a simple function.
 
 **Lessons Learned:**
@@ -20,8 +21,7 @@ Below is a list of functions included in src/.
 - How to pass variables defined in the SAW contract to a Cryptol function (curly braces)
 
 
-## `uint32_t initDefaultPlayer(player_t* player)`
-
+## `initDefaultPlayer()`
 **Goal:** Represent and initialize C structs in a SAW contract.
 
 **Lessons Learned:**
@@ -37,13 +37,15 @@ Below is a list of functions included in src/.
 - Compiling clang with the `-g` flag provides debug symbols, so you can reference fields names rather than just indices
 
 
+## `initDefaultSprite()`
 // TODO: Update this section
-## `uint32_t initDefaultSprite(character_t* character, sprite_t* sprite)`
 
 **Goal:** Set up a struct
 
+**Lessons Learned:**
 
-## checkStats(character_t* character)
+
+## `checkStats()`
 **Goal:** Determine how to use parameterized contracts to set preconditions and postconditions.
 
 **Lessons Learned:**
@@ -57,7 +59,7 @@ Below is a list of functions included in src/.
 - How to use contract parameters to assert two possible postconditions
 - How to represent multiple Unit Tests on the same contract with different input parameters
 
-**Additional Notes:**
+**Additional Notes:**  
 - Note that the `checkStats` function would be used in the Game library to check character stats every instance before such stats would be referenced/used for gameplay.
 - In terms of the example, `checkStats` provides gameplay balancing by limiting how well characters can perform.
 - Given this policy, all other functions included in the library assume that `checkStats` is called before them.
@@ -66,7 +68,7 @@ Below is a list of functions included in src/.
 - Discuss the coding & security tradeoffs between checks made in callers vs callees
 
 
-## resolveAttack(character_t* target, uint32_t atk)
+## `resolveAttack()`
 **Goal:** Expand upon the lessons learned with `checkStats` to get a contract ready for overrides/lemmas.
 
 **Lessons Learned:**
@@ -76,12 +78,15 @@ Below is a list of functions included in src/.
   - Goes back to the caller vs callee tradeoffs mentioned in `checkStats` **Additional Notes**
 
 
+## `selfDamage()`
 // TODO: Expand & discuss background with SAWscripts
-## selfDamage(player_t* player)
+
 **Goal:** To provide a case study where SAW should have complained about its memory disjoint assertion being violated. Note that SAW's Python API silently resolves this issue.
 
+**Lessons Learned:**
 
-## quickBattle(player_t* player, character_t* opponent)
+
+## `quickBattle()`
 **Goal:** To show how to pass overrides (lemmas) to a Unit test.
 
 **Lessons Learned:**
@@ -92,7 +97,7 @@ Below is a list of functions included in src/.
   - Explains why the `> 0` preconditions exist
 
 
-## getDefaultLevel()
+## `getDefaultLevel()`
 **Goal:** Determine how to handle global variables in a SAW contract.
 
 **Lessons Learned:**
@@ -103,11 +108,13 @@ Below is a list of functions included in src/.
 - When to pass no inputs to `execute_func`
 
 
-## initScreen(screen_t* screen, uint8_t assetID)
+## `initScreen()`
 **Goal:** To provide a case study where SAW should have complained about not knowing what nested defines resolve to. Note that SAW's Python API silently resolves this issue.
 
+**Lessons Learned:**
 
-## setScreenTile(screen_t* screen, uint32_t screenIdx, uint32_t tableIdx)
+
+## `setScreenTile()`
 **Goal:** Demonstrate how to initialize an extern global array.
 
 **Lessons Learned:**
@@ -118,8 +125,9 @@ Below is a list of functions included in src/.
 - Repointing a pointer to a SAW variable (`screen_post`) in order to use that variable for postconditions
 
 
+## `resetInventoryItems()`
 // TODO: Reevaluate position based on work done with initDefaultSprite()
-## resetInventoryItems(inventory_t* inventory)
+
 **Goal:** To show the problems SAW faces when verifying structs with pointer fields.
 
 **Lessons Learned:**
