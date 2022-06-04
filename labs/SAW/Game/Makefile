@@ -14,7 +14,7 @@ all: artifacts
 	python3 $(PROOF)/Game.py
 
 artifacts:
-	mkdir $(ARTIFACTS)
+	mkdir -p $(ARTIFACTS)
 
 clean:
 	rm -r $(ARTIFACTS)
