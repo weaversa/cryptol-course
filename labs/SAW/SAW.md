@@ -2005,8 +2005,12 @@ The lesson here, beware of `float`s claiming to mimic `int`s. Now instead of usi
 int __builtin_clzll (unsigned long long)
 ```
 
-However, let's keep with our current `ceilLog2` function and add a precondition to
-our SAW contract.
+As a bonus exercise, try to verify `__builtin_clzll`. Check out
+[ceilLog2.py](./ceilLog2/proof/ceilLog2.py) to compare your results.
+
+However, let's go back to our current `ceilLog2` function that uses
+`ceil(log2(i))`. We'll add a precondition to our SAW contract to account
+for the disparity we mentioned earlier.
 
 ```python
 class ceilLog2Contract(Contract):
