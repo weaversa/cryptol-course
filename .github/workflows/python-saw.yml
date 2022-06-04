@@ -65,3 +65,5 @@ jobs:
       - run: cd labs/SAW/proof && clang ../src/null.c -o ../src/null.bc -c -emit-llvm && python3 null.py
       # Run Game SAW Script
       - run: cd labs/SAW/Game/DLC && mkdir artifacts && clang -c -g -emit-llvm -o artifacts/Game.bc src/Game.c && python3 proof/Game.py
+      # Run ceilLog2 SAW Script
+      - run: cd labs/SAW/ceilLog2 && mkdir artifacts && clang -c -g -emit-llvm -o artifacts/ceilLog2.bc src/ceilLog2.c && python3 proof/ceilLog2.py
