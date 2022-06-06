@@ -382,7 +382,7 @@ in the interpreter to determine the types of the variables defined below.
 (*Recall that these variables have been instantiated as a
 result of loading this module via `:module`.*)
 
-```
+```cryptol
 varType0 = False
 varType1 = [False]
 varType2 = [False, False, True]
@@ -444,7 +444,7 @@ that's covered later in this section.
 values below. Some will have multiple correct answers. Once done,
 `:reload` this file to check that you've gotten them correct.
 
-```
+```cryptol
 varType10 = 0x1234
 
 varType11 = 10
@@ -602,7 +602,7 @@ labs::Language::Basics> increment 10
 **EXERCISE**: Use the `:type` command in the interpreter to discover
 the types of the following functions.
 
-```
+```cryptol
 funType0 a = a + 7 : [5]
 
 funType1 a b = a + b + 0b0011100
@@ -679,7 +679,7 @@ asked to fill in *any valid monomorphic* type for each of the
 functions below. Some will have multiple correct answers. Once done,
 reload this file to check that you've gotten them correct.
 
-```
+```cryptol
 
 funType10 x = x + x : [10]
 
@@ -812,6 +812,7 @@ functionName :
     (typeConstraint0, typeConstraint1) =>
     inputType0 -> inputType1 -> outputType
 ```
+
 Here's an English-language breakdown:
 
 |||
@@ -843,6 +844,7 @@ sayHello:
     [n][8] -> [7+n][8]
 sayHello name = "Hello, " # name
 ```
+
 And the breakdown:
 
 |||||||||
@@ -1251,6 +1253,7 @@ functionName input0 input1 =
     localVariable1 = expression1
     output = expression2
 ```
+
 Here's a breakdown of how to read it:
 
 Function type specification:
@@ -1319,6 +1322,7 @@ addMult a b c = ab + bc
     ab = a * b
     bc = b * c
 ```
+
 And the breakdown:
 
 |||||||||||||
