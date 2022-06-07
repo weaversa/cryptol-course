@@ -57,8 +57,8 @@ class ArrayTests(unittest.TestCase):
         if __name__ == "__main__": view(LogResults(verbose_failure=True))
 
         pwd = os.getcwd()
-        bcname  = pwd + "/../src/addRow.bc"
-        cryname = pwd + "/spec/addRow.cry"
+        bcname  = pwd + "/artifacts/addRow.bc"
+        cryname = pwd + "/specs/addRow.cry"
 
         cryptol_load_file(cryname)
         mod = llvm_load_module(bcname)
