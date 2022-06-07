@@ -59,12 +59,11 @@ jobs:
       - run: start-saw-remote-api-read-only
       # Run final rotl SAW Script
       - run: |
-          cd labs/SAW/proof
-          clang ../src/rotl3.c -o ../src/rotl.bc -c -emit-llvm
-          python3 rotl.py
+          cd labs/SAW/rotl
+          make prove
       # Run addRow SAW Script
       - run: |
-          cd labs/SAW/proof
+          cd labs/SAW/addRow
           make prove
       # Run null SAW Script
       - run: |
