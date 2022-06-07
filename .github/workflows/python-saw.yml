@@ -67,9 +67,8 @@ jobs:
           make prove
       # Run null SAW Script
       - run: |
-          cd labs/SAW/proof
-          clang ../src/null.c -o ../src/null.bc -c -emit-llvm
-          python3 null.py
+          cd labs/SAW/null
+          make prove
       # Run Game SAW Script
       - run: |
           cd labs/SAW/Game/DLC
