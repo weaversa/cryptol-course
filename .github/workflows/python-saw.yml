@@ -65,8 +65,7 @@ jobs:
       # Run addRow SAW Script
       - run: |
           cd labs/SAW/proof
-          clang ../src/addRow.c -o ../src/addRow.bc -c -emit-llvm
-          python3 addRow.py
+          make prove
       # Run null SAW Script
       - run: |
           cd labs/SAW/proof
