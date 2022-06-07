@@ -18,7 +18,7 @@ class LLVMAssertNullTest(unittest.TestCase):
         if __name__ == "__main__": view(LogResults(verbose_failure=True))
 
         pwd = os.getcwd()
-        bcname = pwd + "/../src/null.bc"
+        bcname = pwd + "/artifacts/null.bc"
         mod    = llvm_load_module(bcname)
 
         result = llvm_verify(mod, 'isNull', isNull_Contract())
