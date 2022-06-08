@@ -832,8 +832,8 @@ def addRowAlias_Contract(Contract):
     
     self.execute_func(a_p, b_p, length)
     
-    self.points_to(a_p, cry_f("rowAdd`{{{length}}} {a} {b}"))
-    
+    self.points_to(a_p, cry_f("addRow`{{{self.length}}} {a} {b}"))
+
     self.returns(a_p)
 
 class ArrayTests(unittest.TestCase):
@@ -841,8 +841,9 @@ class ArrayTests(unittest.TestCase):
     connect(reset_server=True)
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
     
-    bcname = "../artifacts/addRow.bc"
-    cryname = "../specs/addRow.cry"
+    pwd = os.getcwd()
+    bcname  = pwd + "/artifacts/addRow.bc"
+    cryname = pwd + "/specs/addRow.cry"
     
     cryptol_load_file(cryname)
     mod = llvm_load_module(bcname)
@@ -866,7 +867,11 @@ What do you think will happen if we run this code?
   Running the code, SAW verifies the first two contracts
   
   ```sh
-  $ clang ../src/addRow.c -o ../artifacts/addRow.bc -c -emit-llvm && python3 addRow.py
+  $ cd labs/SAW/addRow
+  $ make prove
+  mkdir -p artifacts
+  clang -c -g -emit-llvm -o artifacts/addRow.bc src/addRow.c
+  python3 proof/addRow.py
   [15:40:51.330] Verifying addRow5Mutate ...
   [15:40:51.330] Simulating addRow5Mutate ...
   [15:40:51.335] Checking proof obligations addRow5Mutate ...
@@ -920,7 +925,7 @@ What do you think will happen if we run this code?
   FAIL: test_rowAdds (__main__.ArrayTests)
   ----------------------------------------------------------------------
   Traceback (most recent call last):
-  File "/home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py", line 71, in test_rowAdds
+  File "proof/addRow.py", line 71, in test_rowAdds
     self.assertIs(addRowAlias05_result.is_success(), True)
   AssertionError: False is not True
 
@@ -933,7 +938,7 @@ What do you think will happen if we run this code?
   
   SAW is telling us we forgot to add a precondition to assert our symbolic `length` agrees with our Python parameter `self.length`. This is an easy fix:
 
-  ```sh
+  ```python
   def addRowAlias_Contract(Contract):
   def __init__(self, length : int):
     super().__init__()
@@ -942,11 +947,14 @@ What do you think will happen if we run this code?
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
+    length   = self.fresh_var(i8, "length")
+
+    self.precondition_f("{length} == {self.length}")  
+
+    self.execute_func(a_p, b_p, length)
     
-    self.execute_func(a_p, b_p, cry(self.length))
-    
-    self.points_to(a_p, cry_f("rowAdd`{{{self.length}}} {a} {b}"))
-    
+    self.points_to(a_p, cry_f("addRow`{{{self.length}}} {a} {b}"))
+
     self.returns(a_p)
   ```
 
@@ -963,6 +971,29 @@ And now SAW happily verifies the third contract!
 
   OK
   ✅  All 3 goals verified!
+  ```
+
+  Note that we can be even more efficient in our proof. Instead of
+  creating a symbolic `length` variable, we can just use the Python
+  parameter `self.length`. Doing so will simplify the solver's proof
+  workload as it really only needs to consider one concrete value
+  rather than one value from a range of random symbolic ones.
+
+  ```python
+  def addRowAlias_Contract(Contract):
+  def __init__(self, length : int):
+    super().__init__()
+    self.length = length
+
+  def specification(self):
+    (a, a_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="a")
+    (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
+    
+    self.execute_func(a_p, b_p, cry(self.length))
+    
+    self.points_to(a_p, cry_f("rowAdd`{{{self.length}}} {a} {b}"))
+    
+    self.returns(a_p)
   ```
 
 </details>
