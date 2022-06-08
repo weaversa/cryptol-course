@@ -333,8 +333,8 @@ class rotlTest(unittest.TestCase):
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
     
     pwd = os.getcwd()
-    bcname  = pwd + "/../src/rotl.bc"
-    cryname = pwd + "/spec/rotl.cry"
+    bcname  = pwd + "/artifacts/rotl.bc"
+    cryname = pwd + "/specs/rotl.cry"
     
     cryptol_load_file(cryname)
     mod = llvm_load_module(bcname)
@@ -360,7 +360,7 @@ or else the python script won't do anything!
 We can now run the proof script.
 
 ```sh
-$ cd labs/SAW/proof
+$ cd labs/SAW/rotl/proof
 $ python3 rotl.py
 [03:08:29.986] Verifying rotl ...
 [03:08:29.987] Simulating rotl ...
@@ -382,7 +382,7 @@ F
 FAIL: test_rotl (__main__.rotlTest)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "cryptol-course/labs/SAW/proof/rotl.py", line 31, in test_rotl
+  File "cryptol-course/labs/SAW/rotl/proof/rotl.py", line 31, in test_rotl
       self.assertIs(rotl_result.is_success(), True)
       AssertionError: False is not True
       
@@ -426,7 +426,7 @@ uint32_t rotl(uint32_t bits, uint32_t shift) {
 Recompiling and running SAW gives:
 
 ```sh
-$ clang ../src/rotl2.c -o ../src/rotl.bc -c -emit-llvm && python3 rotl.py
+$ clang ../src/rotl2.c -o ../artifacts/rotl.bc -c -emit-llvm && python3 rotl.py
 [03:11:54.334] Verifying rotl ...
 [03:11:54.334] Simulating rotl ...
 [03:11:54.335] Checking proof obligations rotl ...
@@ -474,12 +474,12 @@ uint32_t rotl(uint32_t bits, uint32_t shift) {
 ```
 
 ```sh
-$ clang ../src/rotl3.c -o ../src/rotl.bc -c -emit-llvm && python3 rotl.py
+$ clang ../src/rotl3.c -o ../artifacts/rotl.bc -c -emit-llvm && python3 rotl.py
 [03:14:09.561] Verifying rotl ...
 [03:14:09.562] Simulating rotl ...
 [03:14:09.563] Checking proof obligations rotl ...
 [03:14:09.614] Proof succeeded! rotl
-✅  Verified: lemma_rotl_Contract (defined at cryptol-course/labs/SAW/proof/rotl.py:30)
+✅  Verified: lemma_rotl_Contract (defined at cryptol-course/labs/SAW/rotl/proof/rotl.py:30)
 .
 ----------------------------------------------------------------------
 Ran 1 test in 0.780s
@@ -828,8 +828,8 @@ class ArrayTests(unittest.TestCase):
     connect(reset_server=True)
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
     
-    bcname = "../src/addRow.bc"
-    cryname = "spec/addRow.cry"
+    bcname = "../artifacts/addRow.bc"
+    cryname = "../specs/addRow.cry"
     
     cryptol_load_file(cryname)
     mod = llvm_load_module(bcname)
@@ -853,17 +853,17 @@ What do you think will happen if we run this code?
   Running the code, SAW verifies the first two contracts
   
   ```sh
-  $ clang ../src/addRow.c -o ../src/addRow.bc -c -emit-llvm && python3 addRow.py
+  $ clang ../src/addRow.c -o ../artifacts/addRow.bc -c -emit-llvm && python3 addRow.py
   [15:40:51.330] Verifying addRow5Mutate ...
   [15:40:51.330] Simulating addRow5Mutate ...
   [15:40:51.335] Checking proof obligations addRow5Mutate ...
   [15:40:51.362] Proof succeeded! addRow5Mutate
-  ✅  Verified: lemma_addRow5Mutate_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:64)
+  ✅  Verified: lemma_addRow5Mutate_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:64)
   [15:40:51.430] Verifying addRow5NewVar ...
   [15:40:51.430] Simulating addRow5NewVar ...
   [15:40:51.435] Checking proof obligations addRow5NewVar ...
   [15:40:51.462] Proof succeeded! addRow5NewVar
-  ✅  Verified: lemma_addRow5NewVar_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:67)
+  ✅  Verified: lemma_addRow5NewVar_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:67)
   ```
   
   ...but fails to verify the third contract. It alerts us there is a memory error
@@ -886,7 +886,7 @@ What do you think will happen if we run this code?
   [15:40:51.575]   length0: 6
   [15:40:51.575]   : False
   [15:40:51.575] ----------------------------------
-  ⚠️  Failed to verify: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:37):
+  ⚠️  Failed to verify: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:37):
   error: Proof failed.
         stdout:
                 [15:40:51.527] Verifying addRowAlias ...
@@ -907,7 +907,7 @@ What do you think will happen if we run this code?
   FAIL: test_rowAdds (__main__.ArrayTests)
   ----------------------------------------------------------------------
   Traceback (most recent call last):
-  File "/home/cryptol/cryptol-course/labs/SAW/proof/addRow.py", line 71, in test_rowAdds
+  File "/home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py", line 71, in test_rowAdds
     self.assertIs(addRowAlias05_result.is_success(), True)
   AssertionError: False is not True
 
@@ -1025,7 +1025,7 @@ class LLVMAssertNullTest(unittest.TestCase):
     def test_llvm_assert_null(self):
         connect(reset_server=True)
         if __name__ == "__main__": view(LogResults(verbose_failure=True))
-        bcname = '../src/null.bc'
+        bcname = '../artifacts/null.bc'
         mod    = llvm_load_module(bcname)
 
         result = llvm_verify(mod, 'f', FContract())
@@ -1039,7 +1039,7 @@ if __name__ == "__main__":
 It turns out the contract above will fail!
   
 ```sh
-$ clang ../src/null.c -o ../src/null.bc -c -emit-llvm && python3 null.py
+$ clang ../src/null.c -o ../artifacts/null.bc -c -emit-llvm && python3 null.py
 [17:21:44.701] Verifying isNull ...
 [17:21:44.701] Simulating isNull ...
 [17:21:44.703] Checking proof obligations isNull ...
@@ -1069,7 +1069,7 @@ class FContract(Contract):
       self.returns(cry("1 : [32]"))
 ```
 
-then SAW is a happy.
+then SAW is happy.
 
 ```sh
 $ python3 null.py
@@ -1077,7 +1077,7 @@ $ python3 null.py
 [17:33:50.802] Simulating isNull ...
 [17:33:50.804] Checking proof obligations isNull ...
 [17:33:50.804] Proof succeeded! isNull
-✅  Verified: lemma_isNull_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/null.py:22)
+✅  Verified: lemma_isNull_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/null/proof/null.py:22)
 .
 ----------------------------------------------------------------------
 Ran 1 test in 1.301s
