@@ -136,11 +136,12 @@ instance, we can create the bitcode by entering the following command
 in a terminal.
 
 ```sh
-$ clang -emit-llvm labs/SAW/src/rotl.c -c -o labs/SAW/src/rotl.bc
+$ clang -emit-llvm labs/SAW/rotl/src/rotl.c -c -o labs/SAW/rotl/artifacts/rotl.bc
 ```
 
-We can inspect the bitcode using SAW by loading the module and
-printing some meta-data.
+We can inspect the bitcode, using SAW, by loading the module and
+printing some meta-data. Note that when we run the following
+example, we assume to be located in the `labs/SAW/rotl/` directory.
 
 ```Xsaw-session
 $ saw
@@ -149,9 +150,9 @@ $ saw
  ┣━━ ┃ ╻ ┃┓ ╻ ┏┛
  ┗━━━┛━┛━┛┗━┛━┛ version 0.9.0.99 (<non-dev-build>)
 
-sawscript> r <- llvm_load_module "labs/SAW/src/rotl.bc"
+sawscript> r <- llvm_load_module "artifacts/rotl.bc"
 sawscript> print r
-Module: rotl.bc
+[00:30:35.338] Module: artifacts/rotl.bc
 Types:
 
 Globals:
@@ -304,6 +305,7 @@ contract! This is done at the line
 Now that we have the result, we want to assert this result succeeded
 using `self.assertIs(rotl_result.is_success(), True)`.
 
+
 ## Debugging C with SAW
 
 <details>
@@ -360,8 +362,7 @@ or else the python script won't do anything!
 We can now run the proof script.
 
 ```sh
-$ cd labs/SAW/rotl/proof
-$ python3 rotl.py
+$ python3 proof/rotl.py
 [03:08:29.986] Verifying rotl ...
 [03:08:29.987] Simulating rotl ...
 [03:08:29.988] Checking proof obligations rotl ...
@@ -382,7 +383,7 @@ F
 FAIL: test_rotl (__main__.rotlTest)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "cryptol-course/labs/SAW/rotl/proof/rotl.py", line 31, in test_rotl
+  File "proof/rotl.py", line 31, in test_rotl
       self.assertIs(rotl_result.is_success(), True)
       AssertionError: False is not True
       
@@ -426,7 +427,7 @@ uint32_t rotl(uint32_t bits, uint32_t shift) {
 Recompiling and running SAW gives:
 
 ```sh
-$ clang ../src/rotl2.c -o ../artifacts/rotl.bc -c -emit-llvm && python3 rotl.py
+$ clang -c -emit-llvm -o artifacts/rotl.bc src/rotl2.c && python3 proof/rotl.py
 [03:11:54.334] Verifying rotl ...
 [03:11:54.334] Simulating rotl ...
 [03:11:54.335] Checking proof obligations rotl ...
@@ -447,7 +448,7 @@ F
 FAIL: test_rotl (__main__.rotlTest)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "cryptol-course/labs/SAW/proof/rotl.py", line 31, in test_rotl
+  File "proof/rotl.py", line 31, in test_rotl
       self.assertIs(rotl_result.is_success(), True)
       AssertionError: False is not True
       
@@ -474,7 +475,7 @@ uint32_t rotl(uint32_t bits, uint32_t shift) {
 ```
 
 ```sh
-$ clang ../src/rotl3.c -o ../artifacts/rotl.bc -c -emit-llvm && python3 rotl.py
+$ clang -c -emit-llvm -o artifacts/rotl.bc src/rotl3.c && python3 proof/rotl.py
 [03:14:09.561] Verifying rotl ...
 [03:14:09.562] Simulating rotl ...
 [03:14:09.563] Checking proof obligations rotl ...
@@ -489,7 +490,19 @@ OK
 ```
 
 Finally, SAW is happy. More importantly, the C is correct and free of
-undefined behavior.
+undefined behavior!
+
+Note that we provide a Makefile for our SAW labs. If you
+navigate to the target lab, you can run `make prove` to generate
+the bitcode for the module and run the proof!
+
+```sh
+$ cd labs/SAW/rotl
+$ make prove
+mkdir -p artifacts
+clang -c -g -emit-llvm -o artifacts/rotl.bc src/rotl3.c
+python3 proof/rotl.py
+```
 
 # Pointers and Arrays
 
