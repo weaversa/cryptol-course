@@ -6,7 +6,9 @@ from saw_client.llvm     import *
 
 class isNull_Contract(Contract):
     def specification(self):
+        # Lab: Explain why the following 2 lines make the contract fail
         # p = self.alloc(i32)
+        # self.execute_func(p)
 
         self.execute_func(null())
 

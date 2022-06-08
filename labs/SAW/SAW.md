@@ -1069,7 +1069,9 @@ class LLVMAssertNullTest(unittest.TestCase):
     def test_llvm_assert_null(self):
         connect(reset_server=True)
         if __name__ == "__main__": view(LogResults(verbose_failure=True))
-        bcname = '../artifacts/null.bc'
+
+        pwd = os.getcwd()
+        bcname = pwd + "/artifacts/null.bc"
         mod    = llvm_load_module(bcname)
 
         result = llvm_verify(mod, 'f', FContract())
@@ -1083,7 +1085,11 @@ if __name__ == "__main__":
 It turns out the contract above will fail!
   
 ```sh
-$ clang ../src/null.c -o ../artifacts/null.bc -c -emit-llvm && python3 null.py
+$ cd labs/SAW/null
+$ make prove
+mkdir -p artifacts
+clang -c -g -emit-llvm -o artifacts/null.bc src/null.c
+python3 proof/null.py
 [17:21:44.701] Verifying isNull ...
 [17:21:44.701] Simulating isNull ...
 [17:21:44.703] Checking proof obligations isNull ...
@@ -1121,7 +1127,7 @@ $ python3 null.py
 [17:33:50.802] Simulating isNull ...
 [17:33:50.804] Checking proof obligations isNull ...
 [17:33:50.804] Proof succeeded! isNull
-✅  Verified: lemma_isNull_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/null/proof/null.py:22)
+✅  Verified: lemma_isNull_Contract (defined at proof/null.py:22)
 .
 ----------------------------------------------------------------------
 Ran 1 test in 1.301s
