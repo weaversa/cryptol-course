@@ -21,8 +21,8 @@ class rotlTest(unittest.TestCase):
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
 
     pwd = os.getcwd()
-    bcname  = pwd + "/../src/rotl.bc"
-    cryname = pwd + "/spec/rotl.cry"
+    bcname  = pwd + "/artifacts/rotl.bc"
+    cryname = pwd + "/specs/rotl.cry"
 
     cryptol_load_file(cryname)
     mod = llvm_load_module(bcname)

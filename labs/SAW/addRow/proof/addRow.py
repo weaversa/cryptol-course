@@ -43,13 +43,15 @@ class addRowAlias_Contract(Contract):
         (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
         length   = self.fresh_var(i8, "length")
 
-        self.precondition_f("{length} == {self.length}")
+        # Lab: See what happens when we uncomment this precondition!
+        self.precondition_f("{length} == {self.length}")  
 
         self.execute_func(a_p, b_p, length)
-
+    
         self.points_to(a_p, cry_f("addRow`{{{self.length}}} {a} {b}"))
 
         self.returns(a_p)
+
 
 class ArrayTests(unittest.TestCase):
     def test_rowAdds(self):
@@ -57,8 +59,8 @@ class ArrayTests(unittest.TestCase):
         if __name__ == "__main__": view(LogResults(verbose_failure=True))
 
         pwd = os.getcwd()
-        bcname  = pwd + "/../src/addRow.bc"
-        cryname = pwd + "/spec/addRow.cry"
+        bcname  = pwd + "/artifacts/addRow.bc"
+        cryname = pwd + "/specs/addRow.cry"
 
         cryptol_load_file(cryname)
         mod = llvm_load_module(bcname)
