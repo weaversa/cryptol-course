@@ -240,9 +240,11 @@ declare records.  The symbols `{{` and `}}` are used to denote literal
 braces for these cases when parsing Python strings.  For example,
 let's think about how to parse the following line:
 
+{% raw %}
 ```python
   self.returns_f("{{a = take`{{5}} {var}, b = take`{{{N}}} {var} }} == foo `eel")
 ```
+{% endraw %}
 
 If `var` is a local Python variable equal to `23` and `N` is a
 local Python variable equal to `2`, then the string parses in Cryptol as
@@ -744,6 +746,7 @@ the course, but worth mentioning.
 We could make a new contract for each value of `length` used in the C code. Instead we make a single contract with a `length`
 parameter:
 
+{% raw %}
 ```python
 def addRowAlias_Contract(Contract):
   def __init__(self, length : int):
@@ -761,6 +764,7 @@ def addRowAlias_Contract(Contract):
     
     self.returns(a_p)
 ```
+{% endraw %}
 
 However, we still need to make a test for each length encountered:
 
@@ -784,6 +788,7 @@ class ArrayTests(unittest.TestCase):
 
 ## Full Code Example and Debugging SAW
 
+{% raw %}
 ```python
 import unittest
 from saw_client             import *
@@ -859,6 +864,7 @@ class ArrayTests(unittest.TestCase):
     self.assertIs(addRowAlias05_result.is_success(), True)
     self.assertIs(addRowAlias10_result.is_success(), True)
 ```
+{% endraw %}
 
 What do you think will happen if we run this code?
 
@@ -938,6 +944,7 @@ What do you think will happen if we run this code?
   
   SAW is telling us we forgot to add a precondition to assert our symbolic `length` agrees with our Python parameter `self.length`. This is an easy fix:
 
+  {% raw %}
   ```python
   def addRowAlias_Contract(Contract):
   def __init__(self, length : int):
@@ -957,6 +964,7 @@ What do you think will happen if we run this code?
 
     self.returns(a_p)
   ```
+  {% endraw %}
 
 And now SAW happily verifies the third contract!
   
