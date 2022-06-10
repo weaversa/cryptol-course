@@ -136,11 +136,12 @@ instance, we can create the bitcode by entering the following command
 in a terminal.
 
 ```sh
-$ clang -emit-llvm labs/SAW/src/rotl.c -c -o labs/SAW/src/rotl.bc
+$ clang -emit-llvm labs/SAW/rotl/src/rotl.c -c -o labs/SAW/rotl/artifacts/rotl.bc
 ```
 
-We can inspect the bitcode using SAW by loading the module and
-printing some meta-data.
+We can inspect the bitcode, using SAW, by loading the module and
+printing some meta-data. Note that when we run the following
+example, we assume to be located in the `labs/SAW/rotl/` directory.
 
 ```Xsaw-session
 $ saw
@@ -149,9 +150,9 @@ $ saw
  ┣━━ ┃ ╻ ┃┓ ╻ ┏┛
  ┗━━━┛━┛━┛┗━┛━┛ version 0.9.0.99 (<non-dev-build>)
 
-sawscript> r <- llvm_load_module "labs/SAW/src/rotl.bc"
+sawscript> r <- llvm_load_module "artifacts/rotl.bc"
 sawscript> print r
-Module: rotl.bc
+[00:30:35.338] Module: artifacts/rotl.bc
 Types:
 
 Globals:
@@ -304,6 +305,7 @@ contract! This is done at the line
 Now that we have the result, we want to assert this result succeeded
 using `self.assertIs(rotl_result.is_success(), True)`.
 
+
 ## Debugging C with SAW
 
 <details>
@@ -333,8 +335,8 @@ class rotlTest(unittest.TestCase):
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
     
     pwd = os.getcwd()
-    bcname  = pwd + "/../src/rotl.bc"
-    cryname = pwd + "/spec/rotl.cry"
+    bcname  = pwd + "/artifacts/rotl.bc"
+    cryname = pwd + "/specs/rotl.cry"
     
     cryptol_load_file(cryname)
     mod = llvm_load_module(bcname)
@@ -360,8 +362,7 @@ or else the python script won't do anything!
 We can now run the proof script.
 
 ```sh
-$ cd labs/SAW/proof
-$ python3 rotl.py
+$ python3 proof/rotl.py
 [03:08:29.986] Verifying rotl ...
 [03:08:29.987] Simulating rotl ...
 [03:08:29.988] Checking proof obligations rotl ...
@@ -382,7 +383,7 @@ F
 FAIL: test_rotl (__main__.rotlTest)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "cryptol-course/labs/SAW/proof/rotl.py", line 31, in test_rotl
+  File "proof/rotl.py", line 31, in test_rotl
       self.assertIs(rotl_result.is_success(), True)
       AssertionError: False is not True
       
@@ -426,7 +427,7 @@ uint32_t rotl(uint32_t bits, uint32_t shift) {
 Recompiling and running SAW gives:
 
 ```sh
-$ clang ../src/rotl2.c -o ../src/rotl.bc -c -emit-llvm && python3 rotl.py
+$ clang -c -emit-llvm -o artifacts/rotl.bc src/rotl2.c && python3 proof/rotl.py
 [03:11:54.334] Verifying rotl ...
 [03:11:54.334] Simulating rotl ...
 [03:11:54.335] Checking proof obligations rotl ...
@@ -447,7 +448,7 @@ F
 FAIL: test_rotl (__main__.rotlTest)
 ----------------------------------------------------------------------
 Traceback (most recent call last):
-  File "cryptol-course/labs/SAW/proof/rotl.py", line 31, in test_rotl
+  File "proof/rotl.py", line 31, in test_rotl
       self.assertIs(rotl_result.is_success(), True)
       AssertionError: False is not True
       
@@ -474,12 +475,12 @@ uint32_t rotl(uint32_t bits, uint32_t shift) {
 ```
 
 ```sh
-$ clang ../src/rotl3.c -o ../src/rotl.bc -c -emit-llvm && python3 rotl.py
+$ clang -c -emit-llvm -o artifacts/rotl.bc src/rotl3.c && python3 proof/rotl.py
 [03:14:09.561] Verifying rotl ...
 [03:14:09.562] Simulating rotl ...
 [03:14:09.563] Checking proof obligations rotl ...
 [03:14:09.614] Proof succeeded! rotl
-✅  Verified: lemma_rotl_Contract (defined at cryptol-course/labs/SAW/proof/rotl.py:30)
+✅  Verified: lemma_rotl_Contract (defined at cryptol-course/labs/SAW/rotl/proof/rotl.py:30)
 .
 ----------------------------------------------------------------------
 Ran 1 test in 0.780s
@@ -489,7 +490,19 @@ OK
 ```
 
 Finally, SAW is happy. More importantly, the C is correct and free of
-undefined behavior.
+undefined behavior!
+
+Note that we provide a Makefile for our SAW labs. If you
+navigate to the target lab, you can run `make prove` to generate
+the bitcode for the module and run the proof!
+
+```sh
+$ cd labs/SAW/rotl
+$ make prove
+mkdir -p artifacts
+clang -c -g -emit-llvm -o artifacts/rotl.bc src/rotl3.c
+python3 proof/rotl.py
+```
 
 # Pointers and Arrays
 
@@ -819,8 +832,8 @@ def addRowAlias_Contract(Contract):
     
     self.execute_func(a_p, b_p, length)
     
-    self.points_to(a_p, cry_f("rowAdd`{{{length}}} {a} {b}"))
-    
+    self.points_to(a_p, cry_f("addRow`{{{self.length}}} {a} {b}"))
+
     self.returns(a_p)
 
 class ArrayTests(unittest.TestCase):
@@ -828,8 +841,9 @@ class ArrayTests(unittest.TestCase):
     connect(reset_server=True)
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
     
-    bcname = "../src/addRow.bc"
-    cryname = "spec/addRow.cry"
+    pwd = os.getcwd()
+    bcname  = pwd + "/artifacts/addRow.bc"
+    cryname = pwd + "/specs/addRow.cry"
     
     cryptol_load_file(cryname)
     mod = llvm_load_module(bcname)
@@ -853,17 +867,21 @@ What do you think will happen if we run this code?
   Running the code, SAW verifies the first two contracts
   
   ```sh
-  $ clang ../src/addRow.c -o ../src/addRow.bc -c -emit-llvm && python3 addRow.py
+  $ cd labs/SAW/addRow
+  $ make prove
+  mkdir -p artifacts
+  clang -c -g -emit-llvm -o artifacts/addRow.bc src/addRow.c
+  python3 proof/addRow.py
   [15:40:51.330] Verifying addRow5Mutate ...
   [15:40:51.330] Simulating addRow5Mutate ...
   [15:40:51.335] Checking proof obligations addRow5Mutate ...
   [15:40:51.362] Proof succeeded! addRow5Mutate
-  ✅  Verified: lemma_addRow5Mutate_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:64)
+  ✅  Verified: lemma_addRow5Mutate_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:64)
   [15:40:51.430] Verifying addRow5NewVar ...
   [15:40:51.430] Simulating addRow5NewVar ...
   [15:40:51.435] Checking proof obligations addRow5NewVar ...
   [15:40:51.462] Proof succeeded! addRow5NewVar
-  ✅  Verified: lemma_addRow5NewVar_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:67)
+  ✅  Verified: lemma_addRow5NewVar_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:67)
   ```
   
   ...but fails to verify the third contract. It alerts us there is a memory error
@@ -886,7 +904,7 @@ What do you think will happen if we run this code?
   [15:40:51.575]   length0: 6
   [15:40:51.575]   : False
   [15:40:51.575] ----------------------------------
-  ⚠️  Failed to verify: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:37):
+  ⚠️  Failed to verify: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:37):
   error: Proof failed.
         stdout:
                 [15:40:51.527] Verifying addRowAlias ...
@@ -907,7 +925,7 @@ What do you think will happen if we run this code?
   FAIL: test_rowAdds (__main__.ArrayTests)
   ----------------------------------------------------------------------
   Traceback (most recent call last):
-  File "/home/cryptol/cryptol-course/labs/SAW/proof/addRow.py", line 71, in test_rowAdds
+  File "proof/addRow.py", line 71, in test_rowAdds
     self.assertIs(addRowAlias05_result.is_success(), True)
   AssertionError: False is not True
 
@@ -920,7 +938,7 @@ What do you think will happen if we run this code?
   
   SAW is telling us we forgot to add a precondition to assert our symbolic `length` agrees with our Python parameter `self.length`. This is an easy fix:
 
-  ```sh
+  ```python
   def addRowAlias_Contract(Contract):
   def __init__(self, length : int):
     super().__init__()
@@ -929,11 +947,14 @@ What do you think will happen if we run this code?
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
+    length   = self.fresh_var(i8, "length")
+
+    self.precondition_f("{length} == {self.length}")  
+
+    self.execute_func(a_p, b_p, length)
     
-    self.execute_func(a_p, b_p, cry(self.length))
-    
-    self.points_to(a_p, cry_f("rowAdd`{{{self.length}}} {a} {b}"))
-    
+    self.points_to(a_p, cry_f("addRow`{{{self.length}}} {a} {b}"))
+
     self.returns(a_p)
   ```
 
@@ -950,6 +971,29 @@ And now SAW happily verifies the third contract!
 
   OK
   ✅  All 3 goals verified!
+  ```
+
+  Note that we can be even more efficient in our proof. Instead of
+  creating a symbolic `length` variable, we can just use the Python
+  parameter `self.length`. Doing so will simplify the solver's proof
+  workload as it really only needs to consider one concrete value
+  rather than one value from a range of random symbolic ones.
+
+  ```python
+  def addRowAlias_Contract(Contract):
+  def __init__(self, length : int):
+    super().__init__()
+    self.length = length
+
+  def specification(self):
+    (a, a_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="a")
+    (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
+    
+    self.execute_func(a_p, b_p, cry(self.length))
+    
+    self.points_to(a_p, cry_f("rowAdd`{{{self.length}}} {a} {b}"))
+    
+    self.returns(a_p)
   ```
 
 </details>
@@ -1025,7 +1069,9 @@ class LLVMAssertNullTest(unittest.TestCase):
     def test_llvm_assert_null(self):
         connect(reset_server=True)
         if __name__ == "__main__": view(LogResults(verbose_failure=True))
-        bcname = '../src/null.bc'
+
+        pwd = os.getcwd()
+        bcname = pwd + "/artifacts/null.bc"
         mod    = llvm_load_module(bcname)
 
         result = llvm_verify(mod, 'f', FContract())
@@ -1039,7 +1085,11 @@ if __name__ == "__main__":
 It turns out the contract above will fail!
   
 ```sh
-$ clang ../src/null.c -o ../src/null.bc -c -emit-llvm && python3 null.py
+$ cd labs/SAW/null
+$ make prove
+mkdir -p artifacts
+clang -c -g -emit-llvm -o artifacts/null.bc src/null.c
+python3 proof/null.py
 [17:21:44.701] Verifying isNull ...
 [17:21:44.701] Simulating isNull ...
 [17:21:44.703] Checking proof obligations isNull ...
@@ -1069,7 +1119,7 @@ class FContract(Contract):
       self.returns(cry("1 : [32]"))
 ```
 
-then SAW is a happy.
+then SAW is happy.
 
 ```sh
 $ python3 null.py
@@ -1077,7 +1127,7 @@ $ python3 null.py
 [17:33:50.802] Simulating isNull ...
 [17:33:50.804] Checking proof obligations isNull ...
 [17:33:50.804] Proof succeeded! isNull
-✅  Verified: lemma_isNull_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/null.py:22)
+✅  Verified: lemma_isNull_Contract (defined at proof/null.py:22)
 .
 ----------------------------------------------------------------------
 Ran 1 test in 1.301s
