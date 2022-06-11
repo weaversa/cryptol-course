@@ -154,7 +154,7 @@ pre-installed that can be downloaded by issuing the following Docker
 command in your computer's terminal.
 
 ```
-$ docker pull ghcr.io/weaversa/cryptol-course:2.12
+$ docker pull ghcr.io/weaversa/cryptol-course:2.13
 ```
 
 You should now test your installation by running Cryptol. Instructions
@@ -229,7 +229,7 @@ is used by both Cryptol and SAW.
 ### Using Docker on Linux and MacOS
 
 ```
-$ docker run --rm -it --mount type=bind,src=$(pwd),dst=$(pwd) --workdir=$(pwd) --user=$(id -u):$(id -g) --env CRYPTOLPATH=$(pwd) ghcr.io/weaversa/cryptol-course:2.12 cryptol
+$ docker run --rm -it --mount type=bind,src=$(pwd),dst=$(pwd) --workdir=$(pwd) --user=$(id -u):$(id -g) --env CRYPTOLPATH=$(pwd) ghcr.io/weaversa/cryptol-course:2.13 cryptol
 ...
 Loading module Cryptol
 ```
@@ -244,7 +244,7 @@ labs::Demos::Cryptol::OneTimePad>
 ### Using Docker on Windows 10
 
 ```
-...\cryptol-course> docker run --rm -it --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course ghcr.io/weaversa/cryptol-course:2.12
+...\cryptol-course> docker run --rm -it --mount type=bind,src=%CD%,dst=/mnt/cryptol-course --env CRYPTOLPATH=/mnt/cryptol-course ghcr.io/weaversa/cryptol-course:2.13
     ...
 Loading module Cryptol
 ```

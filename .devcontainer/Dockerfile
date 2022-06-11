@@ -1,5 +1,5 @@
 # This is the Dockerfile used to build the image hosted at:
-# ghcr.io/weaversa/cryptol-course:2.12
+# ghcr.io/weaversa/cryptol-course:2.13
 # To use this Dockerfile directly, uncomment the appropriate line in
 # devcontainer.json
 
@@ -35,6 +35,7 @@ RUN apt-get update -y && DEBIAN_FRONTEND="noninteractive" apt-get install -y \
     python3 \
     python3-pip \
     ca-certificates \
+    zip \
     locales \
     graphviz \
     cargo \
