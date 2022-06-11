@@ -1,4 +1,3 @@
-from contextlib import contextmanager
 from dataclasses import dataclass
 from random import getrandbits
 import sys
@@ -57,6 +56,7 @@ def rand_list(n: int, bitwidth: int) -> list[BV]:
     ]
 
 def test_cryptol(module_commands: dict[str, dict[str, list[CommandArgs]]], command_filter: list[str] = None) -> None:
+    """Open a Cryptol connection and test modules and commands in nested dictionary ``module_commands``, keyed by module ID (e.g. "labs::Salsa20::Salsa20Answers"), then by command (e.g. "prove", "check", "eval_f"); values are lists of positional and/or keyword arguments"""
     c = connect(reset_server=True)
 
     for (module_id, command_akwses) in module_commands.items():
@@ -78,16 +78,13 @@ def test_cryptol(module_commands: dict[str, dict[str, list[CommandArgs]]], comma
                         (optargs, optkws) = args.astuple()
                         args = optargs or ()
                         kws = optkws or {}
-                    elif isinstance(akws, str):
-                        (args, kws) = ((akws,), {})
-                    elif isinstance(akws, tuple):
-                        (args, kws) = (akws, {})
                     elif isinstance(akws, dict):
                         (args, kws) = ((), akws)
+                    elif isinstance(akws, tuple):
+                        (args, kws) = (akws, {})
                     else:
-                        print(f"  ERROR: Malformed args/keywords entry: {akws}")
-                        sys.exit(1)
-                        
+                        (args, kws) = ((akws,), {})
+
                     exit_on_failure(c, cmd, *args, **kws)
         else:
             print(f"Skipping {module_id}; no commands to run")
