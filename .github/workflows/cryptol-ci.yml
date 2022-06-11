@@ -6,7 +6,7 @@ jobs:
   ci-load:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/weaversa/cryptol-course:2.12
+      image: ghcr.io/weaversa/cryptol-course:2.13
       options: --user root
     steps:
       - name: Checkout
@@ -20,7 +20,7 @@ jobs:
     needs: ci-load
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/weaversa/cryptol-course:2.12
+      image: ghcr.io/weaversa/cryptol-course:2.13
       options: --user root
     steps:
       - name: Checkout
@@ -36,7 +36,7 @@ jobs:
     needs: ci-load
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/weaversa/cryptol-course:2.12
+      image: ghcr.io/weaversa/cryptol-course:2.13
       options: --user root
     steps:
       - name: Checkout
