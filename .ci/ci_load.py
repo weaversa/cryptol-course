@@ -1,16 +1,16 @@
-import cryptol
-import os
+from glob import iglob
+from pathlib import Path
 
-pwd = os.getcwd()
+from cryptol.connection import connect
 
 not_cryptol = ["README.md", "INSTALL.md"]
 
-c = cryptol.connect()
+if __name__ == '__main__':
+    c = connect(reset_server=True)
 
-for (root, dirs, file) in os.walk(pwd):
-    for f in file:
-        if '.md' in f:
-            if f not in not_cryptol:
-                cry_file = os.path.join(root, f)
-                print("Loading file: " + cry_file)
-                c.load_file(cry_file)
+    top = Path(__file__).parents[1]
+
+    for f in top.glob("**/*"):
+        if (f not in not_cryptol) and (f.suffix in [".cry",".md",".ltx",".tex"]):
+            print(f"Loading file: {f}...")
+            c.load_file(str(f))

@@ -1,16 +1,15 @@
-from ci_helper import *
-import cryptol
+from sys import argv
 
-c = cryptol.connect(reset_server=True)
+from ci_helper import test_cryptol
 
-c.load_module("labs::SimonSpeck::SpeckAnswers::SpeckTestVectors")
+module_commands = {
+    "labs::SimonSpeck::SpeckAnswers::SpeckTestVectors": {
+        "check": ["all_speck_vectors_pass"],
+    },
+    "labs::SimonSpeck::Simon::SimonTestVectors": {
+        "check": ["all_simon_vectors_pass"],
+    },
+}
 
-print("Running tests in labs::SimonSpeck::SpeckAnswers::SpeckTestVectors")
-
-check(c, "all_speck_vectors_pass")
-
-c.load_module("labs::SimonSpeck::Simon::SimonTestVectors")
-
-print("Running tests in labs::SimonSpeck::Simon::SimonTestVectors")
-
-check(c, "all_simon_vectors_pass")
+if __name__ == '__main__':
+    test_cryptol(module_commands, argv[1:])

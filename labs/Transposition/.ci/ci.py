@@ -1,21 +1,18 @@
-from ci_helper import *
-import cryptol
+from sys import argv
 
-if __name__ == '__main__':
-    c = cryptol.connect(reset_server=True)
+from ci_helper import test_cryptol
 
-    properties_by_module = {
+module_commands = {
+    f"labs::Transposition::{mod}Answers": {
+        "check": props.split()
+    }
+    for (mod, props) in {
         "Esrever": "pi_test",
         "RailFence": "cycle_test pi_test",
         "Scytale": "pi_test",
         "Transposition": "isPermutationMapping_test isPermutation_test",
-    }
+    }.items()
+}
 
-    for (mod, properties) in properties_by_module.items():
-        answers = f"labs::Transposition::{mod}Answers"
-
-        c.load_module(answers)
-        print(f"Running properties in {answers}")
-
-        for prop in properties.split():
-            check(c, prop)
+if __name__ == '__main__':
+    test_cryptol(module_commands, argv[1:])
