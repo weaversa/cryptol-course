@@ -264,8 +264,8 @@ class rotlTest(unittest.TestCase):
     connect(reset_server=True)
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
     
-    bcname  = "/some/path/to/your/file.bc"
-    mod = llvm_load_module(bcname)
+    bcname = "/some/path/to/your/file.bc"
+    mod    = llvm_load_module(bcname)
     
     cryname = "/some/path/to/your/file.cry"
     cryptol_load_file(cryname)
@@ -1480,12 +1480,12 @@ However, explicit structs isn't the only way to represent pointer fields. We cou
 class initDefaultSprite_Contract(Contract):
   def specification (self):
     # Declare variables
-    character = self.fresh_var(ptr_ty(alias_ty("struct.character_t")))
+    character       = self.fresh_var(ptr_ty(alias_ty("struct.character_t")))
     tempCharacter_p = self.alloc(alias_ty("struct.character_t"))
-    ty = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
-    frames = self.fresh_var(ty, "sprite.frames")
-    xPos = self.fresh_var(i32, "sprite.xPos")
-    yPos = self.fresh_var(i32, "sprite.yPos")
+    ty       = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
+    frames   = self.fresh_var(ty, "sprite.frames")
+    xPos     = self.fresh_var(i32, "sprite.xPos")
+    yPos     = self.fresh_var(i32, "sprite.yPos")
     sprite_p = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(tempCharacter_p, frames, xPos, yPos))
 
     # Symbolically execute the function

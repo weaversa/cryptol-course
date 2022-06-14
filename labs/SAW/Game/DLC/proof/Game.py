@@ -93,12 +93,12 @@ class initDefaultPlayer_Contract(Contract):
     # self.points_to(player, cry_f("( repeat 0x41 : [{MAX_NAME_LENGTH}][8], 1 : [32], 10 : [32], 5 : [32], 4 : [32], 3 : [32] )"))
 
     # Pop Quiz: Why doesn't this work?
-    # self.points_to(player, cry_f("""{{ name = repeat 0x41 : [{MAX_NAME_LENGTH}][8],
+    # self.points_to(player, cry_f("""{{ name  = repeat 0x41 : [{MAX_NAME_LENGTH}][8],
     #                                    level = 1 : [32],
-    #                                    hp = 10 : [32],
-    #                                    atk = 5 : [32],
-    #                                    def = 4 : [32],
-    #                                    spd = 3 : [32] }}"""))
+    #                                    hp    = 10 : [32],
+    #                                    atk   = 5 : [32],
+    #                                    def   = 4 : [32],
+    #                                    spd   = 3 : [32] }}"""))
 
     self.returns(cry_f("`({SUCCESS}) : [32]"))
 
@@ -108,14 +108,14 @@ class initDefaultPlayer_Contract(Contract):
 class initDefaultSprite_Contract(Contract):
   def specification (self):
     # Declare variables
-    character = self.alloc(alias_ty("struct.character_t"))              # For Option 1
-    #character = self.fresh_var(ptr_ty(alias_ty("struct.character_t"))) # For Option 2
+    character       = self.alloc(alias_ty("struct.character_t"))              # For Option 1
+    #character       = self.fresh_var(ptr_ty(alias_ty("struct.character_t"))) # For Option 2
     tempCharacter_p = self.alloc(alias_ty("struct.character_t"))
-    ty = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
-    frames = self.fresh_var(ty, "sprite.frames")
-    xPos = self.fresh_var(i32, "sprite.xPos")
-    yPos = self.fresh_var(i32, "sprite.yPos")
-    sprite_p = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(tempCharacter_p, frames, xPos, yPos))
+    ty              = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
+    frames          = self.fresh_var(ty, "sprite.frames")
+    xPos            = self.fresh_var(i32, "sprite.xPos")
+    yPos            = self.fresh_var(i32, "sprite.yPos")
+    sprite_p        = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(tempCharacter_p, frames, xPos, yPos))
 
     # Symbolically execute the function
     self.execute_func(character, sprite_p)
@@ -192,7 +192,7 @@ class resolveAttack_Contract(Contract):
   def specification (self):
     # Declare variables
     (target, target_p) = ptr_to_fresh(self, alias_ty("struct.character_t"), name="target")
-    atk = self.fresh_var(i32, "atk")
+    atk                = self.fresh_var(i32, "atk")
 
     # Assert the precondition that the stats are below the max stat cap
     # Pop Quiz: Why do we need these preconditions?
@@ -261,10 +261,10 @@ class selfDamage_Contract(Contract):
     # Assert the precondition that character stats are below the max stat cap
     # Pop Quiz: Explain why the proof fails when the following preconditions
     #           are commented out.
-    self.precondition_f("{player}.2   <= `{MAX_STAT}")
-    self.precondition_f("{player}.3   <= `{MAX_STAT}")
-    self.precondition_f("{player}.4   <= `{MAX_STAT}")
-    self.precondition_f("{player}.5   <= `{MAX_STAT}")
+    self.precondition_f("{player}.2 <= `{MAX_STAT}")
+    self.precondition_f("{player}.3 <= `{MAX_STAT}")
+    self.precondition_f("{player}.4 <= `{MAX_STAT}")
+    self.precondition_f("{player}.5 <= `{MAX_STAT}")
 
     # Determine the preconditions based on the case parameter
     if (self.case == 1):
@@ -308,7 +308,7 @@ class quickBattle_Contract(Contract):
     (opponent, opponent_p) = ptr_to_fresh(self, alias_ty("struct.character_t"), name="opponent")
     # Pop Quiz: Why does allocating the pointers in the following way yield an
     #           error?
-    #player = self.alloc(alias_ty("struct.character_t"))
+    #player   = self.alloc(alias_ty("struct.character_t"))
     #opponent = self.alloc(alias_ty("struct.character_t"))
 
     # Assert the precondition that both HPs are greater than 0
@@ -355,7 +355,7 @@ class getDefaultLevel_Contract(Contract):
 class initScreen_Contract(Contract):
   def specification (self):
     # Declare variables
-    screen = self.alloc(alias_ty("struct.screen_t"))
+    screen  = self.alloc(alias_ty("struct.screen_t"))
     assetID = self.fresh_var(i8, "assetID")
 
     # Symbolically execute the function
@@ -384,10 +384,10 @@ class setScreenTile_Contract(Contract):
   def specification (self):
     # Declare variables
     (screen, screen_p) = ptr_to_fresh(self, alias_ty("struct.screen_t"), name="screen")
-    screenIdx = self.fresh_var(i32, "screenIdx")
-    tableIdx  = self.fresh_var(i32, "tableIdx")
+    screenIdx          = self.fresh_var(i32, "screenIdx")
+    tableIdx           = self.fresh_var(i32, "tableIdx")
     # Pop Quiz: Why can't we just declare and pass the screen pointer?
-    # screen_p = self.alloc(alias_ty("struct.screen_t"))
+    # screen_p           = self.alloc(alias_ty("struct.screen_t"))
 
     # Initialize Game.h's assetTable according to Assets.c
     #   Note: The contents of assetTable from Assets.c was copied into Game.cry
@@ -446,7 +446,7 @@ class resetInventoryItems_Contract(Contract):
     #       is included to show errors that can be encountered with the
     #       inventory_t struct.
     (item, item_p) = ptr_to_fresh(self, array_ty(self.numItems, alias_ty("struct.item_t")), name="item")
-    inventory_p = self.alloc(alias_ty("struct.inventory_t"), points_to = struct(item, cry_f("{self.numItems} : [32]")))
+    inventory_p    = self.alloc(alias_ty("struct.inventory_t"), points_to = struct(item, cry_f("{self.numItems} : [32]")))
     """
     If inventory_t is defined as:
       typedef struct {

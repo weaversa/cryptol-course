@@ -67,13 +67,13 @@ class initDefaultPlayer_Contract(Contract):
 class initDefaultSprite_Contract(Contract):
   def specification (self):
     # Declare variables
-    character = self.alloc(alias_ty("struct.character_t"))
+    character       = self.alloc(alias_ty("struct.character_t"))
     tempCharacter_p = self.alloc(alias_ty("struct.character_t"))
-    ty = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
-    frames = self.fresh_var(ty, "sprite.frames")
-    xPos = self.fresh_var(i32, "sprite.xPos")
-    yPos = self.fresh_var(i32, "sprite.yPos")
-    sprite_p = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(tempCharacter_p, frames, xPos, yPos))
+    ty              = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
+    frames          = self.fresh_var(ty, "sprite.frames")
+    xPos            = self.fresh_var(i32, "sprite.xPos")
+    yPos            = self.fresh_var(i32, "sprite.yPos")
+    sprite_p        = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(tempCharacter_p, frames, xPos, yPos))
 
     # Symbolically execute the function
     self.execute_func(character, sprite_p)
@@ -105,7 +105,7 @@ class resolveAttack_Contract(Contract):
   def specification (self):
     # Declare variables
     (target, target_p) = ptr_to_fresh(self, alias_ty("struct.character_t"), name="target")
-    atk = self.fresh_var(i32, "atk")
+    atk                = self.fresh_var(i32, "atk")
 
     # Assert the precondition that the stats are below the max stat cap
     self.precondition_f("{atk} <= `{MAX_STAT}")
