@@ -19,7 +19,7 @@ class Test_(TestCase):
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
 
     project_root = Path(__file__).parents[1]
-    bcname  = project_root / "artifacts/ceilLog2.bc"
+    bcname = project_root / "artifacts/ceilLog2.bc"
 
     mod = llvm_load_module(str(bcname))
     
