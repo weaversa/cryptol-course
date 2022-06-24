@@ -132,10 +132,11 @@ uint32_t rotl(uint32_t bits, uint32_t shift) {
 In this example, SAW won't actually verify C source, but rather C
 compiled down to LLVM intermediate representation (IR), or
 bitcode. This can be accomplished via the `clang` compiler. In this
-instance, we can create the bitcode by entering the following command
+instance, we can create the bitcode by entering the following commands
 in a terminal.
 
 ```sh
+$ mkdir labs/SAW/rotl/artifacts
 $ clang -emit-llvm labs/SAW/rotl/src/rotl.c -c -o labs/SAW/rotl/artifacts/rotl.bc
 ```
 
