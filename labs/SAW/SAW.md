@@ -544,7 +544,7 @@ def addRow5Mutate_Contract(Contract):
     
     self.execute_func(a_p, b_p)
     
-    self.points_to(a_p, cry_f("rowAdd {a} {b}"))
+    self.points_to(a_p, cry_f("addRow {a} {b}"))
     
     self.returns(void)
 ```
@@ -564,7 +564,7 @@ we supply `a_p` and `b_p` rather than `a` and `b`.
 To verify correctness, we assert after execution `a_p`
 points to what the Cryptol specification claims it should:
 
-| `self.points_to(` | `a_p,` | `cry_f( "rowAdd {a} {b}"` | `))` |
+| `self.points_to(` | `a_p,` | `cry_f( "addRow {a} {b}"` | `))` |
 |-------------------|--------|---------------------------|------|
 | Assert in the current contract that the pointer | with this name | points to this Cryptol term | . | 
 
@@ -599,7 +599,7 @@ def addRow5Mutate_Contract(Contract):
     
     self.execute_func(a_p, b_p)
     
-    self.points_to(a_p, cry_f("rowAdd {a} {b}"))
+    self.points_to(a_p, cry_f("addRow {a} {b}"))
     
     self.returns(void)
 ```
@@ -638,7 +638,7 @@ def addRow5NewVar_Contract(Contract):
     
     self.execute_func(a_p, b_p)
     
-    self.points_to(c_p, cry_f("rowAdd {a} {b}"))
+    self.points_to(c_p, cry_f("addRow {a} {b}"))
     
     self.returns(c_p)
 ```
@@ -675,7 +675,7 @@ def addRow5NewVar_Contract(Contract):
     self.execute_func(a_p, b_p)
     
     (c, c_p) = ptr_to_fresh(self, array_ty(5, i32), name="c")
-    self.points_to(c_p, cry_f("rowAdd {a} {b}"))
+    self.points_to(c_p, cry_f("addRow {a} {b}"))
     
     self.returns(c_p)
 ```
@@ -691,7 +691,7 @@ def addRow5NewVar_Contract(Contract):
     self.execute_func(a_p, b_p)
     
     (_, c_p) = ptr_to_fresh(self, array_ty(5, i32), name="c")
-    self.points_to(c_p, cry_f("rowAdd {a} {b}"))
+    self.points_to(c_p, cry_f("addRow {a} {b}"))
     
     self.returns(c_p)
 ```
@@ -709,7 +709,7 @@ def addRow5NewVar_Contract(Contract):
     self.execute_func(a_p, b_p)
     
     (c, c_p) = ptr_to_fresh(self, array_ty(5, i32), name="c")
-    self.postcondition_f("{c} == rowAdd {a} {b}")
+    self.postcondition_f("{c} == addRow {a} {b}")
     
     self.returns(c_p)
 ```
@@ -760,7 +760,7 @@ def addRowAlias_Contract(Contract):
     
     self.execute_func(a_p, b_p, length)
     
-    self.points_to(a_p, cry_f("rowAdd`{{{self.length}}} {a} {b}"))
+    self.points_to(a_p, cry_f("addRow`{{{self.length}}} {a} {b}"))
     
     self.returns(a_p)
 ```
@@ -809,7 +809,7 @@ def addRow5Mutate_Contract(Contract):
     
     self.execute_func(a_p, b_p)
     
-    self.points_to(a_p, cry_f("rowAdd {a} {b}"))
+    self.points_to(a_p, cry_f("addRow {a} {b}"))
     
     self.returns(void)
 
@@ -821,7 +821,7 @@ def addRow5NewVar_Contract(Contract):
     self.execute_func(a_p, b_p)
     
     (c, c_p) = ptr_to_fresh(self, array_ty(5, i32), name="c")
-    self.points_to(c_p, cry_f("rowAdd {a} {b}"))
+    self.points_to(c_p, cry_f("addRow {a} {b}"))
     
     self.returns(c_p)
 
@@ -999,7 +999,7 @@ And now SAW happily verifies the third contract!
     
     self.execute_func(a_p, b_p, cry(self.length))
     
-    self.points_to(a_p, cry_f("rowAdd`{{{self.length}}} {a} {b}"))
+    self.points_to(a_p, cry_f("addRow`{{{self.length}}} {a} {b}"))
     
     self.returns(a_p)
   ```
