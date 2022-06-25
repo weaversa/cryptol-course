@@ -59,21 +59,16 @@ jobs:
       - run: start-saw-remote-api-read-only
       # Run final rotl SAW Script
       - run: |
-          cd labs/SAW/rotl
-          make prove
+          make prove -C labs/SAW/rotl
       # Run addRow SAW Script
       - run: |
-          cd labs/SAW/addRow
-          make prove
+          make prove -C labs/SAW/addRow
       # Run null SAW Script
       - run: |
-          cd labs/SAW/null
-          make prove
+          make prove -C labs/SAW/null
       # Run Game SAW Script
       - run: |
-          cd labs/SAW/Game/DLC
-          make prove
+          make prove -C labs/SAW/Game/DLC
       # Run ceilLog2 SAW Script
       - run: |
-          cd labs/SAW/ceilLog2
-          make prove
+          make prove -C labs/SAW/ceilLog2
