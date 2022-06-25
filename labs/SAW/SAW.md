@@ -359,7 +359,27 @@ if __name__ == "__main__":
 ```
 
 or else the python script won't do anything!
-  
+
+Note that we defined our bitcode and cryptol file paths (`bcpath` and 
+`crypath`, respectively) relative to the rotl lab directory using 
+`Path` from Python's [pathlib](https://docs.python.org/3/library/pathlib.html)
+library.
+
+```python
+    basedir = Path(__file__).absolute().parents[1]
+    bcpath  = basedir/"artifacts/rotl.bc"
+    crypath = basedir/"specs/rotl.cry"
+
+    cryptol_load_file(str(crypath))
+    mod = llvm_load_module(str(bcpath))
+```
+
+Doing so gives us freedom to call the proof script from any initial
+working directory. It also provides portability to multiple platforms
+since we don't need to worry whether or not the operating system uses
+`/` or `\` in paths. However, we must convert the path names to a 
+string so to satisfy SAW's API for file loads.
+
 </details>
 
 We can now run the proof script.
