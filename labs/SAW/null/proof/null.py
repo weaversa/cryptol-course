@@ -1,6 +1,5 @@
-import os
-import unittest
 from pathlib import Path
+import unittest
 from saw_client          import *
 from saw_client.crucible import *
 from saw_client.llvm     import *
