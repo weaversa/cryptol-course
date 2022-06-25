@@ -9,12 +9,18 @@ ARTIFACTS=artifacts
 
 all: build
 
+build: $(ARTIFACTS)/null.bc
+
 prove: build
 	python3 $(PROOF)/null.py
 
-build:
-	mkdir -p $(ARTIFACTS)
-	clang -c -g -emit-llvm -o $(ARTIFACTS)/null.bc $(SRC)/null.c
-
 clean:
 	rm -r $(ARTIFACTS)
+
+.PHONY: all build prove clean
+
+$(ARTIFACTS)/null.bc: $(SRC)/null.c | $(ARTIFACTS)
+	clang -c -g -emit-llvm -o $@ $<
+
+$(ARTIFACTS):
+	mkdir -p $(ARTIFACTS)
