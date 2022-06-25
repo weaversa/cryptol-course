@@ -1,6 +1,9 @@
 # Note: Makefile assumes user already started the SAW remote API
 # $ start-saw-remote-api
 
+# Lab name
+LAB=null
+
 # Variables to hold relative file paths
 SRC=src
 PROOF=proof
@@ -9,17 +12,17 @@ ARTIFACTS=artifacts
 
 all: build
 
-build: $(ARTIFACTS)/null.bc
+build: $(ARTIFACTS)/$(LAB).bc
 
 prove: build
-	python3 $(PROOF)/null.py
+	python3 $(PROOF)/$(LAB).py
 
 clean:
-	rm -r $(ARTIFACTS)
+	rm -rf $(ARTIFACTS)
 
 .PHONY: all build prove clean
 
-$(ARTIFACTS)/null.bc: $(SRC)/null.c | $(ARTIFACTS)
+$(ARTIFACTS)/$(LAB).bc: $(SRC)/$(LAB).c | $(ARTIFACTS)
 	clang -c -g -emit-llvm -o $@ $<
 
 $(ARTIFACTS):
