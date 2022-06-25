@@ -18,10 +18,9 @@ class Test_(TestCase):
     connect(reset_server=True)
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
 
-    project_root = Path(__file__).parents[1]
-    bcname = project_root / "artifacts/ceilLog2.bc"
-
-    mod = llvm_load_module(str(bcname))
+    basedir = Path(__file__).absolute().parents[1] # Get absolute path to ceilLog2/
+    bcpath = basedir/"artifacts/ceilLog2.bc"
+    mod = llvm_load_module(str(bcpath))
     
     ceilLog2_result = llvm_verify(mod, 'ceilLog2', Contract_ceilLog2())
     self.assertTrue(ceilLog2_result.is_success())

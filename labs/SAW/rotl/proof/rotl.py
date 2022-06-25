@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import unittest
 from saw_client             import *
 from saw_client.crucible    import * 
@@ -20,12 +20,12 @@ class rotlTest(unittest.TestCase):
     connect(reset_server=True)
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
 
-    pwd = os.getcwd()
-    bcname  = pwd + "/artifacts/rotl.bc"
-    cryname = pwd + "/specs/rotl.cry"
+    basedir = Path(__file__).absolute().parents[1] # Get absolute path to rotl/
+    bcpath  = basedir/"artifacts/rotl.bc"
+    crypath = basedir/"specs/rotl.cry"
 
-    cryptol_load_file(cryname)
-    mod = llvm_load_module(bcname)
+    cryptol_load_file(str(crypath))
+    mod = llvm_load_module(str(bcpath))
     
     rotl_result = llvm_verify(mod, 'rotl', rotl_Contract())
     self.assertIs(rotl_result.is_success(), True)
