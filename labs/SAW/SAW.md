@@ -265,11 +265,11 @@ class rotlTest(unittest.TestCase):
     connect(reset_server=True)
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
     
-    bcname = "/some/path/to/your/file.bc"
-    mod    = llvm_load_module(bcname)
+    bcpath = "/some/path/to/your/file.bc"
+    mod    = llvm_load_module(bcpath)
     
-    cryname = "/some/path/to/your/file.cry"
-    cryptol_load_file(cryname)
+    crypath = "/some/path/to/your/file.cry"
+    cryptol_load_file(crypath)
     
     rotl_result = llvm_verify(mod, 'rotl', rotl_Contract())
     self.assertIs(rotl_result.is_success(), True)
@@ -289,14 +289,14 @@ Let's break down the first few lines of this function:
   with verbose error messages. If you don't want verbose error
   messages, then just use `if __name__ == "__main__":
   view(LogResults())`.
-- The line `bcname = "/some/path/to/your/file.bc"` declares the
+- The line `bcpath = "/some/path/to/your/file.bc"` declares the
   bitcode file to analyze. If there are multiple bitcode files,
   make a variable for each file.
-- The line `mod = llvm_load_module(bcname)` creates the object to
+- The line `mod = llvm_load_module(bcpath)` creates the object to
   pass to verification that represents the bitcode.
-- The line `cryname = "/some/path/to/your/file.cry"` specifies the
+- The line `crypath = "/some/path/to/your/file.cry"` specifies the
   path to a Cryptol specification.
-- The line `cryptol_load_file(cryname)` loads a Cryptol specification.
+- The line `cryptol_load_file(crypath)` loads a Cryptol specification.
 
 Now that the environment is set up, let's actually verify our
 contract! This is done at the line
@@ -315,7 +315,7 @@ using `self.assertIs(rotl_result.is_success(), True)`.
   <summary>Click here for the full code</summary>
 
 ```python
-import os
+from pathlib import Path
 import unittest
 from saw_client             import *
 from saw_client.crucible    import * 
@@ -337,12 +337,12 @@ class rotlTest(unittest.TestCase):
     connect(reset_server=True)
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
     
-    pwd = os.getcwd()
-    bcname  = pwd + "/artifacts/rotl.bc"
-    cryname = pwd + "/specs/rotl.cry"
-    
-    cryptol_load_file(cryname)
-    mod = llvm_load_module(bcname)
+    basedir = Path(__file__).absolute().parents[1]
+    bcpath  = basedir/"artifacts/rotl.bc"
+    crypath = basedir/"specs/rotl.cry"
+
+    cryptol_load_file(str(crypath))
+    mod = llvm_load_module(str(bcpath))
     
     rotl_result = llvm_verify(mod, 'rotl', rotl_Contract())
     self.assertIs(rotl_result.is_success(), True)
@@ -775,11 +775,11 @@ class ArrayTests(unittest.TestCase):
     connect(reset_server=True)
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
     
-    bcname  = "/some/path/to/your/file.bc"
-    cryname = "/some/path/to/your/file.cry"
+    bcpath  = "/some/path/to/your/file.bc"
+    crypath = "/some/path/to/your/file.cry"
     
-    cryptol_load_file(cryname)
-    mod = llvm_load_module(bcname)
+    cryptol_load_file(crypath)
+    mod = llvm_load_module(bcpath)
     
     arrayAddNewVar05_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(5))
     arrayAddNewVar10_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(10))
@@ -791,6 +791,7 @@ class ArrayTests(unittest.TestCase):
 
 {% raw %}
 ```python
+from pathlib import Path
 import unittest
 from saw_client             import *
 from saw_client.crucible    import * 
@@ -847,12 +848,12 @@ class ArrayTests(unittest.TestCase):
     connect(reset_server=True)
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
     
-    pwd = os.getcwd()
-    bcname  = pwd + "/artifacts/addRow.bc"
-    cryname = pwd + "/specs/addRow.cry"
+    basedir = Path(__file__).absolute().parents[1]
+    bcpath  = basedir/"artifacts/addRow.bc"
+    crypath = basedir/"specs/addRow.cry"
     
-    cryptol_load_file(cryname)
-    mod = llvm_load_module(bcname)
+    cryptol_load_file(str(crypath))
+    mod = llvm_load_module(str(bcpath))
     
     addRow5Mutate_result = llvm_verify(mod, 'addRowMutate', addRowMutate_Contract())
     self.assertIs(addRow5Mutate_result.is_success(), True)
@@ -874,8 +875,8 @@ What do you think will happen if we run this code?
   Running the code, SAW verifies the first two contracts
   
   ```sh
-  $ cd labs/SAW/addRow
-  $ make prove
+  $ make prove -C labs/SAW/addRow
+  make: Entering directory '/workspace/cryptol-course/labs/SAW/addRow'
   mkdir -p artifacts
   clang -c -g -emit-llvm -o artifacts/addRow.bc src/addRow.c
   python3 proof/addRow.py
@@ -1060,6 +1061,7 @@ int f(int *x) {
 The following contract has possibly unexpected behavior (in C booleans are encoded as `0` for false and `1` for true).
 
 ```python
+from pathlib import Path
 import unittest
 from saw_client          import *
 from saw_client.crucible import *
@@ -1079,9 +1081,9 @@ class LLVMAssertNullTest(unittest.TestCase):
         connect(reset_server=True)
         if __name__ == "__main__": view(LogResults(verbose_failure=True))
 
-        pwd = os.getcwd()
-        bcname = pwd + "/artifacts/null.bc"
-        mod    = llvm_load_module(bcname)
+        basedir = Path(__file__).absolute().parents[1]
+        bcpath  = basedir/"artifacts/null.bc"
+        mod     = llvm_load_module(str(bcpath))
 
         result = llvm_verify(mod, 'f', FContract())
         self.assertIs(result.is_success(), True)
@@ -1094,8 +1096,8 @@ if __name__ == "__main__":
 It turns out the contract above will fail!
   
 ```sh
-$ cd labs/SAW/null
-$ make prove
+$ make prove -C labs/SAW/null
+make: Entering directory '/workspace/cryptol-course/labs/SAW/null'
 mkdir -p artifacts
 clang -c -g -emit-llvm -o artifacts/null.bc src/null.c
 python3 proof/null.py
@@ -1535,7 +1537,7 @@ Our function, `resolveAttack`, takes two inputs:
 
 Think about how to make a SAW contract for this function. Go ahead and try it if you'd like! We'll wait for you :)
 
-Got an idea, great! Let's go over the steps we need to go through...
+Got an idea? Great! Let's go over the steps we need to go through...
 
 First, let's set up our basic format for the contract:
 
@@ -1626,12 +1628,12 @@ class GameTests(unittest.TestCase):
     connect(reset_server=True)
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
 
-    pwd = os.getcwd()
-    bitcode_name = pwd + "/artifacts/Game.bc"
-    cryptol_name = pwd + "/specs/Game.cry"
+    basedir = Path(__file__).absolute().parents[1]
+    bcpath  = basedir/"artifacts/Game.bc"
+    crypath = basedir/"specs/Game.cry"
 
-    cryptol_load_file(cryptol_name)
-    module = llvm_load_module(bitcode_name)
+    cryptol_load_file(str(crypath))
+    module = llvm_load_module(str(bcpath))
 
     resolveAttack_case1_result = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(1))
     resolveAttack_case2_result = llvm_verify(module, 'resolveAttack', resolveAttack_Contract(2))
