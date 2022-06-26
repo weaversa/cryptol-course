@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import unittest
 from saw_client          import *
 from saw_client.crucible import *
@@ -19,9 +19,9 @@ class LLVMAssertNullTest(unittest.TestCase):
         connect(reset_server=True)
         if __name__ == "__main__": view(LogResults(verbose_failure=True))
 
-        pwd = os.getcwd()
-        bcname = pwd + "/artifacts/null.bc"
-        mod    = llvm_load_module(bcname)
+        basedir = Path(__file__).absolute().parents[1] # Get absolute path to null/
+        bcpath  = basedir/"artifacts/null.bc"
+        mod     = llvm_load_module(str(bcpath))
 
         result = llvm_verify(mod, 'isNull', isNull_Contract())
         self.assertIs(result.is_success(), True)

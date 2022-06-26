@@ -1,9 +1,6 @@
 # Note: Makefile assumes user already started the SAW remote API
 # $ start-saw-remote-api
 
-# Lab name
-LAB=rotl
-
 # Variables to hold relative file paths
 SRC=src
 PROOF=proof
@@ -22,7 +19,7 @@ clean:
 
 .PHONY: all build prove clean
 
-$(ARTIFACTS)/$(LAB).bc: $(SRC)/$(LAB)3.c | $(ARTIFACTS)
+$(ARTIFACTS)/$(LAB).bc: $(SRC)/$(LAB).c | $(ARTIFACTS)
 	clang -c -g -emit-llvm -o $@ $<
 
 $(ARTIFACTS):

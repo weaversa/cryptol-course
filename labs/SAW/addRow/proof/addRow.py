@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import unittest
 from saw_client             import *
 from saw_client.crucible    import *
@@ -58,12 +58,12 @@ class ArrayTests(unittest.TestCase):
         connect(reset_server=True)
         if __name__ == "__main__": view(LogResults(verbose_failure=True))
 
-        pwd = os.getcwd()
-        bcname  = pwd + "/artifacts/addRow.bc"
-        cryname = pwd + "/specs/addRow.cry"
+        basedir = Path(__file__).absolute().parents[1] # Get absolute path to addRow/
+        bcpath  = basedir/"artifacts/addRow.bc"
+        crypath = basedir/"specs/addRow.cry"
 
-        cryptol_load_file(cryname)
-        mod = llvm_load_module(bcname)
+        cryptol_load_file(str(crypath))
+        mod = llvm_load_module(str(bcpath))
 
         addRow5Mutate_result = llvm_verify(mod, 'addRow5Mutate', addRow5Mutate_Contract())
         self.assertIs(addRow5Mutate_result.is_success(), True)

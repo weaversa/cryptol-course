@@ -2,7 +2,7 @@
 # Imporant Imports
 #######################################
 
-import os
+from pathlib import Path
 import unittest
 from saw_client             import *
 from saw_client.crucible    import * 
@@ -509,12 +509,12 @@ class GameTests(unittest.TestCase):
     connect(reset_server=True)
     if __name__ == "__main__": view(LogResults(verbose_failure=True))
 
-    pwd = os.getcwd()
-    bitcode_name = pwd + "/artifacts/Game.bc"
-    cryptol_name = pwd + "/specs/Game.cry"
+    basedir = Path(__file__).absolute().parents[1] # Get absolute path to Game/DLC/
+    bcpath  = basedir/"artifacts/Game.bc"
+    crypath = basedir/"specs/Game.cry"
 
-    cryptol_load_file(cryptol_name)
-    module = llvm_load_module(bitcode_name)
+    cryptol_load_file(str(crypath))
+    module = llvm_load_module(str(bcpath))
 
     # Override(s) associated with basic SAW setup
     levelUp_result             = llvm_verify(module, 'levelUp', levelUp_Contract())
