@@ -137,7 +137,7 @@ in a terminal.
 
 ```sh
 $ mkdir labs/SAW/rotl/artifacts
-$ clang -emit-llvm labs/SAW/rotl/src/rotl.c -c -o labs/SAW/rotl/artifacts/rotl.bc
+$ clang -emit-llvm labs/SAW/rotl/src/rotl1.c -c -o labs/SAW/rotl/artifacts/rotl.bc
 ```
 
 We can inspect the bitcode, using SAW, by loading the module and
@@ -498,7 +498,7 @@ uint32_t rotl(uint32_t bits, uint32_t shift) {
 ```
 
 ```sh
-$ clang -c -emit-llvm -o artifacts/rotl.bc src/rotl3.c && python3 proof/rotl.py
+$ clang -c -emit-llvm -o artifacts/rotl.bc src/rotl.c && python3 proof/rotl.py
 [03:14:09.561] Verifying rotl ...
 [03:14:09.562] Simulating rotl ...
 [03:14:09.563] Checking proof obligations rotl ...
@@ -523,7 +523,7 @@ the bitcode for the module and run the proof!
 $ cd labs/SAW/rotl
 $ make prove
 mkdir -p artifacts
-clang -c -g -emit-llvm -o artifacts/rotl.bc src/rotl3.c
+clang -c -g -emit-llvm -o artifacts/rotl.bc src/rotl.c
 python3 proof/rotl.py
 ```
 
