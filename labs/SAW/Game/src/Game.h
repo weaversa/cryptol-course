@@ -20,6 +20,14 @@
 // Structs
 ///////////////////////////////////////
 
+// Contains information related to character sprites
+typedef struct {
+  uint8_t frames[GAITS][DIRECTIONS][ANIMATION_STEPS];
+  uint32_t xPos;  // x position relative to the screen
+  uint32_t yPos;  // y position relative to the screen
+} sprite_t;
+
+
 // Contains information about in-game characters
 typedef struct {
   uint8_t name[MAX_NAME_LENGTH];
@@ -32,13 +40,6 @@ typedef struct {
 } character_t;
 
 typedef character_t player_t;
-
-// Contains information related to character sprites
-typedef struct {
-  uint8_t frames[GAITS][DIRECTIONS][ANIMATION_STEPS];
-  uint32_t xPos;  // x position relative to the screen
-  uint32_t yPos;  // y position relative to the screen
-} sprite_t;
 
 
 ///////////////////////////////////////
