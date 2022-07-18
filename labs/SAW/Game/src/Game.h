@@ -28,13 +28,13 @@ typedef struct {
   uint32_t atk;
   uint32_t def;
   uint32_t spd;
+  sprite_t* sprite;
 } character_t;
 
 typedef character_t player_t;
 
 // Contains information related to character sprites
 typedef struct {
-  character_t* character;
   uint8_t frames[GAITS][DIRECTIONS][ANIMATION_STEPS];
   uint32_t xPos;  // x position relative to the screen
   uint32_t yPos;  // y position relative to the screen
@@ -50,7 +50,7 @@ typedef struct {
   \param player_t* player - Pointer to an allocated player variable.
   \return SUCCESS.
 **/
-uint32_t initDefaultPlayer(player_t* player);
+player_t* initDefaultPlayer();
 
 /**
   Initializes a sprite variable based on default parameters and ties the sprite
@@ -60,7 +60,7 @@ uint32_t initDefaultPlayer(player_t* player);
   \param sprite_t* sprite - Pointer to an allocated sprite variable.
   \return SUCCESS.
 **/
-uint32_t initDefaultSprite(character_t* character, sprite_t* sprite);
+uint32_t initDefaultPlayerSprite(character_t* character);
 
 /**
   Resolves a target's hp stat after an attack.
