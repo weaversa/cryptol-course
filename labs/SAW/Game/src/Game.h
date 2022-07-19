@@ -61,7 +61,7 @@ player_t* initDefaultPlayer();
   \param sprite_t* sprite - Pointer to an allocated sprite variable.
   \return SUCCESS.
 **/
-uint32_t initDefaultPlayerSprite(character_t* character);
+uint32_t initDefaultSprite(character_t* character);
 
 /**
   Resolves a target's hp stat after an attack.

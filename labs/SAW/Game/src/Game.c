@@ -39,23 +39,23 @@ player_t* initDefaultPlayer()
 }
 
 
-uint32_t initDefaultSprite(player_t* player)
+uint32_t initDefaultSprite(character_t* character)
 {
   // Parameter checking
-  if (player == NULL)
+  if (character == NULL)
   {
-    // Must be passed an allocated player object
+    // Must be passed an allocated character struct
     return FAILURE;
   }
-  else if (player->sprite != NULL)
+  else if (character->sprite != NULL)
   {
-    // The passed player already has a sprite assigned.
-    // Follow up on the development rule that player objects can only be
+    // The passed character already has a sprite assigned.
+    // Follow up on the development rule that character structs can only be
     // initialized a sprite once!
     return FAILURE;
   }
 
-  // Allocate memory for a sprite object
+  // Allocate memory for a sprite struct
   sprite_t* sprite = (sprite_t*) malloc(sizeof(sprite_t));
 
   // Initialize the sprite frames to the default asset
@@ -74,8 +74,8 @@ uint32_t initDefaultSprite(player_t* player)
   sprite->xPos = 1;
   sprite->yPos = 2;
 
-  // Set the sprite to the player
-  player->sprite = sprite;
+  // Set the sprite to the character
+  character->sprite = sprite;
 
   return SUCCESS;
 }
