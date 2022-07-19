@@ -48,18 +48,19 @@ typedef character_t player_t;
 
 /**
   Initializes a player variable based on default parameters.
-  \param player_t* player - Pointer to an allocated player variable.
-  \return SUCCESS.
+  \param None
+  \return player_t* player - Pointer to an allocated player variable.
 **/
 player_t* initDefaultPlayer();
 
 /**
   Initializes a sprite variable based on default parameters and ties the sprite
-  to the passed character reference.
+  to the passed character reference. Assumes sprite initialization can only
+  once for a character.
   \param character_t* character - Pointer to a character variable that the
                                   the sprite should be tied to.
-  \param sprite_t* sprite - Pointer to an allocated sprite variable.
-  \return SUCCESS.
+  \return SUCCESS if a sprite is initialized for character, or FAILURE if
+          sprite initialization fails.
 **/
 uint32_t initDefaultSprite(character_t* character);
 

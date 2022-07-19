@@ -2,7 +2,6 @@
 #include "Game.h"
 
 
-// Assume player->sprite is NULL prior to the call
 player_t* initDefaultPlayer()
 {
   // Allocate memory for a player_t object

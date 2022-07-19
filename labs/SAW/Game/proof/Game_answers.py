@@ -40,7 +40,7 @@ def ptr_to_fresh(spec: Contract, ty: LLVMType,
 #######################################
 
 # initDefaultPlayer Contract
-# uint32_t initDefaultPlayer(player_t* player)
+# player_t* initDefaultPlayer()
 class initDefaultPlayer_Contract(Contract):
   def specification (self):
     # No input arguments, so no need to define variables now...
@@ -66,7 +66,7 @@ class initDefaultPlayer_Contract(Contract):
 
 
 # initDefaultSprite Contract
-# uint32_t initDefaultSprite(character_t* character, sprite_t* sprite)
+# uint32_t initDefaultSprite(character_t* character)
 class initDefaultSprite_Contract(Contract):
   def specification (self):
     # Declare variables
