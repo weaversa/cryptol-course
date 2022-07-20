@@ -1495,6 +1495,12 @@ struct and initializing the `sprite` fields for `character`.
 Now, let's go ahead and make a contract to represent this function:
 
 ```python
+SUCCESS         = 170
+FAILURE         = 85
+GAITS           = 2
+DIRECTIONS      = 4
+ANIMATION_STEPS = 3
+
 class initDefaultSprite_Contract(Contract):
   def specification (self):
     name        = self.fresh_var(array_ty(MAX_NAME_LENGTH, i8), "character.name")
