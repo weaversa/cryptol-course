@@ -1269,8 +1269,8 @@ field, the function sets that value to `NULL`. The `Game` library assumes that
 a character's sprite (and by extension, player sprites too) can only be set 
 once. Given that the only information known to the game is to initialize a 
 default player, it does not yet know what sprite information it should use. 
-Instead, the game relies on a separate function call to initialize the `sprite` 
-field.
+The game will rely on a separate function call to initialize the `sprite` field
+when more information is known later.
 
 We can craft a contract to verify this initialization function like so:
 
@@ -1295,14 +1295,16 @@ class initDefaultPlayer_Contract(Contract):
     self.returns(player)
 ```
 
-Notice that our contract immediately goes into the execute state. There isn't a
-need to define any variables in the initial state since there aren't any inputs
-being passed to `initDefaultPlayer`. Although the function does allocate
-memory for `player`, that is done as a function operation and passed as a return
-value. As such, we represent that allocation in the function's final state.
+Notice that our contract immediately goes into the *execute state*. There isn't a
+need to define any variables in the *initial state* since there aren't any inputs
+passed to `initDefaultPlayer`. Although the function does allocate memory for 
+`player`, that is done as a function operation and passed as a return value. As
+such, we represent that allocation in the function's *final state*.
 
 For every C symbol defined using `#define` in the source code, we make a 
-corresponding Python global variable.
+corresponding Python global variable. At this point, we only care about
+`MAX_NAME_LENGTH` since that is the only constant `initDefaultPlayer`
+references so far.
 
 ```python
 MAX_NAME_LENGTH = 12
@@ -1556,7 +1558,7 @@ The First `struct` Instance:
 For `character_p`, we assert the precondition that our pointer points to this 
 symbolic struct containing our fresh variables `name`, `level`, `hp`, `atk`, 
 `defense`, `spd`, and `null()`. Notice that we don't need to allocate memory
-yet in the contract's initial state for a `sprite_t` struct since the function
+yet in the contract's *initial state* for a `sprite_t` struct since the function
 assumes the passed `character` does not have an allocated sprite. As a result,
 we match the function's assumption that the `sprite` field is `NULL`.
 
@@ -1588,7 +1590,7 @@ The Third `struct` Instance:
 Now that `sprite_p` has been allocated and its field values were asserted, we
 connect `sprite_p` to `character_p`. The other fields for `character` do not
 change in the function, so we can resuse the symbolic variables that were 
-defined in the contract's initial state.
+defined in the contract's *initial state*.
 
 As we can see, the `struct` keyword is quite versatile as we can pass symbolic
 variables, symbolic pointers, and even define specific Cryptol values to it.
