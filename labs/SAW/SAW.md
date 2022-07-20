@@ -1172,23 +1172,52 @@ This example is from the [GaloisInc/saw-script repo](https://github.com/GaloisIn
 
 # Structs 
 
-In this section we will learn how to verify code involving structs by analyzing a game. The code for the game can be found [here](https://github.com/weaversa/cryptol-course/tree/master/labs/SAW/Game/src).
+In this section we will learn how to verify code involving structs by analyzing 
+a game. The code for the game can be found 
+[here](https://github.com/weaversa/cryptol-course/tree/master/labs/SAW/Game/src).
 
-To complete this lab, navigate to the [Game directory](https://github.com/weaversa/cryptol-course/tree/master/labs/SAW/Game). In there, you'll notice the following:
-- `Makefile`: Provides the necessary steps to generate our bitcode and run our SAW Python scripts.
+To complete this lab, navigate to the 
+[Game directory](https://github.com/weaversa/cryptol-course/tree/master/labs/SAW/Game). 
+In there, you'll notice the following:
+- `Makefile`: Provides the necessary steps to generate our bitcode and run our 
+SAW Python scripts.
 - `src/`: Contains the source code we'll be analyzing.
-- `proof/`: Contains our Python scripts to run our SAW contracts. Your job will be to complete the `TODO` sections marked throughout [Game.py](https://github.com/weaversa/cryptol-course/blob/master/labs/SAW/Game/proof/Game.py). If you get stuck, you can refer to [Game_answers.py](https://github.com/weaversa/cryptol-course/blob/master/labs/SAW/Game/proof/Game_answers.py) or look at the discussions mentioned later in this markdown file!
-- `specs/`: Contains our Cryptol specs that our SAW contracts can call. Feel free to add your own Cryptol functions in [Game.cry](https://github.com/weaversa/cryptol-course/blob/master/labs/SAW/Game/specs/Game.cry) to help you complete this lab!
-- `DLC/`: Contains an extended version of this lab (think Downloadable Content) with even more Game functions for you to play with! While there aren't any lab worksheets included in there, you can reference the contents to learn how to tackle additional functions. For more information regarding to what each function intends to teach, refer to [GameDLC.md](./Game/DLC/GameDLC.md).
+- `proof/`: Contains our Python scripts to run our SAW contracts. Your job will 
+be to complete the `TODO` sections marked throughout 
+[Game.py](https://github.com/weaversa/cryptol-course/blob/master/labs/SAW/Game/proof/Game.py). 
+If you get stuck, you can refer to 
+[Game_answers.py](https://github.com/weaversa/cryptol-course/blob/master/labs/SAW/Game/proof/Game_answers.py) 
+or look at the discussions mentioned later in this markdown file!
+- `specs/`: Contains our Cryptol specs that our SAW contracts can call. Feel 
+free to add your own Cryptol functions in 
+[Game.cry](https://github.com/weaversa/cryptol-course/blob/master/labs/SAW/Game/specs/Game.cry) 
+to help you complete this lab!
+- `DLC/`: Contains an extended version of this lab (think Downloadable Content) 
+with even more Game functions for you to play with! While there aren't any lab 
+worksheets included in there, you can reference the contents to learn how to 
+tackle additional functions. For more information regarding to what each 
+function intends to teach, refer to [GameDLC.md](./Game/DLC/GameDLC.md).
 
-With that knowledge, make sure you have `start-saw-remote-api` running, open up Game.py, fill out your answers, and test your work by running `make`. Game on!
+With that knowledge, make sure you have `start-saw-remote-api` running, open up 
+Game.py, fill out your answers, and test your work by running `make`. Game on!
 
 
 ## Struct Initialization
 
-The game defines the following player type.
+The game defines the following `sprite_t` and `character_t` types.
 
 ```C
+#define MAX_NAME_LENGTH 12
+#define GAITS 2
+#define DIRECTIONS 4
+#define ANIMATION_STEPS 3
+
+typedef struct {
+  uint8_t frames[GAITS][DIRECTIONS][ANIMATION_STEPS];
+  uint32_t xPos;
+  uint32_t yPos;
+} sprite_t;
+
 typedef struct {
   uint8_t name[MAX_NAME_LENGTH];
   uint32_t level;
@@ -1196,17 +1225,22 @@ typedef struct {
   uint32_t atk;
   uint32_t def;
   uint32_t spd;
+  sprite_t* sprite;
 } character_t;
 
 typedef character_t player_t;
 ```
 
-A player is initialized with some default values
+For now, let's focus on the `player_t` type. Note that `player_t` is just an 
+alias for `character_t`. Let's consider the function, `initDefaultPlayer`, 
+that initializes a player with some default values.
 
 ```C
-uint32_t initDefaultPlayer(player_t* player)
+player_t* initDefaultPlayer()
 {
-  uint8_t  i = 0;
+  player_t* player = (player_t*) malloc(sizeof(player_t));
+
+  uint8_t i = 0;
   uint32_t hp_default  = 10;
   uint32_t atk_default = 5;
   uint32_t def_default = 4;
@@ -1222,30 +1256,33 @@ uint32_t initDefaultPlayer(player_t* player)
   player->def = def_default;
   player->spd = spd_default;
 
-  return SUCCESS;
+  player->sprite = NULL;
+
+  return player;
 }
 ```
 
-where `SUCCESS` and `MAX_NAME_LENGTH` are C constants:
+Observing the `initDefaultPlayer` function, we can see that the function first
+allocates memory for a `player_t` struct called `player`. The function then 
+assigns a value to each of `player`'s fields. When it comes to the `sprite` 
+field, the function sets that value to `NULL`. The `Game` library assumes that
+a character's sprite (and by extension, player sprites too) can only be set 
+once. Given that the only information known to the game is to initialize a 
+default player, it does not yet know what sprite information it should use. 
+Instead, the game relies on a separate function call to initialize the `sprite` 
+field.
 
-```C
-#define MAX_NAME_LENGTH 12
-#define SUCCESS 170
-#define FAILURE 85
-```
-
-We use the following contract to verify this initialization function:
+We can craft a contract to verify this initialization function like so:
 
 ```python
 MAX_NAME_LENGTH = 12
-SUCCESS         = 170
-FAILURE         = 85
 
 class initDefaultPlayer_Contract(Contract):
   def specification (self):
-    player = self.alloc(alias_ty("struct.player_t"))
 
-    self.execute_func(player)
+    self.execute_func()
+
+    player = self.alloc(alias_ty("struct.character_t"))
 
     self.points_to(player['name'], cry_f("repeat 0x41 : [{MAX_NAME_LENGTH}][8]"))
     self.points_to(player['level'], cry_f("1 : [32]"))
@@ -1253,34 +1290,61 @@ class initDefaultPlayer_Contract(Contract):
     self.points_to(player['atk'], cry_f("5 : [32]"))
     self.points_to(player['def'], cry_f("4 : [32]"))
     self.points_to(player['spd'], cry_f("3 : [32]"))
-    
-    self.returns(cry_f("`({SUCCESS}) : [32]"))
+    self.points_to(player['sprite'], null())
+
+    self.returns(player)
 ```
 
-For every C symbol defined using `#define` we make a corresponding Python global variable.
+Notice that our contract immediately goes into the execute state. There isn't a
+need to define any variables in the initial state since there aren't any inputs
+being passed to `initDefaultPlayer`. Although the function does allocate
+memory for `player`, that is done as a function operation and passed as a return
+value. As such, we represent that allocation in the function's final state.
+
+For every C symbol defined using `#define` in the source code, we make a 
+corresponding Python global variable.
 
 ```python
 MAX_NAME_LENGTH = 12
-SUCCESS         = 170
-FAILURE         = 85
 ```
 
-The command `alias_ty("struct.<typedef name>")` creates a type corresponding to the structure, e.g., 
+The command `alias_ty("struct.<typedef name>")` creates a type corresponding 
+to the structure, e.g., 
+
+```python
+player = self.alloc(alias_ty("struct.character_t"))
+```
+creates a symbolic pointer variable `player` pointing to a structure of type 
+`character_t`. Since `player_t` is an alias for `character_t`, we need to use
+the base struct name, `character_t`. If we instead defined our `player` 
+symbolic pointer as
 
 ```python
 player = self.alloc(alias_ty("struct.player_t"))
 ```
-creates a symbolic pointer variable `player` pointing to a structure of type `player_t`.
 
-Let's breakdown a `points_to` command seen above:
+SAW would throw an error saying that `player_t` is an unknown identifier:
+
+```sh
+error: unsupported type: %struct.player_t
+Details:
+Unknown type alias Ident "struct.player_t"
+```
+
+Let's continue and breakdown one of the contract's `points_to` command:
 
 
 | `self.points_to(` | `player` | `['name']` | `,` | `cry_f("repeat 0x41 : [{MAX_NAME_LENGTH}][8]")` | `)` |
 |-------------------|-----------|----------|------|-------------------------------------------------|-----|
 | Assert in the current contract that the following pointer | with this name | points to a struct with this named field | and the value of that field is | this expression | . |
 
-
-Above we use strings to reference fields of structures. However, we can only do this when strings are present in the bitcode, e.g., when debug symbols are included in the generated bitcode. The `-g` clang flag tells the compiler to include the field names of the structs in the bitcode. For the full compilation details, check out the [Makefile](https://github.com/weaversa/cryptol-course/blob/master/labs/SAW/Game/Makefile) from the `Game` directory. 
+Above we use strings to reference fields of structures. However, we can only do
+this when strings are present in the bitcode, e.g., when debug symbols are 
+included in the generated bitcode. The `-g` clang flag tells the compiler to 
+include the field names of the structs in the bitcode. For the full compilation 
+details, check out the Makefile template, 
+[prove.mk](https://github.com/weaversa/cryptol-course/blob/master/labs/SAW/prove.mk), 
+which is used for all of our SAW labs. 
 
 If we didn't have the debug symbols in the bitcode, SAW would produce an error:
 
@@ -1295,13 +1359,12 @@ Could not resolve setup value debug information into a struct type.
 Perhaps you need to compile with debug symbols enabled.
 ```
 
-If we didn't want to include debug symbols in the bitcode, then we can reference the struct fields by using their corresponding indices:
+If we didn't want to include debug symbols in the bitcode, then could instead 
+reference the struct fields by using their corresponding indices:
 
 ```python
 class initDefaultPlayer_Contract(Contract):
   def specification (self):
-    player = self.alloc(alias_ty("struct.character_t"))
-
     self.execute_func(player)
 
     self.points_to(player[0], cry_f("repeat 0x41 : [{MAX_NAME_LENGTH}][8]"))
@@ -1310,29 +1373,245 @@ class initDefaultPlayer_Contract(Contract):
     self.points_to(player[3], cry_f("5 : [32]"))
     self.points_to(player[4], cry_f("4 : [32]"))
     self.points_to(player[5], cry_f("3 : [32]"))
+    self.points_to(player[6], null())
     
-    self.returns(cry_f("`({SUCCESS}) : [32]"))
+    self.returns(player)
 ```
 
+
+## Explicit Structs
+
+We can also explicitly define a struct in SAW. Let's go back and consider the 
+`sprite_t` struct:
+
+```C
+#define GAITS 2
+#define DIRECTIONS 4
+#define ANIMATION_STEPS 3
+
+typedef struct {
+  uint8_t frames[GAITS][DIRECTIONS][ANIMATION_STEPS];
+  uint32_t xPos;
+  uint32_t yPos;
+} sprite_t;
+```
+
+The idea behind the `sprite_t` struct is to hold all of the sprites associated 
+with a character that we will present in our game. `frames` is a 3D `uint8_t` 
+array where each element represents an asset identifier from our art collection.
+Why a 3D array? Well, we want to provide animations for our characters that way 
+it looks like they are moving on the screen (and it's a great excuse to discuss 
+multi-dimensional arrays in SAW). The first dimension refers to the number of 
+gaits we want to represent, that being walking and running. The second dimension 
+refers to the number of directions a character can face. Imagine that we are 
+working with a 2D top down game, so we have 4 directions: up, down, left, and 
+right. The third dimension refers to the number of frames per movement.
+
+Let's think about how we walk forward (feel free to try this at home). If you 
+are walking forward, you first stand up, move one foot in front of the other, 
+place that foot down, lift up your back foot, and move that back foot ahead of 
+your front foot. Rinse and repeat, and you'll be walking 'cross the floor.
+
+Now that's a lot of steps! We can simplify this process by only considering 3 
+frames: standing up, left foot in front, and right foot in front. We can then 
+reuse the standing up frame as a transition between the left foot forward and 
+the right foot forward frames.
+
+Alright, that's enough of a crash course in animation. Let's get back to our 
+struct. We have two more fields: `xPos` and `yPos`. These are simply positional 
+references for where a character is located relative to the screen.
+
+With that understanding, let's consider a function that uses the `sprite_t` struct:
+
+```C
+uint32_t initDefaultSprite(character_t* character)
+{
+  if (character == NULL)
+  {
+    return FAILURE;
+  }
+  else if (character->sprite != NULL)
+  {
+    return FAILURE;
+  }
+
+  sprite_t* sprite = (sprite_t*) malloc(sizeof(sprite_t));
+
+  for (uint8_t i = 0; i < GAITS; i++)
+  {
+    for (uint8_t j = 0; j < DIRECTIONS; j++)
+    {
+      for (uint8_t k = 0; k < ANIMATION_STEPS; k++)
+      {
+        sprite->frames[i][j][k] = 0x00;
+      }
+    }
+  }
+
+  sprite->xPos = 1;
+  sprite->yPos = 2;
+
+  character->sprite = sprite;
+
+  return SUCCESS;
+}
+```
+
+This function uses two more constants, `SUCCESS` and `FAILURE`, which are 
+defined as:
+
+```C
+#define SUCCESS 170
+#define FAILURE 85
+```
+
+Those are some strange looking values huh? Normally we would want to represent
+successes and failures as booleans `TRUE` and `FALSE`, so `1` and `0` 
+respectively right? Well, we could but the 
+[Hamming Distance](https://en.wikipedia.org/wiki/Hamming_distance) 
+between those values is just 1. This means a single bit flip could turn a 
+`SUCCESS` into `FAILURE` and vice versa. If our code relies on status values,
+we should increase the hamming distance to better detect problematic bit flips.
+
+| Decimal Value | Hex Representation | Binary Representation |
+|:-------------:|:------------------:|:---------------------:|
+| 170           | 0xAA               | 10101010              |
+| 85            | 0x55               | 01010101              |
+
+We can see that 170 and 85 have a Hamming Distance of 8. Take that bit flips!
+As a side note, keep in mind that the constants `SUCCESS` and `FAILURE` are
+actually 32-bit integers in C. While we could further increase the Hamming
+Distance between the two numbers, we wanted to show a simplified proof of 
+concept here. Alright, let's go back to understanding `initDefaultSprite`.
+
+The function first performs input checking on `character` to ensure that it is 
+not a `NULL` pointer. After all, it would be a shame to perform a `NULL`
+dereference. The function also checks for the `Game` library's assumption that
+character sprites can only be set once. If any of these checks fail, 
+`initDefaultSprite` immediately terminates and returns `FAILURE`. Otherwise, 
+the function continues to do its job in allocating memory for a `sprite_t` 
+struct and initializing the `sprite` fields for `character`.
+
+Now, let's go ahead and make a contract to represent this function:
+
+```python
+class initDefaultSprite_Contract(Contract):
+  def specification (self):
+    name        = self.fresh_var(array_ty(MAX_NAME_LENGTH, i8), "character.name")
+    level       = self.fresh_var(i32, "character.level")
+    hp          = self.fresh_var(i32, "character.hp")
+    atk         = self.fresh_var(i32, "character.atk")
+    defense     = self.fresh_var(i32, "character.def")
+    spd         = self.fresh_var(i32, "character.spd")
+    character_p = self.alloc( alias_ty("struct.character_t")
+                            , points_to = struct( name
+                                                , level
+                                                , hp
+                                                , atk
+                                                , defense
+                                                , spd
+                                                , null() ))
+
+    self.execute_func(character_p)
+
+    sprite_p = self.alloc( alias_ty("struct.sprite_t")
+                         , points_to = struct( cry_f("zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8]")
+                                             , cry_f("1 : [32]")
+                                             , cry_f("2 : [32]") ))
+
+    self.points_to(character_p, struct( name
+                                      , level
+                                      , hp
+                                      , atk
+                                      , defense
+                                      , spd
+                                      , sprite_p ))
+
+    self.returns_f("`({SUCCESS}) : [32]")
+```
+
+There's quite a bit going on with the three uses of the `struct` keyword. Like 
+`array`, the `struct` keyword declares a symbolic struct given a variable for 
+each struct field.
+
+The First `struct` Instance:
+
+```python
+    character_p = self.alloc( alias_ty("struct.character_t")
+                            , points_to = struct( name
+                                                , level
+                                                , hp
+                                                , atk
+                                                , defense
+                                                , spd
+                                                , null() ))
+```
+
+For `character_p`, we assert the precondition that our pointer points to this 
+symbolic struct containing our fresh variables `name`, `level`, `hp`, `atk`, 
+`defense`, `spd`, and `null()`. Notice that we don't need to allocate memory
+yet in the contract's initial state for a `sprite_t` struct since the function
+assumes the passed `character` does not have an allocated sprite. As a result,
+we match the function's assumption that the `sprite` field is `NULL`.
+
+The Second `struct` Instance:
+
+```python
+    sprite_p = self.alloc( alias_ty("struct.sprite_t")
+                         , points_to = struct( cry_f("zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8]")
+                                             , cry_f("1 : [32]")
+                                             , cry_f("2 : [32]") ))
+```
+
+After the call to symbolically execute the function, we allocate memory for
+a symbolic `sprite_t` struct. In the same line, we also set a postcondition
+using `struct` to assert how the `sprite` fields should look according to
+`initDefaultSprite`.
+
+The Third `struct` Instance:
+
+```python
+    self.points_to(character_p, struct( name
+                                      , level
+                                      , hp
+                                      , atk
+                                      , defense
+                                      , spd
+                                      , sprite_p ))
+```
+Now that `sprite_p` has been allocated and its field values were asserted, we
+connect `sprite_p` to `character_p`. The other fields for `character` do not
+change in the function, so we can resuse the symbolic variables that were 
+defined in the contract's initial state.
+
+As we can see, the `struct` keyword is quite versatile as we can pass symbolic
+variables, symbolic pointers, and even define specific Cryptol values to it.
 
 ### Structs as Cryptol Tuples and Records
 
-We can replace all of the `points_to` postconditions in the previous contract since Cryptol interprets symbolic structs as tuples.
+Explicit structs is not the only way to represent valuess for preconditions and
+postconditions. We can also use tuples since Cryptol interprets symbolic 
+structs as tuples.
+
+For example, we could rewrite the second `struct` instance explored above as:
 
 ```python
-self.points_to(player, cry_f("""( repeat 0x41 : [{MAX_NAME_LENGTH}][8]
-                                , 1  : [32]
-                                , 10 : [32]
-                                , 5  : [32]
-                                , 4  : [32]
-                                , 3  : [32]
-                                )
-                             """))
+sprite_p = self.alloc( alias_ty("struct.sprite_t")
+                     , points_to = cry_f("""( zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8]
+                                            , 1 : [32]
+                                            , 2 : [32] )"""))
 ```
 
-We use 3 double quotes `"""` in our `cry_f` call. This technique is useful when we want to separate our expected Cryptol-defined behaviors over multiple lines to improve code readability. Python considers the 3 double quotes as a multiline string. Multiline strings may also be used as block comments in Python.
+Notice that we use 3 double quotes `"""` in our `cry_f` call. This technique is
+useful when we want to separate our expected Cryptol-defined behaviors over 
+multiple lines to improve code readability. Python considers the 3 double 
+quotes as a multiline string. Multiline strings may also be used as block 
+comments in Python.
 
-Note that the setup we see above results in wide open spaces, which will be noticable when debugging strings passed to the family of `cry` functions. These spaces can be mitigated using `dedent` from the `textwrap` package that comes with Python. For example:
+However, the setup we see above results in wide open spaces, which will be 
+noticable when debugging strings passed to the family of `cry` functions. These 
+spaces can be mitigated using `dedent` from the `textwrap` package that comes 
+with Python. For example:
 
 ```python
 from textwrap import dedent
@@ -1355,6 +1634,9 @@ This renders (without leading/trailing whitespace) as:
     z = "bar"
 ```
 
+
+### Structs as Cryptol Records
+
 While Cryptol's record types could also represent structs, SAW does
 not currently support translating Cryptol's record types into
 crucible-llvm's type system. If we tried to represent the struct as a
@@ -1362,166 +1644,24 @@ Cryptol record:
 
 {% raw %}
 ```python
-self.points_to(player, cry_f("""{{ name  = repeat 0x41 : [{MAX_NAME_LENGTH}][8]
-                                 , level = 1  : [32]
-                                 , hp    = 10 : [32]
-                                 , atk   = 5  : [32]
-                                 , def   = 4  : [32]
-                                 , spd   = 3  : [32]
-                                }}
-                             """))
+sprite_p = self.alloc( alias_ty("struct.sprite_t")
+                     , points_to = cry_f("""{{ frames = zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8]
+                                             , xPos   = 1 : [32]
+                                             , yPos   = 2 : [32]
+                                            }}
+                                         """))
 ```
 {% endraw %}
 
 SAW would return this error:
 
 ```sh
-$ clang -c -g -emit-llvm -o artifacts/Game.bc src/Game.c
-$ python3 proof/Game.py
-⚠️  Failed to verify: lemma_initDefaultPlayer_Contract (defined at proof/Game.py:537):
+⚠️  Failed to verify: lemma_initDefaultSprite_Contract (defined at proof/Game.py:525):
 error: SAW doesn't yet support translating Cryptol's record type(s) into crucible-llvm's type system.
-        stdout:
-
-F
-======================================================================
-FAIL: test_Game (__main__.GameTests)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "proof/Game.py", line 563, in test_Game
-    self.assertIs(initDefaultPlayer_result.is_success(), True)
-AssertionError: False is not True
-
-----------------------------------------------------------------------
-Ran 1 test in 0.752s
-
-FAILED (failures=1)
-🛑  The goal failed to verify.
-make: *** [Makefile:14: all] Error 1
 ```
 
-If a Cryptol specification uses a record type to represent structs, then we can define a Python helper function for wrapping. 
-
-
-## Explicit Structs
-
-We can also explicitly define a struct in SAW. Let's consider another struct:
-
-```C
-#define GAITS 2
-#define DIRECTIONS 4
-#define ANIMATION_STEPS 3
-
-typedef struct {
-  character_t* character;
-  uint8_t frames[GAITS][DIRECTIONS][ANIMATION_STEPS];
-  uint32_t xPos;
-  uint32_t yPos;
-} sprite_t;
-```
-
-The idea behind the `sprite_t` struct is to hold all of the sprites associated with a character that we will present in our game. `character` is a pointer to a `character_t` type that the sprite is tied to. `frames` is a 3D uint8_t array where each element represents an asset identifier from our art collection. Why a 3D array? Well, we want to provide animations for our characters that way it looks like they are moving on the screen (and it's a great excuse to discuss multi-dimensional arrays in SAW). The first dimension refers to the number of gaits we want to represent, that being walking and running. The second dimension refers to the number of directions a character can face. Imagine that we are working with a 2D top down game, so we have 4 directions: up, down, left, and right. The third dimension refers to the number of frames per movement.
-
-Let's think about how we walk forward (feel free to try this at home). If you are walking forward, you first stand up, move one foot in front of the other, place that foot down, lift up your back foot, and move that back foot ahead of your front foot. Rinse and repeat, and you'll be walking 'cross the floor.
-
-Now that's a lot of steps! We can simplify this process by only considering 3 frames: standing up, left foot in front, and right foot in front. We can then reuse the standing up frame as a transition between the left foot forward and the right foot forward frames.
-
-Alright, that's enough of a crash course in animation. Let's get back to our struct. We have two more fields: xPos and yPos. These are simply positional references for where a character is located relative to the screen.
-
-With that understanding, let's consider a function that uses the `sprite_t` struct:
-
-```C
-uint32_t initDefaultSprite(character_t* character, sprite_t* sprite)
-{
-  // Initialize the character to the passed pointer
-  sprite->character = character;
-
-  // Initialize the sprite frames to the default asset
-  for (uint8_t i = 0; i < GAITS; i++)
-  {
-    for (uint8_t j = 0; j < DIRECTIONS; j++)
-    {
-      for (uint8_t k = 0; k < ANIMATION_STEPS; k++)
-      {
-        sprite->frames[i][j][k] = 0x00;
-      }
-    }
-  }
-
-  // Initialize sprite's default position
-  sprite->xPos = 1;
-  sprite->yPos = 2;
-
-  return SUCCESS;
-}
-```
-
-Now, let's go ahead and make a contract to represent this function:
-
-```python
-class initDefaultSprite_Contract(Contract):
-  def specification (self):
-    # Declare variables
-    character       = self.alloc(alias_ty("struct.character_t"))
-    tempCharacter_p = self.alloc(alias_ty("struct.character_t"))
-    frames   = self.fresh_var(array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8))), "sprite.frames")
-    xPos     = self.fresh_var(i32, "sprite.xPos")
-    yPos     = self.fresh_var(i32, "sprite.yPos")
-    sprite   = struct(tempCharacter_p, frames, xPos, yPos)
-    sprite_p = self.alloc(alias_ty("struct.sprite_t"))
-    self.points_to(sprite_p, sprite)
-
-    # Symbolically execute the function
-    self.execute_func(character, sprite_p)
-
-    # Assert postconditions
-    self.points_to(sprite_p, struct( character,
-                                     cry_f("zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8]"),
-                                     cry_f("1 : [32]"),
-                                     cry_f("2 : [32]") ))
-                                           
-    self.returns_f("`({SUCCESS}) : [32]")
-```
-
-Like `array`, the `struct` keyword declares a symbolic struct given a variable for each struct field. We assert the precondition that our pointer points to this symbolic struct. Alternatively, we could replace
-
-```python
-    sprite   = struct(tempCharacter_p, frames, xPos, yPos)
-    sprite_p = self.alloc(alias_ty("struct.sprite_t"))
-    self.points_to(sprite_p, sprite)
-```
- with 
-```python
-sprite_p = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(tempCharacter_p, frames, xPos, yPos))
-```
-since we don't use `sprite` later in the code. If we wanted, we could assert other preconditions on `tempCharacter_p`, `frames`, `xPos`, and `yPos``. We don't in this example, but it's still a feature to consider!
-
-In the postcondition, we assert `sprite_p` points to some concrete structure. The benefit of using explicit structs is that it allows us to represent pointer fields that may be present in a struct.
-
-However, explicit structs isn't the only way to represent pointer fields. We could also use a tuple to assert our postcondition. However, we will need to change our definition for `character`.
-
-```python
-class initDefaultSprite_Contract(Contract):
-  def specification (self):
-    # Declare variables
-    character       = self.fresh_var(ptr_ty(alias_ty("struct.character_t")))
-    tempCharacter_p = self.alloc(alias_ty("struct.character_t"))
-    ty       = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
-    frames   = self.fresh_var(ty, "sprite.frames")
-    xPos     = self.fresh_var(i32, "sprite.xPos")
-    yPos     = self.fresh_var(i32, "sprite.yPos")
-    sprite_p = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(tempCharacter_p, frames, xPos, yPos))
-
-    # Symbolically execute the function
-    self.execute_func(character, sprite_p)
-
-    # Assert postconditions
-    self.points_to(sprite_p, cry_f("""( {character},
-                                     zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8],
-                                     1 : [32],
-                                     2 : [32]) """))
-                  
-    self.returns_f("`({SUCCESS}) : [32]")
-```
+If a Cryptol specification uses a record type to represent structs, then we can
+define a Python helper function for wrapping. 
 
 
 ## Exercise: Resolving an Attack!

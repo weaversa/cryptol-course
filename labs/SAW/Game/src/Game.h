@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 
-// Status values that provide a hamming distance of 5
+// Status values that provide a hamming distance of 8
 #define SUCCESS 170         // 170 = 0xAA = 10101010
 #define FAILURE 85          //  85 = 0x55 = 01010101
 
