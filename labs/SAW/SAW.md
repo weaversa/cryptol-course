@@ -1199,7 +1199,8 @@ tackle additional functions. For more information regarding to what each
 function intends to teach, refer to [GameDLC.md](./Game/DLC/GameDLC.md).
 
 With that knowledge, make sure you have `start-saw-remote-api` running, open up 
-Game.py, fill out your answers, and test your work by running `make`. Game on!
+Game.py, fill out your answers, and test your work by running `make prove`. 
+Game on!
 
 
 ## Struct Initialization
@@ -1262,11 +1263,11 @@ player_t* initDefaultPlayer()
 }
 ```
 
-Observing the `initDefaultPlayer` function, we can see that the function first
-allocates memory for a `player_t` struct called `player`. The function then 
-assigns a value to each of `player`'s fields. When it comes to the `sprite` 
-field, the function sets that value to `NULL`. The `Game` library assumes that
-a character's sprite (and by extension, player sprites too) can only be set 
+Observing `initDefaultPlayer`, we can see that the function first allocates 
+memory for a `player_t` struct called `player`. The function then assigns a 
+value to each of `player`'s fields. When it comes to the `sprite` field, the 
+function sets that value to `NULL`. The `Game` library assumes that a 
+character's sprite (and by extension, player sprites too) can only be set 
 once. Given that the only information known to the game is to initialize a 
 default player, it does not yet know what sprite information it should use. 
 The game will rely on a separate function call to initialize the `sprite` field
@@ -1298,25 +1299,21 @@ class initDefaultPlayer_Contract(Contract):
 Notice that our contract immediately goes into the *execute state*. There isn't a
 need to define any variables in the *initial state* since there aren't any inputs
 passed to `initDefaultPlayer`. Although the function does allocate memory for 
-`player`, that is done as a function operation and passed as a return value. As
-such, we represent that allocation in the function's *final state*.
+`player`, that is done within the function, and passed as a return value. As
+such, we represent that allocation in the contract's *final state*.
 
 For every C symbol defined using `#define` in the source code, we make a 
 corresponding Python global variable. At this point, we only care about
 `MAX_NAME_LENGTH` since that is the only constant `initDefaultPlayer`
-references so far.
-
-```python
-MAX_NAME_LENGTH = 12
-```
+references.
 
 The command `alias_ty("struct.<typedef name>")` creates a type corresponding 
-to the structure, e.g., 
+to the structure. In our contract, 
 
 ```python
 player = self.alloc(alias_ty("struct.character_t"))
 ```
-creates a symbolic pointer variable `player` pointing to a structure of type 
+creates a symbolic pointer variable, `player`, pointing to a structure of type 
 `character_t`. Since `player_t` is an alias for `character_t`, we need to use
 the base struct name, `character_t`. If we instead defined our `player` 
 symbolic pointer as
@@ -1340,11 +1337,11 @@ Let's continue and breakdown one of the contract's `points_to` command:
 |-------------------|-----------|----------|------|-------------------------------------------------|-----|
 | Assert in the current contract that the following pointer | with this name | points to a struct with this named field | and the value of that field is | this expression | . |
 
-Above we use strings to reference fields of structures. However, we can only do
-this when strings are present in the bitcode, e.g., when debug symbols are 
-included in the generated bitcode. The `-g` clang flag tells the compiler to 
-include the field names of the structs in the bitcode. For the full compilation 
-details, check out the Makefile template, 
+Above, we use strings to reference fields of structures. However, we can only do
+this when strings are present in the bitcode. In other words, when debug 
+symbols are included in the generated bitcode. The `-g` clang flag tells the 
+compiler to include the field names of the structs in the bitcode. For the 
+full compilation details, check out the Makefile template, 
 [prove.mk](https://github.com/weaversa/cryptol-course/blob/master/labs/SAW/prove.mk), 
 which is used for all of our SAW labs. 
 
@@ -1361,8 +1358,8 @@ Could not resolve setup value debug information into a struct type.
 Perhaps you need to compile with debug symbols enabled.
 ```
 
-If we didn't want to include debug symbols in the bitcode, then could instead 
-reference the struct fields by using their corresponding indices:
+If the bitcode lacked debug symbols, then could instead reference the struct 
+fields by using their corresponding indices:
 
 ```python
 class initDefaultPlayer_Contract(Contract):
@@ -1403,11 +1400,14 @@ with a character that we will present in our game. `frames` is a 3D `uint8_t`
 array where each element represents an asset identifier from our art collection.
 Why a 3D array? Well, we want to provide animations for our characters that way 
 it looks like they are moving on the screen (and it's a great excuse to discuss 
-multi-dimensional arrays in SAW). The first dimension refers to the number of 
-gaits we want to represent, that being walking and running. The second dimension 
+multi-dimensional arrays in SAW). 
+- The first dimension refers to the number of 
+gaits we want to represent, that being walking and running. 
+- The second dimension 
 refers to the number of directions a character can face. Imagine that we are 
 working with a 2D top down game, so we have 4 directions: up, down, left, and 
-right. The third dimension refers to the number of frames per movement.
+right. 
+- The third dimension refers to the number of frames per movement.
 
 Let's think about how we walk forward (feel free to try this at home). If you 
 are walking forward, you first stand up, move one foot in front of the other, 
@@ -1467,13 +1467,15 @@ defined as:
 #define FAILURE 85
 ```
 
-Those are some strange looking values huh? Normally we would want to represent
+Those are some strange looking values, huh? Normally we would want to represent
 successes and failures as booleans `TRUE` and `FALSE`, so `1` and `0` 
 respectively right? Well, we could but the 
 [Hamming Distance](https://en.wikipedia.org/wiki/Hamming_distance) 
 between those values is just 1. This means a single bit flip could turn a 
-`SUCCESS` into `FAILURE` and vice versa. If our code relies on status values,
-we should increase the hamming distance to better detect problematic bit flips.
+`SUCCESS` into `FAILURE` and vice versa. Software tends to rely on the validity
+of status codes for both functionality and security reasons. If we want to
+increase our confidence that these status values are what they should be, we 
+should increase the Hamming Distance to better differentiate our statuses.
 
 | Decimal Value | Hex Representation | Binary Representation |
 |:-------------:|:------------------:|:---------------------:|
@@ -1488,11 +1490,12 @@ concept here. Alright, let's go back to understanding `initDefaultSprite`.
 
 The function first performs input checking on `character` to ensure that it is 
 not a `NULL` pointer. After all, it would be a shame to perform a `NULL`
-dereference. The function also checks for the `Game` library's assumption that
-character sprites can only be set once. If any of these checks fail, 
-`initDefaultSprite` immediately terminates and returns `FAILURE`. Otherwise, 
-the function continues to do its job in allocating memory for a `sprite_t` 
-struct and initializing the `sprite` fields for `character`.
+dereference. The function then checks `character`'s `sprite` field to uphold 
+the `Game` library's assumption that character sprites can only be set once. 
+If any of these checks fail, `initDefaultSprite` immediately terminates and 
+returns `FAILURE`. Otherwise, the function continues to do its job in 
+allocating memory for a `sprite_t` struct and initializing the `sprite` 
+fields for `character`.
 
 Now, let's go ahead and make a contract to represent this function:
 
@@ -1538,9 +1541,9 @@ class initDefaultSprite_Contract(Contract):
     self.returns_f("`({SUCCESS}) : [32]")
 ```
 
-There's quite a bit going on with the three uses of the `struct` keyword. Like 
-`array`, the `struct` keyword declares a symbolic struct given a variable for 
-each struct field.
+There's quite a bit going on with the three uses of the `struct` keyword.
+Let's look at them one at a time. Like `array`, the `struct` keyword 
+declares a symbolic struct given a variable for each struct field.
 
 The First `struct` Instance:
 
@@ -1595,9 +1598,9 @@ defined in the contract's *initial state*.
 As we can see, the `struct` keyword is quite versatile as we can pass symbolic
 variables, symbolic pointers, and even define specific Cryptol values to it.
 
-### Structs as Cryptol Tuples and Records
+### Structs as Cryptol Tuples
 
-Explicit structs is not the only way to represent valuess for preconditions and
+Explicit structs is not the only way to represent values for preconditions and
 postconditions. We can also use tuples since Cryptol interprets symbolic 
 structs as tuples.
 
