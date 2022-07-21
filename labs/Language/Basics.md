@@ -1649,8 +1649,8 @@ multiple conditions:
 signum : {a} (SignedCmp a, Zero a) => a -> [2]
 signum x = if (x <$ zero) then -1
             | (x >$ zero) then 1
-		    | (x == zero) then 0
-		                  else error "Value is not comparable to zero"
+            | (x == zero) then 0
+                          else error "Value is not comparable to zero"
 ```
 
 `<$` and `>$` are *signed comparisons* that work for any type
