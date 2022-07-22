@@ -499,7 +499,7 @@ not?  Can either or both still be used for transposition ciphers?
 ```cryptol
 /** `partition` and `partition'` are functionally equivalent...or are they? */
 partition'_equiv: {n, a} (fin n, Eq a) => (a -> Bit) -> [n]a -> Bit
-partition'_equiv _ = False
+partition'_equiv _ _ = False
 ```
 
 **EXERCISE**: Better yet! Cryptol has built-in sorting primitives 
@@ -507,7 +507,7 @@ partition'_equiv _ = False
 to implement partitioning. (Hint: `True > False`.)
 
 ```cryptol
-partition'': {n, a} fin w => (a -> Bit) -> [n]a -> [n]a
+partition'': {n, a} fin n => (a -> Bit) -> [n]a -> [n]a
 partition'' _ w = sortBy cmp w
   where
     cmp a b = undefined
@@ -516,7 +516,7 @@ partition'' _ w = sortBy cmp w
 ```cryptol
 /** `partition''` and `partition` are functionally equivalent */
 partition''_equiv: {n, a} (fin n, Eq a) => (a -> Bit) -> [n]a -> Bit
-partition''_equiv _ = False
+partition''_equiv _ _ = False
 ```
 
 I'm sure you're thinking we should've just started w/ the `sortBy`
