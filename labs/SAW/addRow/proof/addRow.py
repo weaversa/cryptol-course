@@ -43,9 +43,6 @@ class addRowAlias_Contract(Contract):
         (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
         length = cry_f("{self.length} : [8]")
 
-        # Lab: See what happens when we uncomment this precondition!
-        self.precondition_f("{length} == {self.length}")  
-
         self.execute_func(a_p, b_p, length)
     
         self.points_to(a_p, cry_f("addRow`{{{self.length}}} {a} {b}"))
