@@ -41,7 +41,7 @@ class addRowAlias_Contract(Contract):
     def specification(self):
         (a, a_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="a")
         (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
-        length   = self.fresh_var(i8, "length")
+        length = cry_f("{self.length} : [8]")
 
         # Lab: See what happens when we uncomment this precondition!
         self.precondition_f("{length} == {self.length}")  
