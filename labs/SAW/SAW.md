@@ -311,9 +311,6 @@ using `self.assertIs(rotl_result.is_success(), True)`.
 
 ## Debugging C with SAW
 
-<details>
-  <summary>Click here for the full code</summary>
-
 ```python
 from pathlib import Path
 import unittest
@@ -377,10 +374,8 @@ library.
 Doing so gives us freedom to call the proof script from any initial
 working directory. It also provides portability to multiple platforms
 since we don't need to worry whether or not the operating system uses
-`/` or `\` in paths. However, we must convert the path names to a 
+`/` or `\` in paths. However, we must convert the path names to a
 string so to satisfy SAW's API for file loads.
-
-</details>
 
 We can now run the proof script.
 
@@ -890,85 +885,82 @@ class ArrayTests(unittest.TestCase):
 
 What do you think will happen if we run this code?
 
-<details>
-  <summary>Click here to find out!</summary>
-  Running the code, SAW verifies the first two contracts
-  
-  ```sh
-  $ make prove -C labs/SAW/addRow
-  make: Entering directory '/workspace/cryptol-course/labs/SAW/addRow'
-  mkdir -p artifacts
-  clang -c -g -emit-llvm -o artifacts/addRow.bc src/addRow.c
-  python3 proof/addRow.py
-  [15:40:51.330] Verifying addRow5Mutate ...
-  [15:40:51.330] Simulating addRow5Mutate ...
-  [15:40:51.335] Checking proof obligations addRow5Mutate ...
-  [15:40:51.362] Proof succeeded! addRow5Mutate
-  ✅  Verified: lemma_addRow5Mutate_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:64)
-  [15:40:51.430] Verifying addRow5NewVar ...
-  [15:40:51.430] Simulating addRow5NewVar ...
-  [15:40:51.435] Checking proof obligations addRow5NewVar ...
-  [15:40:51.462] Proof succeeded! addRow5NewVar
-  ✅  Verified: lemma_addRow5NewVar_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:67)
-  ```
-  
-  ...but fails to verify the third contract. It alerts us there is a memory error
-  
-  ```sh
-  [15:40:51.527] Verifying addRowAlias ...
-  [15:40:51.528] Simulating addRowAlias ...
-  [15:40:51.532] Symbolic simulation completed with side conditions.
-  [15:40:51.535] Checking proof obligations addRowAlias ...
-  [15:40:51.575] Subgoal failed: addRowAlias safety assertion:
-  internal: error: in addRowAlias
-  Error during memory load
-  ```
-  
-  and even produces the following counterexample:
+```sh
+$ make prove -C labs/SAW/addRow
+make: Entering directory '/workspace/cryptol-course/labs/SAW/addRow'
+mkdir -p artifacts
+clang -c -g -emit-llvm -o artifacts/addRow.bc src/addRow.c
+python3 proof/addRow.py
+[15:40:51.330] Verifying addRow5Mutate ...
+[15:40:51.330] Simulating addRow5Mutate ...
+[15:40:51.335] Checking proof obligations addRow5Mutate ...
+[15:40:51.362] Proof succeeded! addRow5Mutate
+✅  Verified: lemma_addRow5Mutate_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:64)
+[15:40:51.430] Verifying addRow5NewVar ...
+[15:40:51.430] Simulating addRow5NewVar ...
+[15:40:51.435] Checking proof obligations addRow5NewVar ...
+[15:40:51.462] Proof succeeded! addRow5NewVar
+✅  Verified: lemma_addRow5NewVar_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:67)
+```
 
-  ```sh
-  [15:40:51.575] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 331}
-  [15:40:51.575] ----------Counterexample----------
-  [15:40:51.575]   length0: 6
-  [15:40:51.575]   : False
-  [15:40:51.575] ----------------------------------
-  ⚠️  Failed to verify: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:37):
-  error: Proof failed.
-        stdout:
-                [15:40:51.527] Verifying addRowAlias ...
-                [15:40:51.528] Simulating addRowAlias ...
-                [15:40:51.532] Symbolic simulation completed with side conditions.
-                [15:40:51.535] Checking proof obligations addRowAlias ...
-                [15:40:51.575] Subgoal failed: addRowAlias safety assertion:
-                internal: error: in addRowAlias
-                Error during memory load
+SAW verifies the first two contracts but fails to verify the third
+contract. It alerts us there is a memory error:
 
-                [15:40:51.575] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 331}
-                [15:40:51.575] ----------Counterexample----------
-                [15:40:51.575]   length0: 6
-                [15:40:51.575]   : False
-                [15:40:51.575] ----------------------------------
-  F
-  ======================================================================
-  FAIL: test_rowAdds (__main__.ArrayTests)
-  ----------------------------------------------------------------------
-  Traceback (most recent call last):
-  File "proof/addRow.py", line 71, in test_rowAdds
-    self.assertIs(addRowAlias05_result.is_success(), True)
-  AssertionError: False is not True
+```sh
+[15:40:51.527] Verifying addRowAlias ...
+[15:40:51.528] Simulating addRowAlias ...
+[15:40:51.532] Symbolic simulation completed with side conditions.
+[15:40:51.535] Checking proof obligations addRowAlias ...
+[15:40:51.575] Subgoal failed: addRowAlias safety assertion:
+internal: error: in addRowAlias
+Error during memory load
+```
 
-  ----------------------------------------------------------------------
-  Ran 1 test in 1.735s
+and even produces the following counterexample:
 
-  FAILED (failures=1)
-  🛑  1 out of 3 goals failed to verify.
-  ```
+```sh
+[15:40:51.575] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 331}
+[15:40:51.575] ----------Counterexample----------
+[15:40:51.575]   length0: 6
+[15:40:51.575]   : False
+[15:40:51.575] ----------------------------------
+⚠️  Failed to verify: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:37):
+error: Proof failed.
+      stdout:
+              [15:40:51.527] Verifying addRowAlias ...
+              [15:40:51.528] Simulating addRowAlias ...
+              [15:40:51.532] Symbolic simulation completed with side conditions.
+              [15:40:51.535] Checking proof obligations addRowAlias ...
+              [15:40:51.575] Subgoal failed: addRowAlias safety assertion:
+              internal: error: in addRowAlias
+              Error during memory load
+
+              [15:40:51.575] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 331}
+              [15:40:51.575] ----------Counterexample----------
+              [15:40:51.575]   length0: 6
+              [15:40:51.575]   : False
+              [15:40:51.575] ----------------------------------
+F
+======================================================================
+FAIL: test_rowAdds (__main__.ArrayTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+File "proof/addRow.py", line 71, in test_rowAdds
+  self.assertIs(addRowAlias05_result.is_success(), True)
+AssertionError: False is not True
+
+----------------------------------------------------------------------
+Ran 1 test in 1.735s
+
+FAILED (failures=1)
+🛑  1 out of 3 goals failed to verify.
+```
   
-  SAW is telling us we forgot to add a precondition to assert our symbolic `length` agrees with our Python parameter `self.length`. This is an easy fix:
+SAW is telling us we forgot to add a precondition to assert our symbolic `length` agrees with our Python parameter `self.length`. This is an easy fix:
 
-  {% raw %}
-  ```python
-  class addRowAlias_Contract(Contract):
+{% raw %}
+```python
+class addRowAlias_Contract(Contract):
   def __init__(self, length : int):
     super().__init__()
     self.length = length
@@ -985,32 +977,32 @@ What do you think will happen if we run this code?
     self.points_to(a_p, cry_f("addRow`{{{self.length}}} {a} {b}"))
 
     self.returns(a_p)
-  ```
-  {% endraw %}
+```
+{% endraw %}
 
 And now SAW happily verifies the third contract!
   
-  ```sh
-  $ python3 addRow.py
-  ✅  Verified: lemma_addRow5Mutate_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:64)
-  ✅  Verified: lemma_addRow5NewVar_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:67)
-  ✅  Verified: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:37)
-  .
-  ----------------------------------------------------------------------
-  Ran 1 test in 1.985s
+```sh
+$ python3 addRow.py
+✅  Verified: lemma_addRow5Mutate_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:64)
+✅  Verified: lemma_addRow5NewVar_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:67)
+✅  Verified: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:37)
+.
+----------------------------------------------------------------------
+Ran 1 test in 1.985s
 
-  OK
-  ✅  All 3 goals verified!
-  ```
+OK
+✅  All 3 goals verified!
+```
 
-  Note that we can be even more efficient in our proof. Instead of
-  creating a symbolic `length` variable, we can just use the Python
-  parameter `self.length`. Doing so will simplify the solver's proof
-  workload as it really only needs to consider one concrete value
-  rather than one value from a range of random symbolic ones.
+Note that we can be even more efficient in our proof. Instead of
+creating a symbolic `length` variable, we can just use the Python
+parameter `self.length`. Doing so will simplify the solver's proof
+workload as it really only needs to consider one concrete value
+rather than one value from a range of random symbolic ones.
 
-  ```python
-  class addRowAlias_Contract(Contract):
+```python
+class addRowAlias_Contract(Contract):
   def __init__(self, length : int):
     super().__init__()
     self.length = length
@@ -1024,9 +1016,7 @@ And now SAW happily verifies the third contract!
     self.points_to(a_p, cry_f("addRow`{{{self.length}}} {a} {b}"))
     
     self.returns(a_p)
-  ```
-
-</details>
+```
 
 ## Explicit Arrays
 
@@ -1280,7 +1270,13 @@ Let's breakdown a `points_to` command seen above:
 | Assert in the current contract that the following pointer | with this name | points to a struct with this named field | and the value of that field is | this expression | . |
 
 
-Above we use strings to reference fields of structures. However, we can only do this when strings are present in the bitcode, e.g., when debug symbols are included in the generated bitcode. The `-g` clang flag tells the compiler to include the field names of the structs in the bitcode. For the full compilation details, check out the [Makefile](https://github.com/weaversa/cryptol-course/blob/master/labs/SAW/Game/Makefile) from the `Game` directory. 
+Above we use strings to reference fields of structures. However, we
+can only do this when strings are present in the bitcode, e.g., when
+debug symbols are included in the generated bitcode. The `-g` clang
+flag tells the compiler to include the field names of the structs in
+the bitcode. For the full compilation details, check out the
+[Makefile](https://github.com/weaversa/cryptol-course/blob/master/labs/SAW/Game/Makefile)
+from the `Game` directory.
 
 If we didn't have the debug symbols in the bitcode, SAW would produce an error:
 
