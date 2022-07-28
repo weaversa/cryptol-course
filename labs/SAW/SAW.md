@@ -556,7 +556,7 @@ To initialize the arrays and pointers we'll use the `alloc` command
 and `array_ty` type constructor:
 
 ```python
-def addRow5Mutate_Contract(Contract):
+class addRow5Mutate_Contract(Contract):
   def specification(self):
     a   = self.fresh_var(array_ty(5, i32), "a")
     a_p = self.alloc(array_ty(5, i32), points_to=a) 
@@ -613,7 +613,7 @@ constraints.
 To see this in action, let's rewrite our previous contract:
 
 ```python
-def addRow5Mutate_Contract(Contract):
+class addRow5Mutate_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -651,7 +651,7 @@ new fresh symbolic variables. For example, consider the proposed
 contract for `addRow5NewVar`:
 
 ```python
-def addRow5NewVar_Contract(Contract):
+class addRow5NewVar_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -688,7 +688,7 @@ to the previous contract is moving the declaration of `c_p` to the
 postcondition block:
 
 ```python
-def addRow5NewVar_Contract(Contract):
+class addRow5NewVar_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -704,7 +704,7 @@ def addRow5NewVar_Contract(Contract):
 Python supports wildcards, denoted by `_`, like Cryptol. Wildcards are placeholders for values we don't use. For example, we could rewrite the `addRow5NewVar_Contract` as follows: 
 
 ```python
-def addRow5NewVar_Contract(Contract):
+class addRow5NewVar_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -722,7 +722,7 @@ def addRow5NewVar_Contract(Contract):
 One could replace the `points_to` line with a `postcondition_f` line to get an equivalent contract:
 
 ```python
-def addRow5NewVar_Contract(Contract):
+class addRow5NewVar_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a", read_only=True)
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -769,7 +769,7 @@ parameter:
 
 {% raw %}
 ```python
-def addRowAlias_Contract(Contract):
+class addRowAlias_Contract(Contract):
   def __init__(self, length : int):
     super().__init__()
     self.length = length
@@ -824,7 +824,7 @@ def ptr_to_fresh(c : Contract, ty : LLVMType, name : Optional[str] = None, read_
     ptr = c.alloc(ty, points_to = var, read_only=read_only)
     return (var, ptr)
     
-def addRow5Mutate_Contract(Contract):
+class addRow5Mutate_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -835,7 +835,7 @@ def addRow5Mutate_Contract(Contract):
     
     self.returns(void)
 
-def addRow5NewVar_Contract(Contract):
+class addRow5NewVar_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -847,7 +847,7 @@ def addRow5NewVar_Contract(Contract):
     
     self.returns(c_p)
 
-def addRowAlias_Contract(Contract):
+class addRowAlias_Contract(Contract):
   def __init__(self, length : int):
     super().__init__()
     self.length = length
@@ -968,7 +968,7 @@ What do you think will happen if we run this code?
 
   {% raw %}
   ```python
-  def addRowAlias_Contract(Contract):
+  class addRowAlias_Contract(Contract):
   def __init__(self, length : int):
     super().__init__()
     self.length = length
@@ -1010,7 +1010,7 @@ And now SAW happily verifies the third contract!
   rather than one value from a range of random symbolic ones.
 
   ```python
-  def addRowAlias_Contract(Contract):
+  class addRowAlias_Contract(Contract):
   def __init__(self, length : int):
     super().__init__()
     self.length = length
