@@ -36,7 +36,7 @@ Specifically, you'll also gain experience with
   * `#` -- concatenation,
   * `@`, `!`-- sequence indexing,
   * `@@`, `!!` -- sequence indexing,
-  * `if then else` -- conditional expressions,
+  * `if ... then ... else ...` -- conditional expressions,
   * manipulating sequences using `#`, `take`, `drop`, `split`, `join`,
     `head`, `last`, `tail`, `reverse`, `groupBy`, `map`, `iterate`,
     `scanl`, and `foldl`,
@@ -433,12 +433,15 @@ labs::Language::Basics> :t 5
 ```
 
 That letter `a` inside curly braces is a type variable. When you see a
-number (or a function) whose type is stated using a type variable (here, `a`), it means
-there is some freedom in the type of the value variable (here,
-`5`). For the next set of exercises, you'll be asked to type some
-variables monomorphically; that is, you shouldn't need any curly
-braces or `=>` symbols when you specify the types. That's all stuff
-that's covered later in this section.
+number (or a function) whose type is stated using a type variable
+(here, `a`), it means there is some freedom in its type. `Literal` is
+a "typeclass", and `Literal a 5` indicates that `a` is any type that
+contains the number `5`.
+
+For the next set of exercises, you'll be asked to type some variables
+*monomorphically*; that is, you shouldn't need any curly braces or `=>`
+symbols when you specify the types. That's all stuff that's covered
+later in this section.
 
 **EXERCISE**: Fill in *any valid monomorphic* type for each of the
 values below. Some will have multiple correct answers. Once done,
@@ -1574,11 +1577,11 @@ labs::Language::Basics> False ==> 1 == 5 /\ 1 != 5
 True
 ```
 
-### `if ... then ... else`
+### `if ... then ... else ...`
 
-Cryptol's `if ... then ... else` is much like C's ternary operator
-`?`...`:`. It is not like the `if ... then ... else` control
-structure.
+Cryptol's `if {cond} then {expr} else {expr}` is much like C's ternary
+operator (`{cond} ? {expr} : {expr}`), not its `if-then-else`
+statement (`if ({cond}) then { ... } else { ... }`).
 
 ```Xcryptol-session
 labs::Language::Basics> 2 + (if 10 < 7 then 12 else 4) + 2 : Integer
@@ -1639,11 +1642,43 @@ Q.E.D.
 (Total Elapsed Time: 0.008s, using "Z3")
 ```
 
+A [multi-way conditional]() generalizes a conditional expression over
+multiple conditions:
+
+```cryptol
+signum : {a} (SignedCmp a, Zero a) => a -> [2]
+signum x = if (x <$ zero) then -1
+            | (x >$ zero) then 1
+            | (x == zero) then 0
+                          else error "Value is not comparable to zero"
+```
+
+`<$` and `>$` are *signed comparisons* that work for any type
+satisfying the constraint `SignedCmp a`. `Zero a` further constrains
+`a` to be a type with "a notion of zero", i.e. an additive identity.
+
+`error "message"` induces a runtime error and logs the given `message`.
+Such an error should never happen; we will prove this for certain types
+later...
+
+```Xcryptol-session
+labs::Language::Basics> signum 0x0f
+0x1
+labs::Language::Basics> signum 0x0f == 1
+True
+labs::Language::Basics> signum 0xff
+0x3
+labs::Language::Basics> signum 0xff == -1
+True
+labs::Language::Basics> signum 0x00
+0x0
+```
+
 ## Common Primitives
 
-Again, Cryptol's `:help` command will provide a brief description of the
-primitives in the section by issuing `:help` followed
-by the name of the primitive.
+Again, Cryptol's `:help` command will provide a brief description of
+the primitives in the section by issuing `:help` followed by the name
+of the primitive.
 
 ### Collections of all `False` or all `True` bits
 
@@ -2185,6 +2220,9 @@ concatIntegers x y = concatNumbers x' y'
 labs::Language::Basics> :safe concatIntegers`{10}
 Safe
 (Total Elapsed Time: 0.879s, using "Z3")
+labs::Language::Basics> :safe signum`{[8]}
+Safe
+(Total Elapsed Time: 0.009s, using "Z3")
 ```
 
 A word of caution that, just like as was discussed in the debugging
