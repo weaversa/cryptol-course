@@ -41,12 +41,8 @@ class addRowAlias_Contract(Contract):
     def specification(self):
         (a, a_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="a")
         (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
-        length   = self.fresh_var(i8, "length")
 
-        # Lab: See what happens when we uncomment this precondition!
-        self.precondition_f("{length} == {self.length}")  
-
-        self.execute_func(a_p, b_p, length)
+        self.execute_func(a_p, b_p, cry_f("{self.length} : [8]"))
     
         self.points_to(a_p, cry_f("addRow`{{{self.length}}} {a} {b}"))
 
@@ -73,6 +69,9 @@ class ArrayTests(unittest.TestCase):
         
         addRowAlias05_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(5))
         self.assertIs(addRowAlias05_result.is_success(), True)
+
+        addRowAlias10_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(10))
+        self.assertIs(addRowAlias10_result.is_success(), True)
 
 if __name__ == "__main__":
     unittest.main()
