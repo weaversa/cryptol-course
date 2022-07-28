@@ -311,9 +311,6 @@ using `self.assertIs(rotl_result.is_success(), True)`.
 
 ## Debugging C with SAW
 
-<details>
-  <summary>Click here for the full code</summary>
-
 ```python
 from pathlib import Path
 import unittest
@@ -377,10 +374,8 @@ library.
 Doing so gives us freedom to call the proof script from any initial
 working directory. It also provides portability to multiple platforms
 since we don't need to worry whether or not the operating system uses
-`/` or `\` in paths. However, we must convert the path names to a 
+`/` or `\` in paths. However, we must convert the path names to a
 string so to satisfy SAW's API for file loads.
-
-</details>
 
 We can now run the proof script.
 
@@ -556,7 +551,7 @@ To initialize the arrays and pointers we'll use the `alloc` command
 and `array_ty` type constructor:
 
 ```python
-def addRow5Mutate_Contract(Contract):
+class addRow5Mutate_Contract(Contract):
   def specification(self):
     a   = self.fresh_var(array_ty(5, i32), "a")
     a_p = self.alloc(array_ty(5, i32), points_to=a) 
@@ -613,7 +608,7 @@ constraints.
 To see this in action, let's rewrite our previous contract:
 
 ```python
-def addRow5Mutate_Contract(Contract):
+class addRow5Mutate_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -651,7 +646,7 @@ new fresh symbolic variables. For example, consider the proposed
 contract for `addRow5NewVar`:
 
 ```python
-def addRow5NewVar_Contract(Contract):
+class addRow5NewVar_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -688,7 +683,7 @@ to the previous contract is moving the declaration of `c_p` to the
 postcondition block:
 
 ```python
-def addRow5NewVar_Contract(Contract):
+class addRow5NewVar_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -704,7 +699,7 @@ def addRow5NewVar_Contract(Contract):
 Python supports wildcards, denoted by `_`, like Cryptol. Wildcards are placeholders for values we don't use. For example, we could rewrite the `addRow5NewVar_Contract` as follows: 
 
 ```python
-def addRow5NewVar_Contract(Contract):
+class addRow5NewVar_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -722,7 +717,7 @@ def addRow5NewVar_Contract(Contract):
 One could replace the `points_to` line with a `postcondition_f` line to get an equivalent contract:
 
 ```python
-def addRow5NewVar_Contract(Contract):
+class addRow5NewVar_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a", read_only=True)
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -764,12 +759,12 @@ a much more powerful theorem prover that has inductive reasoning (and
 many more) capabilities. This is obviously well beyond the scope of
 the course, but worth mentioning.
 
-We could make a new contract for each value of `length` used in the C code. Instead we make a single contract with a `length`
-parameter:
+We could make a new contract for each value of `length` used in the C
+code. Instead we make a single contract with a `length` parameter:
 
 {% raw %}
 ```python
-def addRowAlias_Contract(Contract):
+class addRowAlias_Contract(Contract):
   def __init__(self, length : int):
     super().__init__()
     self.length = length
@@ -787,7 +782,9 @@ def addRowAlias_Contract(Contract):
 ```
 {% endraw %}
 
-However, we still need to make a test for each length encountered:
+However, the above is not quite right just yet. As well we also need
+to make a test for each individual length we desire to verify (say,
+lengths 5 and 10):
 
 ```python
 class ArrayTests(unittest.TestCase):
@@ -801,9 +798,10 @@ class ArrayTests(unittest.TestCase):
     cryptol_load_file(crypath)
     mod = llvm_load_module(bcpath)
     
-    arrayAddNewVar05_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(5))
-    arrayAddNewVar10_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(10))
+    addRowAlias05_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(5))
     self.assertIs(addRowAlias05_result.is_success(), True)
+
+    addRowAlias10_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(10))
     self.assertIs(addRowAlias10_result.is_success(), True)
 ```
 
@@ -824,7 +822,7 @@ def ptr_to_fresh(c : Contract, ty : LLVMType, name : Optional[str] = None, read_
     ptr = c.alloc(ty, points_to = var, read_only=read_only)
     return (var, ptr)
     
-def addRow5Mutate_Contract(Contract):
+class addRow5Mutate_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -835,7 +833,7 @@ def addRow5Mutate_Contract(Contract):
     
     self.returns(void)
 
-def addRow5NewVar_Contract(Contract):
+class addRow5NewVar_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(5, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(5, i32), name="b", read_only=True)
@@ -847,7 +845,7 @@ def addRow5NewVar_Contract(Contract):
     
     self.returns(c_p)
 
-def addRowAlias_Contract(Contract):
+class addRowAlias_Contract(Contract):
   def __init__(self, length : int):
     super().__init__()
     self.length = length
@@ -882,93 +880,93 @@ class ArrayTests(unittest.TestCase):
     self.assertIs(addRow5NewVar_result.is_success(), True)
     
     addRowAlias05_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(5))
-    addAddAlias10_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(10))
     self.assertIs(addRowAlias05_result.is_success(), True)
+    
+    addAddAlias10_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(10))
     self.assertIs(addRowAlias10_result.is_success(), True)
 ```
 {% endraw %}
 
 What do you think will happen if we run this code?
 
-<details>
-  <summary>Click here to find out!</summary>
-  Running the code, SAW verifies the first two contracts
-  
-  ```sh
-  $ make prove -C labs/SAW/addRow
-  make: Entering directory '/workspace/cryptol-course/labs/SAW/addRow'
-  mkdir -p artifacts
-  clang -c -g -emit-llvm -o artifacts/addRow.bc src/addRow.c
-  python3 proof/addRow.py
-  [15:40:51.330] Verifying addRow5Mutate ...
-  [15:40:51.330] Simulating addRow5Mutate ...
-  [15:40:51.335] Checking proof obligations addRow5Mutate ...
-  [15:40:51.362] Proof succeeded! addRow5Mutate
-  ✅  Verified: lemma_addRow5Mutate_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:64)
-  [15:40:51.430] Verifying addRow5NewVar ...
-  [15:40:51.430] Simulating addRow5NewVar ...
-  [15:40:51.435] Checking proof obligations addRow5NewVar ...
-  [15:40:51.462] Proof succeeded! addRow5NewVar
-  ✅  Verified: lemma_addRow5NewVar_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:67)
-  ```
-  
-  ...but fails to verify the third contract. It alerts us there is a memory error
-  
-  ```sh
-  [15:40:51.527] Verifying addRowAlias ...
-  [15:40:51.528] Simulating addRowAlias ...
-  [15:40:51.532] Symbolic simulation completed with side conditions.
-  [15:40:51.535] Checking proof obligations addRowAlias ...
-  [15:40:51.575] Subgoal failed: addRowAlias safety assertion:
-  internal: error: in addRowAlias
-  Error during memory load
-  ```
-  
-  and even produces the following counterexample:
+```sh
+$ make prove -C labs/SAW/addRow
+make: Entering directory '/workspace/cryptol-course/labs/SAW/addRow'
+mkdir -p artifacts
+clang -c -g -emit-llvm -o artifacts/addRow.bc src/addRow.c
+python3 proof/addRow.py
+[15:40:51.330] Verifying addRow5Mutate ...
+[15:40:51.330] Simulating addRow5Mutate ...
+[15:40:51.335] Checking proof obligations addRow5Mutate ...
+[15:40:51.362] Proof succeeded! addRow5Mutate
+✅  Verified: lemma_addRow5Mutate_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:64)
+[15:40:51.430] Verifying addRow5NewVar ...
+[15:40:51.430] Simulating addRow5NewVar ...
+[15:40:51.435] Checking proof obligations addRow5NewVar ...
+[15:40:51.462] Proof succeeded! addRow5NewVar
+✅  Verified: lemma_addRow5NewVar_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:67)
+```
 
-  ```sh
-  [15:40:51.575] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 331}
-  [15:40:51.575] ----------Counterexample----------
-  [15:40:51.575]   length0: 6
-  [15:40:51.575]   : False
-  [15:40:51.575] ----------------------------------
-  ⚠️  Failed to verify: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:37):
-  error: Proof failed.
-        stdout:
-                [15:40:51.527] Verifying addRowAlias ...
-                [15:40:51.528] Simulating addRowAlias ...
-                [15:40:51.532] Symbolic simulation completed with side conditions.
-                [15:40:51.535] Checking proof obligations addRowAlias ...
-                [15:40:51.575] Subgoal failed: addRowAlias safety assertion:
-                internal: error: in addRowAlias
-                Error during memory load
+SAW verifies the first two contracts but fails to verify the third
+contract. It alerts us there is a memory error:
 
-                [15:40:51.575] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 331}
-                [15:40:51.575] ----------Counterexample----------
-                [15:40:51.575]   length0: 6
-                [15:40:51.575]   : False
-                [15:40:51.575] ----------------------------------
-  F
-  ======================================================================
-  FAIL: test_rowAdds (__main__.ArrayTests)
-  ----------------------------------------------------------------------
-  Traceback (most recent call last):
-  File "proof/addRow.py", line 71, in test_rowAdds
-    self.assertIs(addRowAlias05_result.is_success(), True)
-  AssertionError: False is not True
+```sh
+[15:40:51.527] Verifying addRowAlias ...
+[15:40:51.528] Simulating addRowAlias ...
+[15:40:51.532] Symbolic simulation completed with side conditions.
+[15:40:51.535] Checking proof obligations addRowAlias ...
+[15:40:51.575] Subgoal failed: addRowAlias safety assertion:
+internal: error: in addRowAlias
+Error during memory load
+```
 
-  ----------------------------------------------------------------------
-  Ran 1 test in 1.735s
+and even produces the following counterexample:
 
-  FAILED (failures=1)
-  🛑  1 out of 3 goals failed to verify.
-  ```
+```sh
+[15:40:51.575] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 331}
+[15:40:51.575] ----------Counterexample----------
+[15:40:51.575]   length0: 6
+[15:40:51.575]   : False
+[15:40:51.575] ----------------------------------
+⚠️  Failed to verify: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:38):
+error: Proof failed.
+      stdout:
+              [15:40:51.527] Verifying addRowAlias ...
+              [15:40:51.528] Simulating addRowAlias ...
+              [15:40:51.532] Symbolic simulation completed with side conditions.
+              [15:40:51.535] Checking proof obligations addRowAlias ...
+              [15:40:51.575] Subgoal failed: addRowAlias safety assertion:
+              internal: error: in addRowAlias
+              Error during memory load
+
+              [15:40:51.575] SolverStats {solverStatsSolvers = fromList ["W4 ->z3"], solverStatsGoalSize = 331}
+              [15:40:51.575] ----------Counterexample----------
+              [15:40:51.575]   length0: 6
+              [15:40:51.575]   : False
+              [15:40:51.575] ----------------------------------
+F
+======================================================================
+FAIL: test_rowAdds (__main__.ArrayTests)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+File "proof/addRow.py", line 71, in test_rowAdds
+  self.assertIs(addRowAlias05_result.is_success(), True)
+AssertionError: False is not True
+
+----------------------------------------------------------------------
+Ran 1 test in 1.735s
+
+FAILED (failures=1)
+🛑  1 out of 3 goals failed to verify.
+```
   
-  SAW is telling us we forgot to add a precondition to assert our symbolic `length` agrees with our Python parameter `self.length`. This is an easy fix:
+SAW is telling us we forgot to add a precondition to assert our
+symbolic `length` agrees with our Python parameter `self.length`. This
+is an easy fix:
 
-  {% raw %}
-  ```python
-  def addRowAlias_Contract(Contract):
+{% raw %}
+```python
+class addRowAlias_Contract(Contract):
   def __init__(self, length : int):
     super().__init__()
     self.length = length
@@ -978,39 +976,40 @@ What do you think will happen if we run this code?
     (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
     length   = self.fresh_var(i8, "length")
 
-    self.precondition_f("{length} == {self.length}")  
+    self.precondition_f("{length} == {self.length}")
 
     self.execute_func(a_p, b_p, length)
     
     self.points_to(a_p, cry_f("addRow`{{{self.length}}} {a} {b}"))
 
     self.returns(a_p)
-  ```
-  {% endraw %}
+```
+{% endraw %}
 
-And now SAW happily verifies the third contract!
+And now SAW happily verifies the third and fourth contracts!
   
-  ```sh
-  $ python3 addRow.py
-  ✅  Verified: lemma_addRow5Mutate_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:64)
-  ✅  Verified: lemma_addRow5NewVar_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:67)
-  ✅  Verified: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:37)
-  .
-  ----------------------------------------------------------------------
-  Ran 1 test in 1.985s
+```sh
+$ python3 addRow.py
+✅  Verified: lemma_addRow5Mutate_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:64)
+✅  Verified: lemma_addRow5NewVar_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:67)
+✅  Verified: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:38)
+✅  Verified: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:38)
+.
+----------------------------------------------------------------------
+Ran 1 test in 1.115s
 
-  OK
-  ✅  All 3 goals verified!
-  ```
+OK
+✅  All 4 goals verified!
+```
 
-  Note that we can be even more efficient in our proof. Instead of
-  creating a symbolic `length` variable, we can just use the Python
-  parameter `self.length`. Doing so will simplify the solver's proof
-  workload as it really only needs to consider one concrete value
-  rather than one value from a range of random symbolic ones.
+Note that we can be even more efficient in our proof. Instead of
+creating a symbolic `length` variable, we can just use the Python
+parameter `self.length`. Doing so will simplify the solver's proof
+workload as it really only needs to consider one concrete value
+rather than one value from a range of random symbolic ones.
 
-  ```python
-  def addRowAlias_Contract(Contract):
+```python
+class addRowAlias_Contract(Contract):
   def __init__(self, length : int):
     super().__init__()
     self.length = length
@@ -1024,14 +1023,12 @@ And now SAW happily verifies the third contract!
     self.points_to(a_p, cry_f("addRow`{{{self.length}}} {a} {b}"))
     
     self.returns(a_p)
-  ```
-
-</details>
+```
 
 ## Explicit Arrays
 
 Another way to initialize arrays is through the `array` command. For
-example, suppose I have the following C function (taken from
+example, suppose we have the following C function (taken from
 [here](https://github.com/GaloisInc/saw-script/blob/337ca6c9edff3bcbcd6924289471abd5ee714c82/saw-remote-api/python/tests/saw/test-files/llvm_array_swap.c)):
 
 ```C
