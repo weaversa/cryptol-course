@@ -41,9 +41,8 @@ class addRowAlias_Contract(Contract):
     def specification(self):
         (a, a_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="a")
         (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
-        length = cry_f("{self.length} : [8]")
 
-        self.execute_func(a_p, b_p, length)
+        self.execute_func(a_p, b_p, cry(self.length))
     
         self.points_to(a_p, cry_f("addRow`{{{self.length}}} {a} {b}"))
 

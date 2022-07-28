@@ -759,8 +759,8 @@ a much more powerful theorem prover that has inductive reasoning (and
 many more) capabilities. This is obviously well beyond the scope of
 the course, but worth mentioning.
 
-We could make a new contract for each value of `length` used in the C code. Instead we make a single contract with a `length`
-parameter:
+We could make a new contract for each value of `length` used in the C
+code. Instead we make a single contract with a `length` parameter:
 
 {% raw %}
 ```python
@@ -772,7 +772,7 @@ class addRowAlias_Contract(Contract):
   def specification(self):
     (a, a_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="a")
     (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
-    length = cry_f("{self.length} : [8]")
+    length   = fresh_var(i8, "length")
     
     self.execute_func(a_p, b_p, length)
     
@@ -782,7 +782,9 @@ class addRowAlias_Contract(Contract):
 ```
 {% endraw %}
 
-However, we still need to make a test for each length encountered:
+However, the above is not quite right just yet. As well we also need
+to make a test for each individual length we desire to verify (say,
+lengths 5 and 10):
 
 ```python
 class ArrayTests(unittest.TestCase):
@@ -956,7 +958,9 @@ FAILED (failures=1)
 🛑  1 out of 3 goals failed to verify.
 ```
   
-SAW is telling us we forgot to add a precondition to assert our symbolic `length` agrees with our Python parameter `self.length`. This is an easy fix:
+SAW is telling us we forgot to add a precondition to assert our
+symbolic `length` agrees with our Python parameter `self.length`. This
+is an easy fix:
 
 {% raw %}
 ```python
@@ -970,7 +974,7 @@ class addRowAlias_Contract(Contract):
     (b, b_p) = ptr_to_fresh(self, array_ty(self.length, i32), name="b", read_only=True)
     length   = self.fresh_var(i8, "length")
 
-    self.precondition_f("{length} == {self.length}")  
+    self.precondition_f("{length} == {self.length}")
 
     self.execute_func(a_p, b_p, length)
     
@@ -1021,7 +1025,7 @@ class addRowAlias_Contract(Contract):
 ## Explicit Arrays
 
 Another way to initialize arrays is through the `array` command. For
-example, suppose I have the following C function (taken from
+example, suppose we have the following C function (taken from
 [here](https://github.com/GaloisInc/saw-script/blob/337ca6c9edff3bcbcd6924289471abd5ee714c82/saw-remote-api/python/tests/saw/test-files/llvm_array_swap.c)):
 
 ```C
