@@ -798,9 +798,10 @@ class ArrayTests(unittest.TestCase):
     cryptol_load_file(crypath)
     mod = llvm_load_module(bcpath)
     
-    arrayAddNewVar05_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(5))
-    arrayAddNewVar10_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(10))
+    addRowAlias05_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(5))
     self.assertIs(addRowAlias05_result.is_success(), True)
+
+    addRowAlias10_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(10))
     self.assertIs(addRowAlias10_result.is_success(), True)
 ```
 
@@ -879,8 +880,9 @@ class ArrayTests(unittest.TestCase):
     self.assertIs(addRow5NewVar_result.is_success(), True)
     
     addRowAlias05_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(5))
-    addAddAlias10_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(10))
     self.assertIs(addRowAlias05_result.is_success(), True)
+    
+    addAddAlias10_result = llvm_verify(mod, 'addRowAlias', addRowAlias_Contract(10))
     self.assertIs(addRowAlias10_result.is_success(), True)
 ```
 {% endraw %}
@@ -926,7 +928,7 @@ and even produces the following counterexample:
 [15:40:51.575]   length0: 6
 [15:40:51.575]   : False
 [15:40:51.575] ----------------------------------
-⚠️  Failed to verify: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:37):
+⚠️  Failed to verify: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/addRow/proof/addRow.py:38):
 error: Proof failed.
       stdout:
               [15:40:51.527] Verifying addRowAlias ...
@@ -984,19 +986,20 @@ class addRowAlias_Contract(Contract):
 ```
 {% endraw %}
 
-And now SAW happily verifies the third contract!
+And now SAW happily verifies the third and fourth contracts!
   
 ```sh
 $ python3 addRow.py
 ✅  Verified: lemma_addRow5Mutate_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:64)
 ✅  Verified: lemma_addRow5NewVar_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:67)
-✅  Verified: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:37)
+✅  Verified: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:38)
+✅  Verified: lemma_addRowAlias_Contract (defined at /home/cryptol/cryptol-course/labs/SAW/proof/addRow.py:38)
 .
 ----------------------------------------------------------------------
-Ran 1 test in 1.985s
+Ran 1 test in 1.115s
 
 OK
-✅  All 3 goals verified!
+✅  All 4 goals verified!
 ```
 
 Note that we can be even more efficient in our proof. Instead of
