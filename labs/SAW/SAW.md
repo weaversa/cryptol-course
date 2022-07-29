@@ -1327,6 +1327,58 @@ Details:
 Unknown type alias Ident "struct.player_t"
 ```
 
+It is not SAW's fault that `player_t` is an unknown type alias. The issue here 
+is that knowledge of `player_t` isn't maintained when the C source code is 
+compiled to LLVM bitcode. To illustrate this point, let's take a look at what
+is contained in `Game.bc`:
+
+```sh
+$ cd labs/SAW/Game
+$ make
+mkdir -p artifacts
+clang -c -g -emit-llvm -o artifacts/Game.bc src/Game.c
+$ saw
+sawscript> r <- llvm_load_module "artifacts/Game.bc"
+sawscript> print r
+[00:24:06.901] Module: artifacts/Game.bc
+Types:
+  %struct.character_t = type { [12 x i8], i32, i32, i32, i32, i32,
+                               %struct.sprite_t* }
+  %struct.sprite_t = type { [2 x [4 x [3 x i8]]], i32, i32 }
+
+Globals:
+
+External references:
+  declare default void @llvm.dbg.declare(metadata, metadata,
+                                         metadata)
+  declare default i8* @malloc(i64)
+
+Definitions:
+  %struct.character_t* @initDefaultPlayer()
+  i32 @initDefaultSprite(%struct.character_t* %0)
+  void @resolveAttack(%struct.character_t* %0, i32 %1)
+  i32 @checkStats(%struct.character_t* %0)
+```
+
+Even though `Game.h` contains:
+
+```C
+typedef character_t player_t;
+```
+
+the generated bitcode does not keep this information. In fact, the function 
+prototype for `initDefaultPlayer()` in `Game.h` is: 
+
+```C
+player_t* initDefaultPlayer();
+```
+
+However, as we saw in above in the above LLVM bitcode, the definition for 
+`initDefaultPlayer()` has the return type `%struct.character_t*`.
+
+Remember that SAW evaluates **bitcode** during Formal Verification. If the
+information isn't contained in the bitcode, it isn't known to SAW.
+
 Let's continue and breakdown one of the contract's `points_to` command:
 
 
