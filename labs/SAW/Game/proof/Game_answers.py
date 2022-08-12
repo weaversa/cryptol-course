@@ -40,16 +40,18 @@ def ptr_to_fresh(spec: Contract, ty: LLVMType,
 #######################################
 
 # initDefaultPlayer Contract
-# uint32_t initDefaultPlayer(player_t* player)
+# player_t* initDefaultPlayer()
 class initDefaultPlayer_Contract(Contract):
   def specification (self):
-    # Pull the struct from the bitcode
-    # Although the function uses player_t, pass character_t to SAW since
-    # player_t is an alternative typedef name for character_t.
-    player = self.alloc(alias_ty("struct.character_t"))
+    # No input arguments, so no need to define variables now...
 
     # Symbolically execute the function
-    self.execute_func(player)
+    self.execute_func()
+
+    # Allocate memory for the player_t struct
+    # Note: Although the function uses player_t, pass character_t to SAW since
+    #       player_t is an alternative typedef name for character_t.
+    player = self.alloc(alias_ty("struct.character_t"))
 
     # Assert the postcondition behaviors
     self.points_to(player['name'], cry_f("repeat 0x41 : [{MAX_NAME_LENGTH}][8]"))
@@ -58,32 +60,52 @@ class initDefaultPlayer_Contract(Contract):
     self.points_to(player['atk'], cry_f("5 : [32]"))
     self.points_to(player['def'], cry_f("4 : [32]"))
     self.points_to(player['spd'], cry_f("3 : [32]"))
+    self.points_to(player['sprite'], null())
 
-    self.returns(cry_f("`({SUCCESS}) : [32]"))
+    self.returns(player)
 
 
 # initDefaultSprite Contract
-# uint32_t initDefaultSprite(character_t* character, sprite_t* sprite)
+# uint32_t initDefaultSprite(character_t* character)
 class initDefaultSprite_Contract(Contract):
   def specification (self):
     # Declare variables
-    character       = self.alloc(alias_ty("struct.character_t"))
-    tempCharacter_p = self.alloc(alias_ty("struct.character_t"))
-    ty              = array_ty(GAITS, array_ty(DIRECTIONS, array_ty(ANIMATION_STEPS, i8)))
-    frames          = self.fresh_var(ty, "sprite.frames")
-    xPos            = self.fresh_var(i32, "sprite.xPos")
-    yPos            = self.fresh_var(i32, "sprite.yPos")
-    sprite_p        = self.alloc(alias_ty("struct.sprite_t"), points_to = struct(tempCharacter_p, frames, xPos, yPos))
+    name     = self.fresh_var(array_ty(MAX_NAME_LENGTH, i8), "character.name")
+    level    = self.fresh_var(i32, "character.level")
+    hp       = self.fresh_var(i32, "character.hp")
+    atk      = self.fresh_var(i32, "character.atk")
+    defense  = self.fresh_var(i32, "character.def")
+    spd      = self.fresh_var(i32, "character.spd")
+    # Note: No need to allocate memory yet for the sprite_t struct since the
+    #       function assumes the passed character_t struct does not have an
+    #       allocated sprite. Instead, pass NULL as the sprite precondition.
+    character_p = self.alloc( alias_ty("struct.character_t")
+                            , points_to = struct( name
+                                                , level
+                                                , hp
+                                                , atk
+                                                , defense
+                                                , spd
+                                                , null() ))
 
     # Symbolically execute the function
-    self.execute_func(character, sprite_p)
+    self.execute_func(character_p)
 
-    # Assert postconditions
-    self.points_to(sprite_p, struct( character,
-                                     cry_f("zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8]"),
-                                     cry_f("1 : [32]"),
-                                     cry_f("2 : [32]") ))
-                  
+    # Allocate memory for the new sprite_t struct and assert its postconditions
+    sprite_p = self.alloc( alias_ty("struct.sprite_t")
+                         , points_to = struct( cry_f("zero : [{GAITS}][{DIRECTIONS}][{ANIMATION_STEPS}][8]")
+                                             , cry_f("1 : [32]")
+                                             , cry_f("2 : [32]") ))
+
+    # Assert the postcondition for character
+    self.points_to(character_p, struct( name
+                                      , level
+                                      , hp
+                                      , atk
+                                      , defense
+                                      , spd
+                                      , sprite_p ))
+
     self.returns_f("`({SUCCESS}) : [32]")
 
 

@@ -4,7 +4,7 @@
 #include <stdint.h>
 
 
-// Status values that provide a hamming distance of 5
+// Status values that provide a hamming distance of 8
 #define SUCCESS 170         // 170 = 0xAA = 10101010
 #define FAILURE 85          //  85 = 0x55 = 01010101
 
@@ -20,6 +20,14 @@
 // Structs
 ///////////////////////////////////////
 
+// Contains information related to character sprites
+typedef struct {
+  uint8_t frames[GAITS][DIRECTIONS][ANIMATION_STEPS];
+  uint32_t xPos;  // x position relative to the screen
+  uint32_t yPos;  // y position relative to the screen
+} sprite_t;
+
+
 // Contains information about in-game characters
 typedef struct {
   uint8_t name[MAX_NAME_LENGTH];
@@ -28,17 +36,10 @@ typedef struct {
   uint32_t atk;
   uint32_t def;
   uint32_t spd;
+  sprite_t* sprite;
 } character_t;
 
 typedef character_t player_t;
-
-// Contains information related to character sprites
-typedef struct {
-  character_t* character;
-  uint8_t frames[GAITS][DIRECTIONS][ANIMATION_STEPS];
-  uint32_t xPos;  // x position relative to the screen
-  uint32_t yPos;  // y position relative to the screen
-} sprite_t;
 
 
 ///////////////////////////////////////
@@ -47,20 +48,21 @@ typedef struct {
 
 /**
   Initializes a player variable based on default parameters.
-  \param player_t* player - Pointer to an allocated player variable.
-  \return SUCCESS.
+  \param None
+  \return player_t* player - Pointer to an allocated player variable.
 **/
-uint32_t initDefaultPlayer(player_t* player);
+player_t* initDefaultPlayer();
 
 /**
   Initializes a sprite variable based on default parameters and ties the sprite
-  to the passed character reference.
+  to the passed character reference. Assumes sprite initialization can only
+  once for a character.
   \param character_t* character - Pointer to a character variable that the
                                   the sprite should be tied to.
-  \param sprite_t* sprite - Pointer to an allocated sprite variable.
-  \return SUCCESS.
+  \return SUCCESS if a sprite is initialized for character, or FAILURE if
+          sprite initialization fails.
 **/
-uint32_t initDefaultSprite(character_t* character, sprite_t* sprite);
+uint32_t initDefaultSprite(character_t* character);
 
 /**
   Resolves a target's hp stat after an attack.

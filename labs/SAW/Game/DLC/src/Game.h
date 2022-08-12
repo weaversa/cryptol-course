@@ -40,6 +40,14 @@ enum battleResult{
 // Structs
 ///////////////////////////////////////
 
+// Struct containing information on a character sprite
+typedef struct {
+  uint8_t frames[GAITS][DIRECTIONS][ANIMATION_STEPS];
+  uint32_t xPos;  // x position relative to the screen
+  uint32_t yPos;  // y position relative to the screen
+} sprite_t;
+
+
 // Struct containing character information
 typedef struct {
   uint8_t name[MAX_NAME_LENGTH];
@@ -48,6 +56,7 @@ typedef struct {
   uint32_t atk;
   uint32_t def;
   uint32_t spd;
+  sprite_t* sprite;
 } character_t;
 
 typedef character_t player_t;
@@ -70,14 +79,6 @@ typedef struct {
   uint8_t tiles[SCREEN_TILES];  // Holds asset ID for each screen tile
 } screen_t;
 
-// Struct containing information on a character sprite
-typedef struct {
-  character_t* character;
-  uint8_t frames[GAITS][DIRECTIONS][ANIMATION_STEPS];
-  uint32_t xPos;  // x position relative to the screen
-  uint32_t yPos;  // y position relative to the screen
-} sprite_t;
-
 
 ///////////////////////////////////////
 // Function prototypes
@@ -87,8 +88,8 @@ typedef struct {
 uint32_t levelUp(uint32_t level);
 
 // Function(s) with basic struct initialization
-uint32_t initDefaultPlayer(player_t* player);
-uint32_t initDefaultSprite(character_t* character, sprite_t* sprite);
+player_t* initDefaultPlayer();
+uint32_t initDefaultSprite(character_t* character);
 
 // Function(s) with preconditions and postconditions that must
 // be considered in SAW contracts & unit test overrides

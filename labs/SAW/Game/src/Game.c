@@ -1,8 +1,12 @@
+#include <stdlib.h>
 #include "Game.h"
 
 
-uint32_t initDefaultPlayer(player_t* player)
+player_t* initDefaultPlayer()
 {
+  // Allocate memory for a player_t object
+  player_t* player = (player_t*) malloc(sizeof(player_t));
+
   // Variables
   uint8_t i = 0;
   uint32_t hp_default  = 10;
@@ -24,14 +28,34 @@ uint32_t initDefaultPlayer(player_t* player)
   player->def = def_default;
   player->spd = spd_default;
 
-  return SUCCESS;
+  // Initialize sprite to NULL
+  // Assume a development rule that the player's sprite can only be configured
+  // once. Initialize the sprite when more information about the player
+  // specifications are known.
+  player->sprite = NULL;
+
+  return player;
 }
 
 
-uint32_t initDefaultSprite(character_t* character, sprite_t* sprite)
+uint32_t initDefaultSprite(character_t* character)
 {
-  // Initialize the character to the passed pointer
-  sprite->character = character;
+  // Parameter checking
+  if (character == NULL)
+  {
+    // Must be passed an allocated character struct
+    return FAILURE;
+  }
+  else if (character->sprite != NULL)
+  {
+    // The passed character already has a sprite assigned.
+    // Follow up on the development rule that character structs can only be
+    // initialized a sprite once!
+    return FAILURE;
+  }
+
+  // Allocate memory for a sprite struct
+  sprite_t* sprite = (sprite_t*) malloc(sizeof(sprite_t));
 
   // Initialize the sprite frames to the default asset
   for (uint8_t i = 0; i < GAITS; i++)
@@ -48,6 +72,9 @@ uint32_t initDefaultSprite(character_t* character, sprite_t* sprite)
   // Initialize sprite's default position
   sprite->xPos = 1;
   sprite->yPos = 2;
+
+  // Set the sprite to the character
+  character->sprite = sprite;
 
   return SUCCESS;
 }
