@@ -50,7 +50,7 @@ up a coded representation of the algorithm.
 
 While having a working specification of an algorithm in Cryptol is really 
 awesome, it would be really really awesome to accurately represent that algorithm
-in other programming language like C/C++ or Java. Translating our algorithms
+in other programming languages like C/C++ or Java. Translating our algorithms
 into other languages gives us the chance to leverage strengths from those
 languages such as improved runtimes and being more widely known to software
 developers.
@@ -65,26 +65,43 @@ This is where the Software Analysis Workbench (SAW) comes in. SAW is a tool that
 formally verifies properties of code using SAT and SMT solvers. SAW leverages
 symbolic execution to translate code into formal models. Alright, that's a lot of
 fancy words, but essentially SAW can verify that all inputs to a function/method
-yield us our expected output. This makes SAW a much more powerful tool for testing
-code compared to unit tests that are limited in the possible input scope, which may
-miss testing for a dangerous edge case.
+follows a defined behavior to yield an expected output. This makes SAW a much more
+powerful tool for testing code compared to unit tests, which are limited in their 
+testing scope and may not test for dangerous edge cases.
 
-In order to get SAW to work its magic, we need to tell it exactly what we are
-looking to verify. For every function/method, we need to tell SAW its:
+In order to get SAW to work its magic, we need to first compile our source code
+since SAW works on bitcode. We then need to tell SAW exactly what we are looking
+to verify. For every function/method, we need to tell SAW its:
 - Input(s)
 - Output(s)
 - Precondition(s)
 - Postcondition(s)
 
 We package this information into a script for SAW to process. This script can either
-be written in Python or SAW's native language, SAWScript. For this lab, we will write
-our scripts in Python given that the language provides a wider range of freedom when
-designing proofs and it is more widely known.
+be written in Python or SAW's special purpose language, SAWScript. For this lab, we
+will write our scripts in Python given that the language provides a wider range of 
+freedom when designing proofs and it is more widely known.
 
 Combining all of these different languages and tools together into one workflow is
 definitely a challengining process, escpecially for newcomers. However, learning how
-to use these components gives developers a powerful method of developing and verifying
-that their cryptographic implementations are correct and secure.
+to use these components gives you a powerful method for developing and verifying
+that cryptographic implementations are correct and secure.
+
+Before we begin setting up the lab, let's recap the overall SAW workflow using the
+diagram below.
+
+![SAW Workflow Overview](../../misc/SAWWorkflowOverview.png)
+
+1. We first begin with a white paper algorithm specification that defines how an
+algorithm behaves.
+2. We then take that paper and write up a version of it in Cryptol. As we work on this
+specification, we apply the properties and assertions defined in the paper on our
+Cryptol design.
+3. Next we implement the algorithm in a different language such as C/C++ or Java.
+4. As we develop our implementation, we use SAW to verify that our functions/methods
+behave according to the properties we previously outlined in our Cryptol specification.
+5. We continuously improve and test our implementation until we finally finish our
+verified algorithm in the target language.
 
 
 # Setting Everything Up
