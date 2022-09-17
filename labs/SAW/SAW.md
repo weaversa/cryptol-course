@@ -53,10 +53,10 @@ awesome, it would be really really awesome to accurately represent that algorith
 in other programming language like C/C++ or Java. Translating our algorithms
 into other languages gives us the chance to leverage strengths from those
 languages such as improved runtimes and being more widely known to software
-development teams.
+developers.
 
 Of course, we want to make sure that the code we write in those other languages
-completely represents all of the cryptographic properties pertaining to our
+completely represents all of the cryptographic properties pertaining to the
 target algorithm. We also want to uphold best coding practices for that language
 and avoid vulnerabilities such as buffer or integer overflows. After all, what 
 good is cryptography if an attacker can take advantage of an implementation flaw?
@@ -65,16 +65,26 @@ This is where the Software Analysis Workbench (SAW) comes in. SAW is a tool that
 formally verifies properties of code using SAT and SMT solvers. SAW leverages
 symbolic execution to translate code into formal models. Alright, that's a lot of
 fancy words, but essentially SAW can verify that all inputs to a function/method
-yield us our expected output. This makes SAW a much more powerful tool of testing
-code compared to unit tests that can easily miss dangerous edge cases for a piece
-of code.
+yield us our expected output. This makes SAW a much more powerful tool for testing
+code compared to unit tests that are limited in the possible input scope, which may
+miss testing for a dangerous edge case.
 
 In order to get SAW to work its magic, we need to tell it exactly what we are
 looking to verify. For every function/method, we need to tell SAW its:
 - Input(s)
 - Output(s)
-- Preconditions
-- Postconditions
+- Precondition(s)
+- Postcondition(s)
+
+We package this information into a script for SAW to process. This script can either
+be written in Python or SAW's native language, SAWScript. For this lab, we will write
+our scripts in Python given that the language provides a wider range of freedom when
+designing proofs and it is more widely known.
+
+Combining all of these different languages and tools together into one workflow is
+definitely a challengining process, escpecially for newcomers. However, learning how
+to use these components gives developers a powerful method of developing and verifying
+that their cryptographic implementations are correct and secure.
 
 
 # Setting Everything Up
