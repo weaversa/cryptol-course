@@ -41,6 +41,42 @@ tools. As well, there are some examples
 and a full-featured tutorial on SAW
 [here](https://saw.galois.com/intro/).
 
+# Why Use SAW?
+
+In the previous labs, we learned how to look at algorithm specifications
+from white papers and represent them in Cryptol. From there, we could
+leverage tools in Cryptol to prove certain behaviors and ultimately write
+up a coded representation of the algorithm.
+
+While having a working specification of an algorithm in Cryptol is really 
+awesome, it would be really really awesome to accurately represent that algorithm
+in other programming language like C/C++ or Java. Translating our algorithms
+into other languages gives us the chance to leverage strengths from those
+languages such as improved runtimes and being more widely known to software
+development teams.
+
+Of course, we want to make sure that the code we write in those other languages
+completely represents all of the cryptographic properties pertaining to our
+target algorithm. We also want to uphold best coding practices for that language
+and avoid vulnerabilities such as buffer or integer overflows. After all, what 
+good is cryptography if an attacker can take advantage of an implementation flaw?
+
+This is where the Software Analysis Workbench (SAW) comes in. SAW is a tool that
+formally verifies properties of code using SAT and SMT solvers. SAW leverages
+symbolic execution to translate code into formal models. Alright, that's a lot of
+fancy words, but essentially SAW can verify that all inputs to a function/method
+yield us our expected output. This makes SAW a much more powerful tool of testing
+code compared to unit tests that can easily miss dangerous edge cases for a piece
+of code.
+
+In order to get SAW to work its magic, we need to tell it exactly what we are
+looking to verify. For every function/method, we need to tell SAW its:
+- Input(s)
+- Output(s)
+- Preconditions
+- Postconditions
+
+
 # Setting Everything Up
 
 To run any of the examples in this lab, you need to first start the
