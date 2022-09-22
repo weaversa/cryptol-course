@@ -3,6 +3,8 @@
 
 FROM gitpod/workspace-nix:latest
 
+USER root
+
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
 
 # Install the Docker apt repository
@@ -57,7 +59,6 @@ RUN apt-get update \
       clang-tools-12 \
       clang-format-12 \
       libffi-dev \
-      libffi8 \
       libgmp10 \
       libncurses-dev \
       libncurses6 \
@@ -66,8 +67,7 @@ RUN apt-get update \
       libnuma-dev \
       zlib1g-dev \
       wget \
-    && add-apt-repository ppa:kelleyk/emacs -y \
-    && DEBIAN_FRONTNED="noninteractive" apt-get install -y emacs28-nox \
+      emacs-nox \
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
     # Install latest Git using their official PPA
     && add-apt-repository ppa:git-core/ppa \
