@@ -1,5 +1,6 @@
 # syntax = edrevo/dockerfile-plus
 
-FROM ubuntu:22.02
+FROM gitpod/workspace-nix:latest
 
 INCLUDE+ Dockerfile.common
+
