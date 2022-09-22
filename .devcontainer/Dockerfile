@@ -1,5 +1,0 @@
-# syntax = edrevo/dockerfile-plus
-
-FROM ubuntu:22.02
-
-INCLUDE+ Dockerfile.common

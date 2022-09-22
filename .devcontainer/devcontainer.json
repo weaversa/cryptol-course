@@ -1,7 +1,7 @@
 {
     "name": "Cryptol Course Dev",
-    //"image": "ghcr.io/weaversa/cryptol-course:2.12",
-    "dockerFile": "Dockerfile",
+    //"image": "ghcr.io/weaversa/cryptol-course:2.13",
+    "dockerFile": "Dockerfile.2.13",
     "runArgs": [],
 
     // Use 'settings' to set *default* container specific settings.json values on container create. 
