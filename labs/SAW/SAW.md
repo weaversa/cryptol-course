@@ -43,74 +43,87 @@ and a full-featured tutorial on SAW
 
 # Why Use SAW?
 
-In the previous labs, we learned how to look at algorithm specifications
-from white papers and represent them in Cryptol. From there, we could
-leverage tools in Cryptol to prove certain behaviors and ultimately write
-up a coded representation of the algorithm.
+Previous labs demonstrated how to look at algorithm specifications
+from math papers and formally represent them in Cryptol.  A
+software/hardware developer now can create a performant implementation
+with confidence since they are armed with a bit-precise, unambiguous,
+machine-readable, formally verified Cryptol specification.
 
-While having a working specification of an algorithm in Cryptol is really 
-awesome, it would be really really awesome to accurately represent that algorithm
-in other programming languages like C/C++ or Java. Translating our algorithms
-into other languages gives us the chance to leverage strengths from those
-languages such as improved runtimes and being more widely known to software
-developers.
+Of course, any developer desires that the code they write completely
+adheres to all of the cryptographic properties pertaining to the
+target algorithm. They also want to uphold best coding practices for
+their implementation language and avoid vulnerabilities such as buffer
+or integer overflows. After all, what good is cryptography if an
+attacker can take advantage of an implementation flaw?
 
-Of course, we want to make sure that the code we write in those other languages
-completely represents all of the cryptographic properties pertaining to the
-target algorithm. We also want to uphold best coding practices for that language
-and avoid vulnerabilities such as buffer or integer overflows. After all, what 
-good is cryptography if an attacker can take advantage of an implementation flaw?
+This is where the Software Analysis Workbench (SAW) comes in. SAW is a
+tool that formally verifies properties of compiled code using
+[automated reasoning
+tools](https://www.amazon.science/blog/a-gentle-introduction-to-automated-reasoning). Alright,
+that's a lot of fancy words, but essentially SAW can, in a fairly
+push-button way, verify that, for all inputs, a function does what
+it's supposed to do and nothing more. This makes SAW a much more
+powerful tool for assuring code compared to unit tests, which are
+limited in their testing scope and cannot test for all possible,
+potentially dangerous edge cases.
 
-This is where the Software Analysis Workbench (SAW) comes in. SAW is a tool that
-formally verifies properties of code using SAT and SMT solvers. SAW leverages
-symbolic execution to translate code into formal models. Alright, that's a lot of
-fancy words, but essentially SAW can verify that all inputs to a function/method
-follows a defined behavior to yield an expected output. This makes SAW a much more
-powerful tool for testing code compared to unit tests, which are limited in their 
-testing scope and may not test for dangerous edge cases.
+In order to get SAW to work its magic, source code needs to be
+compiled - SAW works on low-level implementation languages such as
+[LLVM bitcode](https://en.wikipedia.org/wiki/LLVM), [Java byte
+code](https://en.wikipedia.org/wiki/Java_bytecode), low-level Verilog,
+and even some assembly languages. The examples in this lab demonstrate
+verification of cryptographic implementations written in the C
+language, so below you'll see C source code being compiled to LLVM
+bitcode.
 
-In order to get SAW to work its magic, we need to first compile our source code
-since SAW works on bitcode. We then need to tell SAW exactly what we are looking
-to verify. For every function/method, we need to tell SAW its:
+Next, we need to tell SAW exactly what to verify. For every
+function/method, SAW needs to know:
 - Input(s)
 - Output(s)
 - Precondition(s)
 - Postcondition(s)
 
-We package this information into a script for SAW to process. This script can either
-be written in Python or SAW's special purpose language, SAWScript. For this lab, we
-will write our scripts in Python given that the language provides a wider range of 
-freedom when designing proofs and it is more widely known.
+This information is packaged into a script for SAW to process. This
+script can either be written in Python or SAW's special purpose
+language, SAWScript. For this lab, the scripts are written in Python
+since, as a general purpose programming language, it provides a wider
+range of techniques when expressing properties and it is much more
+widely known than SAWScript. Python also fairly easily integrates into
+CI systems.
 
-Combining all of these different languages and tools together into one workflow is
-definitely a challengining process, escpecially for newcomers. However, learning how
-to use these components gives you a powerful method for developing and verifying
-that cryptographic implementations are correct and secure.
+Combining all of these different languages (Python, C, LLVM,
+SAWScript, Cryptol) and tools together into one workflow is definitely
+a challenging process, especially for newcomers. However, learning
+how to use these components provides a very powerful method for
+developing cryptographic implementations and proving them correct and
+secure.
 
-Before we begin setting up the lab, let's recap the overall SAW workflow using the
+Before setting up the lab, let's recap the overall SAW workflow using the
 diagram below.
 
 ![SAW Workflow Overview](../../misc/SAWWorkflowOverview.png)
 
-1. We first begin with a white paper algorithm specification that defines how an
-algorithm behaves.
-2. We then take that paper and write up a version of it in Cryptol. As we work on this
-specification, we apply the properties and assertions defined in the paper on our
-Cryptol design.
-3. Next we implement the algorithm in a different language such as C/C++ or Java.
-4. As we develop our implementation, we use SAW to verify that our functions/methods
-behave according to the properties we previously outlined in our Cryptol specification.
-5. We continuously improve and test our implementation until we finally finish our
-verified algorithm in the target language.
-
+1. A developer begins with a math paper algorithm specification that
+defines how an algorithm behaves.
+2. They then take that paper and write up a version of it in Cryptol
+(or grab one that already exists). Trust is gained in the Cryptol
+specification via properties defined in the paper and proven in the
+Cryptol specification.
+3. The developer beings implementing the algorithm in a general
+   purpose programming language such as C/C++ or Java.
+4. As they develop their implementation, SAW is used to verify that
+functions/methods behave according to the properties in a Cryptol
+specification.
+5. The implementation is continuously improved and tested until
+   verified by SAW.
 
 # Setting Everything Up
 
-To run any of the examples in this lab, you need to first start the
-Software Analysis Workbench (SAW) remote API (`saw-remote-api`).  If
-you are using the development container that comes with this course
-(`ghcr.io/weaversa/cryptol-course`), you can enter the following
-command in your terminal:
+To run any of the examples in this lab, first start the Software
+Analysis Workbench (SAW) remote API (`saw-remote-api`). If using the
+development container that comes with this course
+(`ghcr.io/weaversa/cryptol-course`), enter the following command in
+a terminal:
 
 ```sh
 $ start-saw-remote-api
@@ -118,16 +131,16 @@ $ start-saw-remote-api
 
 Otherwise, this tool can be installed by following the instructions
 for SAW found in the [Installation lab](../../INSTALL.md). Once
-installed, to run `saw-remote-api`, enter the following commands into
-your terminal:
+installed, to run `saw-remote-api`, enter the following commands in
+a terminal:
 
 ```sh
 $ export SAW_SERVER_URL=http://0.0.0.0:36691
 $ saw-remote-api http --host 0.0.0.0 --port 36691 / &
 ```
 
-Congrats! You now have a server version of SAW running in the
-background ready to accept commands on port `36691`.
+Congrats! A server version of SAW is now running in the background
+ready to accept commands on port `36691`.
 
 # SAW and Python
 
@@ -685,7 +698,7 @@ class addRow5Mutate_Contract(Contract):
 
 ## Auxiliary Variables
 
-In this section we discuss an alternative way add two rows by using an auxillary variable. For example, consider the function
+In this section we discuss an alternative way add two rows by using an auxiliary variable. For example, consider the function
 
 ```C
 uint32_t* addRow5NewVar(uint32_t a[5], uint32_t b[5]) {
@@ -1704,7 +1717,7 @@ The Third `struct` Instance:
 ```
 Now that `sprite_p` has been allocated and its field values were asserted, we
 connect `sprite_p` to `character_p`. The other fields for `character` do not
-change in the function, so we can resuse the symbolic variables that were 
+change in the function, so we can reuse the symbolic variables that were 
 defined in the contract's *initial state*.
 
 As we can see, the `struct` keyword is quite versatile as we can pass symbolic
@@ -1728,11 +1741,11 @@ sprite_p = self.alloc( alias_ty("struct.sprite_t")
 Notice that we use 3 double quotes `"""` in our `cry_f` call. This technique is
 useful when we want to separate our expected Cryptol-defined behaviors over 
 multiple lines to improve code readability. Python considers the 3 double 
-quotes as a multiline string. Multiline strings may also be used as block 
+quotes as a multi-line string. Multi-line strings may also be used as block 
 comments in Python.
 
 However, the setup we see above results in wide open spaces, which will be 
-noticable when debugging strings passed to the family of `cry` functions. These 
+noticeable when debugging strings passed to the family of `cry` functions. These 
 spaces can be mitigated using `dedent` from the `textwrap` package that comes 
 with Python. For example:
 
@@ -2040,7 +2053,7 @@ else if ( target->hp <= (atk - target->def) )
 
 So maybe we tried being *too* fancy showing off our associative property knowledge. While moving the defense term to the left-hand side of the expression does not violate any mathematical rules on paper, it does violate our expectations in practice when accounting for limited bit widths.
 
-Fine, let's toss out our fancy math skills and write our contact's precondition for case 2 exactly as we see it in the source code:
+Fine, let's toss out our fancy math skills and write our contract's precondition for case 2 exactly as we see it in the source code:
 
 ```python
     elif (self.case == 2):
@@ -2166,7 +2179,7 @@ OK
 ✅  All 3 goals verified!
 ```
 
-Whoo hoo! We finally won the battle! From our exercise, we found that SAW provides us with some pretty useful counterexamples to consider for edge cases that may be lacking in traditional software unit testing.
+Woo hoo! We finally won the battle! From our exercise, we found that SAW provides us with some pretty useful counterexamples to consider for edge cases that may be lacking in traditional software unit testing.
 
 Now let's imagine that very large character stats is a concern in our game. In order to balance characters in our game and avoid problems with very large values, let's say we decided to add a function (`checkStats`) that checks character stats. Let's also assume that this function is always called before functions that use those stats like what we saw in `resolveAttack`.
 
@@ -2191,7 +2204,7 @@ uint32_t checkStats(character_t* character)
 
 Is this a good idea security-wise? Eh, maybe not. The assumption that `checkStats` is ALWAYS called before functions that use character stats may be missed. So what can we do? Using `resolveAttack` as an example, should we rely on its caller to also call `checkStats` and perform error handling ahead of time? An argument could be made for performance benefits, but at the cost of security. Should we call `checkStats` within `resolveAttack`? That strategy would provide more security, but the repeated `checkStats` may be redundant and could hurt performance depending on the use case. As we can see, the answer for `checkStats`'s best placement follows the classic "it depends".
 
-For the sake of argument, let's go with the assumption that `checkStats` is always called BEFORE the call to `resolveAttack`. While the stat checks aren't performed in `resolveAttack`, we could include them as preconditions in our contract. Let's add the stat checks to our original `resolveAttack_Contract`, problems with case 2's preconditons and all!
+For the sake of argument, let's go with the assumption that `checkStats` is always called BEFORE the call to `resolveAttack`. While the stat checks aren't performed in `resolveAttack`, we could include them as preconditions in our contract. Let's add the stat checks to our original `resolveAttack_Contract`, problems with case 2's preconditions and all!
 
 ```python
 class resolveAttack_Contract(Contract):
@@ -2267,7 +2280,7 @@ We may not care to verify this function if it's from a well-known library
 that has been widely tested and inspected by the public. Alternatively,
 we may not care to verify the function if that library has already been 
 formally verified. Even if we have verified this function ourselves, we 
-may want to speed up the verification process by blackboxing its behavior.
+may want to speed up the verification process by black-boxing its behavior.
 This is particularly important to consider if a function we formally 
 verified took a long time to be verified.
 
