@@ -78,10 +78,11 @@ bitcode.
 
 Next, we need to tell SAW exactly what to verify. For every
 function/method, SAW needs to know:
-- Input(s)
-- Output(s)
-- Precondition(s)
-- Postcondition(s)
+- State (i.e. global variables/objects)
+- Input arguments
+- Output arguments
+- Preconditions on state and arguments
+- Postconditions on state and arguments
 
 This information is packaged into a script for SAW to process. This
 script can either be written in Python or SAW's special purpose
@@ -109,7 +110,7 @@ defines how an algorithm behaves.
 (or grab one that already exists). Trust is gained in the Cryptol
 specification via properties defined in the paper and proven in the
 Cryptol specification.
-3. The developer beings implementing the algorithm in a general
+3. The developer begins implementing the algorithm in a general
    purpose programming language such as C/C++ or Java.
 4. As they develop their implementation, SAW is used to verify that
 functions/methods behave according to the properties in a Cryptol
