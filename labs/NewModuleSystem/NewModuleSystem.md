@@ -216,19 +216,19 @@ and their constraints.
     interface submodule I_SIMON where
       /** word size */
       type n : #
-	  // TODO: Add constraint
+      // TODO: Add constraint
 
       /** number of words in key */
       type m : #
-	  // TODO: Add constraint
+      // TODO: Add constraint
 
       /** number of rounds in key schedule */
       type T : #
-	  // TODO: Add constraint
+      // TODO: Add constraint
 
       /** index of z-sequence used (i.e. use sequence z_j) */
       type j : #
-	  // TODO: Add constraint
+      // TODO: Add constraint
 ```
 
 Recall that, given these parameters, SIMON exports:
@@ -257,12 +257,12 @@ into a `submodule P_SIMON_2n_mn` (or `P_SIMON_n_m` if you prefer).
 
 ```cryptol
     submodule P_SIMON_32_64 where
-	  type n = 0
-	  type m = 0
-	  type T = 0
-	  type j = 0
-	
-	// TODO: Add remaining SIMON parameterizations
+      type n = 0
+      type m = 0
+      type T = 0
+      type j = 0
+    
+    // TODO: Add remaining SIMON parameterizations
 ```
 
 **EXERCISE**: Define an abstract `submodule` `A_SIMON` that requests a
@@ -280,11 +280,11 @@ likewise if you used another naming scheme earlier).
      * from parameters satisfying the `I_SIMON` interface
      */
     submodule A_SIMON where
-	  import interface submodule I_SIMON
-	  TODO = undefined  // Replace with abstract SIMON implementation
+      import interface submodule I_SIMON
+      TODO = undefined  // Replace with abstract SIMON implementation
 
     submodule SIMON_32_64   = submodule A_SIMON { submodule P_SIMON_32_64 }
-	// TODO: Add remaining instantiations
+    // TODO: Add remaining instantiations
 ```
 
 ```Xcryptol-session
