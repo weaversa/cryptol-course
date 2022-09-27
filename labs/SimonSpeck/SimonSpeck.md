@@ -178,8 +178,6 @@ Here is the header for the `Simon.cry` base module:
 ```example
 module labs::SimonSpeck::Simon::Simon where
 
-module labs::SimonSpeck::Simon::Simon where
-
 parameter
 
   /** word size */
@@ -408,4 +406,4 @@ https://github.com/weaversa/cryptol-course/issues
 ||||
 |-:|:-:|-|
 || [- Key Wrapping](../KeyWrapping/KeyWrapping.md) ||
-|| **Parameterized Modules** ||
+|| **Parameterized Modules** | [New Module System >](../NewModuleSystem/NewModuleSystem.md) |
