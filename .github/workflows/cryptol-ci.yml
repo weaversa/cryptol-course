@@ -30,7 +30,7 @@ jobs:
       # Start cryptol-remote-api server
       - run: start-cryptol-remote-api-read-only
       # Run checks
-      - run: for f in `find . -name "ci.py"`; do python3 $f; done
+      - run: for f in `find . -name "ci.py"`; do python3 $f check eval_f; done
 
   ci-prove:
     needs: ci-load
@@ -46,4 +46,4 @@ jobs:
       # Start cryptol-remote-api server
       - run: start-cryptol-remote-api-read-only
       # Run checks
-      - run: for f in `find . -name "ci_prove.py"`; do python3 $f; done
+      - run: for f in `find . -name "ci.py"`; do python3 $f prove; done

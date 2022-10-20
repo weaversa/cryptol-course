@@ -1,25 +1,34 @@
-from ci_helper import *
-import cryptol
+from sys import argv
 
-c = cryptol.connect(reset_server=True)
+from ci_helper import test_cryptol
 
-c.load_module("labs::KeyWrapping::KeyWrappingAnswers")
+module_commands = {
+    "labs::KeyWrapping::KeyWrappingAnswers": {
+        "prove": """
+          WStep2'Prop
+          W'Prop
+          KWAEInvProp
+        """.strip().split(),
+        "check": """
+          hexadecimalProp
+          zeroBitsProp
+          concatenationProp
+          XORProp
+          lenProp
+          LSBProp
+          MSBProp
+          bitstringProp
+          intProp
 
-print("Running tests in labs::KeyWrapping::KeyWrappingAnswers")
+          KWAETests
+          KWADTests
+          TKWAETests
+          TKWADTests
+          KWPAETests
+          KWPADTests
+        """.strip().split(),
+    },
+}
 
-check(c, "hexadecimalProp")
-check(c, "zeroBitsProp")
-check(c, "concatenationProp")
-check(c, "XORProp")
-check(c, "lenProp")
-check(c, "LSBProp")
-check(c, "MSBProp")
-check(c, "bitstringProp")
-check(c, "intProp")
-
-check(c, "KWAETests")
-check(c, "KWADTests")
-check(c, "TKWAETests")
-check(c, "TKWADTests")
-check(c, "KWPAETests")
-check(c, "KWPADTests")
+if __name__ == '__main__':
+    test_cryptol(module_commands, argv[1:])
