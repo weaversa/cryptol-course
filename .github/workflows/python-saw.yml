@@ -28,12 +28,9 @@ jobs:
   saw-prove:
     needs: build
     runs-on: ubuntu-latest
-    services:
-      saw-remote-api:
-        image: ghcr.io/galoisinc/saw-remote-api:nightly
-        ports:
-          - 8080:8080
-        options: -v ${{ github.workspaces }}:/home/saw
+    container:
+      image: ghcr.io/weaversa/cryptol-course:2.13
+      options: --user root
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -42,17 +39,13 @@ jobs:
         with:
           name: bc-files
           path: labs/Demos/SAW/
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10'
-      - run: pip install saw-client
+      - name: Start saw-remote-api server
+        run: start-saw-remote-api-read-only
       - name: Run Python SAW Script
         run: |
-          python labs/Demos/SAW/xxHash/xxhash32-ref.py
-          python labs/Demos/SAW/xxHash/xxhash64-ref.py
-          python labs/Demos/SAW/Salsa20/proof/salsa20.py
-        env:
-          SAW_SERVER_URL: http://0.0.0.0:8080
+          python3 labs/Demos/SAW/xxHash/xxhash32-ref.py
+          python3 labs/Demos/SAW/xxHash/xxhash64-ref.py
+          python3 labs/Demos/SAW/Salsa20/proof/salsa20.py
 
   saw-tutorial:
     runs-on: ubuntu-latest
