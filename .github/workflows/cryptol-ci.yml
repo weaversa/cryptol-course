@@ -14,43 +14,60 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      # Load all files
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+      # Install Cryptol Client  
       - run: pip install cryptol
-      - run: python3 .ci/ci_load.py
+      # Load all files
+      - run: python .ci/ci_load.py
         env:
           CRYPTOL_SERVER_URL: http://0.0.0.0:8080
 
   ci-check:
     needs: ci-load
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/weaversa/cryptol-course:2.13
-      options: --user root
+    services:
+      cryptol-remote-api:
+        image: ghcr.io/galoisinc/cryptol-remote-api:2.13.0
+        ports:
+          - 8080:8080
+        options: -v ${{ github.workspace }}:/home/cryptol
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      # Install Cryptol Client  
+      - run: pip install cryptol
       - name: set pythonpath
         run: echo "PYTHONPATH=${PYTHONPATH}:${PWD}/.ci" >> $GITHUB_ENV
-      # Start cryptol-remote-api server
-      - run: start-cryptol-remote-api-read-only
       # Run checks
-      - run: for f in `find . -name "ci.py"`; do python3 $f; done
+      - run: for f in `find . -name "ci.py"`; do python $f; done
+        env:
+          CRYPTOL_SERVER_URL: http://0.0.0.0:8080
 
   ci-prove:
     needs: ci-load
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/weaversa/cryptol-course:2.13
-      options: --user root
+    services:
+      cryptol-remote-api:
+        image: ghcr.io/galoisinc/cryptol-remote-api:2.13.0
+        ports:
+          - 8080:8080
+        options: -v ${{ github.workspace }}:/home/cryptol
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      # Install Cryptol Client  
+      - run: pip install cryptol
       - name: set pythonpath
         run: echo "PYTHONPATH=${PYTHONPATH}:${PWD}/.ci" >> $GITHUB_ENV
-      # Start cryptol-remote-api server
-      - run: start-cryptol-remote-api-read-only
       # Run checks
-      - run: for f in `find . -name "ci_prove.py"`; do python3 $f; done
+      - run: for f in `find . -name "ci_prove.py"`; do python $f; done
+        env:
+          CRYPTOL_SERVER_URL: http://0.0.0.0:8080
