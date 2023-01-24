@@ -5,16 +5,23 @@ on: [push, pull_request]
 jobs:
   ci-load:
     runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/weaversa/cryptol-course:2.13
-      options: --user root
+    services:
+      cryptol-remote-api:
+        image: ghcr.io/galoisinc/cryptol-remote-api:2.13.0
+	ports:
+	  - 8080:8080
+	options: -v ${{ github.workspace }}:/home/cryptol
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      # Start cryptol-remote-api server
-      - run: start-cryptol-remote-api-read-only
       # Load all files
+      - uses: actions/setup-python@v4
+        with:
+	  python-version: '3.10'
+      - run: pip install cryptol
       - run: python3 .ci/ci_load.py
+        env:
+	  CRYPTOL_SERVER_URL: http://0.0.0.0:8080
 
   ci-check:
     needs: ci-load
