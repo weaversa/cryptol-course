@@ -25,3 +25,4 @@ jobs:
           context: "{{defaultContext}}:.devcontainer"
           push: true
           tags: ghcr.io/weaversa/cryptol-course:2.13
+          
