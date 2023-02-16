@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import unittest
 from cryptol.cryptoltypes import to_cryptol
 from saw_client import *
@@ -127,10 +127,9 @@ class Salsa20EasyTest(unittest.TestCase):
         if __name__ == "__main__": view(Dashboard(path=__file__))
         if __name__ == "__main__": view(LogResults())
 
-        pwd = os.getcwd()
-        
-        bcname = pwd + "/labs/Demos/SAW/Salsa20/artifacts/Salsa20.bc"
-        cryname = pwd + "/labs/Demos/SAW/Salsa20/specs/Salsa20.cry"
+        basedir = Path(__file__).absolute().parents[1] # Get absolute path to Salsa20/ 
+        bcname  = basedir/"artifacts/Salsa20.bc"
+        cryname = basedir/"specs/Salsa20.cry"
 
         cryptol_load_file(cryname)
 
