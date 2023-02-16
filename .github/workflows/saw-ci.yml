@@ -3,56 +3,8 @@ name: Saw Checks
 on: [push, pull_request]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/weaversa/cryptol-course:2.13
-      options: --user root
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Build .bc files
-        run: |
-          clang -c -g -emit-llvm labs/Demos/SAW/Salsa20/src/salsa20.c -o labs/Demos/SAW/Salsa20/salsa20.bc -Ilabs/Demos/SAW/Salsa20/include
-          make --directory=labs/Demos/SAW/xxHash xxhash32-ref.bc
-          make --directory=labs/Demos/SAW/xxHash xxhash64-ref.bc
-      - name: Archive file
-        uses: actions/upload-artifact@v3
-        with:
-          name: bc-files
-          path: |
-            labs/Demos/SAW/Salsa20/salsa20.bc
-            labs/Demos/SAW/xxHash/xxhash32-ref.bc
-            labs/Demos/SAW/xxHash/xxhash64-ref.bc
-
-  saw-prove:
-    needs: build
+  saw-tutorial:
     uses: ./.github/workflows/saw-remote-api.yml
     with:
-      python_script: "labs/Demos/SAW/xxHash/xxhash32-ref.py labs/Demos/SAW/xxHash/xxhash64-ref.py labs/Demos/SAW/Salsa20/proof/salsa20.py"
-
-  saw-tutorial:
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/weaversa/cryptol-course:2.13
-      options: --user root
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      # Start saw-remote-api server
-      - run: start-saw-remote-api-read-only
-      # Run final rotl SAW Script
-      - run: |
-          make prove -C labs/SAW/rotl
-      # Run addRow SAW Script
-      - run: |
-          make prove -C labs/SAW/addRow
-      # Run null SAW Script
-      - run: |
-          make prove -C labs/SAW/null
-      # Run Game SAW Script
-      - run: |
-          make prove -C labs/SAW/Game/DLC
-      # Run ceilLog2 SAW Script
-      - run: |
-          make prove -C labs/SAW/ceilLog2
+      saw_directories: labs/SAW/rotl
+    

@@ -3,43 +3,20 @@ name: SAW-Remote-API Template
 on:
   workflow_call:
     inputs:
-      python_script:
+      saw_directories:
         required: true
         type: string
-
-env:
-  SAW_SERVER_URL: http://0.0.0.0:8080
 
 jobs:
   saw_job:
     runs-on: ubuntu-latest
-    services:
-      saw-remote-api:
-        image: ghcr.io/galoisinc/saw-remote-api:nightly
-        ports:
-          - 8080:8080
-        options: -v ${{ github.workspace }}:/home/saw
+    container:
+      image: ghcr.io/weaversa/cryptol-course:2.13
+      options: --user root
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Install Saw Python Client
-        run: wget https://github.com/GaloisInc/saw-script/archive/refs/heads/master.zip && unzip master.zip
-      - name: Remove artifact
-        run: rm -rf master.zip
-      - name: Install Cryptol Python Client
-        run: wget https://github.com/GaloisInc/cryptol/archive/refs/heads/master.zip && unzip master.zip
-      - name: Remove artifact
-        run: rm -rf master.zip
-      - name: Download bc-files
-        uses: actions/download-artifact@v3
-        with:
-          name: bc-files
-          path: labs/Demos/SAW/
-      - uses: actions/setup-python@v4
-        with:
-          python-version: '3.10' 
-      - name: Install saw client dependencies
-        run: pip install typing_extensions argo_client BitVector
-      - name: Set PYTHONPATH
-        run: echo "PYTHONPATH=${PYTHONPATH}:${PWD}/saw-script-master/saw-remote-api/python:${PWD}/cryptol-master/cryptol-remote-api/python" >> $GITHUB_ENV
-      - run: for word in ${{ inputs.python_script }}; do python $word; done
+      - name: Start saw-remote-api server
+        run: start-saw-remote-api-read-only
+      - name: Run Saw Proofs
+        run: for word in ${{ inputs.saw_directories }}; do make prove -C $word; done
