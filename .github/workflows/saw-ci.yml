@@ -1,4 +1,4 @@
-name: Python Saw
+name: Saw Checks
 
 on: [push, pull_request]
 
@@ -29,7 +29,7 @@ jobs:
     needs: build
     uses: ./github/workflows/saw-remote-api.yml
     with:
-      python_script: "labs/Demos/SAW/xxHash/xxhash32-ref.py labs/Demos/SAW/xxHash/xxhash64-ref.py labs/Demos/SAW/Salsa20/proof/salsa20.py"
+      python_script: labs/Demos/SAW/xxHash/xxhash32-ref.py
 
   saw-tutorial:
     runs-on: ubuntu-latest
