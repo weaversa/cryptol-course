@@ -26,10 +26,10 @@ jobs:
             labs/Demos/SAW/xxHash/xxhash64-ref.bc
 
   saw-prove:
-#    needs: build
-    uses: ./github/workflows/saw-remote-api.yml
+    needs: build
+    uses: ./.github/workflows/saw-remote-api.yml
     with:
-      python_script: labs/Demos/SAW/xxHash/xxhash32-ref.py
+      python_script: "labs/Demos/SAW/xxHash/xxhash32-ref.py labs/Demos/SAW/xxHash/xxhash64-ref.py labs/Demos/SAW/Salsa20/proof/salsa20.py"
 
   saw-tutorial:
     runs-on: ubuntu-latest
