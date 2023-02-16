@@ -6,14 +6,14 @@ jobs:
   ci-load:
     uses: ./.github/workflows/cryptol-remote-api.yml
     with:
-      ci_cryptol_script: ci_load.py
+      ci_script_name: ci_load.py
 
   ci-check:
     uses: ./.github/workflows/cryptol-remote-api.yml
     with:
-      ci_cryptol_script: ci.py
+      ci_script_name: ci.py
 
   ci-prove:
     uses: ./.github/workflows/cryptol-remote-api.yml
     with:
-      ci_cryptol_script: ci_prove.py
+      ci_script_name: ci_prove.py
