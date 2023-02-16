@@ -27,10 +27,10 @@ clean:
 .PHONY: all build prove clean
 
 $(ARTIFACTS)/$(LAB1).bc: $(SRC)/$(LAB1).c | $(ARTIFACTS)
-	clang -c -g -emit-llvm -o $@ $<
+	clang $< -o $@ -c -emit-llvm -O0 -std=c90
 
 $(ARTIFACTS)/$(LAB2).bc: $(SRC)/$(LAB2).c | $(ARTIFACTS)
-	clang -c -g -emit-llvm -o $@ $<
+	clang $< -o $@ -c -emit-llvm -O0 -std=c90
 
 $(ARTIFACTS):
 	mkdir -p $(ARTIFACTS)
