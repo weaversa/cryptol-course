@@ -30,6 +30,11 @@ jobs:
         run: wget https://github.com/GaloisInc/cryptol/archive/refs/heads/master.zip && unzip master.zip
       - name: Remove artifact
         run: rm -rf master.zip
+      - name: Download bc-files
+        uses: actions/download-artifact@v3
+        with:
+          name: bc-files
+          path: labs/Demos/SAW/
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10' 
