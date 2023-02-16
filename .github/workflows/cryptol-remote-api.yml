@@ -1,0 +1,30 @@
+name: Cryptol-Remote-API Template
+
+on:
+  workflow_call:
+    inputs:
+      ci_script_name:
+        required: true
+        type: string
+
+env:
+  CRYPTOL_SERVER_URL: http://0.0.0.0:8080
+
+jobs:
+  cryptol_job_template:
+    runs-on: ubuntu-latest
+    services:
+      cryptol-remote-api:
+        image: ghcr.io/galoisinc/cryptol-remote-api:2.13.0
+        ports:
+          - 8080:8080
+        options: -v ${{ github.workspace }}:/home/cryptol
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10' 
+      - run: pip install cryptol
+      - run: for f in `find . -name ${{ inputs.ci_script_name }}`; do python $f; done
+
