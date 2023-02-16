@@ -11,7 +11,7 @@ env:
   CRYPTOL_SERVER_URL: http://0.0.0.0:8080
 
 jobs:
-  cryptol_job_template:
+  cryptol_job:
     runs-on: ubuntu-latest
     services:
       cryptol-remote-api:
@@ -26,7 +26,7 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.10' 
-      - name: Instal Cryptol Client
+      - name: Install Cryptol Client
         run: pip install cryptol
       - name: Set PYTHONPATH
         run: echo "PYTHONPATH=${PYTHONPATH}:${PWD}/.ci" >> $GITHUB_ENV

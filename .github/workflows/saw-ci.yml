@@ -27,25 +27,9 @@ jobs:
 
   saw-prove:
     needs: build
-    runs-on: ubuntu-latest
-    container:
-      image: ghcr.io/weaversa/cryptol-course:2.13
-      options: --user root
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-      - name: Download bc-files
-        uses: actions/download-artifact@v3
-        with:
-          name: bc-files
-          path: labs/Demos/SAW/
-      - name: Start saw-remote-api server
-        run: start-saw-remote-api-read-only
-      - name: Run Python SAW Script
-        run: |
-          python3 labs/Demos/SAW/xxHash/xxhash32-ref.py
-          python3 labs/Demos/SAW/xxHash/xxhash64-ref.py
-          python3 labs/Demos/SAW/Salsa20/proof/salsa20.py
+    uses: ./github/workflows/saw-remote-api.yml
+    with:
+      python_script: "labs/Demos/SAW/xxHash/xxhash32-ref.py labs/Demos/SAW/xxHash/xxhash64-ref.py labs/Demos/SAW/Salsa20/proof/salsa20.py"
 
   saw-tutorial:
     runs-on: ubuntu-latest
