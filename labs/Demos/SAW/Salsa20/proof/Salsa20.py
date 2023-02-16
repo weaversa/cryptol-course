@@ -124,37 +124,37 @@ class Salsa20CryptContract(Contract):
 class Salsa20EasyTest(unittest.TestCase):
     def test_salsa20(self):
         connect(reset_server=True)
-        if __name__ == "__main__": view(Dashboard(path=__file__))
-        if __name__ == "__main__": view(LogResults())
+        if __name__ == "__main__": view(LogResults(verbose_failure=True))
 
         basedir = Path(__file__).absolute().parents[1] # Get absolute path to Salsa20/ 
         bcname  = basedir/"artifacts/Salsa20.bc"
         cryname = basedir/"specs/Salsa20.cry"
 
-        cryptol_load_file(cryname)
+        cryptol_load_file(str(cryname))
+        mod = llvm_load_module(str(bcname))
 
-        mod = llvm_load_module(bcname)
-
-        rotl_result = llvm_verify(mod, 'rotl', RotlContract())
-
-        qr_result = llvm_verify(mod, 's20_quarterround', QuarterRoundContract(), lemmas=[rotl_result])
-        self.assertIs(qr_result.is_success(), True)
-        rr_result = llvm_verify(mod, 's20_rowround', RowRoundContract(), lemmas=[qr_result])
-        self.assertIs(rr_result.is_success(), True)
-        cr_result = llvm_verify(mod, 's20_columnround', ColumnRoundContract(), lemmas=[rr_result])
-        self.assertIs(cr_result.is_success(), True)
-        dr_result = llvm_verify(mod, 's20_doubleround', DoubleRoundContract(), lemmas=[cr_result, rr_result])
-        self.assertIs(dr_result.is_success(), True)
-        hash_result = llvm_verify(mod, 's20_hash', HashContract(),
+        # Set up verification overrides
+        rotl_result     = llvm_verify(mod, 'rotl', RotlContract())
+        qr_result       = llvm_verify(mod, 's20_quarterround', QuarterRoundContract(), lemmas=[rotl_result])
+        rr_result       = llvm_verify(mod, 's20_rowround', RowRoundContract(), lemmas=[qr_result])
+        cr_result       = llvm_verify(mod, 's20_columnround', ColumnRoundContract(), lemmas=[rr_result])
+        dr_result       = llvm_verify(mod, 's20_doubleround', DoubleRoundContract(), lemmas=[cr_result, rr_result])
+        hash_result     = llvm_verify(mod, 's20_hash', HashContract(),
         lemmas=[dr_result], script = proofscript.ProofScript([proofscript.z3(['doubleround'])]))
-        self.assertIs(hash_result.is_success(), True)
-        expand_result = llvm_verify(mod, 's20_expand32', ExpandContract(), lemmas=[hash_result])
-        self.assertIs(expand_result.is_success(), True)
+        expand_result   = llvm_verify(mod, 's20_expand32', ExpandContract(), lemmas=[hash_result])
         crypt_result_63 = llvm_verify(mod, 's20_crypt32', Salsa20CryptContract(63), lemmas=[expand_result])
-        self.assertIs(crypt_result_63.is_success(), True)
         crypt_result_64 = llvm_verify(mod, 's20_crypt32', Salsa20CryptContract(64), lemmas=[expand_result])
-        self.assertIs(crypt_result_64.is_success(), True)
         crypt_result_65 = llvm_verify(mod, 's20_crypt32', Salsa20CryptContract(65), lemmas=[expand_result])
+
+        # Assert that the overrides are successful
+        self.assertIs(qr_result.is_success(), True)
+        self.assertIs(rr_result.is_success(), True)
+        self.assertIs(cr_result.is_success(), True)
+        self.assertIs(dr_result.is_success(), True)
+        self.assertIs(hash_result.is_success(), True)
+        self.assertIs(expand_result.is_success(), True)
+        self.assertIs(crypt_result_63.is_success(), True)
+        self.assertIs(crypt_result_64.is_success(), True)
         self.assertIs(crypt_result_65.is_success(), True)
 
 if __name__ == "__main__":
