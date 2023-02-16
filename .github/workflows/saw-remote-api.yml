@@ -26,11 +26,15 @@ jobs:
         run: wget https://github.com/GaloisInc/saw-script/archive/refs/heads/master.zip && unzip master.zip
       - name: Remove artifact
         run: rm -rf master.zip
+      - name: Install Cryptol Python Client
+        run: wget https://github.com/GaloisInc/cryptol/archive/refs/heads/master.zip && unzip master.zip
+      - name: Remove artifact
+        run: rm -rf master.zip
       - uses: actions/setup-python@v4
         with:
           python-version: '3.10' 
       - name: Install saw client dependencies
         run: pip install typing_extensions argo_client BitVector
       - name: Set PYTHONPATH
-        run: echo "PYTHONPATH=${PYTHONPATH}:${PWD}/saw-script-master/saw-remote-api/python" >> $GITHUB_ENV
+        run: echo "PYTHONPATH=${PYTHONPATH}:${PWD}/saw-script-master/saw-remote-api/python:${PWD}/cryptol-master/cryptol-remote-api/python" >> $GITHUB_ENV
       - run: for word in ${{ inputs.python_script }}; do python $word; done
