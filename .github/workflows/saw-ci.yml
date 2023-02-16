@@ -7,4 +7,9 @@ jobs:
     uses: ./.github/workflows/saw-remote-api.yml
     with:
       saw_directories: "labs/SAW/rotl labs/SAW/addRow labs/SAW/null labs/SAW/Game/DLC labs/SAW/ceilLog2"
+
+  saw-demos:
+    uses: ./.github/workflows/saw-remote-api.yml
+    with:
+      saw_directories: "labs/Demos/SAW/Salsa20"
     
