@@ -14,8 +14,8 @@ LAB2=xxhash64-ref
 all: build
 
 build:
-        $(ARTIFACTS)/$(LAB1).bc
-        $(ARTIFACTS)/$(LAB2).bc
+	$(ARTIFACTS)/$(LAB1).bc
+	$(ARTIFACTS)/$(LAB2).bc
 
 prove: build
 	python3 $(PROOF)/$(LAB1).py
