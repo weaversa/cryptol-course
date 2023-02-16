@@ -26,7 +26,7 @@ jobs:
             labs/Demos/SAW/xxHash/xxhash64-ref.bc
 
   saw-prove:
-    needs: build
+#    needs: build
     uses: ./github/workflows/saw-remote-api.yml
     with:
       python_script: labs/Demos/SAW/xxHash/xxhash32-ref.py
