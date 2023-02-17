@@ -80,9 +80,6 @@ class xxhash64EasyTest(unittest.TestCase):
         cryname = basedir/"specs/xxhash.cry"
         bcname  = basedir/"artifacts/xxhash64-ref.bc"
 
-
-        print( "******" + cryname + "******")
-
         cryptol_load_file(str(cryname))
 
         mod = llvm_load_module(str(bcname))
