@@ -11,20 +11,20 @@ ARTIFACTS=artifacts
 LAB1=xxhash32-ref
 LAB2=xxhash64-ref
 
-all: build
+all: build1 | build2
 
-build:
-	$(ARTIFACTS)/$(LAB1).bc
-	$(ARTIFACTS)/$(LAB2).bc
+build1:	$(ARTIFACTS)/$(LAB1).bc
 
-prove: build
+build2: $(ARTIFACTS)/$(LAB2).bc
+
+prove: build1 | build2
 	python3 $(PROOF)/$(LAB1).py
 	python3 $(PROOF)/$(LAB2).py
 
 clean:
 	rm -rf $(ARTIFACTS)
 
-.PHONY: all build prove clean
+.PHONY: all build1 build2 prove clean
 
 $(ARTIFACTS)/$(LAB1).bc: $(SRC)/$(LAB1).c | $(ARTIFACTS)
 	clang $< -o $@ -c -emit-llvm -O0 -std=c90
