@@ -6,6 +6,8 @@ on:
       saw_directories:
         required: true
         type: string
+env:
+  SAW_SERVER_URL: http://0.0.0.0:8080
 
 jobs:
   saw_job:
@@ -13,10 +15,14 @@ jobs:
     container:
       image: ghcr.io/weaversa/cryptol-course:2.13
       options: --user root
+    services:
+      saw-remote-api:
+        image: ghcr.io/galoisinc/saw-remote-api:nightly
+        ports:
+          - 8080:8080
+        options: -v ${{ github.workspace }}:${{ github.workspace }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Start saw-remote-api server
-        run: start-saw-remote-api-read-only
       - name: Run Saw Proofs
         run: for word in ${{ inputs.saw_directories }}; do make prove -C $word; done
