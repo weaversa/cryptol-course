@@ -1,0 +1,22 @@
+name: SAW-Remote-API Template
+
+on:
+  workflow_call:
+    inputs:
+      saw_directories:
+        required: true
+        type: string
+
+jobs:
+  saw_job:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/weaversa/cryptol-course:2.13
+      options: --user root
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Start saw-remote-api server
+        run: start-saw-remote-api-read-only
+      - name: Run Saw Proofs
+        run: for word in ${{ inputs.saw_directories }}; do make prove -C $word; done

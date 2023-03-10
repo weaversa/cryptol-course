@@ -1,0 +1,21 @@
+name: Saw Checks
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  saw-tutorial:
+    uses: ./.github/workflows/saw-remote-api.yml
+    with:
+      saw_directories: "labs/SAW/rotl labs/SAW/addRow labs/SAW/null labs/SAW/Game/DLC labs/SAW/ceilLog2"
+
+  saw-demos:
+    uses: ./.github/workflows/saw-remote-api.yml
+    with:
+      saw_directories: "labs/Demos/SAW/Salsa20 labs/Demos/SAW/xxHash"
+    

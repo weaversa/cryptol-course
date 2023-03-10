@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 import unittest
 from saw_client import *
 from saw_client.crucible import cry_f
@@ -76,18 +76,13 @@ class xxhash64EasyTest(unittest.TestCase):
         connect(reset_server=True)
         if __name__ == "__main__": view(LogResults())
 
+        basedir = Path(__file__).absolute().parents[1] # Get absolute path to Salsa20/ 
+        cryname = basedir/"specs/xxhash.cry"
+        bcname  = basedir/"artifacts/xxhash64-ref.bc"
 
-        pwd = os.getcwd()
-        
-        cryname = pwd + "/labs/Demos/SAW/xxHash/xxhash.cry"
-        bcname = pwd + "/labs/Demos/SAW/xxHash/xxhash64-ref.bc"
+        cryptol_load_file(str(cryname))
 
-
-        print( "******" + cryname + "******")
-
-        cryptol_load_file(cryname)
-
-        mod = llvm_load_module(bcname)
+        mod = llvm_load_module(str(bcname))
 
         XXH_rotl64_result = llvm_verify(mod, "XXH_rotl64", Contract_XXH_rotl64(), script=ProofScript([yices([])]), check_sat=True)
         self.assertIs(XXH_rotl64_result.is_success(), True)

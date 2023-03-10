@@ -1,6 +1,6 @@
 include "llvm.saw";
 
-import "../Salsa20.cry";
+import "../specs/Salsa20.cry";
 
 let prover nm = yices;
 
