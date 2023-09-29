@@ -1,0 +1,22 @@
+module labs::TWINE::Block::_TWINE_80 = labs::TWINE::Block::_TWINE_ where
+
+import labs::TWINE::Block::TWINE_Common as Common
+
+// labs::TWINE::Block::TWINE parameters
+
+/** indicates 80-bit key length */
+type _k = 0
+
+/** TWINE-80 key schedule */
+_keySchedule: Common::KeySchedule _k
+_keySchedule K = RK
+  where
+    WKs = [ groupBy`{4} K ]
+        # [ ((take`{4} WK' <<< 1) # (drop WK')) <<< 4
+              where
+                WK' = Common::updateXORs WK ([1, 4, 7, 19:[5]]) (map Common::S (WK @@ [0, 16:[5]]) # [H, L])
+          | [H,L] <- Common::CONS_HL
+          | WK <- WKs ]
+
+    RK = join [ join (WK @@ ([1, 3, 4, 6, 13, 14, 15, 16:[5]]))
+              | WK <- WKs ]

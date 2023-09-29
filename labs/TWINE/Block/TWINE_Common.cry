@@ -1,0 +1,108 @@
+module labs::TWINE::Block::TWINE_Common where
+
+/** Key 0 for TWINE-80; Key 1 for TWINE-128 */
+type Key _k = [80 + 48 * _k]
+
+/** "Given ... and a round key, `RK:[32×36]`, ..." */
+type RoundKey = [32*36]
+
+/** "Round key `RK:[32*36]` is derived from the secret key, `K:[n]` with `n ∈ {80, 128}`, using the key schedule." */
+type KeySchedule _k = Key _k -> RoundKey
+
+/** "Given a 64-bit plaintext, `P:[64]`, ... the cipher produces the ciphertext `C:[64]`." */
+type Block = [64]
+
+/** round constants  */
+CONS_HL: [35][2][4]
+CONS_HL =
+  [ map zext`{4} (split HL)
+  | HL <- map drop`{2} (groupBy`{8} 0x_01_02_04_08_10_20_03_06_0C_18_30_23_05_0A_14_28_13_26_0F_1E_3C_3B_35_29_11_22_07_0E_1C_38_33_25_09_12_24/*_0B*/) ]
+
+/** Update sequence items at specified indices, XORed with specified values */
+updateXORs:
+  {w, k, ix, a}
+  (fin ix, fin k, Logic a) =>
+  [w]a -> [k][ix] -> [k]a -> [w]a
+updateXORs xs idxs vs =
+    updates xs idxs (xs @@ idxs ^ vs)
+
+/** "The S-box, S, is a 4-bit permutation defined as Table 1." */
+S: [4] -> [4]
+S x = (split 0x_C0_FA_2B_95_83_D7_1E_64 :[16][4]) @ x
+
+/**
+ * "The permutation of block indexes,
+ * `π : {0, . . . , 15} → {0, . . . , 15}`,
+ * where `j`th sub-block (for j = 0, . . . , 15) is mapped to 
+ * `π[j]`th sub-block, is depicted at Table 2."
+ */
+pi = [5, 0, 1, 4, 7, 12, 3, 8, 13, 6, 9, 2, 15, 10, 11, 14:[5]]
+
+/**
+ * inverse of `pi` permutation
+ */
+pi' = [1, 2, 11, 6, 3, 0, 9, 4, 7, 10, 13, 14, 5, 8, 15, 12:[5]]
+
+/** pi' inverts pi */
+pi'_inverts_pi: [16][4] -> Bit
+property pi'_inverts_pi subblocks =
+  subblocks @@ pi @@ pi' == subblocks
+
+/** pi inverts pi' */
+pi_inverts_pi': [16][4] -> Bit
+property pi_inverts_pi' subblocks =
+  subblocks @@ pi' @@ pi == subblocks
+
+/** type of cipher operation based on expanded round key */
+type RoundOp = RoundKey -> Block -> Block
+
+/**
+ * "Given a 64-bit plaintext, `P:[64]`, and a round key, 
+ * `RK:[32*36]`, the cipher produces the ciphertext `C(64)`."
+ */
+Enc: RoundOp
+Enc RK P = C
+  where
+    RKs = groupBy`{32} RK
+    Xs = [ groupBy`{4} P ]
+       # [ updateXORs Xi [1, 3..15:[4]] (map S ((Xi @@ [0,2..14:[4]]) ^ (groupBy`{4} RKi))) @@ pi'
+         | Xi <- Xs
+         | RKi <- take`{back=1} RKs ]
+    _Xi = Xs ! 0
+    _RKi = RKs ! 0
+    X = updateXORs _Xi [1, 3..15:[4]] (map S ((_Xi @@ [0,2..14:[4]]) ^ (groupBy`{4} _RKi)))
+    C = join X
+
+/**
+ * "The decryption of TWINE is quite similar to the encryption; we 
+ * use the same S-box and key schedule as used in the encryption, 
+ * with the inverse block shuffle."
+ */
+Dec: RoundOp
+Dec RK C = P
+  where
+    RKs = reverse (groupBy`{32} RK)
+    Xs = [ groupBy`{4} C ]
+       # [ updateXORs Xi [1, 3..15:[4]] (map S ((Xi @@ [0,2..14:[4]]) ^ (groupBy`{4} RKi))) @@ pi
+         | Xi <- Xs
+         | RKi <- take`{back=1} RKs ]
+    _Xi = Xs ! 0
+    _RKi = RKs ! 0
+    X = updateXORs _Xi [1, 3..15:[4]] (map S ((_Xi @@ [0,2..14:[4]]) ^ (groupBy`{4} _RKi)))
+    P = join X
+
+/**
+ * Decrypting plaintext encrypted with the same round key produces 
+ * the original plaintext
+ */
+recovery: RoundKey -> Block -> Bit
+property recovery RK P =
+    Dec RK (Enc RK P) == P
+
+/**
+ * The same round key encrypts different plaintext to different 
+ * ciphertext.
+ */
+injectivity: RoundKey -> Block -> Block -> Bit
+property injectivity RK P1 P2 =
+    P1 != P2 ==> Enc RK P1 != Enc RK P2

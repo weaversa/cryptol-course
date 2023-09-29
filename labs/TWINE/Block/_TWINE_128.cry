@@ -1,0 +1,22 @@
+module labs::TWINE::Block::_TWINE_128 = labs::TWINE::Block::_TWINE_ where
+
+import labs::TWINE::Block::TWINE_Common as Common
+
+// labs::TWINE::Block::_TWINE parameters
+
+/** indicates 128-bit key length */
+type _k = 1
+
+/** TWINE-128 key schedule */
+_keySchedule: Common::KeySchedule _k
+_keySchedule K = RK
+  where
+    WKs = [ groupBy`{4} K ]
+        # [ ((take`{4} WK' <<< 1) # (drop WK')) <<< 4
+              where
+                WK' = Common::updateXORs WK ([1, 4, 23, 7, 19]:[_][5]) (map Common::S (WK @@ [0, 16, 30:[5]]) # [H, L])
+          | [H,L] <- Common::CONS_HL
+          | WK <- WKs ]
+
+    RK = join [ join (WK @@ ([2, 3, 12, 15, 17, 18, 28, 31]:[_][5]))
+              | WK <- WKs ]
