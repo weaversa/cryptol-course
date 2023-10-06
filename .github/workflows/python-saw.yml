@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/weaversa/cryptol-course:$CRYPTOL_COURSE_TAG
+      image: "../../.devcontainer/Dockerfile"
       options: --user root
     steps:
       - name: Checkout
@@ -32,7 +32,7 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/weaversa/cryptol-course:$CRYPTOL_COURSE_TAG
+      image: "../../.devcontainer/Dockerfile"
       options: --user root
     steps:
       - name: Checkout
@@ -53,7 +53,7 @@ jobs:
   saw-tutorial:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/weaversa/cryptol-course:$CRYPTOL_COURSE_TAG
+      image: "../../.devcontainer/Dockerfile"
       options: --user root
     steps:
       - name: Checkout

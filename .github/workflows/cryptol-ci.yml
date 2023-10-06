@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       cryptol-remote-api:
-        image: ghcr.io/galoisinc/cryptol-remote-api:$CRYPTOL_TAG
+        image: "../../.devcontainer/Dockerfile"
         ports:
           - 8080:8080
         options: -v ${{ github.workspace }}:/home/cryptol
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       cryptol-remote-api:
-        image: ghcr.io/galoisinc/cryptol-remote-api:$CRYPTOL_TAG
+        image: "../../.devcontainer/Dockerfile"
         ports:
           - 8080:8080
         options: -v ${{ github.workspace }}:/home/cryptol
@@ -57,7 +57,7 @@ jobs:
     runs-on: ubuntu-latest
     services:
       cryptol-remote-api:
-        image: ghcr.io/galoisinc/cryptol-remote-api:$CRYPTOL_TAG
+        image: "../../.devcontainer/Dockerfile"
         ports:
           - 8080:8080
         options: -v ${{ github.workspace }}:/home/cryptol

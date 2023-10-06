@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/weaversa/cryptol-course:$CRYPTOL_COURSE_TAG
+      image: "../../.devcontainer/Dockerfile"
       options: --user root
     defaults:
       run:
