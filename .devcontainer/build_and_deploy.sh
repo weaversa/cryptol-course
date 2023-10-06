@@ -1,2 +1,2 @@
-docker build - -t ghcr.io/weaversa/cryptol-course:2.13 < Dockerfile
-docker push ghcr.io/weaversa/cryptol-course:2.13
+docker build - -t ghcr.io/weaversa/cryptol-course:$CRYPTOL_COURSE_TAG < Dockerfile
+docker push ghcr.io/weaversa/cryptol-course:$CRYPTOL_COURSE_TAG

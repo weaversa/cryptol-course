@@ -1,12 +1,15 @@
 name: Snippet Tests
 
+env:
+  CRYPTOL_COURSE_TAG: nightly
+
 on: [push, pull_request]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/weaversa/cryptol-course:2.13
+      image: ghcr.io/weaversa/cryptol-course:$CRYPTOL_COURSE_TAG
       options: --user root
     defaults:
       run:

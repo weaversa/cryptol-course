@@ -1,4 +1,4 @@
-image: ghcr.io/weaversa/cryptol-course:2.13
+image: ghcr.io/weaversa/cryptol-course:nightly
 
 tasks:
   - command: gp open README.md
