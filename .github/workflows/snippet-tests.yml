@@ -6,7 +6,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/weaversa/cryptol-course/nightly
+      image: ghcr.io/weaversa/cryptol-course:nightly
       options: --user root
     defaults:
       run:
