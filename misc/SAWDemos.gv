@@ -13,20 +13,21 @@ digraph  {
   
   ArithmeticVerifications    [URL="../labs/Demos/SAW/ArithmeticVerifications/ArithmeticVerifications.html"];
   BitTwiddling               [URL="../labs/Demos/SAW/Bittwiddling/Bittwiddling.html"];
+  Salsa20                    [URL="../labs/Demos/SAW/Salsa20/Salsa20.html"];
 
   // branch nodes
   node [fillcolor="white"];
-  
 
   // newline/space labels
   
   ArithmeticVerifications    [label = "Arithmetic\nVerifications"]
   BitTwiddling               [label = "Bit Twiddling"]
+  Salsa20                    [label = "Salsa20"]
 
   // recommended flow
   edge [color=red];
   
-  ArithmeticVerifications -> BitTwiddling;
+  ArithmeticVerifications -> BitTwiddling -> Salsa20;
 
   // branches
   edge [color=black];
