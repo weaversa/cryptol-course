@@ -9,14 +9,19 @@ Before working through this lab, you'll need
 
 You'll also need experience with
   * loading modules and evaluating functions in the interpreter,
-  * parameterized modules
-  * ...
+  * the `:prove` command,
+  * writing functions and properties,
+  * sequence comprehensions,
+  * functions with curried parameters, and
+  * parameterized modules.
 
 ## Skills You'll Learn
 
 By the end of this lab you will have gained experience with Cryptol's
-new module system, using it to implement a complex module with
-multiple submodules and interfaces.
+new module system to define common *interfaces* and *functors* to
+generate related implementations and properties, enabling you to
+create reusable families of cryptographic algorithms and modes, and 
+*nested modules* to combine these into one or more Cryptol modules.
 
 ## Load This Module
 
@@ -30,7 +35,9 @@ running in the `cryptol-course` directory with:
 Loading module Cryptol
 Cryptol> :m labs::NewModuleSystem::NewModuleSystemAnswers
 Loading module Cryptol
-Loading module labs::NewModuleSystem::NewModuleSystemAnswers
+Loading interface module `parameter` interface of labs::SimonSpeck::Simon::Simon
+Loading module labs::SimonSpeck::Simon::Simon
+Loading mdoule labs::NewModuleSystem::NewModuleSystemAnswers
 ```
 
 We start by defining a new module for this lab:
@@ -40,764 +47,1002 @@ module labs::NewModuleSystem::NewModuleSystemAnswers where
 ```
 
 You do not need to enter the above into the interpreter; the previous 
-`:m ...` command loaded this literate Cryptol file automatically. 
+`:m ...` command loaded this literate Cryptol file automatically.  
 In general, you should run `Xcryptol-session` commands in the 
 interpreter and leave `cryptol` code alone to be parsed by `:m ...`.
 
-# Background
+# Cryptol's New Module System
 
-Before proceeding, recall a prior lab describing
-[parameterized modules](../SimonSpeck/SimonSpeck.md)
-for the SIMON and Speck algorithms. That lab required us to split
-each parameter setting into its own module:
+In a previous lab on parameterized modules, you learned how to specify
+[*parameterized modules*](../SimonSpeck.md) and use these to generate
+families of related
+[Simon](https://en.wikipedia.org/wiki/Simon_(cipher)) and
+[Speck](https://en.wikipedia.org/wiki/Speck_(cipher)) modules from
+common parameters.  Now suppose we wish to define
+[block cipher modes of operation](https://en.wikipedia.org/wiki/Block_cipher_modes_of_operation)
+such as
+[Output Feedback (OFB)](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Output_feedback_(OFB))
+or [authenticated encryption modes](https://en.wikipedia.org/wiki/Authenticated_encryption)
+such as
+[Galois Counter Mode (GCM)](https://en.wikipedia.org/wiki/Galois/Counter_Mode).
+Using the techniques covered so far, we would have to specify similar
+`parameter` blocks for each of the different modes, define similar
+`property`s for them, and generally repeat ourselves a lot, which is
+[WET](https://en.wikipedia.org/wiki/Don%27t_repeat_yourself#WET) (bad).
 
-> But because this lab introduces further concepts around the
-> definition and use of modules, this lab will not be entirely
-> self-contained in this file.
+In this module, we will leverage Cryptol 3.0's powerful
+[new module system](https://galoisinc.github.io/cryptol/master/Modules.html)
+to define:
+  * a reusable
+    [`interface`](https://galoisinc.github.io/cryptol/master/Modules.html#interface-modules)
+    for block ciphers
+  * multiple block cipher *implementations* of this interface
+  * multiple block cipher modes as
+    [*functors*](https://galoisinc.github.io/cryptol/master/Modules.html#instantiating-a-parameterized-module)
+    to *instantiate* with any of these block cipher implementations
+  * functors to generate common properties and algorithm/mode-specific
+    test vectors from implementations of this same interface
+  * Cryptol batch files to check test vectors and
+    SAW proof scripts to verify more complex properties
 
-Another more subtle limitation is that it is tricky to specify
-multiple layers of parameterized modules, so specifications often
-resort to repeating parameters. For SIMON, block size is repeated
-for each corresponding key size and number of rounds, but this is
-minor because block size is a simple integer. But for more complex
-specifications like
-[SHA-2](https://github.com/GaloisInc/cryptol-specs/tree/master/Primitive/Keyless/Hash/SHA2),
-complex parameters like `K` (a sequence of words of bitlength 32 or
-64) are repeated for different digest lengths at each word size,
-potentially introducing easy-to-miss inconsistencies.
+This is a tall order, but powerful new tools and features will help.
+Let's get started...
 
-# New Module System
+# Nested Modules (`submodule`)
 
-These limitations motivated customers to ask Galois to
-[update the module system](https://github.com/GaloisInc/cryptol/issues/815)
-to support layered specifications, cipher modes, common interfaces,
-and other such complexities. The long-awaited update will soon be (or
-have been) [merged](https://github.com/GaloisInc/cryptol/pull/1363)
-and
-[documented](https://github.com/GaloisInc/cryptol/blob/master/docs/RefMan/Modules.rst).
+First, an administrative item: Cryptol's new module system is complex!
+For consistency with other modules in our Cryptol course, we present
+this as a single
+[*nested module*](https://galoisinc.github.io/cryptol/master/Modules.html#nested-modules).
+This is a new feature that enables us to present multiple
+`submodule`s -- e.g. multiple instances of a common parameterized
+module -- in a single file, which was not previously an option for
+examples like the earlier
+[**Parameterized Modules**](../SimonSpeck/SimonSpeck.md) lab.
 
-## `submodule`: Nested Modules
+# Symmetric Block Ciphers and Modes of Operation
 
-The new module system supports `submodule`s that can be nested into
-other (`sub`)`module`s:
+Following along from [1], a *symmetric block cipher* comprises a pair
+of algorithms:
+  * *encryption* (a "forward cipher operation") and
+  * *decryption* (a "reverse cipher operation")
+
+Each accepts...
+  * a **key** (of arbitrary type; usually a bit string)
+  * a **block** (a bit string)
+
+...and produces the corresponding ciphertext or plaintext.
+
+A **block cipher mode of operation** applies an underlying symmetric
+block cipher over some number of blocks (or sub-blocks).
+
+# Interfaces
+
+Using prior techniques for parameterized modules, we might start each 
+mode's (sub)module with a parameter block (commented out here because
+that's not how we'll finish...):
+
+(Here, we use the terms `encipher` and `decipher` to distinguish block
+cipher operations from those for modes, in keeping with [1].)
 
 ```cryptol
-  submodule Hash where
-    submodule XXHash where
-      TODO = undefined
-
-    submodule SHA where
-      TODO = undefined
-
-      submodule SHA2 where
-        TODO = undefined
-```
-
-This removes a previous limitation -- multiple parameterizations no
-longer have to be specified in different modules.
-
-## Interfaces, Parameterization, Abstraction, and Instantiation
-
-In the new module system, an _interface_ specifies _parameters_ that an
-_abstract_ (sub)module can _instantiate_ to produce an _implementation_.
-Let's see this in a simple contrived example:
-
-```cryptol
-  submodule Contrivance where
-    interface submodule I_n where
-      type n : #
-      type constraint (2 >= n, n >= 1)
-
-    submodule A_n where
-      import interface submodule I_n
-
-      type w = 32*n
-      type W = [w]
-
-      z : W
-      z = zero
-
-    submodule P_1 where
-      type n = 1
-
-    submodule P_2 where
-      type n = 2
-
-    submodule Z_1 = submodule A_n { submodule P_1 }
-    submodule Z_2 = submodule A_n { submodule P_2 }
+/*
+parameter
+  /** arbitrary key type */
+  type K : *
   
-    import submodule Z_1 as Z32
-    import submodule Z_2 as Z64
+  /** block size (in bits) */
+  type b : #
   
-    property zero_32 = Z32::z == zero`{[32]}
-    property zero_64 = Z64::z == zero`{[64]}
+  /** forward cipher operator */
+  encipher : K -> [b] -> [b]
+  
+  /** reverse cipher operator */
+  decipher : K -> [b] -> [b]
+*/
 ```
 
-The above snippet introduces a `submodule` `Contrivance`. Within, it
-defines an `interface` with a numeric parameter `n` bound to the
-interval `[1,2]`. An abstract submodule `A_n` requests a
-parameterization satisfying `I_n`, and produces an implementation
-defining `z`, a `zero` value of `type W = [w]`, where `type w = 32*n`.
-Parameterizations `P_1` and `P_2` specify `n` values of `1` and `2`,
-respectively, each satisfying `I_n`. Parameterizations `P_1` and `P_2`
-instantiate `A_n` to define `Z_1` and `Z_2`, respectively, with `z` as
-a corresponding `32`- or `64`-bit `zero`, as expressed by properties
-`zero_32` and `zero_64`, respectively; each property requires the
-instantiated submodules to be imported with aliases (here, `Z32` and
-`Z64`) to distinguish their respective `z` definitions:
-
-```Xcryptol-session
-labs::NewModuleSystem::NewModuleSystemAnswers> :prove Contrivance::zero_32
-:prove Contrivance::zero_32
-    Q.E.D.
-(Total Elapsed Time: 0.035s, using "Z3")
-labs::NewModuleSystem::NewModuleSystemAnswers> :prove Contrivance::zero_64
-:prove Contrivance::zero_64
-    Q.E.D.
-(Total Elapsed Time: 0.031s, using "Z3")
-```
-
-All of the above were defined within the `Contrivance` submodule,
-hence the leading `Contrivance::` in the property names.
-
-## Scope
-
-Only the top-level definitions `zero_32` and `zero_64` are in scope
-after loading the top-level module from this point. Nested submodules
-are not exported; to make `z` from each submodule available as well,
-they must be reassigned explicitly:
+But this approach already repeats itself, and we'd have to start each
+(sub)module with the `parameter`s in this block (along with any others
+unique to the mode).  It would be better to reuse the common block
+cipher parameters, and we can do so by defining an **interface** with
+reusable **type aliases**:
 
 ```cryptol
-    z32 = Z32::z
-    z64 = Z64::z
-```
-
-```Xcryptol-session
-labs::NewModuleSystem::NewModuleSystemAnswers> :h Contrivance
-
-Module Contrivance exports:
+/** common parameters for symmetric block ciphers */
+interface submodule I_BlockCipher where
+  /** arbitrary key type */
+  type Key : *
   
-   
-  zero_32 : Bit
-  zero_64 : Bit
-  z32 : W
-  z64 : W
-labs::NewModuleSystem::NewModuleSystemAnswers> Contrivance::z32
-0x00000000
-labs::NewModuleSystem::NewModuleSystemAnswers> Contrivance::z64
-0x0000000000000000
-labs::NewModuleSystem::NewModuleSystemAnswers> Contrivance::zero_32
-True
-labs::NewModuleSystem::NewModuleSystemAnswers> Contrivance::zero_64
-True
+  /** block size (in bits) */
+  type b : #
+  
+  /** type alias for a block, a bit string of width `b` */
+  type Block = [b]
+  
+  /** common type for `encipher` and `decipher` */
+  type Op = Key -> Block -> Block
+  
+  /** forward cipher operator */
+  encipher : Op
+  
+  /** reverse cipher operator */
+  decipher : Op
 ```
 
-# Practicum
+# Functors
 
-Having introduced the new module system, let's apply it to SIMON and
-compare the former and new module systems.
-
-## Simon says what?
-
-Recall that SIMON is parameterized on four constrained numeric (`#`)
-`type`s:
-  * `n` (word size)
-  * `m` (words per key)
-  * `T` (rounds in key schedule)
-  * `j` (index of z-sequence)
-
-**EXERCISE**: Define an `interface submodule` comprising these types
-and their constraints.
-(**Hint**: Just copy them from the previous lab.)
+Each mode's (sub)module can then `import` this `interface` to serve the
+same purpose as previously for `parameter` blocks: to indicate that the
+module needs these parameters:
 
 ```cryptol
-  submodule SIMON where
-    /** interface specifying parameters for SIMON block cipher */
-    interface submodule I_SIMON where
-      /** word size */
-      type n : #
-      type constraint (16 <= n, n <= 64)
+/* (Not quite ready to define these modes yet...
 
-      /** number of words in key */
-      type m : #
-      type constraint (2 <= m, m <= 4)
-
-      /** number of rounds in key schedule */
-      type T : #
-      type constraint (32 <= T, T <= 72)
-
-      /** index of z-sequence used (i.e. use sequence z_j) */
-      type j : #
-      type constraint (0 <= j, j <= 4)
+submodule ECB where
+  import interface submodule I_BlockCipher
+  // Now `type K`, `type b`, `encipher` and `decipher` are in scope
+  // But unfortunately, `type Block` and `type Op` are not...
+*/
 ```
 
-Recall that, given these parameters, SIMON exports:
-  * derived `type`s:
-    * `type blockSize = 2 * n`
-    * `type keySize = m * n`
-  * block cipher functions:
-    * `encrypt : [keySize] -> [blockSize] -> [blockSize]`
-    * `decrypt : [keySize] -> [blockSize] -> [blockSize]`
-  * properties:
-    * `EncryptDecryptIdentity : [keySize] -> [blockSize] -> Bool`
-    * `DecryptEncryptIdentity : [keySize] -> [blockSize] -> Bool`
+This is an example of a
+[**functor**](https://galoisinc.github.io/cryptol/master/Modules.html#importing-an-interface-module)
+-- the modern, more versatile update to parameterized modules.  Later,
+we will see that such functors can accept multiple interfaces, and
+define additional type constraints on their implementations.
 
-These exported definitions rely on numerous `private` ones.
+# Instantiation
 
-Eventually, we will need to (re)implement `encrypt` and `decrypt`
-functions in an abstract submodule that imports `I_SIMON`. Testing the
-implementations will require parameterizations satisfying `I_n` to
-instantiate the abstract submodule. So let's start there:
-
-**EXERCISE**: Define submodules with parameters satisfying `I_n` for
-each approved `n` (word size) and `m` (words per key), or just a few
-if you're so inclined. (`T` and `j` depend on `n` and `m`.)
-(**Hint**: For each `simon_2n_mn.cry`, copy its `parameter` block body
-into a `submodule P_SIMON_2n_mn` (or `P_SIMON_n_m` if you prefer).
+As noted above, interfaces do not (yet) export their type aliases, but
+it would be nice for users to have access to these.  We'll quickly do
+this with a functor that imports the same interface and exports the
+(copied) type aliases.  This also demonstrates an **interface alias**
+to distinguish the interface's aliases (which would otherwise conflict
+despite not being accessible) from the functor's:
 
 ```cryptol
-    submodule P_SIMON_32_64 where
-      type n = 16
-      type m = 4
-      type T = 32
-      type j = 0
+submodule F_BlockCipher_Aliases where
+  // aliased interface import to avoid conflict
+  import interface submodule I_BlockCipher as I
+
+  /** type alias for a block, a bit string of width `b` */
+  type Block = [I::b]
   
-    submodule P_SIMON_48_72 where
-      type n = 24
-      type m = 3
-      type T = 36
-      type j = 0
-
-    submodule P_SIMON_48_96 where
-      type n = 24
-      type m = 4
-      type T = 36
-      type j = 1
-
-    submodule P_SIMON_64_96 where
-      type n = 32
-      type m = 3
-      type T = 42
-      type j = 2
-
-    submodule P_SIMON_64_128 where
-      type n = 32
-      type m = 4
-      type T = 44
-      type j = 3
-
-    submodule P_SIMON_96_96 where
-      type n = 48
-      type m = 2
-      type T = 52
-      type j = 2
-
-    submodule P_SIMON_96_144 where
-      type n = 48
-      type m = 3
-      type T = 54
-      type j = 3
-
-    submodule P_SIMON_128_128 where
-      type n = 64
-      type m = 2
-      type T = 68
-      type j = 2
-
-    submodule P_SIMON_128_192 where
-      type n = 64
-      type m = 3
-      type T = 69
-      type j = 3
-
-    submodule P_SIMON_128_256 where
-      type n = 64
-      type m = 4
-      type T = 72
-      type j = 4
+  /** common type for `encipher` and `decipher` */
+  type Op = I::Key -> Block -> Block
 ```
 
-**EXERCISE**: Define an abstract `submodule` `A_SIMON` that requests a
-parameterization satisfying `I_SIMON` and exports an implementation
-with the above definitions, and instantiate this with each of the
-above parameterizations into concrete submodules. `:check` your work.
-(**Hint**: Just copy the previous definitions from `Simon.cry` from
-the previous lab, and instatiate them using lines of the form
-`submodule SIMON_2n_mn = submodule A_SIMON { submodule P_SIMON_2n_mn }` (or
-likewise if you used another naming scheme earlier).
+Then a `mode` can...
 
 ```cryptol
-    /**
-     * abstraction that produces a SIMON block cipher implementation
-     * from parameters satisfying the `I_SIMON` interface
-     */
-    submodule A_SIMON where
-      import interface submodule I_SIMON
-
-      type blockSize = 2 * n
-      type keySize   = m * n
-
-      /**
-       * The SIMON block cipher, encryption direction. See [1] for further
-       * details.
-       *
-       * [1] Beaulieu R., Shors D., et. al. "The Simon and Speck Families
-       * of Lightweight Block Ciphers". e-print-2013-404.pdf.
-       */
-      encrypt : [keySize] -> [blockSize] -> [blockSize]
-      encrypt K P = join (last (encryptList K P))
-
-      /**
-       * The SIMON block cipher, decryption direction. See [1] for further
-       * details.
-       *
-       * [1] Beaulieu R., Shors D., et. al. "The Simon and Speck Families
-       * of Lightweight Block Ciphers". e-print-2013-404.pdf.
-       */
-      decrypt : [keySize] -> [blockSize] -> [blockSize]
-      decrypt K P = join (last (decryptList K P))
-
-      /**
-       * EncryptDecryptRoundIdentity k x = Rk' k (Rk k x) == x
-       */
-      property EncryptDecryptRoundIdentity k x =
-        Rk' k (Rk k x) == x
-
-      /**
-       * DecryptEncryptRoundIdentity k x = Rk k (Rk' k x) == x
-       */ 
-      property DecryptEncryptRoundIdentity k x = 
-        Rk k (Rk' k x) == x
-
-      // These properties take too long to verify with Z3
-      // Try proving with abc
-      //   :s prover=abc   or
-      //   :s prover=any
-      property EncryptDecryptIdentity k x =
-        decrypt k (encrypt k x) == x
-  
-      property DecryptEncryptIdentity k x = 
-        encrypt k (decrypt k x) == x
-
-      private
-
-          // We define the sequences u, v, w, and z_j following the paper
-          u = join(repeat`{inf} 0b1111101000100101011000011100110)
-          v = join(repeat`{inf} 0b1000111011111001001100001011010)
-          w = join(repeat`{inf} 0b1000010010110011111000110111010)
-
-          z0 = u
-          z1 = v
-          z2 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} u ])
-          z3 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} v ])
-          z4 = join([ dibit ^ 0b01 | dibit <- groupBy`{2} w ])
-
-          // Z will be the sequence selected by the module parameter j
-          Z = [z0, z1, z2, z3, z4]@(`j:[width j])
-
-          // Round Function and auxiliary functions
-    
-          /**
-           * f is used in the round function and appears on page 8 of [1]
-           */
-          f x = (x <<< 1) && (x <<< 8) ^ (x <<< 2)
-    
-          /**
-           * The SIMON round function
-           */ 
-          Rk : [n] -> [2][n] -> [2][n]
-          Rk k [x, y] = [x', y']
-            where
-              x'  = y ^ (f x) ^ k
-              y'  = x
-
-          /**
-           * The SIMON inverse round function
-           */
-          Rk' : [n] -> [2][n] -> [2][n]
-          Rk' k [x, y] = [x', y']
-            where
-              x'  = y
-              y'  = x ^ (f y) ^ k
-              
-          /**
-           * "tmp" appears as the name of a variable in the SIMON key
-           * expansion sample implementation on page 13. The tmp function
-           * below captures the possible final values the expression has,
-           * taking into account the type parameter `m` containing the
-           * number of key words.
-           */
-          tmp: [n] -> [n] -> [n]
-          tmp k1 k2 = r
-            where 
-              r  = t ^ (t >>> 1)
-              t  = if `m == 0x4 then (t' ^ k2) else t'
-              t' = (k1 >>> 3)
-
-          /**
-           * The SIMON Key Expansion function.
-           */
-          KeyExpansion : [keySize] -> [T][n]
-          KeyExpansion K = take Ks
-            where
-              Kis : [m][n]
-              Kis = reverse (split K)
-              Ks : [inf][n]
-              Ks = Kis
-                 # [ ~k0 ^ (tmp k1 k2) ^ (zext [z]) ^ (zext 0x3) 
-                   | k0 <- Ks
-                   | k1 <- drop`{m-1} Ks
-                   | k2 <- drop`{max m 3 - 3} Ks // gadget to typecheck "drop`{m-3}"
-                   | z <- Z ]
-
-          /**
-           * SIMON decryption with intermediate values for each round
-           * produced as a list. Some test vectors are available to compare
-           * these intermediate values.
-           */
-          decryptList: [keySize] -> [blockSize] -> [T+1][2][n]
-          decryptList K C = Ps
-            where
-              Cs = split C
-              Ks = reverse (KeyExpansion K)
-              Ps = [ Cs ] # [ Rk' k xy | k <- Ks | xy <- Ps]
-
-          /**
-           *  SIMON encryption with intermediate values for each round
-           * produced as a list. Some test vectors are available to compare
-           * these intermediate values.
-           */
-          encryptList: [keySize] -> [blockSize] -> [T+1][2][n]
-          encryptList K P = Cs
-            where
-              Ps = split P
-              Ks = KeyExpansion K
-              Cs = [ Ps ] # [ Rk k xy | k <- Ks | xy <- Cs]
-
-    submodule SIMON_32_64   = submodule A_SIMON { submodule P_SIMON_32_64 }
-    submodule SIMON_48_72   = submodule A_SIMON { submodule P_SIMON_48_72 }
-    submodule SIMON_48_96   = submodule A_SIMON { submodule P_SIMON_48_96 }
-    submodule SIMON_64_96   = submodule A_SIMON { submodule P_SIMON_64_96 }
-    submodule SIMON_64_128  = submodule A_SIMON { submodule P_SIMON_64_128 }
-    submodule SIMON_96_96   = submodule A_SIMON { submodule P_SIMON_96_96 }
-    submodule SIMON_96_144  = submodule A_SIMON { submodule P_SIMON_96_144 }
-    submodule SIMON_128_128 = submodule A_SIMON { submodule P_SIMON_128_128 }
-    submodule SIMON_128_192 = submodule A_SIMON { submodule P_SIMON_128_192 }
-    submodule SIMON_128_256 = submodule A_SIMON { submodule P_SIMON_128_256 }
+/*
+  import interface submodule I_BlockCipher as I
+  import submodule F_BlockCipher_Aliases { interface I } (Block, Op)
+*/
 ```
 
-```Xcryptol-session
-labs::NewModuleSystem::NewModuleSystemAnswers> :check
-property Contrivance::zero_32 Using exhaustive testing.
+...and reuse these aliases in its own definitions.
+
+Of course, parameterizable block cipher modes need block ciphers!  We
+recently implemeented the Simon and Speck block ciphers, which are
+themselves parameterized.  We just need to adapt these to our fancy
+new interface...
+
+## Explicit Instantiation
+
+We could do so explicitly...
+
+```cryptol
+/** Simon 32/64 implementation of `labs::SimonSpeck::Simon::Simon`'s parameters */
+submodule P_Simon_32_64' where
+  type n = 16
+  type m = 4
+  type T = 32
+  type j = 0
+
+/** Simon 32/64 instance */
+submodule Simon_32_64' = labs::SimonSpeck::Simon::Simon { submodule P_Simon_32_64' }
+
+/** explicit implementation of `submodule I_BlockCipher` with Simon 32/64 */
+submodule P_Simon_32_64_BlockCipher' where
+  import submodule Simon_32_64' as S
+  type Key = [S::keySize]
+  type b = S::blockSize
+  encipher = S::encrypt
+  decipher = S::decrypt
+```
+
+This approach makes sense if we expect (us or our users) to refer to
+these submodules later.
+
+`labs::SimonSpeck::Simon::Simon` can be instantiated because its `parameter`
+block is treated by the new module system as an
+[**anonymous interface**](https://galoisinc.github.io/cryptol/master/Modules.html#anonymous-interface-modules).
+
+## Anonymous Instantiation
+
+If we don't intend to reuse these underlying implementations, we can also
+implement our interface with an
+[**anonymous instantiation**](https://galoisinc.github.io/cryptol/master/Modules.html#anonymous-instantiation-arguments):
+
+```cryptol
+/** anonymous implementation of `submodule I_BlockCipher` with Simon 32/64 */
+submodule Simon_32_64_BlockCipher'' where
+  // ...by importing an anonymous instance of `labs::SimonSpeck::Simon::Simon` into a namespace `S`
+  import labs::SimonSpeck::Simon::Simon as S where
+    type n = 16
+    type m = 4
+    type T = 32
+    type j = 0
+
+  type Key = [S::keySize]
+  type b = S::blockSize
+  encrypt = S::encrypt
+  decrypt = S::decrypt
+```
+
+**Exercise**: Implement (define submodules that define types and values
+for) `I_BlockCipher` for other Simon and Speck parameter sets, from
+solutions (yours or ours) for
+[`labs::SimonSpeck::SimonSpeck`](../SimonSpeck/SimonSpeck.md).  Later,
+we will define multiple block cipher modes for each of these block
+ciphers and parameter sets...
+
+**Hint**: This will be less tedious if you define an `interface` and
+functor with which to "adapt" prior solutions as implementations of
+`I_BlockCipher`.  Instances would look something like:
+
+`submodule P_Speck_64_128_BlockCipher = submodule F_Speck_BlockCipher { labs::SimonSpeck::SpeckAnswers::speck_64_128 }`
+
+Start with explicitly named submodules. These can always be
+"anonymized" later if it is obvious they won't be reused.
+
+**Solution**:
+
+```cryptol
+/** interface to collect relevant definitions from Simon instance */
+interface submodule I_Simon_Inst where
+  type keySize : #
+  type blockSize : #
+  
+  type Key = [keySize]
+  type Block = [blockSize]
+  type Op = Key -> Block -> Block
+  
+  encrypt : Op
+  decrypt : Op
+
+// generalization of `Simon_32_64_BlockCipher` above
+/** generate `I_BlockCipher` implementation from Simon instance */
+submodule F_SimonSpeck_BlockCipher where
+  import interface submodule I_Simon_Inst as S
+
+  // export definitions for `I_BlockCipher` parameters
+  type Key = [S::keySize]
+  type b = S::blockSize
+  
+  encipher = S::encrypt
+  decipher = S::decrypt
+
+/** `I_BlockCipher` implementation for Simon 32/64 */
+submodule P_Simon_32_64_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::Simon::simon_32_64 }
+
+/** `I_BlockCipher` implementation for Simon 48/72 */
+submodule P_Simon_48_72_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::Simon::simon_48_72 }
+
+/** `I_BlockCipher` implementation for Simon 48/96 */
+submodule P_Simon_48_96_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::Simon::simon_48_96 }
+
+/** `I_BlockCipher` implementation for Simon 64/96 */
+submodule P_Simon_64_96_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::Simon::simon_64_96 }
+
+/** `I_BlockCipher` implementation for Simon 64/128 */
+submodule P_Simon_64_128_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::Simon::simon_64_128 }
+
+/** `I_BlockCipher` implementation for Simon 96/96 */
+submodule P_Simon_96_96_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::Simon::simon_96_96 }
+
+/** `I_BlockCipher` implementation for Simon 96/144 */
+submodule P_Simon_96_144_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::Simon::simon_96_144 }
+
+/** `I_BlockCipher` implementation for Simon 128/128 */
+submodule P_Simon_128_128_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::Simon::simon_128_128 }
+
+/** `I_BlockCipher` implementation for Simon 128/192 */
+submodule P_Simon_128_192_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::Simon::simon_128_192 }
+
+/** `I_BlockCipher` implementation for Simon 128/256 */
+submodule P_Simon_128_256_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::Simon::simon_128_256 }
+
+/** `I_BlockCipher` implementation for Speck 32/64 */
+submodule P_Speck_32_64_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::SpeckAnswers::speck_32_64 }
+
+/** `I_BlockCipher` implementation for Speck 48/72 */
+submodule P_Speck_48_72_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::SpeckAnswers::speck_48_72 }
+
+/** `I_BlockCipher` implementation for Speck 48/96 */
+submodule P_Speck_48_96_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::SpeckAnswers::speck_48_96 }
+
+/** `I_BlockCipher` implementation for Speck 64/96 */
+submodule P_Speck_64_96_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::SpeckAnswers::speck_64_96 }
+
+/** `I_BlockCipher` implementation for Speck 64/128 */
+submodule P_Speck_64_128_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::SpeckAnswers::speck_64_128 }
+
+/** `I_BlockCipher` implementation for Speck 96/96 */
+submodule P_Speck_96_96_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::SpeckAnswers::speck_96_96 }
+
+/** `I_BlockCipher` implementation for Speck 96/144 */
+submodule P_Speck_96_144_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::SpeckAnswers::speck_96_144 }
+
+/** `I_BlockCipher` implementation for Speck 128/128 */
+submodule P_Speck_128_128_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::SpeckAnswers::speck_128_128 }
+
+/** `I_BlockCipher` implementation for Speck 128/192 */
+submodule P_Speck_128_192_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::SpeckAnswers::speck_128_192 }
+
+/** `I_BlockCipher` implementation for Speck 128/256 */
+submodule P_Speck_128_256_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::SpeckAnswers::speck_128_256 }
+```
+
+## Adapting other block ciphers
+
+In the last exercise, you adapted your own prior work to fit out new
+`I_BlockCipher` interface.  We can also adapt other simple block
+ciphers, such as DES in the
+[Cryptographic Proofs](../CryptoProofs/CryptoProofsAnswers.md) lab.
+
+```cryptol
+import specs::Primitive::Symmetric::Cipher::Block::DES (DES)
+```
+
+**Exercise**: Adapt `DES` with a submodule that provides all parameters
+required by `interface submodule I_BlockCipher`:
+
+**Solution**:
+
+```cryptol
+submodule P_DES_BlockCipher where
+  type Key = [64]
+  type b = 64
+  
+  encipher = DES.encrypt
+  decipher = DES.decrypt
+```
+
+# Block Cipher Modes of Operation: ECB, CBC, ...
+
+Having implemented various block ciphers, we can now apply them toward
+**block cipher modes of operation** such as:
+  - [Electronic Codebook (ECB)](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Electronic_codebook_(ECB))
+  - [Cipher Block Chaining (CBC)](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher_block_chaining_(CBC))
+  - [Cipher Feedback (CFB)](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#Cipher_feedback_(CFB))
+  - ...
+
+Each cipher mode repeatedly applies a block cipher to multiple blocks
+in a message -- often with an **initialization vector** and
+intermediate transformations, and possibly after **padding** the
+message to evenly divide it into blocks -- to produce a ciphertext
+message with the same number of blocks.  (Authenticated encryption
+generates a **signature** alongside the ciphertext.)
+
+## Electronic Codebook (ECB)
+
+ECB is a simple block cipher mode that just enciphers each block, with
+no intermediate transformations to **diffuse** the message, a weakness
+that disqualifies it for use in security-critical settings.  But just
+as a pedagogical exercise, we can define ECB in Cryptol...
+
+**Exercise**: In the specification of ECB mode below, define `decrypt`
+so that using the same shared key on an encrypted ciphertext message
+produces the original plaintext.  Do not include an argument for the
+message in your definition.
+
+**Solution**:
+
+```cryptol
+/** Disclaimer: Weak block cipher mode; do not use in production. */
+submodule ECB where
+  // request a block cipher
+  import interface submodule I_BlockCipher
+
+  // derive the type aliases for that block cipher
+  import submodule F_BlockCipher_Aliases { interface I_BlockCipher } (Block)
+
+  /** Encrypt a multi-block message using ECB mode */
+  encrypt : {n} Key -> [n]Block -> [n]Block
+  encrypt key = map (encipher key)
+
+  /** Decrypt a multi-block message using ECB mode */
+  decrypt : {n} Key -> [n]Block -> [n]Block
+  decrypt key = map (decipher key)  // Replaced with our definition.
+```
+
+Again, please do not ever use this weak cipher mode in the real world.
+
+**Exercise**: Define submodules for each Simon and Speck parameter set
+in ECB mode.
+
+**Solution**:
+
+```cryptol
+/** Simon 32/64 in ECB mode */
+submodule ECB_Simon_32_64 = submodule ECB { submodule P_Simon_32_64_BlockCipher }
+
+/** Simon 48/72 in ECB mode */
+submodule ECB_Simon_48_72 = submodule ECB { submodule P_Simon_48_72_BlockCipher }
+
+/** Simon 48/96 in ECB mode */
+submodule ECB_Simon_48_96 = submodule ECB { submodule P_Simon_48_96_BlockCipher }
+
+/** Simon 64/96 in ECB mode */
+submodule ECB_Simon_64_96 = submodule ECB { submodule P_Simon_64_96_BlockCipher }
+
+/** Simon 64/128 in ECB mode */
+submodule ECB_Simon_64_128 = submodule ECB { submodule P_Simon_64_128_BlockCipher }
+
+/** Simon 96/96 in ECB mode */
+submodule ECB_Simon_96_96 = submodule ECB { submodule P_Simon_96_96_BlockCipher }
+
+/** Simon 96/144 in ECB mode */
+submodule ECB_Simon_96_144 = submodule ECB { submodule P_Simon_96_144_BlockCipher }
+
+/** Simon 128/128 in ECB mode */
+submodule ECB_Simon_128_128 = submodule ECB { submodule P_Simon_128_128_BlockCipher }
+
+/** Simon 128/192 in ECB mode */
+submodule ECB_Simon_128_192 = submodule ECB { submodule P_Simon_128_192_BlockCipher }
+
+/** Simon 128/256 in ECB mode */
+submodule ECB_Simon_128_256 = submodule ECB { submodule P_Simon_128_256_BlockCipher }
+
+/** Speck 32/64 in ECB mode */
+submodule ECB_Speck_32_64 = submodule ECB { submodule P_Speck_32_64_BlockCipher }
+
+/** Speck 48/72 in ECB mode */
+submodule ECB_Speck_48_72 = submodule ECB { submodule P_Speck_48_72_BlockCipher }
+
+/** Speck 48/96 in ECB mode */
+submodule ECB_Speck_48_96 = submodule ECB { submodule P_Speck_48_96_BlockCipher }
+
+/** Speck 64/96 in ECB mode */
+submodule ECB_Speck_64_96 = submodule ECB { submodule P_Speck_64_96_BlockCipher }
+
+/** Speck 64/128 in ECB mode */
+submodule ECB_Speck_64_128 = submodule ECB { submodule P_Speck_64_128_BlockCipher }
+
+/** Speck 96/96 in ECB mode */
+submodule ECB_Speck_96_96 = submodule ECB { submodule P_Speck_96_96_BlockCipher }
+
+/** Speck 96/144 in ECB mode */
+submodule ECB_Speck_96_144 = submodule ECB { submodule P_Speck_96_144_BlockCipher }
+
+/** Speck 128/128 in ECB mode */
+submodule ECB_Speck_128_128 = submodule ECB { submodule P_Speck_128_128_BlockCipher }
+
+/** Speck 128/192 in ECB mode */
+submodule ECB_Speck_128_192 = submodule ECB { submodule P_Speck_128_192_BlockCipher }
+
+/** Speck 128/256 in ECB mode */
+submodule ECB_Speck_128_256 = submodule ECB { submodule P_Speck_128_256_BlockCipher }
+```
+
+**Exercise**: Likewise, define a submodule that implements DES (a weak
+block cipher) in ECB (a weak cipher mode).  Add a docstring with a
+prominent warning not to use it in production.
+
+**Solution**:
+
+```cryptol
+/** DEPRECATED!!!  JUST...NO!!!!! */
+submodule ECB_DES = submodule ECB { submodule P_DES_BlockCipher }
+```
+
+Your solution should pass the following test vectors [3]:
+
+```cryptol
+submodule ECB_DES_Test where
+  import submodule ECB_DES as ECB_DES
+
+  e (key, pt, ct) = ECB_DES::encrypt key pt == ct
+  d (key, pt, ct) = ECB_DES::decrypt key ct == pt
+
+  // from FIPS 81 (withdrawn, of course)
+  v_fips_81 = (0x0123456789abcdef, [0x4e6f772069732074, 0x68652074696d6520, 0x666f7220616c6c20], [0x3fa40e8a984d4815, 0x6a271787ab8883f9, 0x893d51ec4b563b53])
+  property e_fips_81 = e v_fips_81
+  property d_fips_81 = d v_fips_81
+  
+  // another test vector based on `https://opensource.apple.com/source/OpenSSL/OpenSSL-23/openssl/test/evptests.txt.auto.html`
+  v35 = (0x1111111111111111, [0x1111111111111111, 0x0123456789ABCDEF], [0xF40379AB9E0EC533, 0x8A5AE1F81AB8F2DD])
+  property e35 = e v35
+  property d35 = d v35
+```
+
+```xcryptol-session
+labs::NewModuleSystem::NewModuleSystemAnswers> :check ECB_DES_Test::e_fips_81
+Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-property Contrivance::zero_64 Using exhaustive testing.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check ECB_DES_Test::d_fips_81
+Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_32_64::EncryptDecryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^48 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_48_72::EncryptDecryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^72 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_48_96::EncryptDecryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^72 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_64_96::EncryptDecryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^96 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_64_128::EncryptDecryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^96 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_96_96::EncryptDecryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^144 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_96_144::EncryptDecryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^144 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_128_128::EncryptDecryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^192 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_128_192::EncryptDecryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^192 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_128_256::EncryptDecryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^192 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_32_64::DecryptEncryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^48 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_48_72::DecryptEncryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^72 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_48_96::DecryptEncryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^72 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_64_96::DecryptEncryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^96 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_64_128::DecryptEncryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^96 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_96_96::DecryptEncryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^144 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_96_144::DecryptEncryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^144 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_128_128::DecryptEncryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^192 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_128_192::DecryptEncryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^192 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_128_256::DecryptEncryptRoundIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^192 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_32_64::EncryptDecryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^96 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_48_72::EncryptDecryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^120 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_48_96::EncryptDecryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^144 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_64_96::EncryptDecryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^160 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_64_128::EncryptDecryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^192 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_96_96::EncryptDecryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^192 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_96_144::EncryptDecryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^240 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_128_128::EncryptDecryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^256 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_128_192::EncryptDecryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^320 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_128_256::EncryptDecryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^384 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_32_64::DecryptEncryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^96 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_48_72::DecryptEncryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^120 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_48_96::DecryptEncryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^144 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_64_96::DecryptEncryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^160 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_64_128::DecryptEncryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^192 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_96_96::DecryptEncryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^192 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_96_144::DecryptEncryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^240 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_128_128::DecryptEncryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^256 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_128_192::DecryptEncryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^320 values)
-property labs::NewModuleSystem::NewModuleSystemAnswers::SIMON::SIMON_128_256::DecryptEncryptIdentity Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^384 values)
-```
-
-## Simon asks why?
-
-Interface, parameterizations, abstractions, and instantiations -- all
-to reimplement what parameterized modules are already able to do with
-`parameter` blocks and parameterized `import`s. Sure, the new system
-allows us to define the whole family of SIMON ciphers, alongside our
-earlier contrivance no less, but is this worth all the trouble? If the
-answer is immediately obvious at this point, feel free to skip the
-rest of this lab, secure in your understanding of nested modules,
-interfaces, and the opportunities and conundrums they bring.
-Otherwise, let's show off a concept that was difficult to pull off
-with the old system: cipher modes.
-
-Recall that our SIMON spec defined `encrypt` and `decrypt` functions
-over `key` and `block` sizes. Furthermore, it defined a property that
-`decrypt` inverts `encrypt`. These are all rather common, and having
-to define the inversion property for AES, Blowfish, RC5, and any other
-[block cipher](https://en.wikipedia.org/wiki/Block_cipher)
-that comes along gets very tedious very fast.
-
-Now suppose we wish to run each of these ciphers in various
-[modes](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation):
-[Electronic Codebook (ECB)](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#ECB)
-(only to demonstrate why that's a really bad idea),
-[Cipher Block Chaining (CBC)](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#CBC),
-[Cipher Feedback (CFB)](https://en.wikipedia.org/wiki/Block_cipher_mode_of_operation#CFB),
-... If we had to define each mode, for each block cipher, again, this
-would make Cryptol authors wish gone into yodeling or sports
-broadcasting. So until this point, except in a few cases where
-[an effort was made](https://github.com/GaloisInc/cryptol-specs/tree/master/Primitive/Symmetric/Cipher/Block/Modes),
-this has mostly been avoided. Nested modules, for all their verbosity,
-offer another approach:
-  * Define a block cipher interface
-  * Define abstract cipher modes that request block cipher parameters
-  * Instantiate cipher modes with parameterized block ciphers
-
-# Block Ciphers
-
-Working from
-[NIST SP 800-38A](https://nvlpubs.nist.gov/nistpubs/Legacy/SP/nistspecialpublication800-38a.pdf),
-a _block cipher_ is a function that maps `b`-bit plaintext blocks
-to `b`-bit ciphertext blocks, parameterized by a key `K` of arbitrary
-type. NIST SP 800-38A refers to block encryption and decryption as
-forward and inverse ciphers to disambiguate them from corresponding
-mode operations. Let's rename these to `encipher` and `decipher`,
-respectively, in keeping with Cryptol naming conventions.
-
-```cryptol
-  import labs::Transposition::CommonProperties (inverts)
-
-  interface submodule I_BlockCipher where
-    type k : *
-    type b : #
-    type constraint (fin b)
-
-    encipher : k -> [b] -> [b]
-    decipher : k -> [b] -> [b]
-
-  submodule A_BlockCipher_Props where
-    import interface submodule I_BlockCipher
-
-    decipher_inverts_encipher : k -> [b] -> Bool
-    property decipher_inverts_encipher K =
-      inverts (decipher K) (encipher K)
-```
-
-Common block cipher _modes of operation_ defined in NIST 800-38A
-include:
-  * Electronic Codebook (ECB)
-  * Cipher Block Chaining (CBC)
-  * Cipher Feedback (CFB)
-  * Output Feedback (OFB)
-
-Let's start with the easy ones.
-
-```cryptol
-  submodule A_ECB where
-    import interface submodule I_BlockCipher
-
-    encrypt : {t} k -> [t][b] -> [t][b]
-    encrypt K P = map (encipher K) P
-
-    decrypt : {t} k -> [t][b] -> [t][b]
-    decrypt K C = map (decipher K) C
-
-    decrypt_inverts_encrypt : {t} (fin t) => k -> [t][b] -> Bool
-    decrypt_inverts_encrypt K =
-      inverts (decrypt K) (encrypt K)
-
-  submodule A_CBC where
-    import interface submodule I_BlockCipher
-
-    encrypt : {t} k -> [b] -> [t][b] -> [t][b]
-    encrypt K IV P = C
-      where
-        C = [ encipher K (P_j ^ C_j') | P_j <- P | C_j' <- [IV] # C ]
-
-    decrypt : {t} k -> [b] -> [t][b] -> [t][b]
-    decrypt K IV C = P
-      where
-        P = [ (decipher K C_j) ^ C_j' | C_j <- C | C_j' <- [IV] # C ]
-
-    decrypt_inverts_encrypt : {t} (fin t) => k -> [b] -> [t][b] -> Bool
-    decrypt_inverts_encrypt K IV =
-      inverts (decrypt K IV) (encrypt K IV)
-```
-
-Unfortunately, because different cipher modes might take different
-parameters (e.g. CBC requires an _initialization vector_ `iv`), we
-cannot easily define an abstract (sub)module for cipher modes.
-
-**EXERCISE**: Define abstract submodules for CFB and OFB modes.
-
-```cryptol
-  submodule A_CFB where
-    TODO = undefined
-
-  submodule A_OFB where
-    TODO = undefined
-```
-
-As tempting as it is to ask students to go reimplement AES, DES, etc.,
-let's just adapt an existing cipher to the `I_BlockCipher` interface
-expected by our abstract cipher mode submodules. (This part requires
-[`cryptol-specs`](https://github.com/GaloisInc/cryptol-specs) to be
-cloned or downloaded and in `CRYPTOLPATH`.)
-
-```cryptol
-  import module Primitive::Symmetric::Cipher::Block::DES (DES)
-  
-  submodule P_DES where
-    type k = [64]
-    type b = 64
-    
-    encipher = DES.encrypt
-    decipher = DES.decrypt
-
-  submodule S_ECB_DES = submodule A_ECB { submodule P_DES }
-  import submodule S_ECB_DES as S_ECB_DES
-
-  submodule S_CBC_DES = submodule A_CBC { submodule P_DES }
-  import submodule S_CBC_DES as S_CBC_DES
-```
-
-Why is ECB bad again?  Let's check...
-
-```cryptol
-  ECB_DES_bad : {n} (fin n) => P_DES::k -> [P_DES::b] -> Bool
-  ECB_DES_bad K block =
-    S_ECB_DES::encrypt K (repeat`{n} block) == repeat (P_DES::encipher K block)
-
-  CBC_DES_less_bad : {n} (fin n, n >= 2) => P_DES::k -> [P_DES::b] -> [P_DES::b] -> Bool
-  CBC_DES_less_bad K IV block =
-    S_CBC_DES::encrypt K IV (repeat`{n} block) != repeat (P_DES::encipher K block)
-```
-
-```Xcryptol-session
-labs::NewModuleSystem::NewModuleSystemAnswers> :prove ECB_DES_bad`{4}
+labs::NewModuleSystem::NewModuleSystemAnswers> :exhaust ECB_DES_Test::e35
+Using exhaustive testing.
+Passed 1 tests.
 Q.E.D.
-(Total Elapsed Time: 1.893s, using "Yices")
-labs::NewModuleSystem::NewModuleSystemAnswers> :check CBC_DES_less_bad`{4}
-Using random testing.
-Passed 100 tests.
-Expected test coverage: 0.00% (100 of 2^^192 values)
+labs::NewModuleSystem::NewModuleSystemAnswers> :exhaust ECB_DES_Test::d35
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :exhaust ECB_DES_Test::e53
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :exhaust ECB_DES_Test::d53
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
 ```
 
-So ECB is bad unless you never repeat yourself or say anything an
-attacker would consider...
+## Cipher Block Chaining (CBC)
 
-**EXERCISE**: Feel free to experiment with other block ciphers
-(including SIMON) and modes. Show that ECB is still bad with those.
+To better diffuse message blocks, CBC introduces an *initialization
+vector* and applies the binary exclusive-or operator (`^` in Cryptol)
+to each block of plaintext with the previous ciphertext (the
+initialization vector for the first block) before applying the block
+cipher with a given key.  That is:
+
+`c0 = encipher key (p0 ^ iv)`
+`c1 = encipher key (p1 ^ c0)`
+`c2 = encipher key (p2 ^ c1)`
+`...`
+`cn = encipher key (pn ^ ...)`
+
+**Exercise**: Define a functor to generate a CBC mode for a given block
+cipher.
+
+**Solution**:
+
+```cryptol
+submodule CBC where
+  // request a block cipher
+  import interface submodule I_BlockCipher
+
+  // derive the type aliases for that block cipher
+  import submodule F_BlockCipher_Aliases { interface I_BlockCipher } (Block)
+
+  /** Encrypt a multi-block message using CBC mode */
+  encrypt : {n} Key -> Block -> [n]Block -> [n]Block
+  encrypt key iv pt = ct  // Replaced with our solution.
+    where
+      ct@i = encipher key (pt@i ^ (if i == 0 then iv else ct@(i-1)))
+
+  /** Decrypt a multi-block message using CBC mode */
+  decrypt : {n} Key -> Block -> [n]Block -> [n]Block
+  decrypt key iv ct = pt  // Replaced with our solution.
+    where
+      pt@i = decipher key (ct@i) ^ (if i == 0 then iv else ct@(i-1))
+```
+
+**Hint**: The above definition can be directly translated to a Cryptol
+[generating function](https://galoisinc.github.io/cryptol/master/BasicTypes.html#sequences).
+(See `generate` and the examples following it.)  So for `encrypt`, you
+can say `encrypt key iv pt = ct where ct@i = ...` and then fill in the
+rest.  Remember to account for the initialization vector and the first
+ciphertext block `ct@0`.
+
+**Note**: Though we suggest generator expressions here, it is also
+possible to use various higher-order functions such as `foldl` and
+`zipWith`.  For now, this is mostly a matter of style.  However, when
+it comes time to verify that our submodules meet important properties
+(most notably, that using the same key and initialization vector
+to decrypt ciphertext recovers the original plaintext), this choice
+will greatly affect future verification efforts...
+
+**Hint**: We have not specified above how to derive plaintext blocks
+from ciphertext blocks.  If you get stuck defining `decrypt`, using the
+above equalities, you can work backward to solve for each plaintext
+block.  You will need simple properties about `(^)` and a very
+important property of (useful) block ciphers, defined as
+`block_recovery` below.
+
+```cryptol
+// property block_recovery key pt = decipher key (encipher key pt) == pt
+// property xor_inv_r x y = (x ^ y) ^ y == x
+// property xor_inv_l x y = x ^ (x ^ y) == y
+```
+
+Working backward from our generator expression for `encrypt`...
+
+`ct@i = encipher key (pt@i ^ (if i == 0 then iv else ct@(i-1)))`
+(Apply `decipher key` to both sides.)
+`decipher key (ct@i) = decipher key (encipher key (pt@i ^ (if i == 0 then iv else ct@(i-1))))`
+(Apply `block_recovery` on right.)
+`decipher key (ct@i) = pt@i ^ ct'`
+(Apply `(^) ct'` to both sides, where `ct'` is the `if`-expression.)
+`decipher key (ct@i) ^ ct' = pt@i ^ ct' ^ ct'
+(Apply `xor_inv_r` on right.)
+`decipher key (ct@i) ^ ct' = pt@i`
+(Flip sides for assignment to plaintext.)
+`pt@i = decipher key (ct@i) ^ ct'`
+(Substitute the `if`-expression back in for `ct'`.)
+`pt@i = decipher key (ct@i) ^ (if i == 0 then iv else ct@(i-1)))`
+
+**Note**: Could you define `decrypt` without an initialization vector?
+
+As with `ECB`, we can now define a `CBC` mode for various Simon and
+Speck configurations, or any other simple block cipher that implements
+our interface.
+
+**Exercise**: Define submodules for each Simon and Speck parameter set
+in CBC mode.
+
+**Solution**:
+
+```cryptol
+/** Simon 32/64 in CBC mode */
+submodule CBC_Simon_32_64 = submodule CBC { submodule P_Simon_32_64_BlockCipher }
+
+/** Simon 48/72 in CBC mode */
+submodule CBC_Simon_48_72 = submodule CBC { submodule P_Simon_48_72_BlockCipher }
+
+/** Simon 48/96 in CBC mode */
+submodule CBC_Simon_48_96 = submodule CBC { submodule P_Simon_48_96_BlockCipher }
+
+/** Simon 64/96 in CBC mode */
+submodule CBC_Simon_64_96 = submodule CBC { submodule P_Simon_64_96_BlockCipher }
+
+/** Simon 64/128 in CBC mode */
+submodule CBC_Simon_64_128 = submodule CBC { submodule P_Simon_64_128_BlockCipher }
+
+/** Simon 96/96 in CBC mode */
+submodule CBC_Simon_96_96 = submodule CBC { submodule P_Simon_96_96_BlockCipher }
+
+/** Simon 96/144 in CBC mode */
+submodule CBC_Simon_96_144 = submodule CBC { submodule P_Simon_96_144_BlockCipher }
+
+/** Simon 128/128 in CBC mode */
+submodule CBC_Simon_128_128 = submodule CBC { submodule P_Simon_128_128_BlockCipher }
+
+/** Simon 128/192 in CBC mode */
+submodule CBC_Simon_128_192 = submodule CBC { submodule P_Simon_128_192_BlockCipher }
+
+/** Simon 128/256 in CBC mode */
+submodule CBC_Simon_128_256 = submodule CBC { submodule P_Simon_128_256_BlockCipher }
+
+/** Speck 32/64 in CBC mode */
+submodule CBC_Speck_32_64 = submodule CBC { submodule P_Speck_32_64_BlockCipher }
+
+/** Speck 48/72 in CBC mode */
+submodule CBC_Speck_48_72 = submodule CBC { submodule P_Speck_48_72_BlockCipher }
+
+/** Speck 48/96 in CBC mode */
+submodule CBC_Speck_48_96 = submodule CBC { submodule P_Speck_48_96_BlockCipher }
+
+/** Speck 64/96 in CBC mode */
+submodule CBC_Speck_64_96 = submodule CBC { submodule P_Speck_64_96_BlockCipher }
+
+/** Speck 64/128 in CBC mode */
+submodule CBC_Speck_64_128 = submodule CBC { submodule P_Speck_64_128_BlockCipher }
+
+/** Speck 96/96 in CBC mode */
+submodule CBC_Speck_96_96 = submodule CBC { submodule P_Speck_96_96_BlockCipher }
+
+/** Speck 96/144 in CBC mode */
+submodule CBC_Speck_96_144 = submodule CBC { submodule P_Speck_96_144_BlockCipher }
+
+/** Speck 128/128 in CBC mode */
+submodule CBC_Speck_128_128 = submodule CBC { submodule P_Speck_128_128_BlockCipher }
+
+/** Speck 128/192 in CBC mode */
+submodule CBC_Speck_128_192 = submodule CBC { submodule P_Speck_128_192_BlockCipher }
+
+/** Speck 128/256 in CBC mode */
+submodule CBC_Speck_128_256 = submodule CBC { submodule P_Speck_128_256_BlockCipher }
+```
+
+**Exercise**: Likewise, define a submodule that implements DES (a weak
+block cipher) in CBC (a cipher mode).  Add a docstring with a prominent
+warning not to use it in production.
+
+**Solution**:
+
+```cryptol
+/** STILL DEPRECATED!!! */
+submodule CBC_DES = submodule CBC { submodule P_DES_BlockCipher }
+```
+
+Your solution should pass the following test vectors [3]:
+
+```cryptol
+submodule CBC_DES_Test where
+  import submodule CBC_DES as CBC_DES
+
+  e (key, iv, pt, ct) = CBC_DES::encrypt key iv pt == ct
+  d (key, iv, pt, ct) = CBC_DES::decrypt key iv ct == pt
+  
+  // from FIPS 81 (withdrawn, of course)
+  v_fips_81 = (0x0123456789abcdef, 0x1234567890abcdef, [0x4e6f772069732074, 0x68652074696d6520, 0x666f7220616c6c20], [0xe5c7cdde872bf27c, 0x43e934008c389c0f, 0x683788499a7c05f6])
+  
+  property e_fips_81 = e v_fips_81
+  property d_fips_81 = d v_fips_81
+```
+
+```xcryptol-session
+labs::NewModuleSystem::NewModuleSystemAnswers> :check CBC_DES_Test::e_fips_81
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check CBC_DES_Test::d_fips_81
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+```
+
+## Cipher Feedback (CFB)
+
+CFB can take any of various forms, including a full-block mode or one
+that segments block into *subblocks*.  In the full-block configuration,
+CFB is similar to CBC except that the XOR and cipher operations are
+performed in the other order, i.e.:
+
+`c0 = (encipher key iv) ^ pt0`
+`c1 = (encipher key c0) ^ pt1`
+`c2 = (encipher key c1) ^ pt2`
+`...`
+
+**Exercise**: Define CFB full-block mode for a given block cipher.
+
+**Solution**:
+
+```cryptol
+submodule CFB where
+  // request a block cipher
+  import interface submodule I_BlockCipher
+
+  // derive the type aliases for that block cipher
+  import submodule F_BlockCipher_Aliases { I = interface I_BlockCipher } (Block)
+
+  /** Encrypt a multi-block message using CFB mode */
+  encrypt : {n} fin n => Key -> Block -> [n]Block -> [n]Block
+  encrypt key iv pt = ct  // Replaced with our definition.
+    where
+      ct@i = (encipher key (if i == 0 then iv else ct@(i-1))) ^ pt@i
+
+  /** Decrypt a multi-block message using CFB mode */
+  decrypt : {n} fin n => Key -> Block -> [n]Block -> [n]Block
+  decrypt key iv ct = pt  // Replaced with our definition.
+    where
+      pt@i = (encipher key (if i == 0 then iv else ct@(i-1))) ^ ct@i
+
+  /* **Note**: These are the same `step` functions, just with
+   * different parameter names...
+   */
+```
+
+**Hint**: It is not necessary for a functor to use all the fields
+in its interface(s).  Asking for unused fields is perhaps questionable,
+but being able to reuse the same interface might turn out to justify
+an ignored field...
+
+**Hint**: The different order of operations has a profound impact on
+CFB `decrypt` that might seem counterintuitive at first.  Again, if
+you get stuck defining `decrypt`, work out from the above definition
+how to solve for plaintext blocks in terms of ciphertext.  That is,
+given `ct_i = (encipher key iv) ^ pt_i`, solve for `pt_i`.
+
+**Exercise**: Define a submodule that implements DES (a weak block
+cipher) in full-block CFB mode (a cipher mode).  Add a docstring with
+a prominent warning not to use it in production.
+
+**Solution**:
+
+```cryptol
+/** NO!!! NO, NO, NO!!! */
+submodule CFB_DES = submodule CFB { submodule P_DES_BlockCipher }
+```
+
+Your solution should pass the following test vectors [3]:
+
+```cryptol
+submodule CFB_DES_Test where
+  import submodule CFB_DES as CFB_DES
+
+  e (key, iv, pt, ct) = CFB_DES::encrypt key iv pt == ct
+  d (key, iv, pt, ct) = CFB_DES::decrypt key iv ct == pt
+  
+  // from FIPS 81 (withdrawn, of course)
+  v_fips_81 = (0x0123456789abcdef, 0x1234567890abcdef, [0x4e6f772069732074, 0x68652074696d6520, 0x666f7220616c6c20], [0xf3096249c7f46e51, 0xa69e839b1a92f784, 0x03467133898ea622])
+  
+  property e_fips_81 = e v_fips_81
+  property d_fips_81 = d v_fips_81
+```
+
+```xcryptol-session
+labs::NewModuleSystem::NewModuleSystemAnswers> :check CFB_DES_Test::e_fips_81
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check CFB_DES_Test::d_fips_81
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+```
+
+## Counter (CTR) Mode (Multiple Interfaces and Interface Constraints)
+
+Counter mode produces a stream cipher by applying a block cipher to
+successive values of a "counter" that produces a long sequence of
+non-repeating values -- most commonly a simple incremental counter.
+
+This counter is concatenated with a *nonce*, which acts much as the
+initialization vector from other modes into blocks, which are
+enciphered with the key and then XOR'ed (or another invertible
+operation) with each plaintext block:
+
+`c0 = encipher key (nonce # 0) ^ p0`
+`c1 = encipher key (nonce # 1) ^ p1`
+`c2 = encipher key (nonce # 2) ^ p2`
+
+Our CTR specification will need to define and import an interface for
+the additional nonce-specific parameters, and constrain these such
+that a nonce and counter can be concatenated into a `Block`.  Cryptol's
+new module system can specify an
+[`interface constraint`](https://galoisinc.github.io/cryptol/master/Modules.html#interface-constraints)
+for parameters provided for one or more interfaces, e.g.
+
+```cryptol
+// import interface submodule I
+// import interface submodule J
+// interface constraint I::n == J::n
+```
+
+**Exercise**: Define CTR mode for a given block cipher and CTR-specific
+parameters.
+
+**Solution**:
+
+```cryptol
+interface submodule I_CTR where
+  // nonce width
+  type w: #
+  
+  // counter width
+  type c: #
+
+submodule F_CTR_Aliases where
+  import interface submodule I_CTR as I
+  
+  // type alias for nonce
+  type Nonce = [I::w]
+
+submodule CTR where
+  // request a block cipher
+  import interface submodule I_BlockCipher
+  // request parameters for CTR
+  import interface submodule I_CTR
+  
+  interface constraint (fin b, b == w + c) // Replaced with our constraint.
+  
+  // derive the type aliases for that block cipher, and for the nonce
+  import submodule F_BlockCipher_Aliases { I = interface I_BlockCipher } (Block)
+  import submodule F_CTR_Aliases { I = interface I_CTR } (Nonce)
+  
+  /** Encrypt a multi-block message using CFB mode */
+  encrypt : {n} c >= width (max 1 n - 1) => Key -> Nonce -> [n]Block -> [n]Block
+  encrypt key nonce pt = ct  // Replaced with our definition.
+    where
+      ct@i = encipher key (nonce # i) ^ pt@i
+  
+  /** Decrypt a multi-block message using CFB mode */
+  decrypt : {n} c >= width (max 1 n - 1) => Key -> Nonce -> [n]Block -> [n]Block
+  decrypt key nonce ct = pt  // Replaced with our definition.
+    where
+      pt@i = encipher key (nonce # i) ^ ct@i
+```
+
+**Hint**: Use generator expressions again.
+
+**Exercise**: Find test vectors for a block cipher in CTR mode, specify
+it, and verify the test vectors.
+
+## ...and more!
+
+**Exercise**: Feel free to specify other basic block cipher modes
+such as PCBC, OFB, segmented CFB, etc.
+
+**TODO**: Introduce authenticated cipher modes, a positive
+authentication property, and resilience properties (tamper, spoofing).
+
+**TODO**: Get to the point where (sub)modules can import interfaces and
+specify properties assumed about their implementations.  Use these to
+generate "contracts" and reusable test cases.
+
+# Properties and Verification (Interface Reuse)
+
+[2] defines the *CIA triad* of:
+  - *confidentiality*
+  - *integrity*
+  - *availability*
+
+In these terms, a cipher's purpose is to provide confidentiality (for
+authorized persons to securely exchange message so that they are not
+easily recoverable by unauthorized persons) and availability (messages
+need to remain readable by authorized persons).
+
+In particular, at the expense of repeating ourselves, a cipher must
+satisfy this familiar property, which you may have already used to
+understand how to specify `decrypt` for block cipher modes:
+
+```cryptol
+// property block_recovery key pt = decipher key (encipher key pt) == pt
+```
+
+In other words, a cipher must remain *available* to those with a shared
+symmetric key.  This must also hold true for cipher modes, e.g. for a
+cipher mode with an initialization vector:
+
+```cryptol
+// property mode_recovery = decrypt key iv (encrypt key iv pt) == pt
+```
+
+Another prerequisite of availability is that authorized parties agree
+on how the cipher operates.  Cryptol expresses algorithms as rigorous
+formal specifications, but users more commonly confirm this agreement
+using *test vectors*, e.g.:
+
+```cryptol
+import submodule P_Simon_32_64_BlockCipher as S_32_64
+import submodule F_BlockCipher_Aliases { submodule P_Simon_32_64_BlockCipher } as S_32_64
+
+S_32_64_test_key = 0x94eeea8b1f2ada84
+S_32_64_test_pt = 0xadf10331
+S_32_64_test_ct = 0x391e7f1a
+
+property test_simon_32_64_enc = S_32_64::encipher S_32_64_test_key S_32_64_test_pt == S_32_64_test_ct
+property test_simon_32_64_dec = S_32_64::decipher S_32_64_test_key S_32_64_test_pt == S_32_64_test_ct
+```
+
+A strong cipher must resist cryptanalytic attacks of varying
+sophistication.  Cryptol and SMT solvers are not designed to perform
+rigorous cryptanalysis, but can run some quick sanity checks.
+
+For example, it should not be easy to (ab)use SMT solvers to quickly
+recover a cryptographic key from known or chosen plaintext:
+
+```xcryptol-session
+// Try to recover `test_key` from known test plaintext/ciphertext
+// labs::ModuleSystem> :sat \key -> S_32_64::encipher key test_pt == test_ct
+```
+
+**TODO**: Introduce exercises to check `mode_recovery` for various
+block cipher modes, and show how to use SAW to formally verify these
+using a block cipher's `block_recovery` property when applicable.
 
 # Conclusion
 
-In this module, we learned how to apply the new module system to a
-previously covered specification (SIMON) and to block cipher modes of
-operation by defining common interfaces for abstractions to
-instantiate implementations given parameters. The new module system
-allowed us to combine all of these and a contrivance into a single
-module for expository purposes. In the real world, it will eventually
-form a solid foundation to organize a wide variety of cryptographic
-algorithms and systems that combine them.
+In this module, you learned how to define and reuse interfaces and
+functors as the cryptographic building blocks (pun intended) of a
+complex nested module with multiple ciphers, modes, and properties.
+
+# References
+
+[1] NIST SP 800-38A.
+    "Recommendation for Block Cipher Modes of Operation: Tools and Techniques".
+    December 2001.
+    https://csrc.nist.gov/pubs/sp/800/38/a/final
+
+[2] NIST SP 800-12 Rev. 1.
+    "An Introduction to Information Security".
+    June 2017.
+    https://csrc.nist.gov/pubs/sp/800/12/r1/final
+
+[3] NIST FIPS 81 (withdrawn).
+    "DES MODES OF OPERATION"
+    2 December 1980.
+    https://csrc.nist.gov/pubs/fips/81/final
 
 # Solicitation
 
@@ -809,6 +1054,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [ ^ Key Wrapping](../KeyWrapping/KeyWrapping.md) ||
-| [< Parameterized Modules](../SimonSpeck/SimonSpeck.md) | **New Module System** ||
+|| [- Key Wrapping](../KeyWrapping/KeyWrapping.md) ||
+| [< Parameterized Modules](../SimonSpeck/SimonSpeck.md) | **New Module System (Answers)** ||
 || [? New Module System](./NewModuleSystem.md) ||
