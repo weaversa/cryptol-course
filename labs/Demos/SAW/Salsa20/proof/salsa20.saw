@@ -1,6 +1,6 @@
-include "./common/llvm.saw";
+include "llvm.saw";
 
-import "./specs/Salsa20.cry";
+import "../Salsa20.cry";
 
 let prover nm = yices;
 
@@ -68,7 +68,7 @@ let s20_encrypt32 n = do {
     returns zerot;
 };
 
-m <- llvm_load_module "artifacts/salsa20.bc";
+m <- llvm_load_module "../salsa20.bc";
 
 let verify = crucible_llvm_verify m;
 
