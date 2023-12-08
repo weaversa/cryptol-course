@@ -178,6 +178,8 @@ Here is the header for the `Simon.cry` base module:
 ```example
 module labs::SimonSpeck::Simon::Simon where
 
+module labs::SimonSpeck::Simon::Simon where
+
 parameter
 
   /** word size */

@@ -9,8 +9,8 @@ Before working through this lab, you'll need
 
 You'll also need experience with
   * loading modules and evaluating functions in the interpreter,
-  * the `:prove` command,
   * writing functions and properties,
+  * testing properties by using the `:prove` and `:check` commands,
   * sequence comprehensions,
   * functions with curried parameters, and
   * parameterized modules.
@@ -130,13 +130,13 @@ cipher operations from those for modes, in keeping with [1].)
 parameter
   /** arbitrary key type */
   type K : *
-  
+
   /** block size (in bits) */
   type b : #
-  
+
   /** forward cipher operator */
   encipher : K -> [b] -> [b]
-  
+
   /** reverse cipher operator */
   decipher : K -> [b] -> [b]
 */
@@ -153,19 +153,19 @@ reusable **type aliases**:
 interface submodule I_BlockCipher where
   /** arbitrary key type */
   type Key : *
-  
+
   /** block size (in bits) */
   type b : #
-  
+
   /** type alias for a block, a bit string of width `b` */
   type Block = [b]
-  
+
   /** common type for `encipher` and `decipher` */
   type Op = Key -> Block -> Block
-  
+
   /** forward cipher operator */
   encipher : Op
-  
+
   /** reverse cipher operator */
   decipher : Op
 ```
@@ -208,7 +208,7 @@ submodule F_BlockCipher_Aliases where
 
   /** type alias for a block, a bit string of width `b` */
   type Block = [I::b]
-  
+
   /** common type for `encipher` and `decipher` */
   type Op = I::Key -> Block -> Block
 ```
@@ -293,7 +293,7 @@ ciphers and parameter sets...
 functor with which to "adapt" prior solutions as implementations of
 `I_BlockCipher`.  Instances would look something like:
 
-`submodule P_Speck_64_128_BlockCipher = submodule F_Speck_BlockCipher { labs::SimonSpeck::SpeckAnswers::speck_64_128 }`
+`submodule P_Simon_64_128_BlockCipher = submodule F_SimonSpeck_BlockCipher { labs::SimonSpeck::Simon::simon_64_128 }`
 
 Start with explicitly named submodules. These can always be
 "anonymized" later if it is obvious they won't be reused.
@@ -302,7 +302,7 @@ Start with explicitly named submodules. These can always be
 
 ```cryptol
 /** interface to collect relevant definitions from Simon instance */
-interface submodule I_Simon_Inst where
+interface submodule I_SimonSpeck_Inst where
   type keySize : #
   type blockSize : #
   
@@ -316,7 +316,7 @@ interface submodule I_Simon_Inst where
 // generalization of `Simon_32_64_BlockCipher` above
 /** generate `I_BlockCipher` implementation from Simon instance */
 submodule F_SimonSpeck_BlockCipher where
-  import interface submodule I_Simon_Inst as S
+  import interface submodule I_SimonSpeck_Inst as S
 
   // export definitions for `I_BlockCipher` parameters
   type Key = [S::keySize]
@@ -388,10 +388,11 @@ submodule P_Speck_128_256_BlockCipher = submodule F_SimonSpeck_BlockCipher { lab
 
 ## Adapting other block ciphers
 
-In the last exercise, you adapted your own prior work to fit out new
+In the last exercise, you adapted your own prior work to fit our new
 `I_BlockCipher` interface.  We can also adapt other simple block
 ciphers, such as DES in the
-[Cryptographic Proofs](../CryptoProofs/CryptoProofsAnswers.md) lab.
+[Cryptographic Proofs](../CryptoProofs/CryptoProofsAnswers.md) lab or
+AES in the [Key Wrapping](../KeyWrapping/KeyWrappingAnswers.md) lab.
 
 ```cryptol
 import specs::Primitive::Symmetric::Cipher::Block::DES (DES)
@@ -410,6 +411,47 @@ submodule P_DES_BlockCipher where
   encipher = DES.encrypt
   decipher = DES.decrypt
 ```
+
+**Exercise**: Specify an interface and a functor to generate adaptors
+for each `AES` key size that provide all parameters required by
+`interface submodule I_BlockCipher`:
+
+**Solution**:
+
+```cryptol
+interface submodule I_AES_BlockCipher where
+  /** 0: AES128, 1: AES192, 2: AES256 */
+  type Mode : #
+  type constraint (2 >= Mode)
+
+submodule F_P_AES_BlockCipher where
+  import interface submodule I_AES_BlockCipher as I
+
+  import specs::Primitive::Symmetric::Cipher::Block::AES_parameterized as S
+
+  type k = 128 + I::Mode * 64
+  type Key = [k]
+  type b = 128
+
+  encipher = S::encrypt`{k=k, m=I::Mode}
+  decipher = S::decrypt`{k=k, m=I::Mode}
+
+submodule P_AES_128_BlockCipher = submodule F_P_AES_BlockCipher where
+  type Mode = 0
+
+submodule P_AES_192_BlockCipher = submodule F_P_AES_BlockCipher where
+  type Mode = 1
+
+submodule P_AES_256_BlockCipher = submodule F_P_AES_BlockCipher where
+  type Mode = 2
+```
+
+**Hint**: The interface could take the same key size parameter as
+`specs::Primitive::Symmetric::Cipher::Block::AES::Algorithm`, and the
+functor could define the corresponding key type, the same block size
+for each key size, and `encipher` and `decipher`, using functions from
+`specs::Primitive::Symmetric::Cipher::Block::AES_parameterized`.
+
 
 # Block Cipher Modes of Operation: ECB, CBC, ...
 
@@ -542,6 +584,7 @@ submodule ECB_DES = submodule ECB { submodule P_DES_BlockCipher }
 Your solution should pass the following test vectors [3]:
 
 ```cryptol
+/** ECB/DES Tests */
 submodule ECB_DES_Test where
   import submodule ECB_DES as ECB_DES
 
@@ -581,6 +624,148 @@ Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
 labs::NewModuleSystem::NewModuleSystemAnswers> :exhaust ECB_DES_Test::d53
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+```
+
+**Exercise**: Now define submodules that implement AES (a stronger
+block cipher) in ECB (a weak cipher mode).  Add docstrings with
+prominent warnings not to use them in production.
+
+**Solution**: 
+
+```cryptol
+/** AES is A-OK, but ECB is bad; do not use this for anything important */
+submodule ECB_AES_128 = submodule ECB { submodule P_AES_128_BlockCipher }
+/** AES is A-OK, but ECB is bad; do not use this for anything important */
+submodule ECB_AES_192 = submodule ECB { submodule P_AES_192_BlockCipher }
+/** AES is A-OK, but ECB is bad; do not use this for anything important */
+submodule ECB_AES_256 = submodule ECB { submodule P_AES_256_BlockCipher }
+```
+
+Your solution should pass the following test vectors [4]:
+
+```cryptol
+// Let's use the new module system to generate groups of related properties...
+
+submodule F_KAT_ECB where
+  import interface submodule I_BlockCipher
+  interface constraint fin b
+
+  import submodule F_BlockCipher_Aliases { interface I_BlockCipher }
+
+  interface submodule I_KAT where
+    type n : #
+    type constraint fin n
+
+    KEY: Key
+    PLAINTEXT : [n]Block
+    CIPHERTEXT : [n]Block
+
+  submodule F_KAT where
+    import interface submodule I_KAT
+
+    import submodule ECB { interface I_BlockCipher }
+	
+    property test_encrypt = encrypt KEY PLAINTEXT == CIPHERTEXT
+    property test_decrypt = decrypt KEY CIPHERTEXT == PLAINTEXT
+
+submodule P_KAT_ECB_AES_128_ENCRYPT_9 where
+  type n = 10
+  KEY = 0xebea9c6a82213a00ac1d22faea22116f
+  PLAINTEXT = split 0x451f45663b44fd005f3c288ae57b383883f02d9ad3dc1715f9e3d6948564257b9b06d7dd51935fee580a96bbdfefb918b4e6b1daac809847465578cb8b5356ed38556f801ff7c11ecba9cdd263039c15d05900fc228e1caf302d261d7fb56cee663595b96f192a78ff4455393a5fe8162170a066fdaeac35019469f22b3470686bced2f007a1a2e43e01b4562caaa502ed541b8205874ec1ffb1c8b255766942
+  CIPHERTEXT = split 0x01043053f832ef9b911ed387ba577451e30d51d4b6b11f319d4cd539d067b7f4f9b4f41f7f3d4e920c57cbe2b5e1885aa66203ae493e93a1df63793a9563c176bc6775dd09cc9161e278a01beb8fd8a19200326bd95abc5f716768e34f90b50523d30fdabb103a3bc020afbbb0cb3bd2ad512a6fea79f8d64cef347458dec48be89451cb0b807d73593f273d9fc521b789a77524404f43e00f20b3b77b938b1a
+
+submodule P_KAT_ECB_AES_128_DECRYPT_9 where
+  type n = 10
+  KEY = 0x44f0ee626d0446e0a3924cfb078944bb
+  CIPHERTEXT = split 0x931b2f5f3a5820d53a6beaaa6431083a3488f4eb03b0f5b57ef838e1579623103bd6e6800377538b2e51ef708f3c4956432e8a8ee6a34e190642b26ad8bdae6c2af9a6c7996f3b6004d2671e41f1c9f40ee03d1c4a52b0a0654a331f15f34dce4acb96bd6507815ca4347a3de11a311b7de5351c9787c4538158e28974ffa83d8296dfe9cd09cd87f7bf4f54d97d28d4788799163408323943b3e72f5eab66c1
+  PLAINTEXT = split 0x9c29eecb2de04254fafb896a994102d1da30ddb49d82728eb23dbd029901e9b75b3d0aee03f7a05f6c852d8fada0b5c28e8c9aed334fad11829df3dfadc5c2e471eb41af9e48a8a465e03d5ebdb0216915081f3b5a0ebb2308dfc2d28e5a8ba3f32adae4c3575921bc657b63d46ba5a618880ee9ad8af3fba5643a5026facd7d667ce599327f936cdda7e1bb742a33a019990b76be648a6ec725daed540ed9e7
+
+submodule P_KAT_ECB_AES_192_ENCRYPT_9 where
+  type n = 10
+  KEY = 0x4f41fa4d4a25100b586551828373bcca5540c68e9bf84562
+  PLAINTEXT = split 0x7c727bd3e7048e7a8995b7b1169ae4b5a55e854bb4f7a9576d7863ab2868731d307322dcca606e047343676f6af4d9cf6ebf2bf9c95d87848d233c931e7a60eff08fb959924cde1eec8699ebc57890e3887024ef47c89a550018788d1faa3250452e06f148af25f07bc613cd2f0e501a79d738d4361f28f34dbee24034e03367b6b8d34df3738ca3a86b9ebcb09e639bcb5e2f519f4a7a86fc7c41556404a95d
+  CIPHERTEXT = split 0x922812ad5feacdf11fe7fdae96300149419e31cff54061b3c5ed27fdb8b50c9c0932b522a6c04e482499b011ef3c3e9dc56a1a61cfeb78b34032d26dbdc3cac51a3279bc934b9bce2d9c19bf858235613ba784e48e292d22c6b5a28e1d1bb860524fb7b5f9b3d9a5f4da66e340585bd2496fe6d6942db8d05d716fec03b17d19abb58b33332e24beaec7995d69525364fe139aa1fd62054668c58f23f1f94cfd
+
+submodule P_KAT_ECB_AES_192_DECRYPT_9 where
+  type n = 10
+  KEY = 0x9cc24ea1f1959d9a972e7182ef3b4e22a97a87d0da7ff64b
+  CIPHERTEXT = split 0x952f4546a8bf7166964917ece01bda3c6857e427cef5da0ff90b0e4bf44cf7ccfccfdf01d713dcf9673f01c87eaed52bf4aa046ff778558ea396dc9cd240716136386148a5c76378b3ffcd40864407b8e60b40a594e0619eddae3f6d6e3b15b86af231e1bae5ed2aa512e11da0e5572b67ffff934c36e585cfdd9f877045cb19c183b994bf74645862ffa726739aadcb9e10aaffc881c88ca3aa65b37f667bcb
+  PLAINTEXT = split 0xb8bb5ce53a15aa6dfdf2cb61bc8e3617d1d0fefe9ba5d175550470e32397f6f3b3e65b43bded2b21e5c181d3c4c4c526c41ceab044289508458048b63352dfc379de373fd19a2c900c43524b75949e677cceda866f7f2bcc4844ef2e5dac5b804b4045e657c8156d1dcdb43cbf2f5e00a4f9255e3be2439436c4d0449a8d2c4c1a56bece98ea0fd68abaf12398039994aebffc692b9000e580479b4f4b28b5fe
+
+submodule P_KAT_ECB_AES_256_ENCRYPT_9 where
+  type n = 10
+  KEY = 0x44a2b5a7453e49f38261904f21ac797641d1bcd8ddedd293f319449fe63b2948
+  PLAINTEXT = split 0xc91b8a7b9c511784b6a37f73b290516bb9ef1e8df68d89bf49169eac4039650c4307b6260e9c4e93650223440252f5c7d31c26c56209cbd095bf035b9705880a1628832daf9da587a6e77353dbbce189f963235df160c008a753e8ccea1e0732aa469a97659c42e6e31c16a723153e39958abe5b8ad88ff2e89af40622ca0b0d6729a26c1ae04d3b8367b548c4a6335f0e5a9ec914bb6113c05cd0112552bc21
+  CIPHERTEXT = split 0x05d51af0e2b61e2c06cb1e843fee3172825e63b5d1ce8183b7e1db6268db5aa726521f46e948028aa443af9ebd8b7c6baf958067ab0d4a8ac530ecbb68cdfc3eb93034a428eb7e8f6a3813cea6189068dfecfa268b7ecd5987f8cb2732c6882bbec8f716bac254d72269230aec5dc7f5a6b866fd305242552d400f5b0404f19cbfe7291fab690ecfe6018c4309fc639d1b65fcb65e643edb0ad1f09cfe9cee4a
+
+submodule P_KAT_ECB_AES_256_DECRYPT_9 where
+  type n = 10
+  KEY = 0xc4a71e055a7254dda360693fe1be49f10faa6731c36dbaa6590b05974e185c5b
+  CIPHERTEXT = split 0x2c487fa96f4090c56aa1b5be81918a934c9492878fb0cd686dcf8d17d86485454c51237bbd09205dcef1552f430dd098b9d827a694730c133a0222c77f540f9d5fc2d36af359583c9e3b49df884228a64de79b67f66207c8281360b99b214042ce61367ff97960e944453cd63679bb44708897d29bc5e70f9fc8f1f715143fbb00f7f5c1b7b161ec26d8d41d36fab0fa8a85c3ee6ce4d37007eb7a89d6753590
+  PLAINTEXT = split 0x31fd5a307e279b2f34581e2c432379df8eccbaf79532938916711cd377540b9045373e47f2214b8f876040af733f6c9d8f03a7c58f8714d2fbb4c14af59c75b483adc718946ee907a18286cc4efd206789064b6f1b195f0d0d234468e4f00e6f1cad5cd3b9c0a643b3c0dd09280ff2e2a5929183409384dd72dc94e39687ea2b623d5d776700bd8b36e6130ffde966f134c4b1f35f29c5cc4a03297e1ccc9539
+
+import submodule F_KAT_ECB { submodule P_AES_128_BlockCipher } as F_KAT_ECB_AES_128 (F_KAT)
+import submodule F_KAT_ECB_AES_128::F_KAT { submodule P_KAT_ECB_AES_128_ENCRYPT_9 } as KAT_ECB_AES_128_ENCRYPT_9
+import submodule F_KAT_ECB_AES_128::F_KAT { submodule P_KAT_ECB_AES_128_DECRYPT_9 } as KAT_ECB_AES_128_DECRYPT_9
+
+import submodule F_KAT_ECB { submodule P_AES_192_BlockCipher } as F_KAT_ECB_AES_192 (F_KAT)
+import submodule F_KAT_ECB_AES_192::F_KAT { submodule P_KAT_ECB_AES_192_ENCRYPT_9 } as KAT_ECB_AES_192_ENCRYPT_9
+import submodule F_KAT_ECB_AES_192::F_KAT { submodule P_KAT_ECB_AES_192_DECRYPT_9 } as KAT_ECB_AES_192_DECRYPT_9
+
+import submodule F_KAT_ECB { submodule P_AES_256_BlockCipher } as F_KAT_ECB_AES_256 (F_KAT)
+import submodule F_KAT_ECB_AES_256::F_KAT { submodule P_KAT_ECB_AES_256_ENCRYPT_9 } as KAT_ECB_AES_256_ENCRYPT_9
+import submodule F_KAT_ECB_AES_256::F_KAT { submodule P_KAT_ECB_AES_256_DECRYPT_9 } as KAT_ECB_AES_256_DECRYPT_9
+```
+
+```xcryptol-session
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_ECB_AES_128_ENCRYPT_9::test_encrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_ECB_AES_128_ENCRYPT_9::test_decrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_ECB_AES_128_DECRYPT_9::test_encrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_ECB_AES_128_DECRYPT_9::test_decrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_ECB_AES_192_ENCRYPT_9::test_encrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_ECB_AES_192_ENCRYPT_9::test_decrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_ECB_AES_192_DECRYPT_9::test_encrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_ECB_AES_192_DECRYPT_9::test_decrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_ECB_AES_256_ENCRYPT_9::test_encrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_ECB_AES_256_ENCRYPT_9::test_decrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_ECB_AES_256_DECRYPT_9::test_encrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_ECB_AES_256_DECRYPT_9::test_decrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
@@ -781,6 +966,152 @@ Passed 1 tests.
 Q.E.D.
 ```
 
+**Exercise**: Now define submodules that implement AES in CBC mode for
+each AES key size.
+
+**Solution**:
+
+```cryptol
+/** AES-128/CBC */
+submodule CBC_AES_128 = submodule CBC { submodule P_AES_128_BlockCipher }
+/** AES-192/CBC */
+submodule CBC_AES_192 = submodule CBC { submodule P_AES_192_BlockCipher }
+/** AES-256/CBC */
+submodule CBC_AES_256 = submodule CBC { submodule P_AES_256_BlockCipher }
+```
+
+Your solution should pass the following test vectors:
+
+```cryptol
+submodule F_KAT_CBC where
+  import interface submodule I_BlockCipher
+  interface constraint fin b
+
+  import submodule F_BlockCipher_Aliases { interface I_BlockCipher }
+
+  interface submodule I_KAT where
+    type n : #
+    type constraint fin n
+
+    KEY: Key
+    IV: Block
+    PLAINTEXT : [n]Block
+    CIPHERTEXT : [n]Block
+
+  submodule F_KAT where
+    import interface submodule I_KAT
+
+    import submodule CBC { interface I_BlockCipher }
+	
+    property test_encrypt = encrypt KEY IV PLAINTEXT == CIPHERTEXT
+    property test_decrypt = decrypt KEY IV CIPHERTEXT == PLAINTEXT
+
+submodule P_KAT_CBC_AES_128_ENCRYPT_9 where
+  type n = 10
+  KEY = 0x2c14413751c31e2730570ba3361c786b
+  IV = 0x1dbbeb2f19abb448af849796244a19d7
+  PLAINTEXT = split 0x40d930f9a05334d9816fe204999c3f82a03f6a0457a8c475c94553d1d116693adc618049f0a769a2eed6a6cb14c0143ec5cccdbc8dec4ce560cfd206225709326d4de7948e54d603d01b12d7fed752fb23f1aa4494fbb00130e9ded4e77e37c079042d828040c325b1a5efd15fc842e44014ca4374bf38f3c3fc3ee327733b0c8aee1abcd055772f18dc04603f7b2c1ea69ff662361f2be0a171bbdcea1e5d3f
+  CIPHERTEXT = split 0x6be8a12800455a320538853e0cba31bd2d80ea0c85164a4c5c261ae485417d93effe2ebc0d0a0b51d6ea18633d210cf63c0c4ddbc27607f2e81ed9113191ef86d56f3b99be6c415a4150299fb846ce7160b40b63baf1179d19275a2e83698376d28b92548c68e06e6d994e2c1501ed297014e702cdefee2f656447706009614d801de1caaf73f8b7fa56cf1ba94b631933bbe577624380850f117435a0355b2b
+
+submodule P_KAT_CBC_AES_128_DECRYPT_9 where
+  type n = 10
+  KEY = 0x97a1025529b9925e25bbe78770ca2f99
+  IV = 0xd4b4eab92aa9637e87d366384ed6915c
+  CIPHERTEXT = split 0x22cdc3306fcd4d31ccd32720cbb61bad28d855670657c48c7b88c31f4fa1f93c01b57da90be63ead67d6a325525e6ed45083e6fb70a53529d1fa0f55653b942af59d78a2660361d63a7290155ac5c43312a25b235dacbbc863faf00940c99624076dfa44068e7c554c9038176953e571751dfc0954d41d113771b06466b1c8d13e0d4cb675ed58d1a619e1540970983781dc11d2dd8525ab5745958d615defda
+  PLAINTEXT = split 0xe8b89150d8438bf5b17449d6ed26bd72127e10e4aa57cad85283e8359e089208e84921649f5b60ea21f7867cbc9620560c4c6238db021216db453c9943f1f1a60546173daef2557c3cdd855031b353d4bf176f28439e48785c37d38f270aa4a6faad2baabcb0c0b2d1dd5322937498ce803ba1148440a52e227ddba4872fe4d81d2d76a939d24755adb8a7b8452ceed2d179e1a5848f316f5c016300a390bfa7
+
+submodule P_KAT_CBC_AES_192_ENCRYPT_9 where
+  type n = 10
+  KEY = 0x162ad50ee64a0702aa551f571dedc16b2c1b6a1e4d4b5eee
+  IV = 0x24408038161a2ccae07b029bb66355c1
+  PLAINTEXT = split 0xbe8abf00901363987a82cc77d0ec91697ba3857f9e4f84bd79406c138d02698f003276d0449120bef4578d78fecabe8e070e11710b3f0a2744bd52434ec70015884c181ebdfd51c604a71c52e4c0e110bc408cd462b248a80b8a8ac06bb952ac1d7faed144807f1a731b7febcaf7835762defe92eccfc7a9944e1c702cffe6bc86733ed321423121085ac02df8962bcbc1937092eebf0e90a8b20e3dd8c244ae
+  CIPHERTEXT = split 0xc82cf2c476dea8cb6a6e607a40d2f0391be82ea9ec84a537a6820f9afb997b76397d005424faa6a74dc4e8c7aa4a8900690f894b6d1dca80675393d2243adac762f159301e357e98b724762310cd5a7bafe1c2a030dba46fd93a9fdb89cc132ca9c17dc72031ec6822ee5a9d99dbca66c784c01b0885cbb62e29d97801927ec415a5d215158d325f9ee689437ad1b7684ad33c0d92739451ac87f39ff8c31b84
+
+submodule P_KAT_CBC_AES_192_DECRYPT_9 where
+  type n = 10
+  KEY = 0x509baf46fb9de34281dafcc3db79593bffa8426904302688
+  IV = 0xd6d86e0c82dd8788f4147a26f9a71c74
+  CIPHERTEXT = split 0x6928299c52b4f047926f8a541529da2d6bbaa399143ced8efb77ab47409d9a953a386c7abd6026f49831c717627c2a5e77bd2d433d4d130dacd927ea0d13a23d01a7cf39c6716dafb6ed552410ef5d27fb947be2c8782eee7829196c7edcf151c65f9a01f54f8d20f38b7da4a7e83a2f0127d59d3e2405d8674fc9f41b604f788f4715f9d3624eee57f387bfadd18a1f905e839c26b8617482347fab6d08845a
+  PLAINTEXT = split 0x67d2dda6da26e21307973400600725727ae81415511772f4a09ad9903bcf90cc2c0dac58ba559a0109c54a9d6117b15bb574ca473e848047e9a54ee4abde76aff9849c44109d161f46442e1610d8b015cf36a010ed8efa3207fdfc8fcc548f145c027e44c5b0ec35c9886f4b9d6513a5bc10d0ea6bbbc26f54b183bcae27fb799d8872ff748fc459d55cfa255aae29d71b076d9b44c14d5ceba9332a763d9c94
+
+submodule P_KAT_CBC_AES_256_ENCRYPT_9 where
+  type n = 10
+  KEY = 0x48be597e632c16772324c8d3fa1d9c5a9ecd010f14ec5d110d3bfec376c5532b
+  IV = 0xd6d581b8cf04ebd3b6eaa1b53f047ee1
+  PLAINTEXT = split 0x0c63d413d3864570e70bb6618bf8a4b9585586688c32bba0a5ecc1362fada74ada32c52acfd1aa7444ba567b4e7daaecf7cc1cb29182af164ae5232b002868695635599807a9a7f07a1f137e97b1e1c9dabc89b6a5e4afa9db5855edaa575056a8f4f8242216242bb0c256310d9d329826ac353d715fa39f80cec144d6424558f9f70b98c920096e0f2c855d594885a00625880e9dfb734163cecef72cf030b8
+  CIPHERTEXT = split 0xfc5873e50de8faf4c6b84ba707b0854e9db9ab2e9f7d707fbba338c6843a18fc6facebaf663d26296fb329b4d26f18494c79e09e779647f9bafa87489630d79f4301610c2300c19dbf3148b7cac8c4f4944102754f332e92b6f7c5e75bc6179eb877a078d4719009021744c14f13fd2a55a2b9c44d18000685a845a4f632c7c56a77306efa66a24d05d088dcd7c13fe24fc447275965db9e4d37fbc9304448cd
+
+submodule P_KAT_CBC_AES_256_DECRYPT_9 where
+  type n = 10
+  KEY = 0x87725bd43a45608814180773f0e7ab95a3c859d83a2130e884190e44d14c6996
+  IV = 0xe49651988ebbb72eb8bb80bb9abbca34
+  CIPHERTEXT = split 0x5b97a9d423f4b97413f388d9a341e727bb339f8e18a3fac2f2fb85abdc8f135deb30054a1afdc9b6ed7da16c55eba6b0d4d10c74e1d9a7cf8edfaeaa684ac0bd9f9d24ba674955c79dc6be32aee1c260b558ff07e3a4d49d24162011ff254db8be078e8ad07e648e6bf5679376cb4321a5ef01afe6ad8816fcc7634669c8c4389295c9241e45fff39f3225f7745032daeebe99d4b19bcb215d1bfdb36eda2c24
+  PLAINTEXT = split 0xbfe5c6354b7a3ff3e192e05775b9b75807de12e38a626b8bf0e12d5fff78e4f1775aa7d792d885162e66d88930f9c3b2cdf8654f56972504803190386270f0aa43645db187af41fcea639b1f8026ccdd0c23e0de37094a8b941ecb7602998a4b2604e69fc04219585d854600e0ad6f99a53b2504043c08b1c3e214d17cde053cbdf91daa999ed5b47c37983ba3ee254bc5c793837daaa8c85cfc12f7f54f699f
+
+import submodule F_KAT_CBC { submodule P_AES_128_BlockCipher } as F_KAT_CBC_AES_128 (F_KAT)
+import submodule F_KAT_CBC_AES_128::F_KAT { submodule P_KAT_CBC_AES_128_ENCRYPT_9 } as KAT_CBC_AES_128_ENCRYPT_9
+import submodule F_KAT_CBC_AES_128::F_KAT { submodule P_KAT_CBC_AES_128_DECRYPT_9 } as KAT_CBC_AES_128_DECRYPT_9
+
+import submodule F_KAT_CBC { submodule P_AES_192_BlockCipher } as F_KAT_CBC_AES_192 (F_KAT)
+import submodule F_KAT_CBC_AES_192::F_KAT { submodule P_KAT_CBC_AES_192_ENCRYPT_9 } as KAT_CBC_AES_192_ENCRYPT_9
+import submodule F_KAT_CBC_AES_192::F_KAT { submodule P_KAT_CBC_AES_192_DECRYPT_9 } as KAT_CBC_AES_192_DECRYPT_9
+
+import submodule F_KAT_CBC { submodule P_AES_256_BlockCipher } as F_KAT_CBC_AES_256 (F_KAT)
+import submodule F_KAT_CBC_AES_256::F_KAT { submodule P_KAT_CBC_AES_256_ENCRYPT_9 } as KAT_CBC_AES_256_ENCRYPT_9
+import submodule F_KAT_CBC_AES_256::F_KAT { submodule P_KAT_CBC_AES_256_DECRYPT_9 } as KAT_CBC_AES_256_DECRYPT_9
+```
+
+```xcryptol-session
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_128_ENCRYPT_9::test_encrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_128_ENCRYPT_9::test_decrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_128_DECRYPT_9::test_encrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_128_DECRYPT_9::test_decrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_192_ENCRYPT_9::test_encrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_192_ENCRYPT_9::test_decrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_192_DECRYPT_9::test_encrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_192_DECRYPT_9::test_decrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_256_ENCRYPT_9::test_encrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_256_ENCRYPT_9::test_decrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_256_DECRYPT_9::test_encrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_256_DECRYPT_9::test_decrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+```
+
 ## Cipher Feedback (CFB)
 
 CFB can take any of various forms, including a full-block mode or one
@@ -835,7 +1166,8 @@ given `ct_i = (encipher key iv) ^ pt_i`, solve for `pt_i`.
 
 **Exercise**: Define a submodule that implements DES (a weak block
 cipher) in full-block CFB mode (a cipher mode).  Add a docstring with
-a prominent warning not to use it in production.
+a prominent warning not to use it in production.  Check these against
+test vectors in [3].
 
 **Solution**:
 
@@ -843,8 +1175,6 @@ a prominent warning not to use it in production.
 /** NO!!! NO, NO, NO!!! */
 submodule CFB_DES = submodule CFB { submodule P_DES_BlockCipher }
 ```
-
-Your solution should pass the following test vectors [3]:
 
 ```cryptol
 submodule CFB_DES_Test where
@@ -866,6 +1196,150 @@ Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
 labs::NewModuleSystem::NewModuleSystemAnswers> :check CFB_DES_Test::d_fips_81
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+```
+
+**Exercise**: Now define submodules that implement AES in CFB mode for
+each AES key size, and verify these against some test vectors in [4].
+
+**Solution**:
+
+```cryptol
+/** AES-128/CFB */
+submodule CFB_AES_128 = submodule CFB { submodule P_AES_128_BlockCipher }
+/** AES-192/CFB */
+submodule CFB_AES_192 = submodule CFB { submodule P_AES_192_BlockCipher }
+/** AES-256/CFB */
+submodule CFB_AES_256 = submodule CFB { submodule P_AES_256_BlockCipher }
+```
+
+```cryptol
+submodule F_KAT_CFB where
+  import interface submodule I_BlockCipher
+  interface constraint fin b
+
+  import submodule F_BlockCipher_Aliases { interface I_BlockCipher }
+
+  interface submodule I_KAT where
+    type n : #
+    type constraint fin n
+
+    KEY: Key
+    IV: Block
+    PLAINTEXT : [n]Block
+    CIPHERTEXT : [n]Block
+
+  submodule F_KAT where
+    import interface submodule I_KAT
+
+    import submodule CFB { interface I_BlockCipher }
+	
+    property test_encrypt = encrypt KEY IV PLAINTEXT == CIPHERTEXT
+    property test_decrypt = decrypt KEY IV CIPHERTEXT == PLAINTEXT
+
+submodule P_KAT_CFB_AES_128_ENCRYPT_9 where
+  type n = 10
+  KEY = 0x7cb81fc4b203b0fa9bec49759bd515c2
+  IV = 0x4d5e2fa3bf73f488b3e7e125f03dfbbe
+  PLAINTEXT = split 0x362789b376d85eb8181d4eeea52d42e873ce7741c11a2f820383a7457b15489b09fb21ac4445959dc9e851b7d40682c50d7044bda46a5da39fae2bab73b3db9ed22edc7ec5da936dfa7451cb5f0a829ff0762738cc2686148f1e1f00dc3fe38139c9a173201fc1f052ca34736fc1ab3dc4e707f864d6119b7adb6c8ddd41c80de5d357d17e9c85ed7af1e4f72cb2656932ccce469202680109eef89a9f42f10a
+  CIPHERTEXT = split 0xac23259f68d4f82604cabd2e4237821c8b6c0aad0dfb1120b6b057223c994d62b5c6f63a25edbb797cd299f81ccb86d50134ad26107865142004c2d9d52fe3f91acf7b9b8111c8b4e14b05b173730e7b812036029846f1c1c6ffb30f6abcfc3e1ea631480e0d0bda106bb87319fdae09a11b89e8dde625d53a19c65ae58fbe3f4bcbc3c99af05cb0a7cc4b793d8cdb1cfa3173ede595c8c561f92c3fe3638b8d
+
+submodule P_KAT_CFB_AES_128_DECRYPT_9 where
+  type n = 10
+  KEY = 0xaef49da33f538ee66e178d4b6121055d
+  IV = 0x842566e68b61ff7bf001f2642da62f64
+  CIPHERTEXT = split 0x6625811419bdee71535f597f7c228bafd890fd69b805a699ed58116a82bdb251abea7a4ef879a96fce8ee49518b9877a3a1e3cf346d3cd73738936d1cb6fff4b2353c8ca500a26689813ad2f67774e2343f3e4830259094d3b342e00faabeba5b8a893108a390c649836ddd5d12489b2dd591ca25361032e2da1207f793a1e69513002a90ccc036bb63e9c10be87df2def960cd7a1b1621e311735d7aee4419f
+  PLAINTEXT = split 0x415991f65e1a95040cef9960556f61e617827c30c74bf353cdd86173dbe4cc983a2ee6bc8ca6cfb71121e7b0d0178f2e13445c710dcc176b781201971171f7489f18faf110f39accd1cf08c85a958d7698b116f1c0d75812ac9b0b39aee7f7159ccad8fdae9b99f2d695eacf12c6469d5b51a34de26eac73613dcb2f77122cb1f8dd5162786a12052dc7b6dea6acc4989dcc7eafd9374f6c29697c74749ef16d
+
+submodule P_KAT_CFB_AES_192_ENCRYPT_9 where
+  type n = 10
+  KEY = 0xaffe25a7b28fe7427aa69a89cb87bc0fb68c940d63d319b3
+  IV = 0x89e612f77ef55ee86935d90a8c7466c2
+  PLAINTEXT = split 0xb5719702560b8b214c73b9a2ea7a43707b10e0b79152d1019ac4179fb4dae34ac3be4e0ac04d4a575462d87ea5587c4770caeed5589d13cd7d412bbb51334cb1a7c70f310d24894c5c907d0c8deecf10ce843c76d50249fe75c0796b6f48c32d8a14433ee699304a8d840e124b432512c0c73161b3885bdaa9ca6879b61f3107942e53faf2b227970ec6f559865f64966c1a3560983831aa42e660abd0c27c88
+  CIPHERTEXT = split 0x5bc958b594f0e4928cee7c019ee1884bab9b6956f40c47f24c1b8ef587d68b175dbc36226b7d95e573702f5b0dc969a8c59b82816762847275c95234e3c74fba50841202c27264131ab03773b4e28ea7c68ea946efe2e2d9a89643d98c5dddd075098a930c741b535ba96ea0a08ad0cf68d11e8e98e26d0a79d3a5ef65dd137cc6c82a4e8edb1a63e9bc6e8705cef59b4b4c391924ffd33ace99808cc163272d
+
+submodule P_KAT_CFB_AES_192_DECRYPT_9 where
+  type n = 10
+  KEY = 0xdcc8702142b29e1529f23c5c3766464f6be0d2fbb16e4682
+  IV = 0xe0818769d77f2315924cf81a3691e275
+  CIPHERTEXT = split 0x1a22b1bf5775d43c66f1a73084eeefdb3ed24cebd9e2bef2f05867165fb5930b6058f53ef4503353856fa6d2c99f5b1de9795da6e314365e2d1bb3719b23e830823b744e1ec406503183203fedf41ba014e16ca65e3425a51b0abfca1908160ac8f2b5589c79541bb3559fdfb894394a0732015211e994ae024a138aa20d267f79a640c23719259c530eaa1af128bc050993a414c6dc89612c06371afeda1f79
+  PLAINTEXT = split 0xcb550111bf0a03eaf4f49af214fcc05a32972d7b4dede3e9812a27ef80d680188119ead562313e400fe0a0fffbb88c55a42bd681d5c93a8a61ba909058e62d99fa109cfd49935b150862a8aab2c301b9b0a9157c838491cd737af438cb66b1f20420200dbc56aa66552ce4be04cace4ace5bfbc617e3b27f40ec6dbc85a42b410dcb7ea0b78d472297d9b98875d636b8ef08c254ec9bd05bfda01bb38e8beb6a
+
+submodule P_KAT_CFB_AES_256_ENCRYPT_9 where
+  type n = 10
+  KEY = 0x04c4499a7a10a319992258726191f8087af1182ebd48f43bf6c158dce8a5c0af
+  IV = 0x7fc268d6599fcdef7457cdbde5b9c5b6
+  PLAINTEXT = split 0x04a66003969bbe72eedb638fb188bea1564d96df873994e2cacd02596053d2ff6d72e2ca5a007e65781727e1e66b92a8b4daf4b248457dfb019f22341b43a0b8d38bbec3cb9ed2deaf89869e1992dc8eb2c8706a9bdffe8e0b3b23ad394b68c67c187c54b01ec1c6dd5a0a2e13a4a43d983f936f46af1d832eca8d2e81123110b142a5e7d327530348b13bfa9c4af09cae66e329115ce4c2b374e61ebc41037e
+  CIPHERTEXT = split 0x5235639833e022fa28ab90d2820abec07d2c3185a9c6e17618b8b68fb221bb5db242ad18c535d7694d1306ec26afdd459a53bb460485249c4f5fa73d41a0d6cc56988949f7ad82259fe3a3226f0bd8d479f40a2bd36400075981206f50f268c921338e91613b3a3c0cee1c0ff6c4e1d30c4ca0f9a311e9586d9ed29dcc876fd09eb6405023ebc180c5635d4c7987286080847d3a74e9deeafaeec0697ca8db75
+
+submodule P_KAT_CFB_AES_256_DECRYPT_9 where
+  type n = 10
+  KEY = 0x4d3e4cec63edafbb4d600007e95124f554b352ada4966a60da4c898912cada73
+  IV = 0x05aef5ccf46298e0feb58d77122b58d9
+  CIPHERTEXT = split 0xfedc2708ce2e2471ab8e66c69a3451a94380da0e5e9998fa68541d899a5786361b7e5157757d6fe746c79a8838afe9c832cda2a4d0a44f4b1181142450a63f1176a821f66d161d75d85bfefc01e68d021288648d891dfdf8e66e0ef3a65619cb75243eeca04155a4c9133929de2066de4c77c7d26f4cc9894de2b40085ae3beb82b95241f4463ffa81b5f418b7a79ce44663747a6c78dc87b0a4ae52d3f5cef9
+  PLAINTEXT = split 0x95d6b83e1c10c721e0f0c35907b3a4e35c2794a6a8234874440be7a795dc8e2f7ec5cf739d0bb13b1fc51cf5d4d27d2ed4b93c11893c7b9a649b22cbbc96a8cd5847d135c43d1a11855811b82cffbd2287e6c55f45d124d47d549218c1ea0049281dd539a60cdbb80549db3af3b9f8d4ca127efcb5cde7ecc98e008f1edeff6980f172652806ff9395af7a62f88abaaf8974ebef1a02d78e4bd52149fa1ee183
+
+import submodule F_KAT_CFB { submodule P_AES_128_BlockCipher } as F_KAT_CFB_AES_128 (F_KAT)
+import submodule F_KAT_CFB_AES_128::F_KAT { submodule P_KAT_CFB_AES_128_ENCRYPT_9 } as KAT_CFB_AES_128_ENCRYPT_9
+import submodule F_KAT_CFB_AES_128::F_KAT { submodule P_KAT_CFB_AES_128_DECRYPT_9 } as KAT_CFB_AES_128_DECRYPT_9
+
+import submodule F_KAT_CFB { submodule P_AES_192_BlockCipher } as F_KAT_CFB_AES_192 (F_KAT)
+import submodule F_KAT_CFB_AES_192::F_KAT { submodule P_KAT_CFB_AES_192_ENCRYPT_9 } as KAT_CFB_AES_192_ENCRYPT_9
+import submodule F_KAT_CFB_AES_192::F_KAT { submodule P_KAT_CFB_AES_192_DECRYPT_9 } as KAT_CFB_AES_192_DECRYPT_9
+
+import submodule F_KAT_CFB { submodule P_AES_256_BlockCipher } as F_KAT_CFB_AES_256 (F_KAT)
+import submodule F_KAT_CFB_AES_256::F_KAT { submodule P_KAT_CFB_AES_256_ENCRYPT_9 } as KAT_CFB_AES_256_ENCRYPT_9
+import submodule F_KAT_CFB_AES_256::F_KAT { submodule P_KAT_CFB_AES_256_DECRYPT_9 } as KAT_CFB_AES_256_DECRYPT_9
+```
+
+```xcryptol-session
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CFB_AES_128_ENCRYPT_9::test_encrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CFB_AES_128_ENCRYPT_9::test_decrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CFB_AES_128_DECRYPT_9::test_encrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CFB_AES_128_DECRYPT_9::test_decrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CFB_AES_192_ENCRYPT_9::test_encrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CFB_AES_192_ENCRYPT_9::test_decrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CFB_AES_192_DECRYPT_9::test_encrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CFB_AES_192_DECRYPT_9::test_decrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CFB_AES_256_ENCRYPT_9::test_encrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CFB_AES_256_ENCRYPT_9::test_decrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CFB_AES_256_DECRYPT_9::test_encrypt
+Using exhaustive testing.
+Passed 1 tests.
+Q.E.D.
+labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CFB_AES_256_DECRYPT_9::test_decrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
@@ -953,13 +1427,6 @@ it, and verify the test vectors.
 **Exercise**: Feel free to specify other basic block cipher modes
 such as PCBC, OFB, segmented CFB, etc.
 
-**TODO**: Introduce authenticated cipher modes, a positive
-authentication property, and resilience properties (tamper, spoofing).
-
-**TODO**: Get to the point where (sub)modules can import interfaces and
-specify properties assumed about their implementations.  Use these to
-generate "contracts" and reusable test cases.
-
 # Properties and Verification (Interface Reuse)
 
 [2] defines the *CIA triad* of:
@@ -995,7 +1462,8 @@ using *test vectors*, e.g.:
 
 ```cryptol
 import submodule P_Simon_32_64_BlockCipher as S_32_64
-import submodule F_BlockCipher_Aliases { submodule P_Simon_32_64_BlockCipher } as S_32_64
+submodule S_32_64_Aliases = submodule F_BlockCipher_Aliases { submodule P_Simon_32_64_BlockCipher }
+import submodule S_32_64_Aliases as S_32_64
 
 S_32_64_test_key = 0x94eeea8b1f2ada84
 S_32_64_test_pt = 0xadf10331
@@ -1014,12 +1482,9 @@ recover a cryptographic key from known or chosen plaintext:
 
 ```xcryptol-session
 // Try to recover `test_key` from known test plaintext/ciphertext
-// labs::ModuleSystem> :sat \key -> S_32_64::encipher key test_pt == test_ct
+// labs::ModuleSystem> :sat \key -> S_32_64::encipher key S_32_64_test_pt == S_32_64_test_ct
+// ...
 ```
-
-**TODO**: Introduce exercises to check `mode_recovery` for various
-block cipher modes, and show how to use SAW to formally verify these
-using a block cipher's `block_recovery` property when applicable.
 
 # Conclusion
 
@@ -1043,6 +1508,10 @@ complex nested module with multiple ciphers, modes, and properties.
     "DES MODES OF OPERATION"
     2 December 1980.
     https://csrc.nist.gov/pubs/fips/81/final
+
+[4] NIST Advanced Encryption Standard Algorithm Verification System
+    AES Multiblock Message Test (MMT) Sample Vectors
+	https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/aes/aesmmt.zip
 
 # Solicitation
 
