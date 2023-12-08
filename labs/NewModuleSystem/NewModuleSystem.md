@@ -119,7 +119,7 @@ block cipher over some number of blocks (or sub-blocks).
 # Interfaces
 
 Using prior techniques for parameterized modules, we might start each 
-mode's (sub)module with a parameter block (commented out here because
+mode's (sub)module with a `parameter` block (commented out here because
 that's not how we'll finish...):
 
 (Here, we use the terms `encipher` and `decipher` to distinguish block
@@ -143,7 +143,7 @@ parameter
 ```
 
 But this approach already repeats itself, and we'd have to start each
-(sub)module with the `parameter`s in this block (along with any others
+(sub)module with the parameters in this block (along with any others
 unique to the mode).  It would be better to reuse the common block
 cipher parameters, and we can do so by defining an **interface** with
 reusable **type aliases**:
@@ -197,9 +197,9 @@ define additional type constraints on their implementations.
 As noted above, interfaces do not (yet) export their type aliases, but
 it would be nice for users to have access to these.  We'll quickly do
 this with a functor that imports the same interface and exports the
-(copied) type aliases.  This also demonstrates an **interface alias**
-to distinguish the interface's aliases (which would otherwise conflict
-despite not being accessible) from the functor's:
+(copied) type aliases.  This also demonstrates an *interface alias*
+to distinguish the interface's type aliases (which would otherwise
+conflict despite not being accessible) from the functor's:
 
 ```cryptol
 submodule F_BlockCipher_Aliases where
@@ -224,10 +224,12 @@ Then a `mode` can...
 
 ...and reuse these aliases in its own definitions.
 
-Of course, parameterizable block cipher modes need block ciphers!  We
-recently implemeented the Simon and Speck block ciphers, which are
-themselves parameterized.  We just need to adapt these to our fancy
-new interface...
+Of course, parameterizable block cipher modes need block ciphers!  In
+the previous lab on
+[Parameterized Modules](../SimonSpeck/SimonSpeck.md), we implemeented
+the Simon and Speck block ciphers, which are themselves parameterized.
+To use these for our block cipher modes, we just need to adapt them to
+our fancy new interface...
 
 ## Explicit Instantiation
 
@@ -408,9 +410,9 @@ generates a **signature** alongside the ciphertext.)
 ## Electronic Codebook (ECB)
 
 ECB is a simple block cipher mode that just enciphers each block, with
-no intermediate transformations to **diffuse** the message, a weakness
-that disqualifies it for use in security-critical settings.  But just
-as a pedagogical exercise, we can define ECB in Cryptol...
+no intermediate transformations to **diffuse** the message -- a
+weakness that disqualifies it for use in security-critical settings.
+But just as a pedagogical exercise, we can define ECB in Cryptol...
 
 **Exercise**: In the specification of ECB mode below, define `decrypt`
 so that using the same shared key on an encrypted ciphertext message
@@ -459,7 +461,7 @@ prominent warning not to use it in production.
 // submodule ECB_DES = submodule ... { submodule P_DES_BlockCipher }  // Replace with your definition and uncomment.
 ```
 
-Your solution should pass the following test vectors [3]:
+Your solution should pass the following test vectors [2]:
 
 ```cryptol
 /** ECB/DES Tests */
@@ -511,7 +513,7 @@ Q.E.D.
 block cipher) in ECB (a weak cipher mode).  Add docstrings with
 prominent warnings not to use them in production.
 
-Your solution should pass the following test vectors [4]:
+Your solution should pass the following test vectors [3]:
 
 ```cryptol
 // Let's use the new module system to generate groups of related properties...
@@ -702,18 +704,18 @@ important property of (useful) block ciphers, defined as
 
 Working backward from our generator expression for `encrypt`...
 
-`ct@i = encipher key (pt@i ^ (if i == 0 then iv else ct@(i-1)))`
-(Apply `decipher key` to both sides.)
-`decipher key (ct@i) = decipher key (encipher key (pt@i ^ (if i == 0 then iv else ct@(i-1))))`
-(Apply `block_recovery` on right.)
-`decipher key (ct@i) = pt@i ^ ct'`
-(Apply `(^) ct'` to both sides, where `ct'` is the `if`-expression.)
-`decipher key (ct@i) ^ ct' = pt@i ^ ct' ^ ct'
-(Apply `xor_inv_r` on right.)
-`decipher key (ct@i) ^ ct' = pt@i`
-(Flip sides for assignment to plaintext.)
-`pt@i = decipher key (ct@i) ^ ct'`
-(Substitute the `if`-expression back in for `ct'`.)
+`ct@i = encipher key (pt@i ^ (if i == 0 then iv else ct@(i-1)))`  
+(Apply `decipher key` to both sides.)  
+`decipher key (ct@i) = decipher key (encipher key (pt@i ^ (if i == 0 then iv else ct@(i-1))))`  
+(Apply `block_recovery` on right.)  
+`decipher key (ct@i) = pt@i ^ ct'`  
+(Apply `(^) ct'` to both sides, where `ct'` is the `if`-expression.)  
+`decipher key (ct@i) ^ ct' = pt@i ^ ct' ^ ct'`  
+(Apply `xor_inv_r` on right.)  
+`decipher key (ct@i) ^ ct' = pt@i`  
+(Flip sides for assignment to plaintext.)  
+`pt@i = decipher key (ct@i) ^ ct'`  
+(Substitute the `if`-expression back in for `ct'`.)  
 `pt@i = decipher key (ct@i) ^ (if i == 0 then iv else ct@(i-1)))`
 
 **Note**: Could you define `decrypt` without an initialization vector?
@@ -741,7 +743,7 @@ warning not to use it in production.
 // submodule CBC_DES = ...  // Replace with your definition and uncomment.
 ```
 
-Your solution should pass the following test vectors [3]:
+Your solution should pass the following test vectors [2]:
 
 ```cryptol
 submodule CBC_DES_Test where
@@ -771,7 +773,7 @@ Q.E.D.
 **Exercise**: Now define submodules that implement AES in CBC mode for
 each AES key size.
 
-Your solution should pass the following test vectors:
+Your solution should pass the following test vectors [3]:
 
 ```cryptol
 submodule F_KAT_CBC where
@@ -948,14 +950,25 @@ given `ct_i = (encipher key iv) ^ pt_i`, solve for `pt_i`.
 **Exercise**: Define a submodule that implements DES (a weak block
 cipher) in full-block CFB mode (a cipher mode).  Add a docstring with
 a prominent warning not to use it in production.  Check these against
-test vectors in [3].
-
-**Solution**:
+test vectors in [2].
 
 ```cryptol
 // /** ... */
 // submodule CFB_DES = ...  // Replace with your definition and uncomment.
 ```
+
+**Exercise**: Now define submodules that implement AES in CFB mode for
+each AES key size, and verify these against some test vectors in [3].
+
+```cryptol
+// /** ... */
+// submodule CFB_AES_128 = ...  // Replace with your definition and uncomment.
+// /** ... */
+// submodule CFB_AES_192 = ...  // Replace with your definition and uncomment.
+// /** ... */
+// submodule CFB_AES_256 = ...  // Replace with your definition and uncomment.
+```
+
 
 ## Counter (CTR) Mode (Multiple Interfaces and Interface Constraints)
 
@@ -1033,64 +1046,6 @@ it, and verify the test vectors.
 **Exercise**: Feel free to specify other basic block cipher modes
 such as PCBC, OFB, segmented CFB, etc.
 
-# Properties and Verification (Interface Reuse)
-
-[2] defines the *CIA triad* of:
-  - *confidentiality*
-  - *integrity*
-  - *availability*
-
-In these terms, a cipher's purpose is to provide confidentiality (for
-authorized persons to securely exchange message so that they are not
-easily recoverable by unauthorized persons) and availability (messages
-need to remain readable by authorized persons).
-
-In particular, at the expense of repeating ourselves, a cipher must
-satisfy this familiar property, which you may have already used to
-understand how to specify `decrypt` for block cipher modes:
-
-```cryptol
-// property block_recovery key pt = decipher key (encipher key pt) == pt
-```
-
-In other words, a cipher must remain *available* to those with a shared
-symmetric key.  This must also hold true for cipher modes, e.g. for a
-cipher mode with an initialization vector:
-
-```cryptol
-// property mode_recovery = decrypt key iv (encrypt key iv pt) == pt
-```
-
-Another prerequisite of availability is that authorized parties agree
-on how the cipher operates.  Cryptol expresses algorithms as rigorous
-formal specifications, but users more commonly confirm this agreement
-using *test vectors*, e.g.:
-
-```cryptol
-import submodule P_Simon_32_64_BlockCipher as S_32_64
-submodule S_32_64_Aliases = submodule F_BlockCipher_Aliases { submodule P_Simon_32_64_BlockCipher }
-import submodule S_32_64_Aliases as S_32_64
-
-S_32_64_test_key = 0x94eeea8b1f2ada84
-S_32_64_test_pt = 0xadf10331
-S_32_64_test_ct = 0x391e7f1a
-
-property test_simon_32_64_enc = S_32_64::encipher S_32_64_test_key S_32_64_test_pt == S_32_64_test_ct
-property test_simon_32_64_dec = S_32_64::decipher S_32_64_test_key S_32_64_test_pt == S_32_64_test_ct
-```
-
-A strong cipher must resist cryptanalytic attacks of varying
-sophistication.  Cryptol and SMT solvers are not designed to perform
-rigorous cryptanalysis, but can run some quick sanity checks.
-
-For example, it should not be easy to (ab)use SMT solvers to quickly
-recover a cryptographic key from known or chosen plaintext:
-
-```xcryptol-session
-// Try to recover `test_key` from known test plaintext/ciphertext
-// labs::ModuleSystem> :sat \key -> S_32_64::encipher key test_pt == test_ct
-```
-
 # Conclusion
 
 In this module, you learned how to define and reuse interfaces and
@@ -1104,17 +1059,12 @@ complex nested module with multiple ciphers, modes, and properties.
     December 2001.
     https://csrc.nist.gov/pubs/sp/800/38/a/final
 
-[2] NIST SP 800-12 Rev. 1.
-    "An Introduction to Information Security".
-    June 2017.
-    https://csrc.nist.gov/pubs/sp/800/12/r1/final
-
-[3] NIST FIPS 81 (withdrawn).
+[2] NIST FIPS 81 (withdrawn).
     "DES MODES OF OPERATION"
     2 December 1980.
     https://csrc.nist.gov/pubs/fips/81/final
 
-[4] NIST Advanced Encryption Standard Algorithm Verification System
+[3] NIST Advanced Encryption Standard Algorithm Verification System
     AES Multiblock Message Test (MMT) Sample Vectors
 	https://csrc.nist.gov/CSRC/media/Projects/Cryptographic-Algorithm-Validation-Program/documents/aes/aesmmt.zip
 
