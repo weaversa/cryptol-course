@@ -17,7 +17,16 @@ parameter
 type blockSize = 2 * n
 type keySize   = m * n
 
+encrypt : [keySize] -> [blockSize] -> [blockSize]
 encrypt K P = join (last (encryptList K P))
+
+// ADDITIONAL EXERCISE (decryption and properties)
+decrypt : [keySize] -> [blockSize] -> [blockSize]
+decrypt K C = join (last (decryptList K C))
+
+decrypt_inverts_encrypt : [keySize] -> [blockSize] -> Bool
+property decrypt_inverts_encrypt K P =
+  decrypt K (encrypt K P) == P
 
 private
 
@@ -31,23 +40,46 @@ private
     where
       x' = ((x >>> a) + y) ^ k
       y' = (y <<< b) ^ x'
-  
+
   KeyScheduleRound : [m][n] -> [n] -> [m][n]
   KeyScheduleRound (Ls # [li] # [ki]) i = S'
     where
       [l', ki'] = Rk [li, ki] i
       S'        = [l'] # Ls # [ki']
-      
+
   KeySchedule : [keySize] -> [T][n]
   KeySchedule K = Ks
     where
       S0 = split K
       Ss = scanl KeyScheduleRound S0 [0 .. T-2]
       Ks = last (transpose Ss)
-  
+
   encryptList: [keySize] -> [blockSize] -> [T+1][2][n]
   encryptList K P = Cs
     where
       Ps = split P
       Ks = KeySchedule K
       Cs = scanl Rk Ps Ks
+
+  // ADDITIONAL EXERCISE (decryption and properties)
+
+  Rk' : [2][n] -> [n] -> [2][n]
+  Rk' [x', y'] k = [x, y]
+    where
+      y = (y' ^ x') >>> b
+      x = ((x' ^ k) - y) <<< a
+
+  decryptList: [keySize] -> [blockSize] -> [T+1][2][n]
+  decryptList K C = Ps
+    where
+      Cs = split C
+      Ks = KeySchedule K
+      Ps = scanl Rk' Cs (reverse Ks)
+
+  Rk'_inverts_Rk : [2][n] -> [n] -> Bool
+  property Rk'_inverts_Rk [x, y] k =
+    Rk' (Rk [x, y] k) k == [x, y]
+
+  decryptList_inverts_encryptList : [keySize] -> [blockSize] -> Bool
+  property decryptList_inverts_encryptList K P =
+    join (last (decryptList K (join (last (encryptList K P))))) == P

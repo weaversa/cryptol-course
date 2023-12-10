@@ -408,4 +408,4 @@ https://github.com/weaversa/cryptol-course/issues
 ||||
 |-:|:-:|-|
 || [- Key Wrapping](../KeyWrapping/KeyWrapping.md) ||
-|| **Parameterized Modules** ||
+|| **Parameterized Modules** | [New Module System >](../NewModuleSystem/NewModuleSystem.md) |
