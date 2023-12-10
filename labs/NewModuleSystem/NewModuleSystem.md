@@ -10,7 +10,7 @@ Before working through this lab, you'll need
 You'll also need experience with
   * loading modules and evaluating functions in the interpreter,
   * writing functions and properties,
-  * testing properties by using the `:prove` and `:check` commands,
+  * testing properties by using the `:prove` and `:exhaust` commands,
   * sequence comprehensions,
   * functions with curried parameters, and
   * parameterized modules.
@@ -98,7 +98,9 @@ This is a new feature that enables us to present multiple
 `submodule`s -- e.g. multiple instances of a common parameterized
 module -- in a single file, which was not previously an option for
 examples like the earlier
-[**Parameterized Modules**](../SimonSpeck/SimonSpeck.md) lab.
+[**Parameterized Modules**](../SimonSpeck/SimonSpeck.md) lab.  Some
+exercises will require you to define submodules, after which you will
+have to uncomment any test vectors that depend on these.
 
 # Symmetric Block Ciphers and Modes of Operation
 
@@ -130,13 +132,13 @@ cipher operations from those for modes, in keeping with [1].)
 parameter
   /** arbitrary key type */
   type K : *
-  
+
   /** block size (in bits) */
   type b : #
-  
+
   /** forward cipher operator */
   encipher : K -> [b] -> [b]
-  
+
   /** reverse cipher operator */
   decipher : K -> [b] -> [b]
 */
@@ -153,19 +155,19 @@ reusable **type aliases**:
 interface submodule I_BlockCipher where
   /** arbitrary key type */
   type Key : *
-  
+
   /** block size (in bits) */
   type b : #
-  
+
   /** type alias for a block, a bit string of width `b` */
   type Block = [b]
-  
+
   /** common type for `encipher` and `decipher` */
   type Op = Key -> Block -> Block
-  
+
   /** forward cipher operator */
   encipher : Op
-  
+
   /** reverse cipher operator */
   decipher : Op
 ```
@@ -177,7 +179,7 @@ same purpose as previously for `parameter` blocks: to indicate that the
 module needs these parameters:
 
 ```cryptol
-/* (Not quite ready to define these modes yet...
+/* Not quite ready to define these modes yet...
 
 submodule ECB where
   import interface submodule I_BlockCipher
@@ -208,7 +210,7 @@ submodule F_BlockCipher_Aliases where
 
   /** type alias for a block, a bit string of width `b` */
   type Block = [I::b]
-  
+
   /** common type for `encipher` and `decipher` */
   type Op = I::Key -> Block -> Block
 ```
@@ -302,7 +304,7 @@ Start with explicitly named submodules. These can always be
 
 ```cryptol
 /** interface to collect relevant definitions from Simon instance */
-interface submodule I_Simon_Inst where
+interface submodule I_SimonSpeck_Inst where
   type keySize : #
   type blockSize : #
 
@@ -316,10 +318,10 @@ interface submodule I_Simon_Inst where
 // generalization of `Simon_32_64_BlockCipher` above
 /** generate `I_BlockCipher` implementation from Simon instance */
 submodule F_SimonSpeck_BlockCipher where
-  import interface submodule I_Simon_Inst as S
+  import interface submodule I_SimonSpeck_Inst as S
 
   // export definitions for `I_BlockCipher` parameters
-  // type Key = [S::keySize]
+  type Key = [S::keySize]
   // type b =  // Define and uncomment.
 
   encipher = S::encrypt
@@ -443,12 +445,13 @@ Again, please do not ever use this weak cipher mode in the real world.
 in ECB mode.
 
 ```cryptol
+/* Uncomment after finishing your definition of `F_SimonSpeck_BlockCipher`
 /** Simon 32/64 in ECB mode */
 submodule ECB_Simon_32_64 = submodule ECB { submodule P_Simon_32_64_BlockCipher }
+*/
 
 // /** Simon 48/72 in ECB mode */
 // submodule ECB_Simon_48_72 = ... // Replace with your definition and uncomment.
-
 // Repeat for each Simon and Speck parameter set.
 ```
 
@@ -464,6 +467,7 @@ prominent warning not to use it in production.
 Your solution should pass the following test vectors [2]:
 
 ```cryptol
+/* Uncomment after defining `ECB_DES`
 /** ECB/DES Tests */
 submodule ECB_DES_Test where
   import submodule ECB_DES as ECB_DES
@@ -480,14 +484,15 @@ submodule ECB_DES_Test where
   v35 = (0x1111111111111111, [0x1111111111111111, 0x0123456789ABCDEF], [0xF40379AB9E0EC533, 0x8A5AE1F81AB8F2DD])
   property e35 = e v35
   property d35 = d v35
+*/
 ```
 
 ```xcryptol-session
-labs::NewModuleSystem::NewModuleSystem> :check ECB_DES_Test::e_fips_81
+labs::NewModuleSystem::NewModuleSystem> :exhaust ECB_DES_Test::e_fips_81
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystem> :check ECB_DES_Test::d_fips_81
+labs::NewModuleSystem::NewModuleSystem> :exhaust ECB_DES_Test::d_fips_81
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
@@ -512,6 +517,15 @@ Q.E.D.
 **Exercise**: Now define submodules that implement AES (a stronger
 block cipher) in ECB (a weak cipher mode).  Add docstrings with
 prominent warnings not to use them in production.
+
+/* Uncomment after defining submodules
+// /** Add a docstring */
+submodule ECB_AES_128 = // ...
+// /** Add a docstring */
+submodule ECB_AES_192 = // ...
+// /** Add a docstring */
+submodule ECB_AES_256 = // ...
+*/
 
 Your solution should pass the following test vectors [3]:
 
@@ -576,6 +590,7 @@ submodule P_KAT_ECB_AES_256_DECRYPT_9 where
   CIPHERTEXT = split 0x2c487fa96f4090c56aa1b5be81918a934c9492878fb0cd686dcf8d17d86485454c51237bbd09205dcef1552f430dd098b9d827a694730c133a0222c77f540f9d5fc2d36af359583c9e3b49df884228a64de79b67f66207c8281360b99b214042ce61367ff97960e944453cd63679bb44708897d29bc5e70f9fc8f1f715143fbb00f7f5c1b7b161ec26d8d41d36fab0fa8a85c3ee6ce4d37007eb7a89d6753590
   PLAINTEXT = split 0x31fd5a307e279b2f34581e2c432379df8eccbaf79532938916711cd377540b9045373e47f2214b8f876040af733f6c9d8f03a7c58f8714d2fbb4c14af59c75b483adc718946ee907a18286cc4efd206789064b6f1b195f0d0d234468e4f00e6f1cad5cd3b9c0a643b3c0dd09280ff2e2a5929183409384dd72dc94e39687ea2b623d5d776700bd8b36e6130ffde966f134c4b1f35f29c5cc4a03297e1ccc9539
 
+/* Uncomment after defining `P_AES_..._BlockCipher`
 import submodule F_KAT_ECB { submodule P_AES_128_BlockCipher } as F_KAT_ECB_AES_128 (F_KAT)
 import submodule F_KAT_ECB_AES_128::F_KAT { submodule P_KAT_ECB_AES_128_ENCRYPT_9 } as KAT_ECB_AES_128_ENCRYPT_9
 import submodule F_KAT_ECB_AES_128::F_KAT { submodule P_KAT_ECB_AES_128_DECRYPT_9 } as KAT_ECB_AES_128_DECRYPT_9
@@ -587,54 +602,55 @@ import submodule F_KAT_ECB_AES_192::F_KAT { submodule P_KAT_ECB_AES_192_DECRYPT_
 import submodule F_KAT_ECB { submodule P_AES_256_BlockCipher } as F_KAT_ECB_AES_256 (F_KAT)
 import submodule F_KAT_ECB_AES_256::F_KAT { submodule P_KAT_ECB_AES_256_ENCRYPT_9 } as KAT_ECB_AES_256_ENCRYPT_9
 import submodule F_KAT_ECB_AES_256::F_KAT { submodule P_KAT_ECB_AES_256_DECRYPT_9 } as KAT_ECB_AES_256_DECRYPT_9
+*/
 ```
 
 ```xcryptol-session
-labs::NewModuleSystem::NewModuleSystem> :check KAT_ECB_AES_128_ENCRYPT_9::test_encrypt
+labs::NewModuleSystem::NewModuleSystem> :exhaust KAT_ECB_AES_128_ENCRYPT_9::test_encrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystem> :check KAT_ECB_AES_128_ENCRYPT_9::test_decrypt
+labs::NewModuleSystem::NewModuleSystem> :exhaust KAT_ECB_AES_128_ENCRYPT_9::test_decrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystem> :check KAT_ECB_AES_128_DECRYPT_9::test_encrypt
+labs::NewModuleSystem::NewModuleSystem> :exhaust KAT_ECB_AES_128_DECRYPT_9::test_encrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystem> :check KAT_ECB_AES_128_DECRYPT_9::test_decrypt
+labs::NewModuleSystem::NewModuleSystem> :exhaust KAT_ECB_AES_128_DECRYPT_9::test_decrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystem> :check KAT_ECB_AES_192_ENCRYPT_9::test_encrypt
+labs::NewModuleSystem::NewModuleSystem> :exhaust KAT_ECB_AES_192_ENCRYPT_9::test_encrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystem> :check KAT_ECB_AES_192_ENCRYPT_9::test_decrypt
+labs::NewModuleSystem::NewModuleSystem> :exhaust KAT_ECB_AES_192_ENCRYPT_9::test_decrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystem> :check KAT_ECB_AES_192_DECRYPT_9::test_encrypt
+labs::NewModuleSystem::NewModuleSystem> :exhaust KAT_ECB_AES_192_DECRYPT_9::test_encrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystem> :check KAT_ECB_AES_192_DECRYPT_9::test_decrypt
+labs::NewModuleSystem::NewModuleSystem> :exhaust KAT_ECB_AES_192_DECRYPT_9::test_decrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystem> :check KAT_ECB_AES_256_ENCRYPT_9::test_encrypt
+labs::NewModuleSystem::NewModuleSystem> :exhaust KAT_ECB_AES_256_ENCRYPT_9::test_encrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystem> :check KAT_ECB_AES_256_ENCRYPT_9::test_decrypt
+labs::NewModuleSystem::NewModuleSystem> :exhaust KAT_ECB_AES_256_ENCRYPT_9::test_decrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystem> :check KAT_ECB_AES_256_DECRYPT_9::test_encrypt
+labs::NewModuleSystem::NewModuleSystem> :exhaust KAT_ECB_AES_256_DECRYPT_9::test_encrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystem> :check KAT_ECB_AES_256_DECRYPT_9::test_decrypt
+labs::NewModuleSystem::NewModuleSystem> :exhaust KAT_ECB_AES_256_DECRYPT_9::test_decrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
@@ -746,6 +762,7 @@ warning not to use it in production.
 Your solution should pass the following test vectors [2]:
 
 ```cryptol
+/* Uncomment after defining `CBC_DES`
 submodule CBC_DES_Test where
   import submodule CBC_DES as CBC_DES
 
@@ -757,14 +774,15 @@ submodule CBC_DES_Test where
   
   property e_fips_81 = e v_fips_81
   property d_fips_81 = d v_fips_81
+*/
 ```
 
 ```xcryptol-session
-labs::NewModuleSystem::NewModuleSystem> :check CBC_DES_Test::e_fips_81
+labs::NewModuleSystem::NewModuleSystem> :exhaust CBC_DES_Test::e_fips_81
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystem> :check CBC_DES_Test::d_fips_81
+labs::NewModuleSystem::NewModuleSystem> :exhaust CBC_DES_Test::d_fips_81
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
@@ -841,6 +859,7 @@ submodule P_KAT_CBC_AES_256_DECRYPT_9 where
   CIPHERTEXT = split 0x5b97a9d423f4b97413f388d9a341e727bb339f8e18a3fac2f2fb85abdc8f135deb30054a1afdc9b6ed7da16c55eba6b0d4d10c74e1d9a7cf8edfaeaa684ac0bd9f9d24ba674955c79dc6be32aee1c260b558ff07e3a4d49d24162011ff254db8be078e8ad07e648e6bf5679376cb4321a5ef01afe6ad8816fcc7634669c8c4389295c9241e45fff39f3225f7745032daeebe99d4b19bcb215d1bfdb36eda2c24
   PLAINTEXT = split 0xbfe5c6354b7a3ff3e192e05775b9b75807de12e38a626b8bf0e12d5fff78e4f1775aa7d792d885162e66d88930f9c3b2cdf8654f56972504803190386270f0aa43645db187af41fcea639b1f8026ccdd0c23e0de37094a8b941ecb7602998a4b2604e69fc04219585d854600e0ad6f99a53b2504043c08b1c3e214d17cde053cbdf91daa999ed5b47c37983ba3ee254bc5c793837daaa8c85cfc12f7f54f699f
 
+/* Uncomment after defining `P_AES_..._BlockCipher`
 import submodule F_KAT_CBC { submodule P_AES_128_BlockCipher } as F_KAT_CBC_AES_128 (F_KAT)
 import submodule F_KAT_CBC_AES_128::F_KAT { submodule P_KAT_CBC_AES_128_ENCRYPT_9 } as KAT_CBC_AES_128_ENCRYPT_9
 import submodule F_KAT_CBC_AES_128::F_KAT { submodule P_KAT_CBC_AES_128_DECRYPT_9 } as KAT_CBC_AES_128_DECRYPT_9
@@ -852,54 +871,55 @@ import submodule F_KAT_CBC_AES_192::F_KAT { submodule P_KAT_CBC_AES_192_DECRYPT_
 import submodule F_KAT_CBC { submodule P_AES_256_BlockCipher } as F_KAT_CBC_AES_256 (F_KAT)
 import submodule F_KAT_CBC_AES_256::F_KAT { submodule P_KAT_CBC_AES_256_ENCRYPT_9 } as KAT_CBC_AES_256_ENCRYPT_9
 import submodule F_KAT_CBC_AES_256::F_KAT { submodule P_KAT_CBC_AES_256_DECRYPT_9 } as KAT_CBC_AES_256_DECRYPT_9
+*/
 ```
 
 ```xcryptol-session
-labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_128_ENCRYPT_9::test_encrypt
+labs::NewModuleSystem::NewModuleSystemAnswers> :exhaust KAT_CBC_AES_128_ENCRYPT_9::test_encrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_128_ENCRYPT_9::test_decrypt
+labs::NewModuleSystem::NewModuleSystemAnswers> :exhaust KAT_CBC_AES_128_ENCRYPT_9::test_decrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_128_DECRYPT_9::test_encrypt
+labs::NewModuleSystem::NewModuleSystemAnswers> :exhaust KAT_CBC_AES_128_DECRYPT_9::test_encrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_128_DECRYPT_9::test_decrypt
+labs::NewModuleSystem::NewModuleSystemAnswers> :exhaust KAT_CBC_AES_128_DECRYPT_9::test_decrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_192_ENCRYPT_9::test_encrypt
+labs::NewModuleSystem::NewModuleSystemAnswers> :exhaust KAT_CBC_AES_192_ENCRYPT_9::test_encrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_192_ENCRYPT_9::test_decrypt
+labs::NewModuleSystem::NewModuleSystemAnswers> :exhaust KAT_CBC_AES_192_ENCRYPT_9::test_decrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_192_DECRYPT_9::test_encrypt
+labs::NewModuleSystem::NewModuleSystemAnswers> :exhaust KAT_CBC_AES_192_DECRYPT_9::test_encrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_192_DECRYPT_9::test_decrypt
+labs::NewModuleSystem::NewModuleSystemAnswers> :exhaust KAT_CBC_AES_192_DECRYPT_9::test_decrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_256_ENCRYPT_9::test_encrypt
+labs::NewModuleSystem::NewModuleSystemAnswers> :exhaust KAT_CBC_AES_256_ENCRYPT_9::test_encrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_256_ENCRYPT_9::test_decrypt
+labs::NewModuleSystem::NewModuleSystemAnswers> :exhaust KAT_CBC_AES_256_ENCRYPT_9::test_decrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_256_DECRYPT_9::test_encrypt
+labs::NewModuleSystem::NewModuleSystemAnswers> :exhaust KAT_CBC_AES_256_DECRYPT_9::test_encrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
-labs::NewModuleSystem::NewModuleSystemAnswers> :check KAT_CBC_AES_256_DECRYPT_9::test_decrypt
+labs::NewModuleSystem::NewModuleSystemAnswers> :exhaust KAT_CBC_AES_256_DECRYPT_9::test_decrypt
 Using exhaustive testing.
 Passed 1 tests.
 Q.E.D.
