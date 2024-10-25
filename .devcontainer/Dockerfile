@@ -109,7 +109,7 @@ RUN wget https://github.com/GaloisInc/saw-script/archive/refs/heads/master.zip &
 RUN mv saw-script-master /usr/local/share/saw-script && rm -rf master.zip
 
 # Link to nightly python clients
-ENV PYTHONPATH "${PYTHONPATH}:/usr/local/share/cryptol/cryptol-remote-api/python:/usr/local/share/saw-script/saw-remote-api/python"
+ENV PYTHONPATH="${PYTHONPATH}:/usr/local/share/cryptol/cryptol-remote-api/python:/usr/local/share/saw-script/saw-remote-api/python"
 
 # Install Python client dependencies
 RUN pip3 install typing_extensions argo_client BitVector
@@ -125,7 +125,7 @@ RUN adduser --gecos '' --disabled-password cryptol \
     && chown -R cryptol:cryptol /home/cryptol
 USER cryptol
 
-ENV LANG C.UTF-8
+ENV LANG=C.UTF-8
 RUN sudo chsh -s /bin/bash $(whoami)
 ENV SHELL=/bin/bash
 RUN echo 'export PS1="[\u \W]\$ "' >> /home/cryptol/.bashrc
