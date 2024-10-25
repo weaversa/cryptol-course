@@ -26,7 +26,7 @@ RUN apt-get update \
     && DEBIAN_FRONTEND="noninteractive" apt-get install --yes \
       bash \
       build-essential \
-      containerd.io=1.5.11-1 \
+      containerd.io \
       docker-ce \
       docker-ce-cli \
       docker-compose-plugin \
