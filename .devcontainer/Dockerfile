@@ -120,14 +120,21 @@ RUN unzip -o ubuntu-latest-bin.zip -d /usr/local/bin && rm -rf ubuntu-latest-bin
 
 RUN chmod a+x /usr/local/bin/*
 
-RUN adduser --gecos '' --disabled-password cryptol \
-    && echo "cryptol ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd \
-    && chown -R cryptol:cryptol /home/cryptol
-USER cryptol
+# create local non-root user, but mimic host ids to avoid file permission problems
+ARG USER_NAME="cryptol"
+ARG USER_GNAME="cryptol"
+# Copy the .env file with USER_UID and USER_GID set in devcontainer.json
+COPY .env /tmp/.env
+RUN . /tmp/.env && rm /tmp/.env \
+    && groupadd -g ${USER_GID} -o ${USER_GNAME} \
+    && useradd -m -u ${USER_UID} -g ${USER_GID} -o -s /bin/bash ${USER_NAME} \
+    && echo "${USER_NAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd \
+    && chown -R ${USER_NAME}:${USER_GNAME} /home/${USER_NAME}
+USER ${USER_NAME}
 
 ENV LANG=C.UTF-8
-RUN sudo chsh -s /bin/bash $(whoami)
+RUN sudo chsh -s /bin/bash ${USER_NAME}
 ENV SHELL=/bin/bash
-RUN echo 'export PS1="[\u \W]\$ "' >> /home/cryptol/.bashrc
+RUN echo 'export PS1="[\u \W]\$ "' >> /home/${USER_NAME}/.bashrc
 
 # ENTRYPOINT ["/bin/bash"]
