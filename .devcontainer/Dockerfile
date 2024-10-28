@@ -126,8 +126,7 @@ COPY .env /tmp/.env
 RUN . /tmp/.env && rm /tmp/.env \
     && groupadd -g ${USER_GID} -o ${USER_GNAME} \
     && useradd -m -u ${USER_UID} -g ${USER_GID} -o -s /bin/bash ${USER_NAME} \
-    && echo "${USER_NAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd \
-    && chown -R ${USER_NAME}:${USER_GNAME} /home/${USER_NAME}
+    && echo "${USER_NAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd
 USER ${USER_NAME}
 
 ENV LANG=C.UTF-8
