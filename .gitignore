@@ -1,4 +1,4 @@
 **/.DS_Store
 **/*.bc
 **/*~
-.devcontainer/.env
+.devcontainer/vars.env
