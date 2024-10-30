@@ -122,8 +122,8 @@ RUN chmod a+x /usr/local/bin/*
 ARG USER_NAME="cryptol"
 ARG USER_GNAME="cryptol"
 # Copy the .env file with USER_UID and USER_GID set in devcontainer.json
-COPY .env /tmp/.env
-RUN . /tmp/.env && rm /tmp/.env \
+COPY vars.env /tmp/vars.env
+RUN . /tmp/vars.env && rm /tmp/vars.env \
     && groupadd -g ${USER_GID} -o ${USER_GNAME} \
     && useradd -m -u ${USER_UID} -g ${USER_GID} -o -s /bin/bash ${USER_NAME} \
     && echo "${USER_NAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd
