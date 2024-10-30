@@ -228,7 +228,7 @@ Then a `mode` can...
 
 Of course, parameterizable block cipher modes need block ciphers!  In
 the previous lab on
-[Parameterized Modules](../SimonSpeck/SimonSpeck.md), we implemeented
+[Parameterized Modules](../SimonSpeck/SimonSpeck.md), we implemented
 the Simon and Speck block ciphers, which are themselves parameterized.
 To use these for our block cipher modes, we just need to adapt them to
 our fancy new interface...
