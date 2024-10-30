@@ -4,16 +4,9 @@
     "dockerFile": "Dockerfile",
     "runArgs": [],
 
-    // pass through the UID and GID from the host, so can edit files in the container
-    // Note: cannot do with build.args because ${localEnv:USER_UID} doesn't work,
-    // and shell command substitution is not implemented in devcontainer.json.
-    // "build": {
-    //     "args": {
-    //         "USER_UID": "${localEnv:USER_UID}",
-    //         "USER_GID": "${localEnv:USER_GID}"
-    //     },
-    // },
-    "initializeCommand": "echo \"USER_UID=$(id -u)\nUSER_GID=$(id -g)\" > .devcontainer/.env",
+    // Pass through the UID and GID from the host, so can edit files in the container.
+    // If root:root is found, instead use 1000:1000 for the container user.
+    "initializeCommand": ".devcontainer/get_uid_gid.sh > .devcontainer/.env",
 
     // Use 'settings' to set *default* container specific settings.json values on container create. 
     // You can edit these settings after create using File > Preferences > Settings > Remote.
