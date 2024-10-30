@@ -691,7 +691,7 @@ submodule CBC where
 ```
 
 **Hint**: The above definition can be directly translated to a Cryptol
-[generating function](https://galoisinc.github.io/cryptol/master/BasicTypes.html#sequences).
+[generator expression](https://galoisinc.github.io/cryptol/master/BasicTypes.html#sequences).
 (See `generate` and the examples following it.)  So for `encrypt`, you
 can say `encrypt key iv pt = ct where ct@i = ...` and then fill in the
 rest.  Remember to account for the initialization vector and the first
