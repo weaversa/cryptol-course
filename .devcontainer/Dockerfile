@@ -130,7 +130,6 @@ RUN . /tmp/.env && rm /tmp/.env \
 USER ${USER_NAME}
 
 ENV LANG=C.UTF-8
-RUN sudo chsh -s /bin/bash ${USER_NAME}
 ENV SHELL=/bin/bash
 RUN echo 'export PS1="[\u \W]\$ "' >> /home/${USER_NAME}/.bashrc
 
