@@ -1463,6 +1463,6 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [- Key Wrapping](../KeyWrapping/KeyWrapping.md) ||
+|| [^ Module System](../ModuleSystem.md) ||
 | [< Parameterized Modules](../SimonSpeck/SimonSpeck.md) | **New Module System (Answers)** ||
 || [? New Module System](./NewModuleSystem.md) ||
