@@ -18,7 +18,7 @@ digraph  {
   CRC                        [URL="../labs/CRC/CRC.html"];
   Salsa20                    [URL="../labs/Salsa20/Salsa20.html"];
   CryptographicProperties    [URL="../labs/CryptoProofs/CryptoProofs.html"];
-  KeyWrapping                [URL="../labs/KeyWrapping/KeyWrapping.html"];
+  ModuleSystem               [URL="../labs/ModuleSystem.html"];
   Capstone                   [URL="../labs/LoremIpsum/LoremIpsum.html"];
 
   // branch nodes
@@ -32,7 +32,7 @@ digraph  {
   TranspositionCiphers       [URL="../labs/Transposition/Contents.html"];
   ProjectEuler               [URL="../labs/ProjectEuler/ProjectEuler.html"];
   ContinuousReasoning        [URL="../labs/SAW/SAW.html"];
-  ParameterizedModules       [URL="../labs/SimonSpeck/SimonSpeck.html"];
+  KeyWrapping                [URL="../labs/KeyWrapping/KeyWrapping.html"];
 
   // newline/space labels
   
@@ -43,7 +43,7 @@ digraph  {
   CryptolDemos               [label = "Cryptol Demos"]
   SAWDemos                   [label = "SAW Demos"]
   TranspositionCiphers       [label = "Transposition\nCiphers"]
-  ParameterizedModules       [label = "Parameterized\nModules"]
+  ModuleSystem               [label = "Module\nSystem"]
   Salsa20Properties          [label = "Salsa20\nProperties"]
   ContinuousReasoning        [label = "SAW\nContinuous Reasoning"];
   StyleGuide                 [label = "Style Guide"]
@@ -58,8 +58,8 @@ digraph  {
   LanguageBasics -> CRC;
   CRC -> Salsa20;
   Salsa20 -> CryptographicProperties;
-  CryptographicProperties -> KeyWrapping;
-  KeyWrapping -> Capstone;
+  CryptographicProperties -> ModuleSystem;
+  ModuleSystem -> Capstone;
 
   // branches
   edge [color=black];
@@ -72,7 +72,7 @@ digraph  {
   CryptographicProperties -> TranspositionCiphers;
   CryptographicProperties -> ProjectEuler;
   CryptographicProperties -> ContinuousReasoning
-  KeyWrapping -> ParameterizedModules;
+  ModuleSystem -> KeyWrapping;
 
   // ranks
 
@@ -98,7 +98,7 @@ digraph  {
   {
     // Cryptographic Properties
     rank = same;
-    KeyWrapping;
+    ModuleSystem;
     Salsa20Properties;
     TranspositionCiphers;
     ProjectEuler;
@@ -109,7 +109,7 @@ digraph  {
     // Key Wrapping
     rank = same;
     Capstone;
-    ParameterizedModules;
+    KeyWrapping;
   }
 
 }

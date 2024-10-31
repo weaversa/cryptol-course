@@ -1,0 +1,22 @@
+digraph  {
+  bgcolor="transparent";
+  rankdir="LR";
+
+  node [shape="box", style="rounded,filled", fillcolor="white", penwidth = 2];
+  edge [penwidth = 1];
+
+  // recommended
+  
+  ParameterizedModules                     [URL="../labs/SimonSpeck/SimonSpeck.html"];
+  NewModuleSystem                          [URL="../labs/NewModuleSystem/NewModuleSystem.html"];
+
+  // newline/space labels
+  
+  ParameterizedModules       [label = "Parameterized\nModules"];
+  NewModuleSystem            [label = "New\nModule\nSystem"];
+
+  // recommended flow
+  edge [color=red];
+  
+  ParameterizedModules -> NewModuleSystem;
+}
