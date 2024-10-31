@@ -226,7 +226,7 @@ $ saw
  ┏━━━┓━━━┓━┓━┓━┓
  ┃ ━━┓ ╻ ┃ ┃ ┃ ┃
  ┣━━ ┃ ╻ ┃┓ ╻ ┏┛
- ┗━━━┛━┛━┛┗━┛━┛ version 0.9.0.99 (<non-dev-build>)
+ ┗━━━┛━┛━┛┗━┛━┛ version 1.2.0.99 (<non-dev-build>)
 
 sawscript> r <- llvm_load_module "artifacts/rotl.bc"
 sawscript> print r

@@ -172,39 +172,49 @@ Cryptol language, and only exist in the interpreter. You can see a full listing 
 
 ```Xcryptol-session
 labs::Interpreter::Interpreter> :h
-  :t, :type            Check the type of an expression.
-  :b, :browse          Display environment for all loaded modules, or for a specific module.
-  :?, :help            Display a brief description of a function, type, or command. (e.g. :help :help)
-  :s, :set             Set an environmental option (:set on its own displays current values).
-  :check               Use random testing to check that the argument always returns true.
-                       (If no argument, check all properties.)
-  :exhaust             Use exhaustive testing to prove that the argument always returns
-                       true. (If no argument, check all properties.)
-  :prove               Use an external solver to prove that the argument always returns
-                       true. (If no argument, check all properties.)
-  :sat                 Use a solver to find a satisfying assignment for which the argument
-                       returns true. (If no argument, find an assignment for all properties.)
-  :safe                Use an external solver to prove that an expression is safe
-                       (does not encounter run-time errors) for all inputs.
-  :debug_specialize    Do type specialization on a closed expression.
-  :eval                Evaluate an expression with the reference evaluator.
-  :ast                 Print out the pre-typechecked AST of a given term.
-  :extract-coq         Print out the post-typechecked AST of all currently defined terms,
-                       in a Coq-parseable format.
-  :q, :quit            Exit the REPL.
-  :l, :load            Load a module by filename.
-  :r, :reload          Reload the currently loaded module.
-  :e, :edit            Edit FILE or the currently loaded module.
-  :!                   Execute a command in the shell.
-  :cd                  Set the current working directory.
-  :m, :module          Load a module by its name.
-  :w, :writeByteArray  Write data of type 'fin n => [n][8]' to a file.
-  :readByteArray       Read data from a file as type 'fin n => [n][8]', binding
-                       the value to variable 'it'.
-  :dumptests           Dump a tab-separated collection of tests for the given
-                       expression into a file. The first column in each line is
-                       the expected output, and the remainder are the inputs. The
-                       number of tests is determined by the "tests" option.
+  :t, :type                 Check the type of an expression.
+  :b, :browse               Display information about loaded modules.
+  :version                  Display the version of this Cryptol executable
+  :?, :help                 Display a brief description of a function, type, or command. (e.g. :help :help)
+  :s, :set                  Set an environmental option (:set on its own displays current values).
+  :check                    Use random testing to check that the argument always returns true.
+                            (If no argument, check all properties.)
+  :exhaust                  Use exhaustive testing to prove that the argument always returns
+                            true. (If no argument, check all properties.)
+  :prove                    Use an external solver to prove that the argument always returns
+                            true. (If no argument, check all properties.)
+  :sat                      Use a solver to find a satisfying assignment for which the argument
+                            returns true. (If no argument, find an assignment for all properties.)
+  :safe                     Use an external solver to prove that an expression is safe
+                            (does not encounter run-time errors) for all inputs.
+  :debug_specialize         Do type specialization on a closed expression.
+  :eval                     Evaluate an expression with the reference evaluator.
+  :ast                      Print out the pre-typechecked AST of a given term.
+  :extract-coq              Print out the post-typechecked AST of all currently defined terms,
+                            in a Coq-parseable format.
+  :time                     Measure the time it takes to evaluate the given expression.
+  :set-seed                 Seed the random number generator for operations using randomness
+  :new-seed                 Randomly generate and set a new seed for the random number generator
+  :check-docstrings         Run the REPL code blocks in the module's docstring comments
+  :q, :quit                 Exit the REPL.
+  :l, :load                 Load a module by filename.
+  :r, :reload               Reload the currently loaded module.
+  :e, :edit                 Edit FILE or the currently loaded module.
+  :!                        Execute a command in the shell.
+  :cd                       Set the current working directory.
+  :m, :module               Load a module by its name.
+  :f, :focus                Focus name scope inside a loaded module.
+  :w, :writeByteArray       Write data of type 'fin n => [n][8]' to a file.
+  :readByteArray            Read data from a file as type 'fin n => [n][8]', binding
+                            the value to variable 'it'.
+  :dumptests                Dump a tab-separated collection of tests for the given
+                            expression into a file. The first column in each line is
+                            the expected output, and the remainder are the inputs. The
+                            number of tests is determined by the "tests" option.
+                            Use filename "-" to write tests to stdout.
+  :generate-foreign-header  Generate a C header file from foreign declarations in a Cryptol file.
+  :file-deps                Show information about the dependencies of a file
+  :module-deps              Show information about the dependencies of a module
 ```
 
 The most used commands have to do with files (loading `:m` and
@@ -419,7 +429,7 @@ cryptol-course$ cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
-version 2.13.0
+version 3.2.0.99
 https://cryptol.net  :? for help
 Loading module Cryptol
 ```
