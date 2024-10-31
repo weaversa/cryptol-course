@@ -4,6 +4,10 @@
     "dockerFile": "Dockerfile",
     "runArgs": [],
 
+    // Pass through the UID and GID from the host, so can edit files in the container.
+    // If root:root is found, instead use 1000:1000 for the container user.
+    "initializeCommand": ".devcontainer/get_uid_gid.sh > .devcontainer/vars.env",
+
     // Use 'settings' to set *default* container specific settings.json values on container create. 
     // You can edit these settings after create using File > Preferences > Settings > Remote.
     "settings": {

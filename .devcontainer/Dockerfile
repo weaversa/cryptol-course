@@ -20,13 +20,11 @@ RUN echo \
     $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null
 
 # Install all tools
-# We use an old containerd.io because it contains a version of runc that works
-# with sysbox correctly.
 RUN apt-get update \
     && DEBIAN_FRONTEND="noninteractive" apt-get install --yes \
       bash \
       build-essential \
-      containerd.io=1.5.11-1 \
+      containerd.io \
       docker-ce \
       docker-ce-cli \
       docker-compose-plugin \
@@ -109,7 +107,7 @@ RUN wget https://github.com/GaloisInc/saw-script/archive/refs/heads/master.zip &
 RUN mv saw-script-master /usr/local/share/saw-script && rm -rf master.zip
 
 # Link to nightly python clients
-ENV PYTHONPATH "${PYTHONPATH}:/usr/local/share/cryptol/cryptol-remote-api/python:/usr/local/share/saw-script/saw-remote-api/python"
+ENV PYTHONPATH="${PYTHONPATH}:/usr/local/share/cryptol/cryptol-remote-api/python:/usr/local/share/saw-script/saw-remote-api/python"
 
 # Install Python client dependencies
 RUN pip3 install typing_extensions argo_client BitVector
@@ -120,14 +118,19 @@ RUN unzip -o ubuntu-latest-bin.zip -d /usr/local/bin && rm -rf ubuntu-latest-bin
 
 RUN chmod a+x /usr/local/bin/*
 
-RUN adduser --gecos '' --disabled-password cryptol \
-    && echo "cryptol ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd \
-    && chown -R cryptol:cryptol /home/cryptol
-USER cryptol
+# create local non-root user, but mimic host ids to avoid file permission problems
+ARG USER_NAME="cryptol"
+ARG USER_GNAME="cryptol"
+# Copy the .env file with USER_UID and USER_GID set in devcontainer.json
+COPY vars.env /tmp/vars.env
+RUN . /tmp/vars.env && rm /tmp/vars.env \
+    && groupadd -g ${USER_GID} -o ${USER_GNAME} \
+    && useradd -m -u ${USER_UID} -g ${USER_GID} -o -s /bin/bash ${USER_NAME} \
+    && echo "${USER_NAME} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers.d/nopasswd
+USER ${USER_NAME}
 
-ENV LANG C.UTF-8
-RUN sudo chsh -s /bin/bash $(whoami)
+ENV LANG=C.UTF-8
 ENV SHELL=/bin/bash
-RUN echo 'export PS1="[\u \W]\$ "' >> /home/cryptol/.bashrc
+RUN echo 'export PS1="[\u \W]\$ "' >> /home/${USER_NAME}/.bashrc
 
 # ENTRYPOINT ["/bin/bash"]
