@@ -126,12 +126,14 @@ first lab walks you through [installing and running Cryptol](INSTALL.md).
     * [Continuous Reasoning with SAW](./labs/SAW/SAW.md): Learn how to
       use Python to drive SAW and enforce formal invariants on
       cryptographic implementations at every check-in to a repository.
-8. [Methods for Key Wrapping](./labs/KeyWrapping/KeyWrapping.md):
-   Create a Cryptol specification of NIST's [SP800-38F key wrap
-   standard](https://csrc.nist.gov/publications/detail/sp/800-38f/final).
-    * [Parameterized Modules: Simon and Speck](./labs/SimonSpeck/SimonSpeck.md):
-      Learn about Cryptol's parameterized modules by creating a
-      Cryptol specification of NSA's Speck block cipher.
+8. [Module System](./labs/ModuleSystem.md):
+   Parameterize modules to reuse cores of related specifications.
+    * [Parameterized Modules: Simon and Speck](./SimonSpeck/SimonSpeck.md)
+      Cut your teeth on Cryptol modules with the Simon/Speck family of
+      related block ciphers.
+    * [New Module System: Block Cipher Modes](./NewModuleSystem/NewModuleSystem.md)
+      Unleash the full power of Cryptol 3's new module system on
+      modes of operation for any compatible block cipher.
 9. [Capstone: Putting it all together](./labs/LoremIpsum/LoremIpsum.md):
    Use components and techniques from other labs to decrypt a series
    of secret messages by feeding wrapped keys into the anomalous KLI20
