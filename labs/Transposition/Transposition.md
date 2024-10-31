@@ -471,7 +471,7 @@ rearrange_equiv = rearrange`{n} === rearrange'`{n}
 In addition to being recursive, this approach requires tricks with 
 `min` and `max` to establish type consistency for an empty sequence. 
 What kind of fool thought this up?  (See 
-[Type Hackery](../Language/IntroTypeHackery.md) 
+[Introductory Type Hackery](../Language/IntroTypeHackery.md) 
 for a better, more detailed example of such hackery.)
 
 **EXERCISE**: Using `rearrange'` as a blueprint, define a function 
