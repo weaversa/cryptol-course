@@ -419,7 +419,7 @@ cryptol-course$ cryptol
 ┏━╸┏━┓╻ ╻┏━┓╺┳╸┏━┓╻
 ┃  ┣┳┛┗┳┛┣━┛ ┃ ┃ ┃┃
 ┗━╸╹┗╸ ╹ ╹   ╹ ┗━┛┗━╸
-version 2.13.0
+version 3.2.0.99
 https://cryptol.net  :? for help
 Loading module Cryptol
 ```
