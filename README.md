@@ -138,6 +138,11 @@ first lab walks you through [installing and running Cryptol](INSTALL.md).
    Use components and techniques from other labs to decrypt a series
    of secret messages by feeding wrapped keys into the anomalous KLI20
    cryptographic engine.
+    * [Methods for Key Wrapping](./labs/KeyWrapping/KeyWrapping.md):
+      Create a Cryptol specification of NIST's [SP800-38F key wrap
+      standard](https://csrc.nist.gov/publications/detail/sp/800-38f/final).
+      (Weaves in most concepts learned throughout the course;
+      good prep for the Capstone.)
 
 ## Graphical View of the Course
 
