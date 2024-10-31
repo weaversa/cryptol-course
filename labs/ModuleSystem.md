@@ -7,8 +7,8 @@
   Unleash the full power of Cryptol 3's new module system on
   modes of operation for any compatible block cipher.
 
-<a href="../../../misc/CryptolDemos.gv.svg">
-    <img class="center" src="../../../misc/CryptolDemos.gv.svg" alt="Cryptol Demos - Suggested Flow">
+<a href="../misc/ModuleSystem.gv.svg">
+    <img class="center" src="../misc/ModuleSystem.gv.svg" alt="Module System - Suggested Flow">
 </a>
 
 # Solicitation
