@@ -21,6 +21,5 @@ https://github.com/weaversa/cryptol-course/issues
 
 ||||
 |-:|:-:|-|
-|| [< Cryptographic Properties](../CryptoProofs/CryptoProofs.md) ||
-|| **Module System** ||
+| [< Cryptographic Properties](./CryptoProofs/CryptoProofs.md) | **Module System** | [Key Wrapping >](./KeyWrapping/KeyWrapping.md) ||
 || [v Parameterized Modules](./SimonSpeck/SimonSpeck.md) ||
