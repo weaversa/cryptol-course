@@ -19,6 +19,7 @@ digraph  {
   Salsa20                    [URL="../labs/Salsa20/Salsa20.html"];
   CryptographicProperties    [URL="../labs/CryptoProofs/CryptoProofs.html"];
   ModuleSystem               [URL="../labs/ModuleSystem.html"];
+  KeyWrapping                [URL="../labs/KeyWrapping/KeyWrapping.html"];
   Capstone                   [URL="../labs/LoremIpsum/LoremIpsum.html"];
 
   // branch nodes
@@ -32,7 +33,6 @@ digraph  {
   TranspositionCiphers       [URL="../labs/Transposition/Contents.html"];
   ProjectEuler               [URL="../labs/ProjectEuler/ProjectEuler.html"];
   ContinuousReasoning        [URL="../labs/SAW/SAW.html"];
-  KeyWrapping                [URL="../labs/KeyWrapping/KeyWrapping.html"];
 
   // newline/space labels
   
@@ -59,7 +59,8 @@ digraph  {
   CRC -> Salsa20;
   Salsa20 -> CryptographicProperties;
   CryptographicProperties -> ModuleSystem;
-  ModuleSystem -> Capstone;
+  ModuleSystem -> KeyWrapping;
+  KeyWrapping -> Capstone;
 
   // branches
   edge [color=black];
@@ -72,7 +73,6 @@ digraph  {
   CryptographicProperties -> TranspositionCiphers;
   CryptographicProperties -> ProjectEuler;
   CryptographicProperties -> ContinuousReasoning
-  ModuleSystem -> KeyWrapping;
 
   // ranks
 
@@ -108,8 +108,8 @@ digraph  {
   {
     // Key Wrapping
     rank = same;
-    Capstone;
     KeyWrapping;
+    Capstone;
   }
 
 }
