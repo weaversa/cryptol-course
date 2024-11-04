@@ -10,7 +10,7 @@ digraph  {
 
   // URLs by node
   // recommended
-  
+
   Installation               [URL="../INSTALL.html"];
   Overview                   [URL="../labs/Overview/Overview.html"];
   Interpreter                [URL="../labs/Interpreter/Interpreter.html"];
@@ -24,7 +24,7 @@ digraph  {
 
   // branch nodes
   node [fillcolor="white"];
-  
+
   StyleGuide                 [URL="../cryptol-style.html"];
   CryptolDemos               [URL="../labs/Demos/Cryptol/Demos.html"];
   SAWDemos                   [URL="../labs/Demos/SAW/Demos.html"];
@@ -35,7 +35,7 @@ digraph  {
   ContinuousReasoning        [URL="../labs/SAW/SAW.html"];
 
   // newline/space labels
-  
+
   LanguageBasics             [label = "Language\nBasics"]
   TypeHackery                [label = "Type Hackery"]
   CryptographicProperties    [label = "Cryptographic\nProperties"]
@@ -51,7 +51,7 @@ digraph  {
 
   // recommended flow
   edge [color=red];
-  
+
   Installation -> Overview;
   Overview -> Interpreter;
   Interpreter -> LanguageBasics;
@@ -64,7 +64,7 @@ digraph  {
 
   // branches
   edge [color=black];
-  
+
   LanguageBasics -> StyleGuide;
   LanguageBasics -> CryptolDemos;
   LanguageBasics -> SAWDemos;
@@ -97,6 +97,13 @@ digraph  {
 
   {
     // Cryptographic Properties
+    rank = same;
+    Salsa20;
+    CryptographicProperties;
+  }
+
+  {
+    // Miscellany
     rank = same;
     ModuleSystem;
     Salsa20Properties;
