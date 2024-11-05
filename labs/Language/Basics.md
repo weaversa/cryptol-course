@@ -163,11 +163,11 @@ A module declaration (`module ... where`) can be preceded by
 _comments_ (see below). This is a great place to document the module's
 purpose and how it relates to other content.
 
-**Update!** (Cryptol 3.2.0): A module can now have an associated
+**Update!** (Cryptol 3.2): A module can now have an associated
 _docstring_ (see below), a comment immediately preceding the module
 that can have an embedded _code fence_ with verification commands (see
 [**Comments**](#comments) below and
-[Cryptographic Properties](../CryptoProofs/CryptoProofs.md) later in
+[**Cryptographic Properties**](../CryptoProofs/CryptoProofs.md) later in
 the course).
 
 Importing modules is also pretty simple: just add a line starting with
@@ -224,7 +224,7 @@ import labs::CRC::CRC hiding (
 // imports `littlendian`(`'`) functions, prefaced with `Salsa20::`
 import labs::Salsa20::Salsa20 as Salsa20 (littleendian, littleendian')
 
-// imports all except `inc` functions from `ProjectEuler` in `PE::`
+// imports all except `inc` functions from `ProjectEuler` into `PE::`
 import labs::ProjectEuler::ProjectEuler as PE hiding (inc, inc1001)
 ```
 
@@ -234,9 +234,6 @@ modules, use the `private` clause.
 ```cryptol
 private thisIsPrivate = 10
 ```
-
-Any other modules that import this one will not have access to
-`thisIsPrivate`, which is private.
 
 Cryptol's module system also supports _parameters_, as presented in
 [**Parameterized Modules](labs/SimonSpeck/SimonSpeck.md), a later lab.
@@ -279,6 +276,7 @@ used elsewhere for demonstration of something or other.
 docstrings (for modules, properties, or other definitions) can have
 embedded _code fences_ with verification commands that automatically
 run when triggered by a `:check-docstrings` command.  See
+[**Properties**](#properties) below and
 [**Proving Cryptographic Properties**](../CryptoProofs/CryptoProofs.md)
 later in the course.
 
