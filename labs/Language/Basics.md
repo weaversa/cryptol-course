@@ -24,9 +24,10 @@ Specifically, you'll also gain experience with
   * writing functions and properties, 
   * functions with curried parameters,
   * type parameters and type constraints,
-  * the `:check`, `:prove`, and `:sat` commands, 
+  * the `:check`, `:prove`, and `:sat` commands,
+  * docstrings and the `:check-docstrings` command,
   * pattern matching,
-  * demoting types variables to value variables,
+  * demoting type variables to value variables,
   * `/\`, `\/`, `==>` -- logical operations for single bits,
   * `~`, `&&`, `||`, `^` -- logical operations for sequences,
   * `==`, `!=` -- structural comparison,
@@ -41,7 +42,8 @@ Specifically, you'll also gain experience with
     `head`, `last`, `tail`, `reverse`, `groupBy`, `map`, `iterate`,
     `scanl`, and `foldl`,
   * the `sum` and `carry` operators,
-  * enumerations and sequence comprehensions, and
+  * enumerations and sequence comprehensions,
+  * `enum` and `newtype` declarations, and
   * lambda functions.
 
 ## Load This Module
@@ -85,22 +87,21 @@ find that it is much easier to write correct cryptographic programs
 than with conventional languages. That's 'cause it's been tuned for
 such! To throw out the buzzwords:
   * Cryptol is a [domain-specific
-    language](https://en.wikipedia.org/wiki/Domain-specific_language). Not
-    only does it have features to support its application domain, but also it elides
-    a lot of junk that makes programming and analyzing the programs
-    difficult.
+    language](https://en.wikipedia.org/wiki/Domain-specific_language).
+    Not only does it have features to support its application domain,
+    but also it elides a lot of junk that makes programming and
+    analyzing the programs difficult.
   * Cryptol has been designed with automated reasoning about code
     as a priority, so that we can leverage it for verification. Some
     things are harder to do in Cryptol, but they pay off in code that
     can be proven correct!
 
 In some ways this requires a new mind-set:
-  * Write properties about your functions.
-  * `:check` them.
-  * Try to `:prove` them when your function's definition has settled down.
+  * Write `property`s about your functions,
+  * `:check` them, and
+  * try to `:prove` (or `:exhaust`) them.
 
 Enjoy getting addicted to this level of assurance!
-
 
 ## Preliminaries
 
@@ -108,9 +109,9 @@ Many of the concepts in this lab were briefly introduced in the
 [Overview](../Overview/Overview.md) lab. This lab goes over many of
 those same concepts, but in much more depth. Consider this lab a
 resource that you may want to revisit as you work through the course
-material. Also consider keeping the [official Cryptol
-manual](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf)
-close at hand.
+material, alongside the official book [_Programming
+Cryptol_](https://github.com/GaloisInc/cryptol/blob/master/docs/ProgrammingCryptol.pdf)
+and the [_Cryptol Reference Manual_](https://galoisinc.github.io/cryptol).
 
 For examples in this lab, as they are displayed here, the warning
 messages about specifying bit sizes of numbers have been turned
@@ -149,16 +150,28 @@ base 10.
 
 ## Modules
 
-This file is a Cryptol module. The first interpreted line of every Cryptol module
-must be `module Path::...Path::ModuleName where`. The `Path::...Path` component
-is the system path from the root of whatever set of modules you're
-creating or working from. The `ModuleName` component is the basename
-of this file. For instance, this module is `labs::Language::Basics`
-because its path from the root repository is
-`labs/Language/Basics.md`. There's really not much to naming
-modules. But don't forget the `where` clause at the end.
+This file is a Cryptol module. The first interpreted line of every
+Cryptol module must be `module Path::...Path::ModuleName where`. The
+`Path::...Path` component is the system path from the root of whatever
+set of modules you're creating or working from. The `ModuleName`
+component is the basename of this file. For instance, this module is
+`labs::Language::Basics` because its path from the root repository is
+`labs/Language/Basics.md`. Only one module can be declared in each
+file. There's really not much to naming modules, but don't forget the
+`where` clause at the end.
 
-Importing modules is also pretty simple. Just add a line starting with
+A module declaration (`module ... where`) can be preceded by
+_comments_ (see below). This is a great place to document the module's
+purpose and how it relates to other content.
+
+**Update!** (Cryptol 3.2): A module can now have an associated
+_docstring_ (see below), a comment immediately preceding the module
+that can have an embedded _code fence_ with verification commands (see
+[**Comments**](#comments) below and
+[**Cryptographic Properties**](../CryptoProofs/CryptoProofs.md) later in
+the course).
+
+Importing modules is also pretty simple: just add a line starting with
 `import` followed by the name of the module. For example, here we
 import the [Overview lab](../Overview/Overview.md).
 
@@ -173,18 +186,11 @@ can qualify the module import using the `as` clause.
 import labs::Overview::Overview as OVLab
 ```
 
-When the Cryptol interpreter loads the current lab (Basics), it gains access to all
-public definitions in the Overview lab.
-
-To keep a definition private, meaning it won't be imported by other
-modules, use the `private` clause.
-
-```cryptol
-private thisIsPrivate = 10
-```
-
-Now all of the Overview lab definitions are accessed by prefixing
-`OVLab::`. For example,
+When the Cryptol interpreter loads this lab module
+(`labs::Language::Basics`), it gains access to all public definitions
+in the **Overview** lab module (`labs::Overview::Overview`). Because
+the import was _aliased_ `as OVLab`, all of the Overview definitions
+are accessed by prefixing `OVLab::`. For example,
 
 ```Xcryptol-session
 labs::Language::Basics> :browse
@@ -219,25 +225,32 @@ import labs::CRC::CRC hiding (
 // imports `littlendian`(`'`) functions, prefaced with `Salsa20::`
 import labs::Salsa20::Salsa20 as Salsa20 (littleendian, littleendian')
 
-// imports all except `inc` functions from `ProjectEuler` in `PE::`
+// imports all except `inc` functions from `ProjectEuler` into `PE::`
 import labs::ProjectEuler::ProjectEuler as PE hiding (inc, inc1001)
 ```
 
-Cryptol's module system also supports parameters, but that is covered
-in a later lab.
+To keep a definition private, meaning it won't be imported by other
+modules, use the `private` clause.
+
+```cryptol
+private thisIsPrivate = 10
+```
+
+Cryptol's module system also supports _parameters_, as presented in
+[**Parameterized Modules](labs/SimonSpeck/SimonSpeck.md), a later lab.
 
 ### File-only commands
 
-It's worth noting that there are a very few Cryptol commands
-that can only be used in a file, *not* interactively in the interpreter.
-The most common of these are `module`, `import`, `private`, and `property`.  
+It's worth noting that a few Cryptol directives can only be used in a
+file, *not* interactively in the interpreter, such as `module`,
+`import`, `private`, `property`, `enum`, and `newtype`.
 
 ## Comments
 
   * `//` comments to the to end of a line
-  * `/*` ... `*/` comments a block of code
+  * `/*` ... `*/` comments a block of code (can be nested)
 
-There is also a [docstring](https://en.wikipedia.org/wiki/Docstring)
+There is also a [_docstring_](https://en.wikipedia.org/wiki/Docstring)
 comment facility (`/**` ... `*/` preceding a definition):
 
 ```cryptol
@@ -259,6 +272,14 @@ labs::Language::Basics> :help mask
 A totally made up identifier for pedagogical purposes. It is
 used elsewhere for demonstration of something or other.
 ```
+
+(**Update!**) As of Cryptol 3.2, modules can now have docstrings, and
+docstrings (for modules, properties, or other definitions) can have
+embedded _code fences_ with verification commands that automatically
+run when triggered by a `:check-docstrings` command.  See
+[**Properties**](#properties) below and
+[**Proving Cryptographic Properties**](../CryptoProofs/CryptoProofs.md)
+later in the course.
 
 ## Variable and Function Naming
 
@@ -289,14 +310,14 @@ doesn't make use of that feature.
 Cryptol's "basic" data type is an _n_-dimensional array (called a
 sequence) whose base type is bits.
   * 0-d: `False : Bit` and `True: Bit`
-  * 1-d: Think bytes, words, nibbles, etc., i.e., a sequence of bits
-    of any length usually thought of as a number. E.g., `0x2a : [8]`,
+  * 1-d: Think bytes, words, nibbles, etc., _i.e._, a sequence of bits
+    of any length usually thought of as a number. _e.g._, `0x2a : [8]`,
     `0b101010 : [6]` and `[False, True, False, True, False, True,
     False] : [7]`. These all compare as 42 in type appropriate
     contexts.
-  * 2-d: Think sequences of 1-d objects all of the same size. E.g.,
+  * 2-d: Think sequences of 1-d objects all of the same size. _e.g._,
     `[42, 0b010101010101, 0xa5a, 0o5757] : [4][12]`
-  * 3-d: Sequences of 2-d objects all of the same size. E.g., `[[0,
+  * 3-d: Sequences of 2-d objects all of the same size. _e.g._, `[[0,
     1], [1, 2], [3, 5], [8, 13]] : [4][2][4]`
   * ...
 
@@ -342,9 +363,18 @@ Things to note:
 ```
 
 Other data types include:
-  * Arbitrary-precision integers: E.g., `2^^1023 - 347835479 :
+  * Arbitrary-precision integers: _e.g._, `2^^1023 - 347835479 :
     Integer`
-  * Heterogeneous tuples: E.g.: `(False, 0b11) : (Bit, [2])` and
+
+  * Integers modulo _n_: Each type of the form `[n]`, described above,
+    provides a [least residue
+    system](https://en.wikipedia.org/wiki/Modular_arithmetic#Residue_systems)
+    for [integers modulo
+    2<sup>n</sup>](https://en.wikipedia.org/wiki/Modular_arithmetic#Integers_modulo_n).
+    Types of the form `Z n` provide a least residue system for any
+    positive _n_. _e.g._, `4 + 4 : Z 7` evaluates to `1`.
+
+  * Heterogeneous tuples: _e.g._: `(False, 0b11) : (Bit, [2])` and
     `(True, [1, 0], 7625597484987) : (Bit, [2][1], Integer)`
     * Elements of tuples are accessed by `.0`, `.1`, ...
 
@@ -353,7 +383,7 @@ Other data types include:
     False
 ```
 
-  * Records with named fields: E.g., `{flag = True, x = 2} : {flag :
+  * Records with named fields: _e.g._, `{flag = True, x = 2} : {flag :
     Bit, x : [4]}`
     * Elements of records are accessed by `.` followed by the field
       name.
@@ -363,18 +393,43 @@ Other data types include:
     True
 ```
 
-  * Integers modulo _n_: Each type of the form `[n]`, described above, provides a 
-    [least residue
-    system](https://en.wikipedia.org/wiki/Modular_arithmetic#Residue_systems)
-    for [integers modulo
-    2<sup>n</sup>](https://en.wikipedia.org/wiki/Modular_arithmetic#Integers_modulo_n).
-    Types of the form `Z n` provide a least residue system for any positive _n_. E.g.,
-    `4 + 4 : Z 7` evaluates to `1`.
+  * `newtype`s, which are named types defined by records; this new
+    type is treated distinctly from any other types and introduces a
+    constructor of the same name, _e.g._
+
+```cryptol
+newtype MySequence n a = { seq: [n]a }
+```
+
+```Xcryptol-session
+    labs::Language::Basics> let small_pyth_triples = MySequence { seq = [[3,4,5], [5,12,13], [8,15,17 : Integer]] }
+    labs::Language::Basics> :type small_pyth_triples
+    small_pyth_triples : MySequence 3 ([3]Integer)
+```
+
+  * `enum` types, which introduce a named type and multiple
+    constructors for a collection of alternative types, _e.g._
+
+```cryptol
+enum Maybe a = Nothing | Just a
+
+head' : {n, a} [n]a -> Maybe a
+head' xs
+  | n == 0 => Nothing
+  | n  > 0 => Just (head xs)
+```
+
+```Xcryptol-session
+    labs::Language::Basics> head' [] : [0]Integer
+    Nothing
+    labs::Language::Basics> head' [1, 2, 3, 4: Integer]
+    Just 1
+```
 
 Though Cryptol supports a slew of different data types, most are not
 needed to be successful in this course. Specifically, this course
-makes heavy use of sequences, with the occasional tuple and `Integer`
-thrown in.
+makes heavy use of sequences, with the occasional tuple, `Integer`,
+or `enum` thrown in.
 
 **EXERCISE**: The Cryptol interpreter command `:type` (or `:t` for
 short) is very useful for helping understand types. Use the `:type` command
@@ -475,22 +530,24 @@ it's now obligatory to point out that:
 
 > **Specifications are supposed to be easily understood**. 
 
-It's simply
-bad form to mix numerical representations, put type parameters in the
-middle of sequences, and so on. Please don't take these exercises to
-be considered *good* Cryptol. They were crafted to challenge you,
-something you should **never** do to someone who wants to use the
-specifications you write. Always strive to make elegant
-specifications. There is no need to optimize for performance. Also, don't
-write a spec "just to get it done" -- making something that loads and
-runs isn't good enough. Aim for creating specifications that *look*
-like the mathematics you're specifying. < rant over >
+`<rant>`
+It's simply bad form to mix numerical representations, put type
+parameters in the middle of sequences, and so on. Please don't take
+these exercises as examples of *good* Cryptol. They were crafted to
+challenge you, something you should **never** do to someone who wants
+to use the specifications you write. Always strive to make elegant
+specifications. There is no need to optimize for performance. Also,
+don't write a spec "just to get it done" -- making something that
+loads and runs isn't good enough. Aim for creating specifications that
+*look* like the mathematics you're specifying.
+`</rant>`
 
 ## Types of Functions
 
 What would a programming language be without the ability to write
 functions? Since Cryptol is a pure functional language, functions are
-stateless (side-effect free) definitions that map each (valid) input to an output.
+stateless (side-effect free) definitions that map each (valid) input
+to an output.
 
 Here is an example of a function called `add` that takes two arguments
 `x` and `y` and adds them together.
@@ -505,7 +562,7 @@ As it stands, this function works with many different types of `x` and
 sequences. Since this function accepts many different types of
 arguments, it's called
 [polymorphic](https://en.wikipedia.org/wiki/Polymorphism_(computer_science)):
-> provi[ding] a single interface to entities of different types.
+> providing a single interface to entities of different types.
 
 Oftentimes, cryptographic functions are written to only work with
 specified types (such as having a 256-bit key), and we want to capture
@@ -649,10 +706,9 @@ Upon reloading this file, we would see:
     Inferred type: [5]
 ```
 
-Here Cryptol is telling us that Cryptol
-**expected** (based on the type definition) the type of input `a` 
-to take two 5-bit bitvectors. But,
-Cryptol **inferred** (from the value definition) that the function
+Here Cryptol is telling us that Cryptol **expected** (based on the
+type definition) the type of input `a` to take two 5-bit bitvectors.
+But Cryptol **inferred** (from the value definition) that the function
 just takes a single 5-bit bitvector.
 
 Say we accidentally added the wrong type:
@@ -807,7 +863,9 @@ Standard
 (AES)](https://en.wikipedia.org/wiki/Advanced_Encryption_Standard)
 accepts key sizes of 128, 192, and 256 bits. Also, stream ciphers and
 hash functions work over arbitrary sized streams of input. So, in
-general, the full type of a function looks something like the following. (For the numbered identifiers, we limit ourselves to two examples, but in reality there can be any number.)
+general, the full type of a function looks something like the
+following. (For the numbered identifiers, we limit ourselves to two
+examples, but in reality there can be any number.)
 
 ```comment
 functionName :
@@ -859,8 +917,8 @@ This function's name is `sayHello`, it takes in a sequence called
 `name` that is `n` octets long and produces a sequence that is `7+n`
 octets long, where `n` is finite. The function itself outputs the
 concatenation (using the `#` operator) of the string "Hello, " with
- the value of `name`. If we wanted to enforce that the length of `n` was less than
-some value, we could add another constraint, like so:
+the value of `name`. If we wanted to enforce that the length of `n`
+was less than some value, we could add another constraint, like so:
 
 ```cryptol
 sayHello:
@@ -992,10 +1050,11 @@ And `F` has to trust that the length of `array` really is
 F : {size} (fin size) => [size][32] -> [32]
 ```
 
-In Cryptol, `array` and `size` are different classes of variables, and they are 
-strongly linked so that `F` doesn't have to trust that the length of
-`array` really is `size`. This kind of linkage is called [Strong
-typing](https://en.wikipedia.org/wiki/Strong_and_weak_typing) and
+In Cryptol, `array` and `size` are different classes of variables, and
+they are strongly linked so that `F` doesn't have to trust that the
+length of `array` really is `size`. This kind of linkage is called
+[Strong typing](https://en.wikipedia.org/wiki/Strong_and_weak_typing)
+and
 > generally refers to use of programming language types in order to
 > both capture invariants of the code, and ensure its correctness, and
 > definitely exclude certain classes of programming errors.
@@ -1072,13 +1131,14 @@ polyType12 = repeat`{5, [16]} 7
 polyType13 = repeat`{5} (7 : [16])
 ```
 
-You'll notice that you can either pass type variable values or let Cryptol infer
-the type variable values from the type of the output. Also, those last two examples
-demonstrate that you can pass type parameters based on position,
-that is, since the type of repeat declares `{n, a}` as type variables
-**in that order** (`n` first, then `a` second), Cryptol will infer
-which value goes with which type variable based on its position inside
-the curly braces, so you don't need to provide the `name=` part.
+You'll notice that you can either pass type variable values or let
+Cryptol infer the type variable values from the type of the output.
+Also, those last two examples demonstrate that you can pass type
+parameters based on position; that is, since the type of repeat
+declares `{n, a}` as type variables **in that order** (`n` first, then
+`a` second), Cryptol will infer which value goes with which type
+variable based on its position inside the curly braces, so you don't
+need to provide the `name=` part.
 
 **EXERCISE**: Write a function called `zeroPrepend` that prepends `n`
 `False` bits onto the beginning of an `m`-bit bitvector called
@@ -1086,11 +1146,12 @@ the curly braces, so you don't need to provide the `name=` part.
 `repeat` function we wrote above, though there are solutions that
 don't require it.
 
-(Note:  Many times in this course you will be asked to do a coding exercise in
-which your assignment is to alter a snippet of code.  If when doing so you
-find you need to start over, but you have saved over the original code snippet
-and do not know what the original looked like, you may find the original by
-locating the current module in the course repository on
+(Note:  Many times in this course you will be asked to do a coding
+exercise in which your assignment is to alter a snippet of code.  If
+when doing so you find you need to start over, but you have saved over
+the original code snippet and do not know what the original looked
+like, you may find the original by locating the current module in the
+course repository on
 [GitHub](https://github.com/weaversa/cryptol-course).)
 
 ```cryptol
@@ -1121,18 +1182,18 @@ Because type variables and value variables are different classes of
 variables, they cannot interact directly (for example, we cannot write
 an expression equating the two). If we think of these two
 classes being in a hierarchy, type variables would be above value
-variables. With this hierarchy in mind, Cryptol does allow type variables
-to be **demoted** to value variables, but value variables cannot be
-promoted to type variables. For example, the following is not
-possible.
+variables. With this hierarchy in mind, Cryptol does allow type
+variables to be **demoted** to value variables, but value variables
+cannot be promoted to type variables. For example, the following is
+not possible:
 
 ```comment
 notPossible size = 0 : [size]
 ```
 
 We cannot go from a value variable (`size` on the left) up to a type
-variable (`size` on the right). However, we can go down by using the backtick `` ` ``
-character. For example:
+variable (`size` on the right). However, we can go down by using the
+backtick `` ` `` character. For example:
 
 ```cryptol
 appendSize :
@@ -1142,21 +1203,21 @@ appendSize :
 appendSize input = input # [`size]
 ```
 
-Here we concatenate the size of a sequence onto the end of that sequence. To read the
-function definition more verbatim: 
+Here we concatenate the size of a sequence onto the end of that
+sequence. To read the function definition more verbatim:
 >`appendSize` takes an input named
 `input` that is a sequence of `size` number of 32-bit elements and
 outputs a sequence of `size+1` 32-bit elements, where the first `size`
 elements are `input` and the last element is the size of the input
 sequence. 
 
-When type variables are demoted to value variables, they
-must take on a type. Cryptol usually infers the correct type, and in
-this case `` `size `` becomes a 32-bit value. It is because of this
-that the function has `32 >= width size` as a type constraint. If
-`size` were greater than `2^^32`, it couldn't be demoted into a 32-bit
-value because it wouldn't fit! So, the demotion here forces us to add
-this extra type constraint. Luckily, if you forget to add such things,
+When type variables are demoted to value variables, they must take on
+a type. Cryptol usually infers the correct type, and in this case
+`` `size `` becomes a 32-bit value. It is because of this that the
+function has `32 >= width size` as a type constraint. If `size` were
+greater than `2^^32`, it couldn't be demoted into a 32-bit value
+because it wouldn't fit! So, the demotion here forces us to add this
+extra type constraint. Luckily, if you forget to add such things,
 Cryptol will generally complain and let you know what you forgot. For
 example, if we remove that constraint and reload this file we see:
 
@@ -1242,7 +1303,9 @@ that allows you to create local definitions in functions. There's
 really not too much to this, but you'll use it in almost every Cryptol
 function you'll ever write, so consider it important.
 
-Here we describe what a function looks like in Cryptol. (For the numbered identifiers here, we limit ourselves to two or three examples, but in reality there can be any number.)
+Here we describe what a function looks like in Cryptol. (For the
+numbered identifiers here, we limit ourselves to two or three
+examples, but in reality there can be any number.)
 
 ```comment
 functionName :
@@ -1335,15 +1398,16 @@ And the breakdown:
 
 ## Properties
 
-Cryptol has a built-in automated theorem proving interface. This lab
-doesn't go over this capability except to say that you can designate
-functions with an output type of `Bit` as properties using the
-`property` keyword. The purpose of this keyword is mostly to help
-document and differentiate functions that are used to compute a
-cryptographic algorithm, with functions that express properties about
-a cryptographic algorithm. For example, here we have two ways to
-compute the same function, and a property stating that they are
-equivalent for all inputs:
+Cryptol has a built-in automated theorem proving interface, as
+demonstrated earlier for [(un)currying](#curried-and-uncurried-style).
+You can designate predicates (functions with an output type of `Bool`)
+as properties using the `property` keyword. The purpose of this
+keyword is mostly to help document and differentiate functions that
+are used to compute a cryptographic algorithm from functions that
+express properties about a cryptographic algorithm.
+
+For example, here we have two ways to compute the same function, and a
+property stating that they are equivalent for all inputs:
 
 ```cryptol
 /**
@@ -1364,6 +1428,30 @@ property anyZeroByteCorrect bytes =
     anyZeroByteOpt bytes == anyZeroByteSpec bytes
 ```
 
+For another example, let's revisit our earlier claim that `add` and
+`addUncurried` are "equivalent on some level", and formalize this as
+properties:
+
+```cryptol
+add_curry_eq : [32] -> [32] -> Bool
+property add_curry_eq x y =
+  add x y == curry addUncurried x y
+
+add_uncurry_eq : [32] -> [32] -> Bool
+property add_uncurry_eq x y =
+  addUncurried (x, y) == uncurry add (x, y)
+```
+
+With few exceptions, properties are generally expected to be `True`
+for all possible inputs (_e.g._ a block cipher always recovers
+plaintext), whereas other predicates might only sometimes be `True`
+(_e.g._ `isOdd : Integer -> Bool` being `True` for half of all inputs).
+
+*Aside*: `Bool` and `Bit` are equivalent types for which `True` and
+`False` are the only possible values. `Bool` expresses _logical_
+intent, whereas `Bit` expresses _numeric_ intent. Thus, properties
+should have type `Bool`.
+
 Cryptol's `:prove` interpreter command will cue on the `property`
 keyword, trying to prove every `property` in scope. The `:prove`
 command also works if you give it a property directly, like so:
@@ -1372,6 +1460,12 @@ command also works if you give it a property directly, like so:
 labs::Language::Basics> :prove anyZeroByteCorrect
 Q.E.D.
 (Total Elapsed Time: 0.009s, using "Z3")
+labs::Language::Basics> :prove add_curry_eq
+Q.E.D.
+(Total Elapsed Time: 0.023s, using "Z3")
+labs::Language::Basics> :prove add_uncurry_eq
+Q.E.D.
+(Total Elapsed Time: 0.022s, using "Z3")
 ```
 
 Here, `:prove` tells Cryptol to call out to an external theorem prover
@@ -1395,6 +1489,54 @@ assignment to `x` such that `increment x < x`." And since the type of
 `increment` forces `x` to be a 32-bit bitvector, `increment
 0xffffffff` overflows to zero, yielding the solution 0xffffffff.
 
+**Update!**: Cryptol 3.2 adds a `:check-docstrings` command that
+automatically searches docstrings for the currently loaded module or
+any of its definitions for embedded _code fences_, and runs the
+Cryptol commands therein. For example:
+
+```cryptol
+/**
+ * ```repl
+ * :set prover=cvc5
+ * :prove add_assoc
+ * ```
+ */
+add_assoc : [32] -> [32] -> [32] -> Bool
+property add_assoc x y z = add (add x y) z == add x (add y z)
+
+/**
+ * ```repl
+ * :exhaust add_example
+ * ```
+ */
+add_example: Bool
+property add_example = add 13 86 == 99
+```
+
+```Xcryptol-session
+labs::Language::Basics> :check-docstrings
+Checking labs::Language::Basics::add_assoc
+
+:set prover=cvc5
+
+:prove add_assoc
+Q.E.D.
+(Total Elapsed Time: 0.019s, using "CVC5")
+
+
+Checking labs::Language::Basics::add_example
+
+:exhaust add_example
+Using exhaustive testing.
+Testing...   0             Passed 1 tests.
+Q.E.D.
+
+Successes: 3, No fences: 96, Failures: 0
+```
+
+Miscount notwithstanding, this increases assurance that all properties
+in a module are verified in an efficient, easily repeatable way.
+
 ## Operators
 
 Cryptol's `:help` command will provide a brief description of an
@@ -1413,7 +1555,7 @@ the zero-based index of the element to select from the sequence.
 ```
 
 Many languages differentiate signed and unsigned numbers at the type
-level (e.g. C's `uint32` and `int32`). Cryptol has separate operators
+level (_e.g._ C's `uint32` and `int32`). Cryptol has separate operators
 for signed operations which are indicated by a suffixed `$`. Most of
 the time you don't need them, as cryptography tends to use nonnegative
 numbers. In case you do, Cryptol also has `carry`, `scarry`, and
@@ -1655,7 +1797,7 @@ signum x = if (x <$ zero) then -1
 
 `<$` and `>$` are *signed comparisons* that work for any type
 satisfying the constraint `SignedCmp a`. `Zero a` further constrains
-`a` to be a type with "a notion of zero", i.e. an additive identity.
+`a` to be a type with "a notion of zero", _i.e._, an additive identity.
 
 `error "message"` induces a runtime error and logs the given `message`.
 Such an error should never happen; we will prove this for certain types
@@ -2060,12 +2202,11 @@ Notice that both `roundKeys` in `keyExpand` and `roundResults` in
 `encrypt` are self-referential sequences, a paradigm that will often
 occur when coding cryptography.
 
-
 ## Laziness
 
 Cryptol's evaluation strategy is
 [lazy](https://en.wikipedia.org/wiki/Lazy_evaluation)
-a.k.a. "call-by-need". I.e., computations are not performed until
+a.k.a. "call-by-need". _i.e._, computations are not performed until
 necessary. So
 
 ```cryptol
@@ -2202,7 +2343,7 @@ concatenate them. This function (`concatIntegers`) should never fail
 the `assert` in `concatNumbers`, and we can prove this using Cryptol's
 `:safe` command. `:safe` uses a theorem prover to prove (or dis-prove
 with counter example) that a given function does not encounter any
-run-time errors, i.e. is free of undefined behavior.
+run-time errors, _i.e._, is free of undefined behavior.
 
 ```cryptol
 numToASCII : {digits} (fin digits) => Integer -> [digits][8]
