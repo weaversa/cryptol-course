@@ -24,7 +24,8 @@ Specifically, you'll also gain experience with
   * writing functions and properties, 
   * functions with curried parameters,
   * type parameters and type constraints,
-  * the `:check`, `:prove`, and `:sat` commands, 
+  * the `:check`, `:prove`, and `:sat` commands,
+  * docstrings and the `:check-docstrings` command,
   * pattern matching,
   * demoting type variables to value variables,
   * `/\`, `\/`, `==>` -- logical operations for single bits,
@@ -149,7 +150,7 @@ base 10.
 
 ## Modules
 
-This file is a Cryptol module. The first interpreted* line of every
+This file is a Cryptol module. The first interpreted line of every
 Cryptol module must be `module Path::...Path::ModuleName where`. The
 `Path::...Path` component is the system path from the root of whatever
 set of modules you're creating or working from. The `ModuleName`
@@ -309,14 +310,14 @@ doesn't make use of that feature.
 Cryptol's "basic" data type is an _n_-dimensional array (called a
 sequence) whose base type is bits.
   * 0-d: `False : Bit` and `True: Bit`
-  * 1-d: Think bytes, words, nibbles, etc., i.e., a sequence of bits
-    of any length usually thought of as a number. E.g., `0x2a : [8]`,
+  * 1-d: Think bytes, words, nibbles, etc., _i.e._, a sequence of bits
+    of any length usually thought of as a number. _e.g._, `0x2a : [8]`,
     `0b101010 : [6]` and `[False, True, False, True, False, True,
     False] : [7]`. These all compare as 42 in type appropriate
     contexts.
-  * 2-d: Think sequences of 1-d objects all of the same size. E.g.,
+  * 2-d: Think sequences of 1-d objects all of the same size. _e.g._,
     `[42, 0b010101010101, 0xa5a, 0o5757] : [4][12]`
-  * 3-d: Sequences of 2-d objects all of the same size. E.g., `[[0,
+  * 3-d: Sequences of 2-d objects all of the same size. _e.g._, `[[0,
     1], [1, 2], [3, 5], [8, 13]] : [4][2][4]`
   * ...
 
@@ -362,18 +363,18 @@ Things to note:
 ```
 
 Other data types include:
-  * Arbitrary-precision integers: E.g., `2^^1023 - 347835479 :
+  * Arbitrary-precision integers: _e.g._, `2^^1023 - 347835479 :
     Integer`
 
-  * Integers modulo _n_: Each type of the form `[n]`, described above, provides a 
-    [least residue
+  * Integers modulo _n_: Each type of the form `[n]`, described above,
+    provides a [least residue
     system](https://en.wikipedia.org/wiki/Modular_arithmetic#Residue_systems)
     for [integers modulo
     2<sup>n</sup>](https://en.wikipedia.org/wiki/Modular_arithmetic#Integers_modulo_n).
-    Types of the form `Z n` provide a least residue system for any positive _n_. E.g.,
-    `4 + 4 : Z 7` evaluates to `1`.
+    Types of the form `Z n` provide a least residue system for any
+    positive _n_. _e.g._, `4 + 4 : Z 7` evaluates to `1`.
 
-  * Heterogeneous tuples: E.g.: `(False, 0b11) : (Bit, [2])` and
+  * Heterogeneous tuples: _e.g._: `(False, 0b11) : (Bit, [2])` and
     `(True, [1, 0], 7625597484987) : (Bit, [2][1], Integer)`
     * Elements of tuples are accessed by `.0`, `.1`, ...
 
@@ -382,7 +383,7 @@ Other data types include:
     False
 ```
 
-  * Records with named fields: E.g., `{flag = True, x = 2} : {flag :
+  * Records with named fields: _e.g._, `{flag = True, x = 2} : {flag :
     Bit, x : [4]}`
     * Elements of records are accessed by `.` followed by the field
       name.
@@ -392,9 +393,9 @@ Other data types include:
     True
 ```
 
-  * `newtype`s, which are named types defined by records, e.g.
-    ``; this new type is treated distinctly from any other types and
-    introduces a constructor of the same name, e.g.
+  * `newtype`s, which are named types defined by records; this new
+    type is treated distinctly from any other types and introduces a
+    constructor of the same name, _e.g._
 
 ```cryptol
 newtype MySequence n a = { seq: [n]a }
@@ -407,7 +408,7 @@ newtype MySequence n a = { seq: [n]a }
 ```
 
   * `enum` types, which introduce a named type and multiple
-    constructors for a collection of alternative types, e.g.
+    constructors for a collection of alternative types, _e.g._
 
 ```cryptol
 enum Maybe a = Nothing | Just a
@@ -1442,9 +1443,9 @@ property add_uncurry_eq x y =
 ```
 
 With few exceptions, properties are generally expected to be `True`
-for all possible inputs (e.g. a block cipher always recovers
+for all possible inputs (_e.g._ a block cipher always recovers
 plaintext), whereas other predicates might only sometimes be `True`
-(e.g. `isOdd : Integer -> Bool` being `True` for half of all inputs).
+(_e.g._ `isOdd : Integer -> Bool` being `True` for half of all inputs).
 
 *Aside*: `Bool` and `Bit` are equivalent types for which `True` and
 `False` are the only possible values. `Bool` expresses _logical_
@@ -1554,7 +1555,7 @@ the zero-based index of the element to select from the sequence.
 ```
 
 Many languages differentiate signed and unsigned numbers at the type
-level (e.g. C's `uint32` and `int32`). Cryptol has separate operators
+level (_e.g._ C's `uint32` and `int32`). Cryptol has separate operators
 for signed operations which are indicated by a suffixed `$`. Most of
 the time you don't need them, as cryptography tends to use nonnegative
 numbers. In case you do, Cryptol also has `carry`, `scarry`, and
@@ -1796,7 +1797,7 @@ signum x = if (x <$ zero) then -1
 
 `<$` and `>$` are *signed comparisons* that work for any type
 satisfying the constraint `SignedCmp a`. `Zero a` further constrains
-`a` to be a type with "a notion of zero", i.e. an additive identity.
+`a` to be a type with "a notion of zero", _i.e._, an additive identity.
 
 `error "message"` induces a runtime error and logs the given `message`.
 Such an error should never happen; we will prove this for certain types
@@ -2205,7 +2206,7 @@ occur when coding cryptography.
 
 Cryptol's evaluation strategy is
 [lazy](https://en.wikipedia.org/wiki/Lazy_evaluation)
-a.k.a. "call-by-need". I.e., computations are not performed until
+a.k.a. "call-by-need". _i.e._, computations are not performed until
 necessary. So
 
 ```cryptol
@@ -2342,7 +2343,7 @@ concatenate them. This function (`concatIntegers`) should never fail
 the `assert` in `concatNumbers`, and we can prove this using Cryptol's
 `:safe` command. `:safe` uses a theorem prover to prove (or dis-prove
 with counter example) that a given function does not encounter any
-run-time errors, i.e. is free of undefined behavior.
+run-time errors, _i.e._, is free of undefined behavior.
 
 ```cryptol
 numToASCII : {digits} (fin digits) => Integer -> [digits][8]
