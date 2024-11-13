@@ -187,5 +187,5 @@ https://github.com/weaversa/cryptol-course/issues
 ||||
 |-:|:-:|-|
 || [ ^ SAW Demos](../Demos.md) ||
-| [< Arithmetic Verifications](../ArithmeticVerifications/ArithmeticVerifications.md) | **Bit Twiddling** ||
+| [< Arithmetic Verifications](../ArithmeticVerifications/ArithmeticVerifications.md) | **Bit Twiddling** | [Salsa20 (Galois) >](../Salsa20/Salsa20.md) |
 || [! Bit Twiddling (Answers)](./BittwiddlingAnswers.md) ||

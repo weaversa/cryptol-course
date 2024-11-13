@@ -1,0 +1,26 @@
+strict digraph "salsa20.bc" {
+	label="salsa20.bc";
+	
+	s20_crypt32;
+	s20_rev_littleendian;
+	s20_expand32;
+	s20_hash;
+	s20_littleendian;
+	s20_doubleround;
+	s20_columnround;
+	s20_rowround;
+	s20_quarterround;
+	rotl;
+	
+	s20_crypt32 -> s20_rev_littleendian;
+	s20_crypt32 -> s20_expand32;
+	s20_expand32 -> s20_hash;
+	s20_hash -> s20_littleendian;
+	s20_hash -> s20_doubleround;
+	s20_hash -> s20_rev_littleendian;
+	s20_doubleround -> s20_columnround;
+	s20_doubleround -> s20_rowround;
+	s20_columnround -> s20_quarterround;
+	s20_rowround -> s20_quarterround;
+	s20_quarterround -> rotl;
+}
