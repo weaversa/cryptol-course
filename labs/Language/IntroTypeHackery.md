@@ -191,7 +191,7 @@ odd x = last ([False] # x) // "[False] #" affords type [0]
 
 ### *Aside*: Numeric Constraint Guards
 
-Update!!!  Cryptol 3.0 introduced 
+Update!!!  Cryptol 3 introduced 
 [*numeric constraint guards*](https://galoisinc.github.io/cryptol/3.2.0/BasicSyntax.html#numeric-constraint-guards), 
 which accommodate different branches based on the type parameters of
 a function.  For example, our definitions of `even` and `odd` can be
