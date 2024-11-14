@@ -677,14 +677,20 @@ funType5 [a, b, c : [10]] = [a, b, c]
 
 funType6 (a : [3][10]) = [a@0, a@1, a@2]
 
-//Fun fact! funType5 and funType6 compute the same function.
-//Try, :prove funType5 === funType6
+/*
+ * (We haven't gotten around to defining `@` yet.  Oops!
+ * Feel free to seek help from the Cryptol prompt: `:help @`
+ * This will give you a type *and* a docstring.)
+ */
+
+// Fun fact! funType5 and funType6 compute the same function.
+// Try, `:prove funType5 === funType6`
 
 funType7 x = (x, x, [ [[False, True], x], [x, x], [x, x] ])
 
 funType8 = funType2 10
 
-funType9 = False  //Is this a function with no arguments, or a value? Hmmmm...is there a difference? Nope!
+funType9 = False  // Is this a function with no arguments, or a value? Hmmmm...is there a difference? Nope!
 ```
 
 Now that you have some experience *viewing* function types, you're
