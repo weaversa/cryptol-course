@@ -10,14 +10,16 @@ Before working through this lab, you'll need
   * this module to load successfully.
 
 You'll also need experience with
-  * loading modules and evaluating functions in the interpreter and
-  * the `:prove` and `:sat` commands
+  * loading modules and evaluating functions in the interpreter,
+  * the `:prove` and `:sat` commands, and defining `property`s
+  * `import` and import lists (e.g. `import My::Module (def, other_def)`),
+  * sequence comprehensions
   * ...
 
 ## Skills You'll Learn
 
 This module will define a _transposition cipher_, in which message 
-characters are _transposed_ in a different order.  Additionally, the 
+characters are _transposed_ in a different order. Additionally, the 
 module will recall some important cipher properties (that decryption 
 recovers encrypted plaintext and that encryption is injective), where 
 these operations are defined in terms of _permutations_.
@@ -64,9 +66,9 @@ import labs::Transposition::CommonProperties (injective, inverts)
 In a [_transposition cipher_](https://en.wikipedia.org/wiki/Transposition_cipher), 
 messages are encrypted by _transposing_ (rearranging) characters, 
 then decrypted by inverting this rearrangement to recover the 
-original order.  Confidentiality depends upon a shared secret between 
+original order. Confidentiality depends upon a shared secret between 
 a sender and receiver so that only they know how the message was 
-transposed.  A _permutation mapping_, a 1:1 mapping from the ordered 
+transposed. A _permutation mapping_, a 1:1 mapping from the ordered 
 set of indices ``[0..`(m-1)]`` to a sequence of the same indices in a 
 different order, formalizes this transposition. 
 
@@ -78,16 +80,16 @@ required for transposition ciphers in general.
 
 A _mapping_ is an operation that associates an element of a given set 
 (_domain_) with one or more elements of a (same or different) set 
-(_range_).  A _bijective_ mapping maps each element of the domain to 
-a distinct element of the range, and vice-versa.  A transposition 
+(_range_). A _bijective_ mapping maps each element of the domain to 
+a distinct element of the range, and vice-versa. A transposition 
 cipher _transposes_ a message (a sequence of length `m`) to a 
 scrambled message containing the same elements in a different order 
-(a _permutation mapping_) known to the sender and receiver.  To 
+(a _permutation mapping_) known to the sender and receiver. To 
 decrypt a message, a receiver _inverts_ this permutation to yield the 
 original message.
 
 **EXERCISE**: Define a function `isPermutation` that returns whether 
-`seq': [n]a` is a permutation of `seq: [n]a`.  Check your function 
+`seq': [n]a` is a permutation of `seq: [n]a`. Check your function 
 using `isPermutation_test`.
 
 (Hint: A helper function will...help.)
@@ -119,12 +121,12 @@ property isPermutation_test = and
 
 **EXERCISE**: Define a function `isPermutationMapping`, perhaps using 
 the built-in functions `all` and `elem`, that recognizes a 
-permutation mapping.  Check your function using 
+permutation mapping. Check your function using 
 `isPermuationMapping_test`.
 
 (Hint: ``take`{n} [0...]`` returns the first `n` numbers starting 
-from `0`, i.e. the identity mapping.  `isPermutationMapping` can be 
-defined using this sequence as one of the arguments to `all`.  It 
+from `0`, i.e. the identity mapping. `isPermutationMapping` can be 
+defined using this sequence as one of the arguments to `all`. It 
 may be simpler to define a variant of `elem` that takes arguments in 
 a different order.)
 
@@ -165,7 +167,7 @@ permute pi seq = undefined
 
 **EXERCISE**: Define a predicate `permute_permutes` that, given a 
 permutation mapping `pi: [n]w` and a sequence `seq: [n]a`, `permute` 
-returns a permutation of `seq`.  Prove/check this predicate for 
+returns a permutation of `seq`. Prove/check this predicate for 
 various sequence lengths and types.
 
 ```cryptol
@@ -174,7 +176,7 @@ permute_permutes pi seq = undefined
 ```
 
 **EXERCISE**: Given a permutation mapping `pi: [n]w`, return its 
-inverse `pi'` such that `permute pi'` `inverts` `permute pi`.  
+inverse `pi'` such that `permute pi'` `inverts` `permute pi`. 
 (`inverts` is imported from `labs::Transposition::CommonProperties`.)
 
 (Hint: The idiomatic solution to this exercise, where `inverse` is 
@@ -188,7 +190,7 @@ inverse pi = undefined
 ```
 
 **EXERCISE**: State a predicate `inverse_inverts` that `inverse` 
-satisfies its specification above.  Prove this predicate for various 
+satisfies its specification above. Prove this predicate for various 
 sequence lengths and types.
 
 ```cryptol
@@ -199,7 +201,7 @@ inverse_inverts pi seq = undefined
 
 **EXERCISE**: Define a predicate that `permute pi` is `injective` if 
 `pi` is a permutation mapping, and `:prove` it for various sequence 
-lengths and types.  (`injective` is imported from 
+lengths and types. (`injective` is imported from 
 `labs::Transposition::CommonProperties`.)
 
 ```cryptol
@@ -215,7 +217,7 @@ operations for a transposition cipher in terms of a permutation
 mapping `pi`.
 
 **EXERCISE**: Define `encrypt` and `decrypt` in terms of `permute` 
-and a permutation mapping `pi`.  Do not modify anything left of `=`.
+and a permutation mapping `pi`. Do not modify anything left of `=`.
 
 ```cryptol
 encrypt = undefined
@@ -224,7 +226,7 @@ decrypt pi = undefined
 
 **EXERCISE**: Define predicates `cipher_recovery` and 
 `cipher_injective` stating that `decrypt pi` inverts `encrypt pi` and 
-that `encrypt pi` is injective, given a permutation mapping `pi`.  
+that `encrypt pi` is injective, given a permutation mapping `pi`. 
 (These are direct assignments to earlier predicate definitions; do 
 not modify anything left of `=`.)
 
@@ -235,15 +237,15 @@ cipher_injective = undefined
 
 # Padding and Filtering
 
-Most transposition ciphers are based on an analogue to block size.  
+Most transposition ciphers are based on an analogue to block size. 
 For example, Scytale has a rod diameter, but not all messages wrap 
 evenly around this rod, leaving a gap that must be managed when 
-encrypting and decrypting an "uneven" message.  Likewise, in Rail 
+encrypting and decrypting an "uneven" message. Likewise, in Rail 
 Fence, messages are split by "cycles" determined by the number of 
 rails in the fence, and not all messages are a multiple of cycle 
-length.  One option to overcome such a limitation is to pad a 
+length. One option to overcome such a limitation is to pad a 
 message, encrypt it, send the encrypted padded message, and remove 
-the padding characters after decryption.  However, since 
+the padding characters after decryption. However, since 
 transposition ciphers are based on message _indices_ rather than 
 _content_, the sender can simply derive a permutation mapping based 
 on padded message length, remove indices that are out of place, and 
@@ -257,22 +259,22 @@ predicate `f: a -> Bit`, return from a sequence `seq: [n]a` the
 elements `seq': [m]a` such that `all f seq' == True`.
 
 **EXERCISE**: ...just kidding. Normally, we might introduce an exercise 
-to define such a function at this point.  However, in Cryptol's type 
-system, this turns out to be a somewhat difficult problem.  Indeed, 
+to define such a function at this point. However, in Cryptol's type 
+system, this turns out to be a somewhat difficult problem. Indeed, 
 this module's author, for whom all prior concepts covered in the lab 
 came naturally, struggled for a day to arrive at what turned out to 
-be an incorrect (but easily correctable) solution.  This problem 
-baffled all but the lead instructor for the course.  Readers are 
+be an incorrect (but easily correctable) solution. This problem 
+baffled all but the lead instructor for the course. Readers are 
 invited to similarly struggle at this point, but hints showing a 
 couple ways to solve this problem are provided below for those who 
 instead wish to endure a diatribe on different strategies to solve 
-this problem.  Even we're not that mean!
+this problem. Even we're not that mean!
 
 ## Index swapping
 
 By definition, in a transposition cipher, characters of a message are 
-rearranged.  The most basic rearrangement is to swap characters at 
-two positions (indices) in a message (sequence).  However, while 
+rearranged. The most basic rearrangement is to swap characters at 
+two positions (indices) in a message (sequence). However, while 
 permutation mappings provide a more efficient mechanism to swap all 
 characters at once, swapping turns out to be useful for the sequence 
 filtering problem...
@@ -280,9 +282,9 @@ filtering problem...
 **EXERCISE**: Define a function to swap items at indices `i` and `j` 
 of a sequence `seq: [n]a` for number `n` and arbitrary character type 
 `a`, using `@` and `update`, then again using `@@` and `updates` (do 
-not use a temporary variable in either definition).  Use the 
+not use a temporary variable in either definition). Use the 
 `swap_equiv` predicate to verify that your definitions are equivalent, 
-then the `swap_correct` predicate to show that one of them is correct.  
+then the `swap_correct` predicate to show that one of them is correct. 
 (Because they are equivalent, this will infer that the other swap 
 function is also correct.)
 
@@ -332,17 +334,17 @@ swap_correct seq i j k =
 Using `swap`, we can define a function that "partitions" a sequence 
 into a subsequence of all elements in the original sequence that 
 satisfy a predicate, followed by a subsequence of all elements that 
-do not.  To achieve this, we can "walk" through the original 
+do not. To achieve this, we can "walk" through the original 
 sequence, and if the current character satisfies the predicate, keep 
 walking; otherwise, swap the current character with the next one, and 
 branch here while the subsequent character is another padding 
-character.  For this strategy, the "current" sequence and index would 
+character. For this strategy, the "current" sequence and index would 
 be captured as a sequence comprehension (much as in a block cipher's 
 iterations of a round function).
 
 To better visualize this, suppose we've been given a String infused 
 with padding characters `-`, and wish to move them to the end of the 
-message.  The following function achieves this for any message length 
+message. The following function achieves this for any message length 
 including the empty message `""` of length `0`:
 
 ```cryptol
@@ -391,7 +393,7 @@ labs::Transposition::Transposition> rearrange_trace "HE-LL-O-"
 `seq: [n]a`, "partitions" the sequence, returning `seq': [n]a` 
 such that there exists some `i` such that 
 `all f seqt' == True` and `all f' seqf' == True`, where 
-`f' x = ~ f x` and ``(seqt', seqf') = splitAt`{i} seq'``.  Use the 
+`f' x = ~ f x` and ``(seqt', seqf') = splitAt`{i} seq'``. Use the 
 `partition_rearranges` predicate to `:prove` (or if you lose 
 patience, `:check`) that you defined `partition` correctly, for 
 various sequence lengths.
@@ -423,7 +425,7 @@ how might we be able to use `partition` for transposition ciphers?
 
 Another possible approach is to walk through a sequence, rotating the 
 remaining subsequence left iff its first element does not satisfy the 
-filtering predicate.  Visualizing this for `rearrange` on 
+filtering predicate. Visualizing this for `rearrange` on 
 `"HE-LL-O-"`, this approach would proceed as follows:
 
 "HE-LL-O-"
@@ -444,7 +446,7 @@ it is possible, feel free to submit a pull request!  Otherwise, can
 we apply another technique to operate over these subsequences?
 
 Unfortunately, there is no mechanism for "type sequence 
-comprehensions".  However, we can apply recursion...
+comprehensions". However, we can apply recursion...
 
 ```cryptol
 /**
@@ -467,9 +469,9 @@ rearrange_equiv = rearrange`{n} === rearrange'`{n}
 ```
 
 In addition to being recursive, this approach requires tricks with 
-`min` and `max` to establish type consistency for an empty sequence.  
+`min` and `max` to establish type consistency for an empty sequence. 
 What kind of fool thought this up?  (See 
-[Type Hackery](../Language/IntroTypeHackery.md) 
+[Introductory Type Hackery](../Language/IntroTypeHackery.md) 
 for a better, more detailed example of such hackery.)
 
 **EXERCISE**: Using `rearrange'` as a blueprint, define a function 
@@ -493,7 +495,7 @@ partition'_rearranges =
 ```
 
 **EXERCISE**: Define a property `partition'_equiv` that `partition` 
-and `partition'` are functionally equivalent.  Are they?  If not, why 
+and `partition'` are functionally equivalent. Are they?  If not, why 
 not?  Can either or both still be used for transposition ciphers?
 
 ```cryptol
@@ -502,8 +504,8 @@ partition'_equiv: {n, a} (fin n, Eq a) => (a -> Bit) -> [n]a -> Bit
 partition'_equiv _ _ = False
 ```
 
-**EXERCISE**: Better yet! Cryptol has built-in sorting primitives 
-`sort` and `sortBy`. Try you hand at using the `sortBy` primitive 
+**EXERCISE**: Better yet! Cryptol now has built-in sorting primitives
+`sort` and `sortBy`. Try your hand at using the `sortBy` primitive
 to implement partitioning. (Hint: `True > False`.)
 
 ```cryptol
@@ -519,7 +521,7 @@ partition''_equiv: {n, a} (fin n, Eq a) => (a -> Bit) -> [n]a -> Bit
 partition''_equiv _ _ = False
 ```
 
-I'm sure you're thinking we should've just started w/ the `sortBy`
+I'm sure you're thinking we should've just started with the `sortBy`
 solution. Well, us developing this lab is part of the reason the
 `sortBy` primitive exists. So, consider the above as an historical
 reference of our earlier stumblings.
@@ -530,9 +532,9 @@ Phew! Now that we have defined a `partition` function...
 
 **EXERCISE**: Define a function `unpad` that uses `partition` (or 
 `partition'`) and `take` to reduce a permutation mapping `(n + p) w` 
-to a possibly smaller `[n]w` (where `p >= 0`).  Use 
+to a possibly smaller `[n]w` (where `p >= 0`). Use 
 `unpad_unpads` to check your definition of `unpad` is correct for 
-various _valid permutation mappings_ of various lengths and paddings.  
+various _valid permutation mappings_ of various lengths and paddings. 
 (Checking invalid permutation mappings is trivial and inefficient.)  
 Can you think of a more efficient way to increase confidence in the 
 correctness of this function?
@@ -554,7 +556,7 @@ unpad_unpads pi =
 # Conclusion
 
 This lab presented abstract definitions for transposition ciphers, 
-formalizing definitions for permutations and inverses.  Subsequent 
+formalizing definitions for permutations and inverses. Subsequent 
 labs will provide specific examples of transposition ciphers.
 
 # Solicitation
