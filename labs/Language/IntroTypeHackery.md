@@ -28,8 +28,9 @@ back here for reference as you work through the labs.
 
 Specifically, you'll also gain experience with
   * writing functions and properties,
-  * type parameters and type constraints, and
-  * decimating types through recursion.
+  * type parameters and type constraints,
+  * decimating types through recursion, and
+  * [numeric constraint guards](https://galoisinc.github.io/cryptol/master/BasicSyntax.html#numeric-constraint-guards).
 
 ## Load This Module
 
@@ -169,7 +170,7 @@ reach a base case, to reducing the types until the base case is
 reached. After that it's all details, but there are several.
 
 
-## Implementing Binary gcd in Cryptol
+## Implementing Binary gcd in Cryptol 2
 
 We'll need a few supporting functions:
 
@@ -185,6 +186,55 @@ even, odd : {n} (fin n) => [n] -> Bit
 even = ~odd
 odd x = last ([False] # x) // "[False] #" affords type [0]
 ```
+
+----------
+
+### *Aside*: Numeric Constraint Guards
+
+Update!!!  Cryptol 3 introduced 
+[*numeric constraint guards*](https://galoisinc.github.io/cryptol/3.2.0/BasicSyntax.html#numeric-constraint-guards), 
+which accommodate different branches based on the type parameters of
+a function.  For example, our definitions of `even` and `odd` can be
+adapted to:
+
+```cryptol
+even', odd' : {n} (fin n) => [n] -> Bit
+even' = ~odd'
+odd' x
+  | n == 0 => False
+  | n > 0  => last x
+```
+
+Let's add `property`s to verify that these definitions are equivalent...
+
+```cryptol
+even_eq, odd_eq : {n} (fin n) => [n] -> Bool
+property even_eq = even === even'
+property odd_eq = odd === odd'
+```
+
+We'll give properties a proper introduction later in the course, but
+here's a sneak peek:
+
+```Xcryptol-session
+labs::Language::IntroTypeHackery> :prove even_eq`{0}
+Q.E.D.
+(Total Elapsed Time: 0.026s, using "Z3")
+labs::Language::IntroTypeHackery> :prove even_eq`{32}
+Q.E.D.
+(Total Elapsed Time: 0.030s, using "Z3")
+labs::Language::IntroTypeHackery> :prove odd_eq`{0}
+Q.E.D.
+(Total Elapsed Time: 0.024s, using "Z3")
+labs::Language::IntroTypeHackery> :prove odd_eq`{32}
+Q.E.D.
+(Total Elapsed Time: 0.031s, using "Z3")
+```
+
+Z3 says these are equivalent, at least for empty and 32-bit sequences.
+Thanks, Z3!  Back to our program...
+
+----------
 
 + A halving function that also reduces the bit width by 1 if
   possible. This is employed in the recursive call to make the size of
@@ -235,7 +285,7 @@ gcd : {m, n} (fin m, fin n) => [m] -> [n] -> [max m n]
   We need the result type to be `[max m n]` since if either argument
   is zero, the result is the value of the other argument.
 
-Without further adieu, the code:
+Without further ado, the code:
 
 ```cryptol
 gcd x y = if x == 0 \/ y == 0 then zext x ^ zext y        // line 1
