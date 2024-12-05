@@ -1121,7 +1121,7 @@ https://github.com/weaversa/cryptol-course/issues
 ||||
 |-:|:-:|-|
 || [ ^ Course README](../../README.md) ||
-| [< Cryptographic Properties](../CryptoProofs/CryptoProofs.md) | **Key Wrapping** | [Capstone >](../LoremIpsum/LoremIpsum.md) |
+| [< Module System](../ModuleSystem.md) | **Key Wrapping** | [Capstone >](../LoremIpsum/LoremIpsum.md) |
 || [! Key Wrapping (Answers)](./KeyWrappingAnswers.md) ||
 ||||
 || [+ Parameterized Modules](../SimonSpeck/SimonSpeck.md) ||

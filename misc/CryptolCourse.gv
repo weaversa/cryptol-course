@@ -10,7 +10,7 @@ digraph  {
 
   // URLs by node
   // recommended
-  
+
   Installation               [URL="../INSTALL.html"];
   Overview                   [URL="../labs/Overview/Overview.html"];
   Interpreter                [URL="../labs/Interpreter/Interpreter.html"];
@@ -18,12 +18,13 @@ digraph  {
   CRC                        [URL="../labs/CRC/CRC.html"];
   Salsa20                    [URL="../labs/Salsa20/Salsa20.html"];
   CryptographicProperties    [URL="../labs/CryptoProofs/CryptoProofs.html"];
+  ModuleSystem               [URL="../labs/ModuleSystem.html"];
   KeyWrapping                [URL="../labs/KeyWrapping/KeyWrapping.html"];
   Capstone                   [URL="../labs/LoremIpsum/LoremIpsum.html"];
 
   // branch nodes
   node [fillcolor="white"];
-  
+
   StyleGuide                 [URL="../cryptol-style.html"];
   CryptolDemos               [URL="../labs/Demos/Cryptol/Demos.html"];
   SAWDemos                   [URL="../labs/Demos/SAW/Demos.html"];
@@ -32,10 +33,9 @@ digraph  {
   TranspositionCiphers       [URL="../labs/Transposition/Contents.html"];
   ProjectEuler               [URL="../labs/ProjectEuler/ProjectEuler.html"];
   ContinuousReasoning        [URL="../labs/SAW/SAW.html"];
-  ParameterizedModules       [URL="../labs/SimonSpeck/SimonSpeck.html"];
 
   // newline/space labels
-  
+
   LanguageBasics             [label = "Language\nBasics"]
   TypeHackery                [label = "Type Hackery"]
   CryptographicProperties    [label = "Cryptographic\nProperties"]
@@ -43,7 +43,7 @@ digraph  {
   CryptolDemos               [label = "Cryptol Demos"]
   SAWDemos                   [label = "SAW Demos"]
   TranspositionCiphers       [label = "Transposition\nCiphers"]
-  ParameterizedModules       [label = "Parameterized\nModules"]
+  ModuleSystem               [label = "Module\nSystem"]
   Salsa20Properties          [label = "Salsa20\nProperties"]
   ContinuousReasoning        [label = "SAW\nContinuous Reasoning"];
   StyleGuide                 [label = "Style Guide"]
@@ -51,19 +51,20 @@ digraph  {
 
   // recommended flow
   edge [color=red];
-  
+
   Installation -> Overview;
   Overview -> Interpreter;
   Interpreter -> LanguageBasics;
   LanguageBasics -> CRC;
   CRC -> Salsa20;
   Salsa20 -> CryptographicProperties;
-  CryptographicProperties -> KeyWrapping;
+  CryptographicProperties -> ModuleSystem;
+  ModuleSystem -> KeyWrapping;
   KeyWrapping -> Capstone;
 
   // branches
   edge [color=black];
-  
+
   LanguageBasics -> StyleGuide;
   LanguageBasics -> CryptolDemos;
   LanguageBasics -> SAWDemos;
@@ -72,7 +73,6 @@ digraph  {
   CryptographicProperties -> TranspositionCiphers;
   CryptographicProperties -> ProjectEuler;
   CryptographicProperties -> ContinuousReasoning
-  KeyWrapping -> ParameterizedModules;
 
   // ranks
 
@@ -98,7 +98,14 @@ digraph  {
   {
     // Cryptographic Properties
     rank = same;
-    KeyWrapping;
+    Salsa20;
+    CryptographicProperties;
+  }
+
+  {
+    // Miscellany
+    rank = same;
+    ModuleSystem;
     Salsa20Properties;
     TranspositionCiphers;
     ProjectEuler;
@@ -108,8 +115,8 @@ digraph  {
   {
     // Key Wrapping
     rank = same;
+    KeyWrapping;
     Capstone;
-    ParameterizedModules;
   }
 
 }
