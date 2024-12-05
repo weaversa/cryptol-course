@@ -1,6 +1,6 @@
 include "llvm.saw";
 
-import "xxhash.cry";
+import "../specs/xxhash.cry";
 
 let {{
   PRIME32_1 = 0x9E3779B1 : [32]
