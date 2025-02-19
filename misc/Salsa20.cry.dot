@@ -1,0 +1,25 @@
+digraph "Salsa20.cry" {
+	label="Salsa20.cry";
+
+	rotl [label="(<<<)"];
+	quarterround;
+	rowround;
+	columnround;
+	doubleround;
+	littleendian;
+	littleendian_inverse;
+	Salsa20;
+	Salsa20_expansion;
+	Salsa20_encrypt;
+
+	quarterround -> rotl;
+	rowround -> quarterround;
+	columnround -> quarterround;
+	doubleround -> columnround;
+	doubleround -> rowround;
+	Salsa20 -> littleendian;
+	Salsa20 -> littleendian_inverse;
+	Salsa20 -> doubleround;
+	Salsa20_expansion -> Salsa20;
+	Salsa20_encrypt -> Salsa20_expansion;
+}

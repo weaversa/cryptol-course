@@ -1,0 +1,111 @@
+digraph "salsa20.saw.dot" {
+	label="salsa20.saw";
+
+	node [shape="plaintext"];
+	r [label=<
+	   <table border="0" cellborder="1" cellspacing="0"><tr>
+	   <td port="i">rotl</td>
+	   <td port="s"></td>
+	   <td port="c">(&lt;&lt;&lt;)</td>
+	   </tr></table>
+	   >];
+
+	qr [label=<<table border="0" cellborder="1" cellspacing="0"><tr>
+	   <td port="i">s20_quarterround</td>
+	   <td port="s">quarterround_setup</td>
+	   <td port="c">quarterround</td>
+	   </tr></table>>];
+
+	rr [label=<<table border="0" cellborder="1" cellspacing="0"><tr>
+	   <td port="i">s20_rowround</td>
+	   <td port="s">rowround_setup</td>
+	   <td port="c">rowround</td>
+	   </tr></table>>];
+
+	cr [label=<<table border="0" cellborder="1" cellspacing="0"><tr>
+	   <td port="i">s20_columnround</td>
+	   <td port="s">columnround_setup</td>
+	   <td port="c">columnround</td>
+	   </tr></table>>];
+
+	dr [label=<<table border="0" cellborder="1" cellspacing="0"><tr>
+	   <td port="i">s20_doubleround</td>
+	   <td port="s">doubleround_setup</td>
+	   <td port="c">doubleround</td>
+	   </tr></table>>];
+
+	le [label=<<table border="0" cellborder="1" cellspacing="0"><tr>
+	   <td port="i">s20_littleendian</td>
+	   <td port="s"></td>
+	   <td port="c">littleendian</td>
+	   </tr></table>>];
+
+	rle [label=<<table border="0" cellborder="1" cellspacing="0"><tr>
+	   <td port="i">s20_rev_littleendian</td>
+	   <td port="s"></td>
+	   <td port="c">littleendian_inverse</td>
+	   </tr></table>>];
+
+	s20 [label=<<table border="0" cellborder="1" cellspacing="0"><tr>
+	   <td port="i">s20_hash</td>
+	   <td port="s">salsa20_setup</td>
+	   <td port="c">Salsa20</td>
+	   </tr></table>>];
+
+	s20e32 [label=<<table border="0" cellborder="1" cellspacing="0"><tr>
+	   <td port="i">s20_expand32</td>
+	   <td port="s">salsa20_expansion_32</td>
+	   <td port="c">Salsa20_expansion</td>
+	   </tr></table>>];
+
+	s20enc_63 [label=<<table border="0" cellborder="1" cellspacing="0"><tr>
+	   <td port="i">s20_crypt32</td>
+	   <td port="s">s20_encrypt32 63</td>
+	   <td port="c">Salsa20_encrypt</td>
+	   </tr></table>>];
+
+	s20enc_64 [label=<<table border="0" cellborder="1" cellspacing="0"><tr>
+	   <td port="i">s20_crypt32</td>
+	   <td port="s">s20_encrypt32 64</td>
+	   <td port="c">Salsa20_encrypt</td>
+	   </tr></table>>];
+
+	s20enc_65 [label=<<table border="0" cellborder="1" cellspacing="0"><tr>
+	   <td port="i">s20_crypt32</td>
+	   <td port="s">s20_encrypt32 65</td>
+	   <td port="c">Salsa20_encrypt</td>
+	   </tr></table>>];
+
+	edge [color="red", style="solid"];
+	rr:i -> qr:i;
+	cr:i -> qr:i;
+	dr:i -> cr:i;
+	dr:i -> rr:i;
+	s20:i -> dr:i;
+	s20e32:i -> s20:i;
+	s20enc_63:i -> s20e32:i;
+	s20enc_64:i -> s20e32:i;
+	s20enc_65:i -> s20e32:i;
+
+	edge [style="dashed"];
+	qr:i -> r:i;
+	s20:i -> le:i;
+	s20:i -> rle:i;
+	s20enc_63:i -> rle:i;
+	s20enc_64:i -> rle:i;
+	s20enc_65:i -> rle:i;
+
+	edge [color="blue", style="dashed"];
+	qr:c -> r:c;
+	rr:c -> qr:c;
+	cr:c -> qr:c;
+	dr:c -> cr:c;
+	dr:c -> rr:c;
+	s20:c -> le:c;
+	s20:c -> rle:c;
+	s20:c -> dr:c;
+	s20e32:c -> s20:c;
+	s20enc_63:c -> s20e32:c;
+	s20enc_64:c -> s20e32:c;
+	s20enc_65:c -> s20e32:c;
+}
