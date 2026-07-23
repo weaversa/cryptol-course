@@ -3,9 +3,23 @@
 [![Markdown Cryptol interpreter blocks match expected results](https://github.com/weaversa/cryptol-course/actions/workflows/snippet-tests.yml/badge.svg)](https://github.com/weaversa/cryptol-course/actions/workflows/snippet-tests.yml)
 [![pages-build-deployment](https://github.com/weaversa/cryptol-course/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/weaversa/cryptol-course/actions/workflows/pages/pages-build-deployment)
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/weaversa/cryptol-course)
+# Quick Start
+A [development container
+configuration](.devcontainer/) is maintained in this
+repository and provides the tooling (Cryptol, SAW, supported SAT/SMT
+solvers, and more) necessary to support the course. This
+configuration is compatible with GitHub's
+[Codespaces](https://github.com/codespaces), a service that enables
+developers to "Spin up fully configured dev environments in the
+cloud", as well as [Visual Studio Code's Dev Container
+extension](https://code.visualstudio.com/docs/devcontainers/containers). Using
+this configuration in a supported development environment (such as
+those listed above) is the preferred way to take the course and
+develop in this repository.
 
-[Click here for a web-based version of this course.](https://weaversa.github.io/cryptol-course/)
+Take the course immediately:
+   * [Cryptol Course Codespace](https://codespaces.new/weaversa/cryptol-course?devcontainer_path=.devcontainer%2Fdevcontainer.json)
+   * [Or, click here for a web-based version of this course.](https://weaversa.github.io/cryptol-course/)
 
 # Programming with Cryptol
 
