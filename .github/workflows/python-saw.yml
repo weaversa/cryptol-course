@@ -35,7 +35,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Download bc-files
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v8
         with:
           name: bc-files
           path: labs/Demos/SAW/
