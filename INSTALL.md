@@ -1,23 +1,20 @@
 # Easy Button
 
-Likely, the easiest way to take the course is via
-[Gitpod.io](https://gitpod.io), a development environment hosting
-service that opens the course right in your web-browser. We have
-pre-loaded all of the tools you'll need to complete the main Cryptol
-track of this course. Simply click the link below to start. Your
-personal Gitpod instance will need a couple of minutes to initialize
-the first time you click the link. If you close the Gitpod browser
-window, your work will be saved, though every time you return to the
-link, Gitpod will start a fresh workspace. To restart a previous
-workspace, go to https://gitpod.io/workspaces/. You can also pin a
-workspace to keep it from being deleted after 14 days of inactivity.
+A [development container
+configuration](.devcontainer/) is maintained in this
+repository and provides the tooling (Cryptol, SAW, supported SAT/SMT
+solvers, and more) necessary to support the course. This
+configuration is compatible with GitHub's
+[Codespaces](https://github.com/codespaces), a service that enables
+developers to "Spin up fully configured dev environments in the
+cloud", as well as [Visual Studio Code's Dev Container
+extension](https://code.visualstudio.com/docs/devcontainers/containers). Using
+this configuration in a supported development environment (such as
+those listed above) is the preferred way to take the course and
+develop in this repository.
 
-With this method, you can save files on a virtual machine and start
-and stop it at will. There isn't an easy way to transfer files from
-the virtual machine to your own computer, but you can simply copy text
-from the editor in the browser and paste it anywhere you want.
-
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/weaversa/cryptol-course)
+Take the course immediately:
+   * [Cryptol Course Codespace](https://codespaces.new/weaversa/cryptol-course?devcontainer_path=.devcontainer%2Fdevcontainer.json)
 
 However, if you would like to take the course locally (which involves
 installing software on your computer), you may follow the instructions
