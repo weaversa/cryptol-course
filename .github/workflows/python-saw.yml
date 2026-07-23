@@ -10,7 +10,7 @@ jobs:
       options: --user root
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
       - name: Build .bc files
         run: |
           clang -c -g -emit-llvm labs/Demos/SAW/Salsa20/src/salsa20.c -o labs/Demos/SAW/Salsa20/salsa20.bc -Ilabs/Demos/SAW/Salsa20/include
@@ -33,7 +33,7 @@ jobs:
       options: --user root
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
       - name: Download bc-files
         uses: actions/download-artifact@v3
         with:
@@ -54,7 +54,7 @@ jobs:
       options: --user root
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v7
       # Start saw-remote-api server
       - run: start-saw-remote-api-read-only
       # Run final rotl SAW Script
